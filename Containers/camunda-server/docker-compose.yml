@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  camunda-server:
+    image: camunda-server
+    build:
+      context: ../../Camunda/Server
+      dockerfile: ../../Containers/camunda-server/Dockerfile
+    container_name: camunda-server
+    hostname: camunda-server
+    restart: always
+    ports:
+      - "9201:9201"
+    networks:
+      - default

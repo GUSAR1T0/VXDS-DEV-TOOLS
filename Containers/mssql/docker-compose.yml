@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  mssql:
+    image: microsoft/mssql-server-linux
+    container_name: mssql
+    hostname: mssql
+    restart: always
+    environment:
+      - SA_PASSWORD=<2018!Pass>
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+volumes:
+  mssql-data:

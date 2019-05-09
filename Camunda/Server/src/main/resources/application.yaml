@@ -1,0 +1,12 @@
+camunda.bpm:
+  admin-user:
+    id: vxdesign
+    password: vxdesign
+    firstName: Roman
+    lastName: Mashenkin
+    email: xromash@vxdesign.store
+    rest-auth:
+      required: false
+  filter:
+    create: All tasks
+server.port: 9201
