@@ -1,20 +1,22 @@
 <template>
     <div class="home">
-        <Navigation/>
-        <img alt="Vue logo" src="../assets/logo.png">
-        <HelloWorld msg="Welcome to Your Vue.js App"/>
+        <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png">
+        <HelloWorld msg="Portal"/>
     </div>
 </template>
 
+<style scoped>
+    .home {
+        text-align: center;
+    }
+</style>
+
 <script>
-    // @ is an alias to /src
-    import Navigation from "@/components/Navigation.vue";
     import HelloWorld from "@/components/HelloWorld.vue";
 
     export default {
-        name: "home",
+        name: "Home",
         components: {
-            Navigation,
             HelloWorld
         }
     };
