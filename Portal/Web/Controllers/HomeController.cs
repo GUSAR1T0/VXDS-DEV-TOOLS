@@ -10,7 +10,7 @@ namespace Web.Controllers
             return File("~/index.html", "text/html");
         }
 
-        [Route("Error")]
+        [HttpGet("Error")]
         public IActionResult Error()
         {
             return BadRequest("Error page");

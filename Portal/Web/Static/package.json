@@ -11,17 +11,22 @@
     "lint:no-fix": "vue-cli-service lint --no-fix"
   },
   "dependencies": {
-    "element-ui": "^2.7.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.18",
+    "@fortawesome/free-brands-svg-icons": "^5.8.2",
+    "@fortawesome/free-regular-svg-icons": "^5.8.2",
+    "@fortawesome/free-solid-svg-icons": "^5.8.2",
+    "@fortawesome/vue-fontawesome": "^0.1.6",
+    "element-ui": "^2.9.1",
     "vue": "^2.6.10",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vue-router": "^3.0.6",
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.5.3",
-    "@vue/cli-plugin-eslint": "^3.5.1",
-    "@vue/cli-service": "^3.5.3",
+    "@vue/cli-plugin-babel": "^3.8.0",
+    "@vue/cli-plugin-eslint": "^3.8.0",
+    "@vue/cli-service": "^3.8.0",
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.15.3",
+    "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.2",
     "vue-cli-plugin-element": "^1.0.1",
     "vue-template-compiler": "^2.6.10"
@@ -29,7 +34,7 @@
   "bugs": {
     "url": "https://github.com/VXDS-DEV-TOOLS/Portal/issues"
   },
-  "homepage": "https://github.com/VXDS-DEV-TOOLS/Portal#portal---",
+  "homepage": "https://github.com/VXDS-DEV-TOOLS/Portal#vxdesignstore-development-tools---",
   "license": "MIT",
   "repository": {
     "type": "git",
