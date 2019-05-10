@@ -13,6 +13,7 @@ matrix:
       script:
         - docker-compose -f mongodb/docker-compose.yml build --no-cache
         - docker-compose -f mssql/docker-compose.yml build --no-cache
+        - docker-compose -f postgresql/docker-compose.yml build --no-cache
         - docker-compose -f camunda-server/docker-compose.yml build --no-cache
     - name: "Camunda Server"
       language: java
