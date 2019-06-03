@@ -1,7 +1,6 @@
 <template>
     <div class="home">
-        <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png">
-        <HelloWorld msg="Portal"/>
+        <Welcome msg="Unified Portal"/>
     </div>
 </template>
 
@@ -12,12 +11,12 @@
 </style>
 
 <script>
-    import HelloWorld from "@/components/HelloWorld.vue";
+    import Welcome from "@/components/Welcome.vue";
 
     export default {
         name: "Home",
         components: {
-            HelloWorld
+            Welcome
         }
     };
 </script>

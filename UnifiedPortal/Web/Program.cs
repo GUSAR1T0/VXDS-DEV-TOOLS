@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Web
+namespace VXDS.DevTools.UnifiedPortal.Web
 {
     public class Program
     {

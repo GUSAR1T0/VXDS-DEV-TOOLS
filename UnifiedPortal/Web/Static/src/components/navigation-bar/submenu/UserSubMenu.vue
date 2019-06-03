@@ -11,13 +11,9 @@
             </el-menu-item>
         </div>
         <div v-else>
-            <el-menu-item>
+            <el-menu-item index="/auth">
                 <fa class="fa-submenu-item" icon="sign-in-alt"/>
-                <span slot="title" class="el-nav-menu-vertical-item">Sign In</span>
-            </el-menu-item>
-            <el-menu-item>
-                <fa class="fa-submenu-item" icon="user-plus"/>
-                <span slot="title" class="el-nav-menu-vertical-item">Sign Up</span>
+                <span slot="title" class="el-nav-menu-vertical-item">Authorize</span>
             </el-menu-item>
         </div>
     </div>

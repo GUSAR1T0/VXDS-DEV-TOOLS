@@ -1,8 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+        <AssemblyName>VXDS.DevTools.UnifiedPortal.Web</AssemblyName>
+        <RootNamespace>VXDS.DevTools.UnifiedPortal.Web</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
