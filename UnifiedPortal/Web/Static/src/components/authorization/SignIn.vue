@@ -1,43 +1,49 @@
 <template>
     <div class="sign-in">
-        <el-row class="sign-in-element" type="flex" justify="center">
-            <el-col :xs="24" :sm="16" :md="12" :lg="8" :xl="6">
-                <el-input placeholder="Username" v-model="login" clearable></el-input>
-            </el-col>
-        </el-row>
-        <el-row class="sign-in-element" type="flex" justify="center">
-            <el-col :xs="24" :sm="16" :md="12" :lg="8" :xl="6">
-                <el-input placeholder="Password" v-model="password" show-password clearable></el-input>
-            </el-col>
-        </el-row>
-        <el-row class="sign-in-element" type="flex" justify="center">
-            <el-col :xs="10" :sm="8" :md="6" :lg="3" :xl="1">
-                <el-button type="danger" class="button"><fa icon="sign-in-alt"/> | Sign In</el-button>
-            </el-col>
-            <el-col :xs="10" :sm="8" :md="6" :lg="3" :xl="1">
-                <el-button type="danger" class="button"><fa icon="user-plus"/> | Request</el-button>
-            </el-col>
-        </el-row>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
+            <el-row class="auth-field-element" type="flex" justify="center">
+                <el-col :xs="24" :sm="16" :md="12" :lg="12" :xl="12">
+                    <el-form-item prop="email" label="Email Address">
+                        <el-input v-model="ruleForm.email" clearable></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row class="auth-field-element" type="flex" justify="center">
+                <el-col :xs="24" :sm="16" :md="12" :lg="12" :xl="12">
+                    <el-form-item prop="password" label="Password">
+                        <el-input v-model="ruleForm.password" show-password clearable></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row class="auth-field-element" type="flex" justify="center">
+                <el-button type="danger" class="auth-button">Log In</el-button>
+            </el-row>
+        </el-form>
     </div>
 </template>
 
-<style scoped>
-    .sign-in-element {
-        padding: 10px;
-    }
-    
-    .button {
-        width: 130px;
-    }
+<style scoped src="./css/authorization.css">
 </style>
 
 <script>
+    let ruleForm = {
+        email: "",
+        password: ""
+    };
+
     export default {
         name: "SignIn",
         data() {
             return {
-                login: "",
-                password: ""
+                ruleForm: ruleForm,
+                rules: {
+                    email: [
+                        {required: true, message: "Email address is required", trigger: "blur"}
+                    ],
+                    password: [
+                        {required: true, message: "Password is required", trigger: "blur"}
+                    ]
+                }
             };
         }
     };
