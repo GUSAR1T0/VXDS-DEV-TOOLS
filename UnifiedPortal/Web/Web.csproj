@@ -3,8 +3,8 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-        <AssemblyName>VXDS.DevTools.UnifiedPortal.Web</AssemblyName>
-        <RootNamespace>VXDS.DevTools.UnifiedPortal.Web</RootNamespace>
+        <AssemblyName>VXDesign.Store.DevTools.UnifiedPortal.Web</AssemblyName>
+        <RootNamespace>VXDesign.Store.DevTools.UnifiedPortal.Web</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
