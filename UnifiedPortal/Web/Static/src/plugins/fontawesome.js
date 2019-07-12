@@ -10,10 +10,12 @@ import {
     faAngleLeft,
     faSignOutAlt,
     faSignInAlt,
-    faUserPlus
+    faUserPlus,
+    faQuestionCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faUserCircle, faUserAlt, faEllipsisH, faHome, faInfoCircle, faAngleRight, faAngleLeft, faSignOutAlt, faSignInAlt, faUserPlus);
+library.add(faUserCircle, faUserAlt, faEllipsisH, faHome, faInfoCircle, faAngleRight, faAngleLeft, faSignOutAlt,
+    faSignInAlt, faUserPlus, faQuestionCircle);
 
 Vue.component("fa", FontAwesomeIcon);
