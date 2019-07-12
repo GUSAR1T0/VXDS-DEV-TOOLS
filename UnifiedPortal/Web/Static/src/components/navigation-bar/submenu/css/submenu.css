@@ -6,3 +6,8 @@
 .el-nav-menu-vertical-item {
     margin-left: 10px;
 }
+
+.el-menu-item {
+    height: 56px !important;
+    line-height: 56px !important;
+}

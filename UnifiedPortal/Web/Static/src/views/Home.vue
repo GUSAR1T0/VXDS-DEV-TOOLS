@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <Welcome msg="Unified Portal"/>
+        <Welcome msg="Home Page"/>
     </div>
 </template>
 

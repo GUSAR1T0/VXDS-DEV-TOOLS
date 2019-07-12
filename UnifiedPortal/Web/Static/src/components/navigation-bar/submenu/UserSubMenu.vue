@@ -13,7 +13,7 @@
         <div v-else>
             <el-menu-item index="/auth">
                 <fa class="fa-submenu-item" icon="sign-in-alt"/>
-                <span slot="title" class="el-nav-menu-vertical-item">Authorize</span>
+                <span slot="title" class="el-nav-menu-vertical-item">Authorization</span>
             </el-menu-item>
         </div>
     </div>

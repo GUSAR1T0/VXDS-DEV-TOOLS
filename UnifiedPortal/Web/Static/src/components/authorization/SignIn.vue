@@ -1,22 +1,22 @@
 <template>
     <div class="sign-in">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
             <el-row class="auth-field-element" type="flex" justify="center">
-                <el-col :xs="24" :sm="16" :md="12" :lg="12" :xl="12">
+                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="email" label="Email Address">
                         <el-input v-model="ruleForm.email" clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
-                <el-col :xs="24" :sm="16" :md="12" :lg="12" :xl="12">
+                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="password" label="Password">
                         <el-input v-model="ruleForm.password" show-password clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
-                <el-button type="danger" class="auth-button">Log In</el-button>
+                <el-button type="danger" class="auth-button" @click="submitForm('ruleForm')">Log In</el-button>
             </el-row>
         </el-form>
     </div>
@@ -45,6 +45,15 @@
                     ]
                 }
             };
+        },
+        methods: {
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (!valid) {
+                        return false;
+                    }
+                });
+            }
         }
     };
 </script>

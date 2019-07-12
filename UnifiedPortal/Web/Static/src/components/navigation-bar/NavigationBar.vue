@@ -1,7 +1,7 @@
 <template>
     <div class="nav">
         <el-menu class="el-nav-menu-vertical" :collapse="isCollapse" :router="true" :default-active="$route.path">
-            <CollapsibleSubMenu class="el-nav-menu-vertical-header" name="Unified Portal">
+            <CollapsibleSubMenu class="el-nav-menu-vertical-header" name="Main Menu">
                 <template slot="icon">
                     <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="40px"
                          height="40px" class="el-nav-menu-logo">
@@ -12,7 +12,12 @@
             </CollapsibleSubMenu>
             <CollapsibleSubMenu class="el-nav-menu-vertical-user" name="User">
                 <template slot="icon">
-                    <fa class="fa-submenu" icon="user-circle"/>
+                    <div v-if="this.$store.getters.isAuthorized">
+                        <fa class="fa-submenu" icon="user-circle"/>
+                    </div>
+                    <div v-else>
+                        <fa class="fa-submenu" icon="question-circle"/>
+                    </div>
                 </template>
                 <template slot="menu">
                     <UserSubMenu/>
@@ -40,14 +45,11 @@
         padding: 0 20px !important;
     }
 
-    .el-submenu__title {
+    div.nav > ul > li.el-nav-menu-vertical-header.el-submenu > div.el-submenu__title,
+    div.nav > ul > li.el-nav-menu-vertical-user.el-submenu > div.el-submenu__title,
+    div.nav > ul > li.el-nav-menu-vertical-footer.el-submenu > div.el-submenu__title {
         height: 64px !important;
         line-height: 64px !important;
-    }
-
-    .el-menu-item {
-        height: 56px !important;
-        line-height: 56px !important;
     }
 </style>
 
