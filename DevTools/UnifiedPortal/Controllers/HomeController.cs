@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace VXDesign.Store.DevTools.UnifiedPortal.Web.Controllers
+namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
     [Route("/")]
     public class HomeController : Controller

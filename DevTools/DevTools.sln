@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{6C98841A-41C8-49B5-95C0-0E1626EB7528}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnifiedPortal", "UnifiedPortal\UnifiedPortal.csproj", "{6C98841A-41C8-49B5-95C0-0E1626EB7528}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

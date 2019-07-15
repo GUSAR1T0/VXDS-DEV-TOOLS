@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
-namespace VXDesign.Store.DevTools.UnifiedPortal.Web
+namespace VXDesign.Store.DevTools.UnifiedPortal
 {
     public class Startup
     {
