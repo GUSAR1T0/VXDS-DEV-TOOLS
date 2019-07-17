@@ -2,61 +2,37 @@
     <div id="app">
         <el-container class="app-container">
             <NavigationBar/>
-            <el-main>
-                <router-view/>
-            </el-main>
+            <el-container>
+                <el-header class="app-header" height="auto">
+                    <Header/>
+                    <HeaderDivider :name="$route.meta.pageName"/>
+                </el-header>
+                <el-main class="app-main">
+                    <router-view/>
+                </el-main>
+                <el-footer class="app-footer" height="auto">
+                    <Footer/>
+                </el-footer>
+            </el-container>
         </el-container>
     </div>
 </template>
 
-<style>
-    * {
-        font-family: 'Didact Gothic', 'Avenir', Helvetica, Arial, sans-serif;
-    }
-
-    h1 {
-        font-size: 30px;
-    }
-
-    h2 {
-        font-size: 24px;
-    }
-
-    h3 {
-        font-size: 20px;
-    }
-
-    h4 {
-        font-size: 16px;
-    }
-
-    h5 {
-        font-size: 12px;
-    }
-
-    h6 {
-        font-size: 8px;
-    }
-
-    #app {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        color: #2c3e50;
-        min-height: 100%;
-        width: 100%
-    }
-
-    .app-container {
-        min-height: 100%;
-    }
+<style src="@/styles/app.css">
 </style>
 
 <script>
     import NavigationBar from "@/components/navigation-bar/NavigationBar.vue";
+    import Header from "@/components/page/Header.vue";
+    import HeaderDivider from "@/components/page/HeaderDivider.vue";
+    import Footer from "@/components/page/Footer.vue";
 
     export default {
         components: {
-            NavigationBar
+            NavigationBar,
+            Header,
+            HeaderDivider,
+            Footer
         }
     };
 </script>

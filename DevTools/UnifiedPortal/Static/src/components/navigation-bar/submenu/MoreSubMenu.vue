@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<style scoped src="./css/submenu.css">
+<style scoped src="@/styles/submenu.css">
 </style>
 
 <script>

@@ -14,13 +14,7 @@
     </el-submenu>
 </template>
 
-<style scoped>
-    .el-nav-menu-vertical-title {
-        margin-left: 14px;
-        text-transform: uppercase;
-        font-size: 16px;
-    }
-    
+<style scoped src="@/styles/submenu.css">
     .el-nav-menu-vertical-group-title {
         text-transform: uppercase;
         font-weight: bold;
@@ -33,7 +27,7 @@
     export default {
         name: "CollapsibleSubMenu",
         props: {
-            name: String,
+            name: String
         },
         computed: {
             ...mapState({

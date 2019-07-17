@@ -22,7 +22,7 @@
     </div>
 </template>
 
-<style scoped src="./css/authorization.css">
+<style scoped src="@/styles/authorization.css">
 </style>
 
 <script>

@@ -11,11 +11,12 @@ import {
     faSignOutAlt,
     faSignInAlt,
     faUserPlus,
-    faQuestionCircle
+    faQuestionCircle,
+    faAlignJustify
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faUserCircle, faUserAlt, faEllipsisH, faHome, faInfoCircle, faAngleRight, faAngleLeft, faSignOutAlt,
-    faSignInAlt, faUserPlus, faQuestionCircle);
+    faSignInAlt, faUserPlus, faQuestionCircle, faAlignJustify);
 
 Vue.component("fa", FontAwesomeIcon);
