@@ -33,7 +33,7 @@
     import RequestRegistration from "@/components/authorization/RequestRegistration.vue";
 
     export default {
-        name: "Home",
+        name: "Authorization",
         components: {
             SignIn,
             RequestRegistration
