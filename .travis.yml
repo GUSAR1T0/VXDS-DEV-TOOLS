@@ -18,7 +18,7 @@ matrix:
     - name: "Camunda Server"
       language: java
       jdk:
-      - openjdk8
+      - openjdk12
       sudo: false
       before_install: cd Camunda/Server
       install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
@@ -37,7 +37,6 @@ matrix:
         - nvm use 12
         - cd DevTools
       install:
-        - npm install -C UnifiedPortal/Web/Static
         - dotnet restore
       script:
         - dotnet build
