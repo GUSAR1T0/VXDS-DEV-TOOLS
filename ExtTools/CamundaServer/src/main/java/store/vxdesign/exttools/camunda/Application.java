@@ -1,4 +1,4 @@
-package store.vxdesign.devtools.camunda;
+package store.vxdesign.exttools.camunda;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
