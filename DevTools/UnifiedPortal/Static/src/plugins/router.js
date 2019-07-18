@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "@/views/Home.vue";
-import Authorization from "@/views/Authorization.vue";
 
 Vue.use(Router);
 
@@ -20,7 +19,7 @@ export default new Router({
         {
             path: "/auth",
             name: "authorization",
-            component: Authorization,
+            component: () => import(/* webpackChunkName: "authorization" */ "../views/Authorization.vue"),
             meta: {
                 pageName: "Authorization"
             }
