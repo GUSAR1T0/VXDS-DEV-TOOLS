@@ -25,7 +25,7 @@ public class CamundaSecurityFilter {
     @Bean
     @ConditionalOnProperty(name = "camunda.bpm.admin-user.rest-auth.required")
     public FilterRegistrationBean<Filter> registerAuthenticationProvider() {
-        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
+        var registration = new FilterRegistrationBean<>();
         registration.setName("camunda-auth");
         registration.setFilter(createAuthenticationProvider());
         registration.addInitParameter("authentication-provider",
@@ -38,7 +38,7 @@ public class CamundaSecurityFilter {
     @ConditionalOnProperty(name = "camunda.bpm.admin-user.rest-auth.required")
     public Filter createAuthenticationProvider() {
         return (servletRequest, servletResponse, filterChain) -> {
-            String authHeader = ((HttpServletRequest) servletRequest).getHeader("Authorization");
+            var authHeader = ((HttpServletRequest) servletRequest).getHeader("Authorization");
             if (authHeader != null && authHeader.equals(getBasicAuth()))
                 filterChain.doFilter(servletRequest, servletResponse);
             else {
@@ -50,8 +50,8 @@ public class CamundaSecurityFilter {
     }
 
     private String getBasicAuth() {
-        String user = env.getProperty("camunda.bpm.admin-user.id");
-        String pass = env.getProperty("camunda.bpm.admin-user.password");
+        var user = env.getProperty("camunda.bpm.admin-user.id");
+        var pass = env.getProperty("camunda.bpm.admin-user.password");
         return "Basic " + Base64.getEncoder().encodeToString((user + ':' + pass).getBytes());
     }
 }
