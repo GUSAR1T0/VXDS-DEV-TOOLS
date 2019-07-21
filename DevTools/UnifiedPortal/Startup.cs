@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
+using VXDesign.Store.DevTools.Common.Extensions;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal
 {
@@ -30,6 +30,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddRouting(options => options.LowercaseUrls = true);
+            services.ConfigureSwaggerDocument("1.0", "Unified Portal");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +47,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
                 app.UseHsts();
             }
 
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -55,17 +60,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.Map(new PathString("/api"), builder =>
-            {
-                builder.Run(async context =>
-                {
-                    context.Response.StatusCode = 400;
-                    context.Response.ContentType = "application/json";
-                    var msg = JsonConvert.SerializeObject(new {Message = "Invalid request path"});
-                    await context.Response.WriteAsync(msg).ConfigureAwait(false);
-                });
-            });
-            
+            app.SetupApiPath();
+
             app.Run(async context =>
             {
                 context.Response.ContentType = "text/html";
