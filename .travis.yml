@@ -20,7 +20,7 @@ matrix:
       jdk:
       - openjdk12
       sudo: false
-      before_install: cd Camunda/Server
+      before_install: cd ExtTools/CamundaServer
       install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       script: mvn test -B
     - name: "Development Tools"
