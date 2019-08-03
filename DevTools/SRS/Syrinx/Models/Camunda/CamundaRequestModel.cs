@@ -1,8 +1,13 @@
+using System.Collections.Generic;
+using VXDesign.Store.DevTools.Common.Entities.Enums;
+
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda
 {
     public class CamundaRequestModel
     {
-        public int Action { get; set; }
-        public string Parameters { get; set; }
+        public CamundaAction Action { get; set; }
+        public Dictionary<string, string> Path { get; set; }
+        public Dictionary<string, string> Query { get; set; }
+        public string Body { get; set; }
     }
 }

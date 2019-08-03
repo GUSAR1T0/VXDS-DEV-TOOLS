@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NSwag;
 
-namespace VXDesign.Store.DevTools.Common.Extensions
+namespace VXDesign.Store.DevTools.Common.Extensions.Controllers
 {
     public static class SwaggerExtensions
     {

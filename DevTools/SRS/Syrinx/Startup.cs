@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using VXDesign.Store.DevTools.Common.Extensions;
+using VXDesign.Store.DevTools.Common.Extensions.Controllers;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;
 
@@ -25,7 +25,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
             services.AddRouting(options => options.LowercaseUrls = true);
             services.ConfigureSwaggerDocument("1.0", "Syrinx");
             services.SetupProperties<PortalProperties>(Configuration);
-            services.AddScoped<ICamundaService>(factory => new CamundaService(factory.GetService<PortalProperties>().CamundaProperties));
+            services.AddScoped<ICamundaServerService>(factory => new CamundaServerService(factory.GetService<PortalProperties>().CamundaProperties));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

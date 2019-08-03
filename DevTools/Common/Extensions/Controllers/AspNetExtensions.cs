@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 using VXDesign.Store.DevTools.Common.Utils.Properties;
 
-namespace VXDesign.Store.DevTools.Common.Extensions
+namespace VXDesign.Store.DevTools.Common.Extensions.Controllers
 {
     public static class AspNetCoreExtensions
     {

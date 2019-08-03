@@ -1,9 +1,9 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
+using VXDesign.Store.DevTools.Common.Extensions.Base;
 
 namespace VXDesign.Store.DevTools.Common.Utils.Properties
 {
@@ -29,7 +29,7 @@ namespace VXDesign.Store.DevTools.Common.Utils.Properties
                 var attribute = GetPropertyFieldAttribute(type, property.Name);
                 var key = GetConfigurationKey(attribute, prefix);
                 var value = property.PropertyType.IsSubclassOf(typeof(PropertiesMarker)) ? Create(configuration, property.PropertyType, key) : configuration[key];
-                SetPropertyValue(property, attribute, properties, value);
+                property.SetPropertyValue(properties, value);
             }
 
             return properties;
@@ -40,25 +40,6 @@ namespace VXDesign.Store.DevTools.Common.Utils.Properties
         private static PropertyFieldAttribute GetPropertyFieldAttribute(Type type, string propertyName)
         {
             return type.GetProperty(propertyName).GetCustomAttributes<PropertyFieldAttribute>(false).FirstOrDefault();
-        }
-
-        private static void SetPropertyValue<T>(PropertyInfo property, PropertyFieldAttribute attribute, T portalModuleProperties, object value)
-        {
-            object GetSafeValue(object possible, Type objectType)
-            {
-                try
-                {
-                    return string.IsNullOrWhiteSpace(possible?.ToString()) ? null : Convert.ChangeType(possible, objectType, CultureInfo.InvariantCulture);
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-
-            var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-            var safeValue = GetSafeValue(value, type) ?? GetSafeValue(attribute.Default, type);
-            property.SetValue(portalModuleProperties, safeValue, null);
         }
     }
 }

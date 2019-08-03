@@ -1,8 +1,7 @@
 using System;
 using VXDesign.Store.DevTools.Common.Entities.Enums;
-using VXDesign.Store.DevTools.SRS.Camunda.Entities.Enums;
 
-namespace VXDesign.Store.DevTools.SRS.Camunda.Attributes
+namespace VXDesign.Store.DevTools.Common.Attributes.Camunda
 {
     [AttributeUsage(AttributeTargets.Field)]
     internal class CamundaActionAttribute : Attribute

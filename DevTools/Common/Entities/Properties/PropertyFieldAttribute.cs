@@ -6,7 +6,6 @@ namespace VXDesign.Store.DevTools.Common.Entities.Properties
     public class PropertyFieldAttribute : Attribute
     {
         public string Key { get; }
-        public object Default { get; set; }
 
         public PropertyFieldAttribute(string key)
         {

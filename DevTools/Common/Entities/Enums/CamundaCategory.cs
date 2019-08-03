@@ -1,8 +1,8 @@
-using VXDesign.Store.DevTools.SRS.Camunda.Attributes;
+using VXDesign.Store.DevTools.Common.Attributes.Camunda;
 
-namespace VXDesign.Store.DevTools.SRS.Camunda.Entities.Enums
+namespace VXDesign.Store.DevTools.Common.Entities.Enums
 {
-    internal enum CamundaCategory
+    public enum CamundaCategory
     {
         [CamundaCategory("Authorization", "authorization")]
         Authorization = 1,
