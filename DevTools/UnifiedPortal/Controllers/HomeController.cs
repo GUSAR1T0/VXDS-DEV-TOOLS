@@ -6,7 +6,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
     public class HomeController : Controller
     {
         /// <summary>
-        /// Loads the Web application.
+        /// Loads the Web application
         /// </summary>
         /// <returns>Prepared content of the application</returns>
         [ProducesResponseType(200)]
@@ -16,7 +16,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         }
 
         /// <summary>
-        /// Sends "bad request" response.
+        /// Sends "bad request" response
         /// </summary>
         /// <returns>Error with message</returns>
         [ProducesResponseType(400)]
