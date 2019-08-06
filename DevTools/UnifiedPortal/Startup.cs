@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using VXDesign.Store.DevTools.Common.Extensions;
+using VXDesign.Store.DevTools.Common.Extensions.Controllers;
+using VXDesign.Store.DevTools.Common.Utils.Camunda;
+using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal
 {
@@ -28,10 +30,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);
             services.ConfigureSwaggerDocument("1.0", "Unified Portal");
+            services.SetupProperties<PortalProperties>(Configuration);
+            services.AddScoped<ICamundaClientService>(factory => new CamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

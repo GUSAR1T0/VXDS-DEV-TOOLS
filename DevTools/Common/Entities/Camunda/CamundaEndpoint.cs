@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VXDesign.Store.DevTools.Common.Attributes.Camunda;
 using VXDesign.Store.DevTools.Common.Entities.Enums;
-using VXDesign.Store.DevTools.Common.Extensions;
-using VXDesign.Store.DevTools.SRS.Camunda.Attributes;
-using VXDesign.Store.DevTools.SRS.Camunda.Entities.Enums;
+using VXDesign.Store.DevTools.Common.Extensions.Enums;
 
-namespace VXDesign.Store.DevTools.SRS.Camunda.Entities.API
+namespace VXDesign.Store.DevTools.Common.Entities.Camunda
 {
     public class CamundaEndpoint
     {
@@ -22,7 +21,7 @@ namespace VXDesign.Store.DevTools.SRS.Camunda.Entities.API
             CategoryName = camundaCategoryAttribute.Name;
             ActionName = camundaActionAttribute.Name;
             Method = camundaActionAttribute.Method;
-            Path = $"/{camundaCategoryAttribute.Root}/{camundaActionAttribute.Path}";
+            Path = $"/{camundaCategoryAttribute.Root}{(!string.IsNullOrWhiteSpace(camundaActionAttribute.Path) ? '/' + camundaActionAttribute.Path : "")}";
         }
 
         private static IEnumerable<CamundaEndpoint> GetEndpoints(Func<CamundaAction, bool> predicate = null)
@@ -44,6 +43,6 @@ namespace VXDesign.Store.DevTools.SRS.Camunda.Entities.API
 
         public static IEnumerable<CamundaEndpoint> GetAll() => GetEndpoints().ToList();
 
-        public static CamundaEndpoint GetEndpoint(int actionCode) => GetEndpoints(action => (int) action == actionCode).FirstOrDefault();
+        public static CamundaEndpoint GetEndpoint(CamundaAction camundaAction) => GetEndpoints(action => action == camundaAction).FirstOrDefault();
     }
 }

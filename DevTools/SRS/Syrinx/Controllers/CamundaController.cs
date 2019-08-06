@@ -2,9 +2,11 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VXDesign.Store.DevTools.Common.Entities.Camunda;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
+using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.SRS.Camunda;
-using VXDesign.Store.DevTools.SRS.Camunda.Entities.API;
+using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
@@ -13,11 +15,11 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
     [ApiController]
     public class CamundaController : ApiController
     {
-        private readonly ICamundaService camundaService;
+        private readonly ICamundaServerService camundaServerService;
 
-        public CamundaController(ICamundaService camundaService)
+        public CamundaController(ICamundaServerService camundaServerService)
         {
-            this.camundaService = camundaService;
+            this.camundaServerService = camundaServerService;
         }
 
         /// <summary>
@@ -48,8 +50,8 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         {
             return HandleExceptionIfThrown<CamundaResponseModel>(() =>
             {
-                var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw new ApiControllerException("Failed to define endpoint by action code");
-                return CamundaResponseModel.Transform(camundaService.Send(endpoint, model.Parameters).Result);
+                var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode();
+                return camundaServerService.Send(model.ToEntity(endpoint)).Result.ToModel();
             });
         }
     }

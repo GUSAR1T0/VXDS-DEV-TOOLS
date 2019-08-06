@@ -7,8 +7,8 @@ namespace VXDesign.Store.DevTools.SRS.Camunda
         [PropertyField("HOST")]
         public string Host { get; set; }
 
-        [PropertyField("API", Default = "/rest/engine/default")]
-        public string Api { get; set; }
+        [PropertyField("API")]
+        public string Api { get; set; } = "/rest/engine/default";
 
         [PropertyField("LOGIN")]
         public string Login { get; set; }

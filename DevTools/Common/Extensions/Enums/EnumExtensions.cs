@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace VXDesign.Store.DevTools.Common.Extensions
+namespace VXDesign.Store.DevTools.Common.Extensions.Enums
 {
     public static class EnumExtensions
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace VXDesign.Store.DevTools.SRS.Camunda.Attributes
+namespace VXDesign.Store.DevTools.Common.Attributes.Camunda
 {
     [AttributeUsage(AttributeTargets.Field)]
     internal class CamundaCategoryAttribute : Attribute

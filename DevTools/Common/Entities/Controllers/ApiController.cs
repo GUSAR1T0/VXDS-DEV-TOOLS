@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Controllers
 {
@@ -11,7 +12,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             {
                 return action();
             }
-            catch (ApiControllerException e)
+            catch (BadRequestException e)
             {
                 return BadRequest(e.Message);
             }
