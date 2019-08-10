@@ -9,7 +9,7 @@ namespace VXDesign.Store.DevTools.Common.Utils.Properties
 {
     internal static class PropertiesCreator
     {
-        internal static T Create<T>(IConfiguration configuration) where T : PropertiesMarker, new()
+        internal static T Create<T>(IConfiguration configuration) where T : IPropertiesMarker, new()
         {
             var properties = new T();
             return FillProperties(configuration, properties);
@@ -28,7 +28,7 @@ namespace VXDesign.Store.DevTools.Common.Utils.Properties
             {
                 var attribute = GetPropertyFieldAttribute(type, property.Name);
                 var key = GetConfigurationKey(attribute, prefix);
-                var value = property.PropertyType.IsSubclassOf(typeof(PropertiesMarker)) ? Create(configuration, property.PropertyType, key) : configuration[key];
+                var value = typeof(IPropertiesMarker).IsAssignableFrom(property.PropertyType) ? Create(configuration, property.PropertyType, key) : configuration[key];
                 property.SetPropertyValue(properties, value);
             }
 

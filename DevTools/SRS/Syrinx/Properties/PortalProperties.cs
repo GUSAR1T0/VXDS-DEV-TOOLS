@@ -3,7 +3,7 @@ using VXDesign.Store.DevTools.SRS.Camunda;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Properties
 {
-    public class PortalProperties : PropertiesMarker
+    public class PortalProperties : IPropertiesMarker
     {
         [PropertyField("CAMUNDA")]
         public CamundaProperties CamundaProperties { get; set; }

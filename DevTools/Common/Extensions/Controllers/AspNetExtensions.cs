@@ -10,7 +10,7 @@ namespace VXDesign.Store.DevTools.Common.Extensions.Controllers
 {
     public static class AspNetCoreExtensions
     {
-        public static void SetupProperties<T>(this IServiceCollection services, IConfiguration configuration) where T : PropertiesMarker, new()
+        public static void SetupProperties<T>(this IServiceCollection services, IConfiguration configuration) where T : class, IPropertiesMarker, new()
         {
             services.AddSingleton(factory => PropertiesCreator.Create<T>(configuration));
         }

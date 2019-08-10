@@ -2,7 +2,7 @@ using VXDesign.Store.DevTools.Common.Entities.Properties;
 
 namespace VXDesign.Store.DevTools.SRS.Camunda
 {
-    public class CamundaProperties : PropertiesMarker
+    public class CamundaProperties : IPropertiesMarker
     {
         [PropertyField("HOST")]
         public string Host { get; set; }
