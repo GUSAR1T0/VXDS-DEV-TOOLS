@@ -22,10 +22,7 @@
       "launchUrl": "https://localhost:9300/swagger",
       "applicationUrl": "https://localhost:9300;http://localhost:9301",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "CAMUNDA.HOST": "http://localhost:9201",
-        "CAMUNDA.LOGIN": "vxdesign",
-        "CAMUNDA.PASSWORD": "vxdesign"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

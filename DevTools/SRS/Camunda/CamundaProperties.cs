@@ -4,16 +4,16 @@ namespace VXDesign.Store.DevTools.SRS.Camunda
 {
     public class CamundaProperties : IPropertiesMarker
     {
-        [PropertyField("HOST")]
+        [PropertyField]
         public string Host { get; set; }
 
-        [PropertyField("API")]
+        [PropertyField]
         public string Api { get; set; } = "/rest/engine/default";
 
-        [PropertyField("LOGIN")]
+        [PropertyField]
         public string Login { get; set; }
 
-        [PropertyField("PASSWORD")]
+        [PropertyField]
         public string Password { get; set; }
     }
 }

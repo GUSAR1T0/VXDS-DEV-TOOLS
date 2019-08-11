@@ -4,13 +4,13 @@ namespace VXDesign.Store.DevTools.Common.Containers.Properties
 {
     public class SyrinxProperties : IPropertiesMarker
     {
-        [PropertyField("HOST")]
+        [PropertyField]
         public string Host { get; set; }
 
-        [PropertyField("API")]
+        [PropertyField]
         public string Api { get; set; } = "/api";
 
-        [PropertyField("REQUEST")]
+        [PropertyField]
         public string Request { get; set; } = "/camunda/request";
     }
 }

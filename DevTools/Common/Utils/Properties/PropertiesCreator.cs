@@ -27,7 +27,7 @@ namespace VXDesign.Store.DevTools.Common.Utils.Properties
             foreach (var property in type.GetProperties().Where(property => property.GetCustomAttributes<PropertyFieldAttribute>().Any()))
             {
                 var attribute = GetPropertyFieldAttribute(type, property.Name);
-                var key = GetConfigurationKey(attribute, prefix);
+                var key = GetConfigurationKey(attribute, property, prefix);
                 var value = typeof(IPropertiesMarker).IsAssignableFrom(property.PropertyType) ? Create(configuration, property.PropertyType, key) : configuration[key];
                 property.SetPropertyValue(properties, value);
             }
@@ -35,7 +35,10 @@ namespace VXDesign.Store.DevTools.Common.Utils.Properties
             return properties;
         }
 
-        private static string GetConfigurationKey(PropertyFieldAttribute attribute, string prefix = null) => (!string.IsNullOrWhiteSpace(prefix) ? prefix + '.' : "") + attribute?.Key;
+        private static string GetConfigurationKey(PropertyFieldAttribute attribute, PropertyInfo property, string prefix = null)
+        {
+            return (!string.IsNullOrWhiteSpace(prefix) ? prefix + ':' : "") + (attribute?.Key ?? property.Name);
+        }
 
         private static PropertyFieldAttribute GetPropertyFieldAttribute(Type type, string propertyName)
         {

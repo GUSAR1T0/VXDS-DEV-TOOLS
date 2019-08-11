@@ -46,13 +46,10 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [HttpPost("request")]
-        public ActionResult<CamundaResponseModel> SendRequest([FromBody] CamundaRequestModel model)
+        public ActionResult<CamundaResponseModel> SendRequest([FromBody] CamundaRequestModel model) => HandleExceptionIfThrown<CamundaResponseModel>(() =>
         {
-            return HandleExceptionIfThrown<CamundaResponseModel>(() =>
-            {
-                var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode();
-                return camundaServerService.Send(model.ToEntity(endpoint)).Result.ToModel();
-            });
-        }
+            var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode();
+            return camundaServerService.Send(model.ToEntity(endpoint)).Result.ToModel();
+        });
     }
 }
