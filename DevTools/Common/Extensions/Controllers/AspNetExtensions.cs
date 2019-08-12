@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using VXDesign.Store.DevTools.Common.Containers.Properties;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 using VXDesign.Store.DevTools.Common.Utils.Authorization;
 using VXDesign.Store.DevTools.Common.Utils.Properties;

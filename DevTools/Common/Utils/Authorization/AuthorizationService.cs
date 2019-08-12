@@ -5,8 +5,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
-using VXDesign.Store.DevTools.Common.Containers.Properties;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
+using VXDesign.Store.DevTools.Common.Entities.Properties;
 using VXDesign.Store.DevTools.Common.Models.Authorization;
 
 namespace VXDesign.Store.DevTools.Common.Utils.Authorization

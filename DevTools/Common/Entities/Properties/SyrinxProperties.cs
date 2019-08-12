@@ -1,6 +1,4 @@
-using VXDesign.Store.DevTools.Common.Entities.Properties;
-
-namespace VXDesign.Store.DevTools.Common.Containers.Properties
+namespace VXDesign.Store.DevTools.Common.Entities.Properties
 {
     public class SyrinxProperties : IPropertiesMarker
     {
