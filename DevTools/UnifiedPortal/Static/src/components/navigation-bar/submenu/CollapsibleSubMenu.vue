@@ -1,14 +1,14 @@
 <template>
-    <el-submenu :index="name">
+    <el-submenu :index="menuName">
         <template slot="title">
             <slot name="icon"></slot>
-            <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">{{ name }}</span>
+            <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">{{ menuName }}</span>
         </template>
         <el-menu-item-group v-if="isCollapse">
-            <span slot="title" class="el-nav-menu-vertical-group-title">{{ name }}</span>
+            <span slot="title" class="el-nav-menu-vertical-group-title">{{ menuName }}</span>
             <slot name="menu"></slot>
         </el-menu-item-group>
-        <template v-if="!isCollapse">
+        <template v-else slot="menu">
             <slot name="menu"></slot>
         </template>
     </el-submenu>
@@ -22,16 +22,16 @@
 </style>
 
 <script>
-    import { mapState } from "vuex";
+    import { mapGetters } from "vuex";
 
     export default {
         name: "CollapsibleSubMenu",
         props: {
-            name: String
+            menuName: String
         },
         computed: {
-            ...mapState({
-                isCollapse: state => state.navigationBar.isNavigationBarCollapse
+            ...mapGetters({
+                isCollapse: "isNavigationBarCollapse"
             })
         }
     };

@@ -1,13 +1,13 @@
 <template>
     <div class="nav">
         <el-menu class="el-nav-menu-vertical" :collapse="isCollapse" :router="true" :default-active="$route.path">
-            <CollapsibleMenuItem class="el-nav-menu-vertical-header" name="Home" index="/">
+            <CollapsibleMenuItem class="el-nav-menu-vertical-header" menuName="Home" index="/">
                 <template slot="icon">
                     <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="40px"
                          height="40px" class="el-nav-menu-logo">
                 </template>
             </CollapsibleMenuItem>
-            <CollapsibleSubMenu class="el-nav-menu-vertical-pages" name="Pages">
+            <CollapsibleSubMenu class="el-nav-menu-vertical-pages" menuName="Pages">
                 <template slot="icon">
                     <fa class="fa-submenu" icon="align-justify"/>
                 </template>
@@ -15,16 +15,16 @@
                     <PagesSubMenu/>
                 </template>
             </CollapsibleSubMenu>
-            <CollapsibleSubMenu class="el-nav-menu-vertical-user" name="User">
+            <CollapsibleSubMenu class="el-nav-menu-vertical-user" menuName="User">
                 <template slot="icon">
-                    <fa v-if="this.$store.getters.isAuthorized" class="fa-submenu" icon="user-circle"/>
+                    <fa v-if="isAuthenticated" class="fa-submenu" icon="user-circle"/>
                     <fa v-else class="fa-submenu" icon="question-circle"/>
                 </template>
                 <template slot="menu">
                     <UserSubMenu/>
                 </template>
             </CollapsibleSubMenu>
-            <CollapsibleSubMenu class="el-nav-menu-vertical-footer" name="More">
+            <CollapsibleSubMenu class="el-nav-menu-vertical-footer" menuName="More">
                 <template slot="icon">
                     <fa class="fa-submenu" icon="ellipsis-h"/>
                 </template>
@@ -67,7 +67,7 @@
 </style>
 
 <script>
-    import { mapState } from "vuex";
+    import { mapGetters } from "vuex";
 
     import CollapsibleMenuItem from "@/components/navigation-bar/submenu/CollapsibleMenuItem.vue";
     import CollapsibleSubMenu from "@/components/navigation-bar/submenu/CollapsibleSubMenu.vue";
@@ -78,8 +78,9 @@
     export default {
         name: "NavigationBar",
         computed: {
-            ...mapState({
-                isCollapse: state => state.navigationBar.isNavigationBarCollapse
+            ...mapGetters({
+                isAuthenticated: "isAuthenticated",
+                isCollapse: "isNavigationBarCollapse"
             })
         },
         components: {

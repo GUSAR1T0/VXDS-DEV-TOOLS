@@ -31,6 +31,7 @@
 <script>
     import SignIn from "@/components/authorization/SignIn.vue";
     import RequestRegistration from "@/components/authorization/RequestRegistration.vue";
+    import { mapGetters } from "vuex";
 
     export default {
         name: "Authorization",
@@ -38,10 +39,24 @@
             SignIn,
             RequestRegistration
         },
+        computed: {
+            ...mapGetters([
+                "isAuthenticated"
+            ])
+        },
         data() {
             return {
                 isStretch: true
             };
+        },
+        mounted() {
+            if (this.isAuthenticated) {
+                this.$router.push("/");
+                this.$notify.warning({
+                    title: "Warning",
+                    message: "You have already logged in"
+                });
+            }
         }
     };
 </script>

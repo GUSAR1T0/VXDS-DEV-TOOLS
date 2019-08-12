@@ -26,6 +26,7 @@
     import Header from "@/components/page/Header.vue";
     import HeaderDivider from "@/components/page/HeaderDivider.vue";
     import Footer from "@/components/page/Footer.vue";
+    import { mapMutations } from "vuex";
 
     export default {
         components: {
@@ -33,6 +34,14 @@
             Header,
             HeaderDivider,
             Footer
+        },
+        computed: {
+            ...mapMutations([
+                "login"
+            ])
+        },
+        mounted() {
+            this.$store.commit("login");
         }
     };
 </script>

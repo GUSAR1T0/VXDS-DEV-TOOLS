@@ -1,7 +1,7 @@
 <template>
     <el-menu-item :index="index">
         <slot name="icon"></slot>
-        <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">{{ name }}</span>
+        <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">{{ menuName }}</span>
     </el-menu-item>
 </template>
 
@@ -9,17 +9,17 @@
 </style>
 
 <script>
-    import { mapState } from "vuex";
+    import { mapGetters } from "vuex";
 
     export default {
         name: "CollapsibleMenuItem",
         props: {
-            name: String,
+            menuName: String,
             index: String
         },
         computed: {
-            ...mapState({
-                isCollapse: state => state.navigationBar.isNavigationBarCollapse
+            ...mapGetters({
+                isCollapse: "isNavigationBarCollapse"
             })
         }
     };

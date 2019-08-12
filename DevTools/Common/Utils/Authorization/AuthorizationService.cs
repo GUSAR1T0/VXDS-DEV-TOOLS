@@ -73,7 +73,7 @@ namespace VXDesign.Store.DevTools.Common.Utils.Authorization
         public static ClaimsPrincipal GetClaimsPrincipalDataFromToken(string accessToken, AuthorizationTokenProperties authorizationTokenProperties)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(accessToken, GetServerTokenValidationParameters(authorizationTokenProperties), out var securityToken);
+            var principal = tokenHandler.ValidateToken(accessToken, GetServerTokenValidationParameters(authorizationTokenProperties, false), out var securityToken);
             if (!(securityToken is JwtSecurityToken jwtSecurityToken) ||
                 !jwtSecurityToken.Header.Alg.Equals(authorizationTokenProperties.SecurityAlgorithm, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -83,13 +83,13 @@ namespace VXDesign.Store.DevTools.Common.Utils.Authorization
             return principal;
         }
 
-        public static TokenValidationParameters GetServerTokenValidationParameters(AuthorizationTokenProperties authorizationTokenProperties) => new TokenValidationParameters
+        public static TokenValidationParameters GetServerTokenValidationParameters(AuthorizationTokenProperties authorizationTokenProperties, bool validateLifetime = true) => new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidIssuer = authorizationTokenProperties.Issuer,
             ValidateAudience = true,
             ValidAudience = authorizationTokenProperties.Audience,
-            ValidateLifetime = true,
+            ValidateLifetime = validateLifetime,
             IssuerSigningKey = authorizationTokenProperties.SymmetricSecurityKey,
             ValidateIssuerSigningKey = true,
             ClockSkew = TimeSpan.Zero

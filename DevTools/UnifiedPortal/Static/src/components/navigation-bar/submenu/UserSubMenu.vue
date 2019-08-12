@@ -1,11 +1,11 @@
 <template>
     <div class="user">
-        <div v-if="this.$store.getters.isAuthorized">
+        <div v-if="isAuthenticated">
             <el-menu-item>
                 <fa class="fa-submenu-item" icon="user-alt"/>
-                <span slot="title" class="el-nav-menu-vertical-item">{{ this.$store.getters.fullname }}</span>
+                <span slot="title" class="el-nav-menu-vertical-item">{{ getFullName }}</span>
             </el-menu-item>
-            <el-menu-item>
+            <el-menu-item @click="logoutAction">
                 <fa class="fa-submenu-item" icon="sign-out-alt"/>
                 <span slot="title" class="el-nav-menu-vertical-item">Sign Out</span>
             </el-menu-item>
@@ -23,7 +23,31 @@
 </style>
 
 <script>
+    import { mapGetters, mapMutations } from "vuex";
+
     export default {
-        name: "UserSubMenu"
+        name: "UserSubMenu",
+        computed: {
+            ...mapGetters([
+                "isAuthenticated",
+                "getFullName"
+            ]),
+            ...mapMutations([
+                "logout"
+            ])
+        },
+        methods: {
+            logoutAction() {
+                this.$store.commit("logout", {
+                    complete: () => {
+                        this.$router.push("/");
+                        this.$notify.info({
+                            title: "Info",
+                            message: "You are logged out"
+                        });
+                    }
+                });
+            }
+        }
     };
 </script>
