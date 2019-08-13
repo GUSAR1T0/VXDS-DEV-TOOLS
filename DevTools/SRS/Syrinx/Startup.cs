@@ -21,10 +21,10 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.SetupProperties<PortalProperties>(Configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);
             services.ConfigureSwaggerDocument("1.0", "Syrinx");
-            services.SetupProperties<PortalProperties>(Configuration);
             services.AddScoped<ICamundaServerService>(factory => new CamundaServerService(factory.GetService<PortalProperties>().CamundaProperties));
         }
 

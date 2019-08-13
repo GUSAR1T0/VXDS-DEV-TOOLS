@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
 using VXDesign.Store.DevTools.Common.Utils.Camunda;
+using VXDesign.Store.DevTools.Common.Utils.DataStorage;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal
@@ -23,18 +24,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+            var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
+            services.SetupAuthentication(portalProperties.AuthorizationTokenProperties);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);
             services.ConfigureSwaggerDocument("1.0", "Unified Portal");
-            services.SetupProperties<PortalProperties>(Configuration);
-            services.AddScoped<ICamundaClientService>(factory => new CamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
+            services.AddScoped<ICamundaClientService>(factory => new CamundaClientService(portalProperties.SyrinxProperties));
+            services.AddScoped<IUserDataService>(factory => new UserDataService(portalProperties.DatabaseConnectionProperties));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +52,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

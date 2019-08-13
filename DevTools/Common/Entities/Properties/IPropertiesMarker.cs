@@ -1,6 +1,6 @@
 namespace VXDesign.Store.DevTools.Common.Entities.Properties
 {
-    public abstract class PropertiesMarker
+    public interface IPropertiesMarker
     {
     }
 }

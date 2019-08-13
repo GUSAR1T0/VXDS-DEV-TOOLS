@@ -9,7 +9,7 @@ namespace VXDesign.Store.DevTools.Common.Utils.Properties
 {
     internal static class PropertiesCreator
     {
-        internal static T Create<T>(IConfiguration configuration) where T : PropertiesMarker, new()
+        internal static T Create<T>(IConfiguration configuration) where T : IPropertiesMarker, new()
         {
             var properties = new T();
             return FillProperties(configuration, properties);
@@ -27,15 +27,18 @@ namespace VXDesign.Store.DevTools.Common.Utils.Properties
             foreach (var property in type.GetProperties().Where(property => property.GetCustomAttributes<PropertyFieldAttribute>().Any()))
             {
                 var attribute = GetPropertyFieldAttribute(type, property.Name);
-                var key = GetConfigurationKey(attribute, prefix);
-                var value = property.PropertyType.IsSubclassOf(typeof(PropertiesMarker)) ? Create(configuration, property.PropertyType, key) : configuration[key];
+                var key = GetConfigurationKey(attribute, property, prefix);
+                var value = typeof(IPropertiesMarker).IsAssignableFrom(property.PropertyType) ? Create(configuration, property.PropertyType, key) : configuration[key];
                 property.SetPropertyValue(properties, value);
             }
 
             return properties;
         }
 
-        private static string GetConfigurationKey(PropertyFieldAttribute attribute, string prefix = null) => (!string.IsNullOrWhiteSpace(prefix) ? prefix + '.' : "") + attribute?.Key;
+        private static string GetConfigurationKey(PropertyFieldAttribute attribute, PropertyInfo property, string prefix = null)
+        {
+            return (!string.IsNullOrWhiteSpace(prefix) ? prefix + ':' : "") + (attribute?.Key ?? property.Name);
+        }
 
         private static PropertyFieldAttribute GetPropertyFieldAttribute(Type type, string propertyName)
         {

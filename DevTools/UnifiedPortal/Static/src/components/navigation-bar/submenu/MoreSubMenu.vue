@@ -1,6 +1,6 @@
 <template>
     <div class="more">
-        <el-menu-item @click="changeState">
+        <el-menu-item @click="changeNavigationBarState">
             <fa v-if="isCollapse" class="fa-submenu-item" icon="angle-right"/>
             <fa v-else class="fa-submenu-item" icon="angle-left"/>
             <span v-if="isCollapse" slot="title" class="el-nav-menu-vertical-item">Expand</span>
@@ -13,17 +13,17 @@
 </style>
 
 <script>
-    import { mapState } from "vuex";
+    import { mapGetters } from "vuex";
 
     export default {
         name: "MoreSubMenu",
         computed: {
-            ...mapState({
-                isCollapse: state => state.navigationBar.isNavigationBarCollapse
+            ...mapGetters({
+                isCollapse: "isNavigationBarCollapse"
             })
         },
         methods: {
-            changeState() {
+            changeNavigationBarState() {
                 this.$store.commit("collapseOrExpandNavigationBar");
             }
         }
