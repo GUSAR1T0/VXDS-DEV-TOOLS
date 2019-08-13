@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using VXDesign.Store.DevTools.Common.Entities.DataStorage;
@@ -39,6 +40,7 @@ namespace VXDesign.Store.DevTools.Common.Utils.DataStorage
 
         public async Task<string> GetIdByUser(string email, string password = null)
         {
+            email = email.ToLowerInvariant();
             var filter = await Registrations.FindAsync(user => user.Email == email && (password == null || user.Password == password));
             return filter.FirstOrDefault()?.Id;
         }
@@ -50,6 +52,7 @@ namespace VXDesign.Store.DevTools.Common.Utils.DataStorage
 
         public async Task<UserAuthorizationEntity> Create(UserRegistrationEntity entity)
         {
+            entity.Email = entity.Email.ToLowerInvariant();
             await Registrations.InsertOneAsync(entity);
             return await GetEntityById(entity.Id);
         }
