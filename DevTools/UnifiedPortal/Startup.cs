@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
 using VXDesign.Store.DevTools.Common.Utils.Camunda;
+using VXDesign.Store.DevTools.Common.Utils.DataStorage;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal
@@ -30,6 +31,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             services.AddRouting(options => options.LowercaseUrls = true);
             services.ConfigureSwaggerDocument("1.0", "Unified Portal");
             services.AddScoped<ICamundaClientService>(factory => new CamundaClientService(portalProperties.SyrinxProperties));
+            services.AddScoped<IUserDataService>(factory => new UserDataService(portalProperties.DatabaseConnectionProperties));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

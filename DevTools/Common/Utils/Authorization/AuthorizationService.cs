@@ -7,25 +7,16 @@ using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
-using VXDesign.Store.DevTools.Common.Models.Authorization;
 
 namespace VXDesign.Store.DevTools.Common.Utils.Authorization
 {
     internal static class AuthorizationClaimName
     {
-        internal const string Email = "Email";
-        internal const string FirstName = "First Name";
-        internal const string LastName = "Last Name";
+        internal const string UserId = "UserId";
     }
 
     public static class AuthorizationService
     {
-        // TODO: Move to DB
-        private const string FirstName = "Roman";
-        private const string LastName = "Mashenkin";
-        private const string Email = "vxdesign";
-        private const string Password = "vxdesign";
-
         public static JwtSecurityToken GenerateAccessToken(AuthorizationTokenProperties authorizationTokenProperties, IEnumerable<Claim> claims)
         {
             var now = DateTime.UtcNow;
@@ -39,24 +30,14 @@ namespace VXDesign.Store.DevTools.Common.Utils.Authorization
             );
         }
 
-        public static ClaimsIdentity GetIdentity(string email, string password)
-        {
-            return !Email.Equals(email) || !Password.Equals(password)
-                ? null
-                : new ClaimsIdentity(new List<Claim>
-                {
-                    new Claim(AuthorizationClaimName.Email, Email),
-                    new Claim(AuthorizationClaimName.FirstName, FirstName),
-                    new Claim(AuthorizationClaimName.LastName, LastName)
-                }, "Token");
-        }
+        public static ClaimsIdentity GetIdentity(string id) => !string.IsNullOrWhiteSpace(id)
+            ? new ClaimsIdentity(new List<Claim>
+            {
+                new Claim(AuthorizationClaimName.UserId, id)
+            }, "Token")
+            : null;
 
-        public static AuthorizationUserModel GetUserData(IEnumerable<Claim> claims) => new AuthorizationUserModel
-        {
-            Email = GetClaimValue(claims, AuthorizationClaimName.Email),
-            FirstName = GetClaimValue(claims, AuthorizationClaimName.FirstName),
-            LastName = GetClaimValue(claims, AuthorizationClaimName.LastName)
-        };
+        public static string GetUserId(IEnumerable<Claim> claims) => GetClaimValue(claims, AuthorizationClaimName.UserId);
 
         private static string GetClaimValue(IEnumerable<Claim> claims, string key) => claims.FirstOrDefault(c => string.Equals(c.Type, key, StringComparison.InvariantCultureIgnoreCase))?.Value;
 
@@ -83,16 +64,17 @@ namespace VXDesign.Store.DevTools.Common.Utils.Authorization
             return principal;
         }
 
-        public static TokenValidationParameters GetServerTokenValidationParameters(AuthorizationTokenProperties authorizationTokenProperties, bool validateLifetime = true) => new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = authorizationTokenProperties.Issuer,
-            ValidateAudience = true,
-            ValidAudience = authorizationTokenProperties.Audience,
-            ValidateLifetime = validateLifetime,
-            IssuerSigningKey = authorizationTokenProperties.SymmetricSecurityKey,
-            ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero
-        };
+        public static TokenValidationParameters GetServerTokenValidationParameters(AuthorizationTokenProperties authorizationTokenProperties, bool validateLifetime = true) =>
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = authorizationTokenProperties.Issuer,
+                ValidateAudience = true,
+                ValidAudience = authorizationTokenProperties.Audience,
+                ValidateLifetime = validateLifetime,
+                IssuerSigningKey = authorizationTokenProperties.SymmetricSecurityKey,
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero
+            };
     }
 }

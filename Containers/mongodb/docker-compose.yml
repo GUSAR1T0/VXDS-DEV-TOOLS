@@ -12,7 +12,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
-      - MONGO_INITDB_DATABASE=iot
+      - MONGO_INITDB_DATABASE=master
       - MONGO_USERNAME=user
       - MONGO_PASSWORD=user
       - MONGO_DATA_DIR=/data/db

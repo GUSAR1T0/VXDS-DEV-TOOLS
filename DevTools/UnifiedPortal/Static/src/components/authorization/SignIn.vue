@@ -31,6 +31,7 @@
 <script>
     import { mapMutations } from "vuex";
     import axios from "axios";
+    import apis from "@/constants/apis";
 
     let ruleForm = {
         email: "",
@@ -66,11 +67,11 @@
                         return false;
                     }
 
-                    axios.post("/api/token", ruleForm).then(response => {
+                    axios.post(apis.GenerateToken, ruleForm).then(response => {
                         this.$store.commit("login", {
                             accessToken: response.data.accessToken,
                             refreshToken: response.data.refreshToken,
-                            complete: (fullName) => {
+                            complete: fullName => {
                                 this.$router.push("/");
                                 this.$notify.info({
                                     title: "Info",

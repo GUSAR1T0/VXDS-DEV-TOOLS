@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Camunda;
@@ -46,10 +47,10 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [HttpPost("request")]
-        public ActionResult<CamundaResponseModel> SendRequest([FromBody] CamundaRequestModel model) => HandleExceptionIfThrown<CamundaResponseModel>(() =>
+        public Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => HandleExceptionIfThrown(async () =>
         {
             var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode();
-            return camundaServerService.Send(model.ToEntity(endpoint)).Result.ToModel();
+            return (await camundaServerService.Send(model.ToEntity(endpoint))).ToModel();
         });
     }
 }

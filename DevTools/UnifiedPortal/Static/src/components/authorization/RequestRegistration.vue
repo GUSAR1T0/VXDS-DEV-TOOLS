@@ -53,6 +53,9 @@
 
 <script>
     import RequestRegistrationValidations from "@/extensions/validations";
+    import axios from "axios";
+    import apis from "@/constants/apis";
+    import { mapMutations } from "vuex";
 
     let ruleForm = {
         firstName: "",
@@ -90,12 +93,36 @@
                 }
             };
         },
+        computed: {
+            ...mapMutations([
+                "login"
+            ])
+        },
         methods: {
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (!valid) {
                         return false;
                     }
+
+                    axios.post(apis.RegisterUser, ruleForm).then(response => {
+                        this.$store.commit("login", {
+                            accessToken: response.data.accessToken,
+                            refreshToken: response.data.refreshToken,
+                            complete: fullName => {
+                                this.$router.push("/");
+                                this.$notify.info({
+                                    title: "Info",
+                                    message: "You are registered as " + fullName
+                                });
+                            }
+                        });
+                    }).catch(error => {
+                        this.$notify.error({
+                            title: "Error",
+                            message: error.response.data
+                        });
+                    });
                 });
             }
         }

@@ -7,6 +7,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Properties
         [PropertyField(Key = "Syrinx")]
         public SyrinxProperties SyrinxProperties { get; set; }
 
+        [PropertyField(Key = "Database")]
+        public DatabaseConnectionProperties DatabaseConnectionProperties { get; set; }
+
         [PropertyField(Key = "AuthorizationToken")]
         public AuthorizationTokenProperties AuthorizationTokenProperties { get; set; }
     }

@@ -13,7 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 
         #endregion
 
-        #region MyRegion
+        #region Authentication
 
         public static BadRequestException InvalidEmailOrPassword() => new BadRequestException("Failed to authenticate user due to invalid email or password");
 
@@ -22,6 +22,8 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
         public static BadRequestException RefreshTokensAreDifferent() => new BadRequestException("Refresh tokens are different");
         
         public static BadRequestException InvalidTokenInHeader() => new BadRequestException("Failed to define a token from header");
+        
+        public static BadRequestException UserHasAlreadyExist() => new BadRequestException("User with this email has already exist");
 
         #endregion
     }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import apis from "@/constants/apis";
 
 function getConfig(accessToken) {
     return {
@@ -17,15 +18,22 @@ function invoke(state, response, data) {
     }
 }
 
-function reset(state, data) {
-    localStorage.removeItem("access-token");
-    localStorage.removeItem("refresh-token");
-    state.isAuthenticated = false;
-    state.firstName = "";
-    state.lastName = "";
-    if (data && data.complete) {
-        data.complete();
-    }
+function revoke(state, data) {
+    const reset = () => {
+        localStorage.removeItem("access-token");
+        localStorage.removeItem("refresh-token");
+        state.isAuthenticated = false;
+        state.firstName = "";
+        state.lastName = "";
+        if (data && data.complete) {
+            data.complete();
+        }
+    };
+
+    const accessToken = localStorage.getItem("access-token");
+    axios.delete(apis.RevokeToken, getConfig(accessToken))
+        .then(reset)
+        .catch(reset);
 }
 
 export default {
@@ -58,26 +66,26 @@ export default {
                     const accessToken = localStorage.getItem("access-token");
                     const refreshToken = localStorage.getItem("refresh-token");
                     if (error.response.status === 401 && accessToken && refreshToken) {
-                        client.post("/api/token", {
+                        client.post(apis.GenerateToken, {
                             accessToken: accessToken,
                             refreshToken: refreshToken
                         }).then(response => {
                             localStorage.setItem("access-token", response.data.accessToken);
                             localStorage.setItem("refresh-token", response.data.refreshToken);
 
-                            client.get("/api/token/user", getConfig(response.data.accessToken))
+                            client.get(apis.GetUserData, getConfig(response.data.accessToken))
                                 .then(response => invoke(state, response, data))
-                                .catch(() => reset(state, data));
-                        }).catch(() => reset(state, data));
+                                .catch(() => revoke(state, data));
+                        }).catch(() => revoke(state, data));
                     }
                     return Promise.reject(error);
                 });
 
-                client.get("/api/token/user", getConfig(data.accessToken))
+                client.get(apis.GetUserData, getConfig(data.accessToken))
                     .then(response => invoke(state, response, data))
-                    .catch(() => reset(state, data));
+                    .catch(() => revoke(state, data));
             }
         },
-        logout: (state, data) => reset(state, data)
+        logout: (state, data) => revoke(state, data)
     }
 };
