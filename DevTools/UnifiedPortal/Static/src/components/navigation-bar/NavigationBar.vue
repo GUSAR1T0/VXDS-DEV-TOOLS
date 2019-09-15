@@ -11,7 +11,7 @@
                 <template slot="icon">
                     <fa class="fa-submenu" icon="align-justify"/>
                 </template>
-                <template slot="menu">
+                <template slot="submenu">
                     <PagesSubMenu/>
                 </template>
             </CollapsibleSubMenu>
@@ -20,7 +20,7 @@
                     <fa v-if="isAuthenticated" class="fa-submenu" icon="user-circle"/>
                     <fa v-else class="fa-submenu" icon="question-circle"/>
                 </template>
-                <template slot="menu">
+                <template slot="submenu">
                     <UserSubMenu/>
                 </template>
             </CollapsibleSubMenu>
@@ -28,7 +28,7 @@
                 <template slot="icon">
                     <fa class="fa-submenu" icon="ellipsis-h"/>
                 </template>
-                <template slot="menu">
+                <template slot="submenu">
                     <MoreSubMenu/>
                 </template>
             </CollapsibleSubMenu>

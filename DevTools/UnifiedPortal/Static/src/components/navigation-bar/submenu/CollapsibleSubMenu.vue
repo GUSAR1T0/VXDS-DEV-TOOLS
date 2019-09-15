@@ -6,10 +6,10 @@
         </template>
         <el-menu-item-group v-if="isCollapse">
             <span slot="title" class="el-nav-menu-vertical-group-title">{{ menuName }}</span>
-            <slot name="menu"></slot>
+            <slot name="submenu"></slot>
         </el-menu-item-group>
-        <template v-else slot="menu">
-            <slot name="menu"></slot>
+        <template v-if="!isCollapse">
+            <slot name="submenu"></slot>
         </template>
     </el-submenu>
 </template>
