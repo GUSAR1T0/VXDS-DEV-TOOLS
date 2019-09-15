@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VXDesign.Store.DevTools.Common.Attributes.Camunda;
 using VXDesign.Store.DevTools.Common.Entities.Enums;
-using VXDesign.Store.DevTools.Common.Extensions.Enums;
+using VXDesign.Store.DevTools.Common.Extensions.Base;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Camunda
 {

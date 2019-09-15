@@ -1,4 +1,4 @@
-namespace VXDesign.Store.DevTools.Common.Models.Authorization
+namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Authorization
 {
     public class AuthenticationModel
     {

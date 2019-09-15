@@ -1,5 +1,5 @@
 using VXDesign.Store.DevTools.Common.Entities.DataStorage;
-using VXDesign.Store.DevTools.Common.Models.Authorization;
+using VXDesign.Store.DevTools.UnifiedPortal.Models.Authorization;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
 {

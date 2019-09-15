@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Models.Authorization;
 using VXDesign.Store.DevTools.Common.Utils.Authorization;
 using VXDesign.Store.DevTools.Common.Utils.DataStorage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
+using VXDesign.Store.DevTools.UnifiedPortal.Models.Authorization;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
