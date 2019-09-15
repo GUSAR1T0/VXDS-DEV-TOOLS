@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using VXDesign.Store.DevTools.Common.Entities.Camunda;
+using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Entities.HTTP;
 
 namespace VXDesign.Store.DevTools.SRS.Camunda

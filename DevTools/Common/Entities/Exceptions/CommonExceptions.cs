@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Common.Models.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 {

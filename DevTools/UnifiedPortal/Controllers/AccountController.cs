@@ -8,23 +8,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Utils.Authorization;
-using VXDesign.Store.DevTools.Common.Utils.DataStorage;
+using VXDesign.Store.DevTools.Common.Services.DataStorage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.Authorization;
-using VXDesign.Store.DevTools.UnifiedPortal.Properties;
+using IAuthorizationService = VXDesign.Store.DevTools.Common.Services.Authorization.IAuthorizationService;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
     [Route("api/[controller]")]
     public class AccountController : ApiController
     {
-        private readonly PortalProperties properties;
+        private readonly IAuthorizationService authorizationService;
         private readonly IUserDataService userDataService;
 
-        public AccountController(PortalProperties properties, IUserDataService userDataService)
+        public AccountController(IAuthorizationService authorizationService, IUserDataService userDataService)
         {
-            this.properties = properties;
+            this.authorizationService = authorizationService;
             this.userDataService = userDataService;
         }
 
@@ -44,23 +43,23 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 
             if (!string.IsNullOrWhiteSpace(model.AccessToken) && !string.IsNullOrWhiteSpace(model.RefreshToken))
             {
-                var principal = AuthorizationService.GetClaimsPrincipalDataFromToken(model.AccessToken, properties.AuthorizationTokenProperties);
+                var principal = authorizationService.GetClaimsPrincipalDataFromToken(model.AccessToken);
                 claims = principal.Claims.ToList();
-                id = AuthorizationService.GetUserId(claims);
+                id = authorizationService.GetUserId(claims);
                 var storedRefreshToken = await userDataService.GetRefreshTokenById(id);
                 if (storedRefreshToken?.Equals(model.RefreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent();
             }
             else if (!string.IsNullOrWhiteSpace(model.Email) && !string.IsNullOrWhiteSpace(model.Password))
             {
                 id = await userDataService.GetIdByUser(model.Email, model.Password);
-                var identity = AuthorizationService.GetIdentity(id);
+                var identity = authorizationService.GetIdentity(id);
                 if (identity == null) throw CommonExceptions.InvalidEmailOrPassword();
                 claims = identity.Claims.ToList();
             }
             else throw CommonExceptions.NoAuthenticationData();
 
-            var accessToken = AuthorizationService.GenerateAccessToken(properties.AuthorizationTokenProperties, claims);
-            var refreshToken = AuthorizationService.GenerateRefreshToken();
+            var accessToken = authorizationService.GenerateAccessToken(claims);
+            var refreshToken = authorizationService.GenerateRefreshToken();
 
             await userDataService.UpdateRefreshToken(id, refreshToken);
 
@@ -85,12 +84,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
             if (await userDataService.GetIdByUser(model.Email) != null) throw CommonExceptions.UserHasAlreadyExist();
 
             var entity = await userDataService.Create(model.ToEntity());
-            var identity = AuthorizationService.GetIdentity(entity.Id);
+            var identity = authorizationService.GetIdentity(entity.Id);
             if (identity == null) throw CommonExceptions.InvalidEmailOrPassword();
             var claims = identity.Claims.ToList();
 
-            var accessToken = AuthorizationService.GenerateAccessToken(properties.AuthorizationTokenProperties, claims);
-            var refreshToken = AuthorizationService.GenerateRefreshToken();
+            var accessToken = authorizationService.GenerateAccessToken(claims);
+            var refreshToken = authorizationService.GenerateRefreshToken();
 
             await userDataService.UpdateRefreshToken(entity.Id, refreshToken);
 
@@ -110,8 +109,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpDelete("token")]
         public async Task RevokeToken()
         {
-            var id = AuthorizationService.GetUserId(User.Claims);
-            var identity = AuthorizationService.GetIdentity(id);
+            var id = authorizationService.GetUserId(User.Claims);
+            var identity = authorizationService.GetIdentity(id);
             identity.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
             await userDataService.UpdateRefreshToken(id, null);
         }
@@ -126,7 +125,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpGet]
         public async Task<UserAuthorizationModel> GetUserData()
         {
-            var id = AuthorizationService.GetUserId(User.Claims);
+            var id = authorizationService.GetUserId(User.Claims);
             var entity = await userDataService.GetEntityById(id);
             return entity.ToModel();
         }

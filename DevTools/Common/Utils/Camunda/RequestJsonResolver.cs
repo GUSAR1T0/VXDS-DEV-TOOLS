@@ -1,7 +1,7 @@
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using VXDesign.Store.DevTools.Common.Attributes.HTTP;
+using VXDesign.Store.DevTools.Common.Attributes;
 
 namespace VXDesign.Store.DevTools.Common.Utils.Camunda
 {

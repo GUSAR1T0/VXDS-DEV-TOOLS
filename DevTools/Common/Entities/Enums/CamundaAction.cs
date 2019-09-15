@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Common.Attributes.Camunda;
+using VXDesign.Store.DevTools.Common.Attributes;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Enums
 {
