@@ -19,7 +19,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         {
             ActionCode = (int) camundaAction;
             CategoryName = camundaCategoryAttribute.Name;
-            ActionName = camundaActionAttribute.Name;
+            ActionName = camundaActionAttribute.Description;
             Method = camundaActionAttribute.Method;
             Path = $"/{camundaCategoryAttribute.Root}{(!string.IsNullOrWhiteSpace(camundaActionAttribute.Path) ? '/' + camundaActionAttribute.Path : "")}";
         }

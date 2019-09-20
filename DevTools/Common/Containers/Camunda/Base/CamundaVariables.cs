@@ -4,13 +4,12 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VXDesign.Store.DevTools.Common.Extensions.Camunda;
+using VXDesign.Store.DevTools.Common.Utils.Camunda;
 
 namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 {
     public interface ICamundaVariable
     {
-        string Type { get; }
-
         T To<T>();
 
         string ToString();
@@ -31,18 +30,11 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         [JsonProperty(nameof(Value))]
         public abstract string StringValue { get; }
 
+        public virtual Dictionary<string, object> ValueInfo { get; } = null;
+
         public abstract T To<T>();
 
         public override string ToString() => StringValue;
-    }
-
-    public abstract class ExtendedVariable<TValue> : CamundaVariable<TValue>
-    {
-        public ExtendedVariable(TValue value) : base(value)
-        {
-        }
-
-        public abstract Dictionary<string, object> ValueInfo { get; }
     }
 
     #region Variable Types Implementation
@@ -58,7 +50,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string Type => TypeName;
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
-        public override T To<T>() => (T) (typeof(T) == typeof(bool) || typeof(T) == typeof(bool?) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, bool>(this.Convert);
     }
 
     public class BytesVariable : CamundaVariable<byte[]>
@@ -72,7 +64,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string Type => TypeName;
         public override string StringValue => Convert.ToBase64String(Value ?? new byte[] { });
 
-        public override T To<T>() => (T) (typeof(T) == typeof(byte[]) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToReferencedObject<T, byte[]>(this.Convert);
     }
 
     public class ShortVariable : CamundaVariable<short?>
@@ -86,7 +78,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string Type => TypeName;
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
-        public override T To<T>() => (T) (typeof(T) == typeof(short) || typeof(T) == typeof(short?) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, short>(this.Convert);
     }
 
     public class IntegerVariable : CamundaVariable<int?>
@@ -100,7 +92,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string Type => TypeName;
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
-        public override T To<T>() => (T) (typeof(T) == typeof(int) || typeof(T) == typeof(int?) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, int>(this.Convert);
     }
 
     public class LongVariable : CamundaVariable<long?>
@@ -114,7 +106,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string Type => TypeName;
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
-        public override T To<T>() => (T) (typeof(T) == typeof(long) || typeof(T) == typeof(long?) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, long>(this.Convert);
     }
 
     public class DoubleVariable : CamundaVariable<double?>
@@ -128,7 +120,24 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string Type => TypeName;
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
-        public override T To<T>() => (T) (typeof(T) == typeof(double) || typeof(T) == typeof(double?) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, double>(this.Convert);
+    }
+
+    public class DecimalVariable : JsonVariable
+    {
+        public const string ExtendTypeName = "decimal";
+
+        public DecimalVariable(decimal? value) : base(value)
+        {
+        }
+
+        public override string StringValue => JsonConvert.SerializeObject(new Dictionary<string, object>
+        {
+            { "value", Convert.ToString(Value) },
+            { "extendType", ExtendTypeName }
+        });
+
+        public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, decimal>(this.Convert);
     }
 
     public class DateTimeVariable : CamundaVariable<DateTime?>
@@ -142,7 +151,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string Type => TypeName;
         public override string StringValue => Value?.ToString("yyyy-MM-ddTHH:mm:ss.fff") + Value?.ToString("zzz").Replace(":", "");
 
-        public override T To<T>() => (T) (typeof(T) == typeof(DateTime) || typeof(T) == typeof(DateTime?) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, DateTime>(this.Convert);
     }
 
     public class StringVariable : CamundaVariable<string>
@@ -156,7 +165,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string Type => TypeName;
         public override string StringValue => Value;
 
-        public override T To<T>() => (T) (typeof(T) == typeof(string) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToReferencedObject<T, string>(this.Convert);
     }
 
     public class JsonVariable : CamundaVariable<object>
@@ -172,17 +181,20 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 
         public override T To<T>()
         {
-            var o = this.Convert();
-            if (o is JObject jObject)
+            var variable = this.Convert();
+            switch (variable)
             {
-                return jObject.ToObject<T>();
+                case JObject obj:
+                    return obj.ToObject<T>();
+                case JArray arr:
+                    return arr.ToObject<T>();
+                default:
+                    return (T) variable;
             }
-
-            return (T) o;
         }
     }
 
-    public class FileVariable : ExtendedVariable<CamundaFile>
+    public class FileVariable : CamundaVariable<CamundaFile>
     {
         public const string TypeName = "file";
 
@@ -200,7 +212,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
             { "encoding", Value.Encoding }
         };
 
-        public override T To<T>() => (T) (typeof(T) == typeof(CamundaFile) ? (object) this.Convert() : default(T));
+        public override T To<T>() => CamundaVariablesUtils.ToReferencedObject<T, CamundaFile>(this.Convert);
     }
 
     #endregion
@@ -239,6 +251,11 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         }
 
         public void Add(string key, double? value)
+        {
+            this[key] = value.Convert();
+        }
+
+        public void Add(string key, decimal? value)
         {
             this[key] = value.Convert();
         }

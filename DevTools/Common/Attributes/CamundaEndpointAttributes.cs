@@ -7,14 +7,14 @@ namespace VXDesign.Store.DevTools.Common.Attributes
     internal class CamundaActionAttribute : Attribute
     {
         internal CamundaCategory CamundaCategory { get; }
-        internal string Name { get; }
+        internal string Description { get; }
         internal HttpMethod Method { get; }
         internal string Path { get; }
 
-        internal CamundaActionAttribute(CamundaCategory camundaCategory, string name, HttpMethod method, string path = "")
+        internal CamundaActionAttribute(CamundaCategory camundaCategory, string description, HttpMethod method, string path = "")
         {
             CamundaCategory = camundaCategory;
-            Name = name;
+            Description = description;
             Method = method;
             Path = path;
         }

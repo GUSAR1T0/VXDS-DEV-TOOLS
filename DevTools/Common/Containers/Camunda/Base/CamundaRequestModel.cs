@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Enums;
 using VXDesign.Store.DevTools.Common.Entities.HTTP;
+using VXDesign.Store.DevTools.Common.Services.Camunda;
 using VXDesign.Store.DevTools.Common.Utils.Camunda;
 
 namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
@@ -14,7 +16,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         CamundaAction Action { get; }
     }
 
-    public abstract class CamundaRequestModel : ICamundaRequestModel
+    public abstract class CamundaRequestModel<TResponseModel> : ICamundaRequestModel where TResponseModel : ICamundaResponseModel, new()
     {
         [JsonIgnore]
         public abstract CamundaAction Action { get; }
@@ -57,5 +59,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
                 }, settings);
             }
         }
+
+        public async Task<TResponseModel> SendRequest(ICamundaClientService service) => await service.Send<CamundaRequestModel<TResponseModel>, TResponseModel>(this);
     }
 }
