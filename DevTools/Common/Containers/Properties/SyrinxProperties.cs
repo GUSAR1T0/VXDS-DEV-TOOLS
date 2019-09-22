@@ -9,9 +9,9 @@ namespace VXDesign.Store.DevTools.Common.Containers.Properties
         public string Host { get; set; }
 
         [PropertyField]
-        public string Api { get; set; } = "/api";
+        public string Api { get; set; } = "api";
 
         [PropertyField]
-        public string Request { get; set; } = "/camunda/request";
+        public string CamundaRequestEndpoint { get; set; } = "camunda/request";
     }
 }

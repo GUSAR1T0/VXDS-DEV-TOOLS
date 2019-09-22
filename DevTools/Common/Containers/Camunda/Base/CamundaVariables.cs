@@ -12,6 +12,8 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
     {
         T To<T>();
 
+        object To(Type type);
+
         string ToString();
     }
 
@@ -33,6 +35,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public virtual Dictionary<string, object> ValueInfo { get; } = null;
 
         public abstract T To<T>();
+        public abstract object To(Type type);
 
         public override string ToString() => StringValue;
     }
@@ -51,6 +54,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
         public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, bool>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToValueTypedObject(type, this.Convert);
     }
 
     public class BytesVariable : CamundaVariable<byte[]>
@@ -65,6 +69,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string StringValue => Convert.ToBase64String(Value ?? new byte[] { });
 
         public override T To<T>() => CamundaVariablesUtils.ToReferencedObject<T, byte[]>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToReferencedObject(type, this.Convert);
     }
 
     public class ShortVariable : CamundaVariable<short?>
@@ -79,6 +84,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
         public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, short>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToValueTypedObject(type, this.Convert);
     }
 
     public class IntegerVariable : CamundaVariable<int?>
@@ -93,6 +99,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
         public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, int>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToValueTypedObject(type, this.Convert);
     }
 
     public class LongVariable : CamundaVariable<long?>
@@ -107,6 +114,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
         public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, long>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToValueTypedObject(type, this.Convert);
     }
 
     public class DoubleVariable : CamundaVariable<double?>
@@ -121,6 +129,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string StringValue => Value?.ToString(CultureInfo.InvariantCulture);
 
         public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, double>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToValueTypedObject(type, this.Convert);
     }
 
     public class DecimalVariable : JsonVariable
@@ -138,6 +147,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         });
 
         public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, decimal>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToValueTypedObject(type, this.Convert);
     }
 
     public class DateTimeVariable : CamundaVariable<DateTime?>
@@ -152,6 +162,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string StringValue => Value?.ToString("yyyy-MM-ddTHH:mm:ss.fff") + Value?.ToString("zzz").Replace(":", "");
 
         public override T To<T>() => CamundaVariablesUtils.ToValueTypedObject<T, DateTime>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToValueTypedObject(type, this.Convert);
     }
 
     public class StringVariable : CamundaVariable<string>
@@ -166,6 +177,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public override string StringValue => Value;
 
         public override T To<T>() => CamundaVariablesUtils.ToReferencedObject<T, string>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToReferencedObject(type, this.Convert);
     }
 
     public class JsonVariable : CamundaVariable<object>
@@ -192,6 +204,21 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
                     return (T) variable;
             }
         }
+
+        public override object To(Type type)
+        {
+            var variable = this.Convert();
+            switch (variable)
+            {
+                case JObject obj:
+                    return obj.ToObject(type);
+                case JArray arr:
+                    return arr.ToObject(type);
+                default:
+                    var serialized = JsonConvert.SerializeObject(variable);
+                    return JsonConvert.DeserializeObject(serialized, type);
+            }
+        }
     }
 
     public class FileVariable : CamundaVariable<CamundaFile>
@@ -213,6 +240,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         };
 
         public override T To<T>() => CamundaVariablesUtils.ToReferencedObject<T, CamundaFile>(this.Convert);
+        public override object To(Type type) => CamundaVariablesUtils.ToReferencedObject(type, this.Convert);
     }
 
     #endregion
@@ -223,67 +251,47 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
     {
     }
 
-    public class CamundaVariables : Dictionary<string, ICamundaVariable>, IReadOnlyCamundaVariables
+    public interface ICamundaVariables : IReadOnlyCamundaVariables
     {
-        public void Add(string key, bool? value)
-        {
-            this[key] = value.Convert();
-        }
+        void Add(string key, bool? value);
+        void Add(string key, byte[] value);
+        void Add(string key, short? value);
+        void Add(string key, int? value);
+        void Add(string key, long? value);
+        void Add(string key, double? value);
+        void Add(string key, decimal? value);
+        void Add(string key, DateTime? value);
+        void Add(string key, DateTimeOffset? value);
+        void Add(string key, string value);
+        void Add(string key, object value);
+        void Add(string key, CamundaFile value);
+    }
 
-        public void Add(string key, byte[] value)
-        {
-            this[key] = value.Convert();
-        }
+    public class CamundaVariables : Dictionary<string, ICamundaVariable>, ICamundaVariables
+    {
+        public void Add(string key, bool? value) => this[key] = value.Convert();
 
-        public void Add(string key, short? value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, byte[] value) => this[key] = value.Convert();
 
-        public void Add(string key, int? value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, short? value) => this[key] = value.Convert();
 
-        public void Add(string key, long? value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, int? value) => this[key] = value.Convert();
 
-        public void Add(string key, double? value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, long? value) => this[key] = value.Convert();
 
-        public void Add(string key, decimal? value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, double? value) => this[key] = value.Convert();
 
-        public void Add(string key, DateTime? value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, decimal? value) => this[key] = value.Convert();
 
-        public void Add(string key, DateTimeOffset? value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, DateTime? value) => this[key] = value.Convert();
 
-        public void Add(string key, string value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, DateTimeOffset? value) => this[key] = value.Convert();
 
-        public void Add(string key, object value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, string value) => this[key] = value.Convert();
 
-        public void Add(string key, CamundaFile value)
-        {
-            this[key] = value.Convert();
-        }
+        public void Add(string key, object value) => this[key] = value.Convert();
+
+        public void Add(string key, CamundaFile value) => this[key] = value.Convert();
     }
 
     #endregion

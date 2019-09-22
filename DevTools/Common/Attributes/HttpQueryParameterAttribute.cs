@@ -6,9 +6,4 @@ namespace VXDesign.Store.DevTools.Common.Attributes
     internal class HttpQueryParameterAttribute : Attribute
     {
     }
-
-    [AttributeUsage(AttributeTargets.Property)]
-    internal class HttpBodyParameterAttribute : Attribute
-    {
-    }
 }

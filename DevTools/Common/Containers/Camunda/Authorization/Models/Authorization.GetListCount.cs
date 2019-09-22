@@ -6,9 +6,9 @@ using VXDesign.Store.DevTools.Common.Entities.Enums;
 
 namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Authorization.Models
 {
-    public partial class Authorization
+    public static partial class Authorization
     {
-        public class GetListCountRequestModel : CamundaRequestModel<GetListCountResponseModel>
+        public class GetListCountRequest : CamundaRequest<GetListCountResponse>
         {
             public override CamundaAction Action => CamundaAction.AuthorizationGetListCount;
 
@@ -31,7 +31,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Authorization.Models
             public string ResourceId { get; set; }
         }
 
-        public class GetListCountResponseModel : CamundaSingleResponseModel<AuthorizationListCount>
+        public class GetListCountResponse : CamundaSingleResponse<AuthorizationListCount>
         {
         }
     }

@@ -63,9 +63,11 @@ namespace VXDesign.Store.DevTools.Common.Services.HTTP
 
         private static string CreateFullRequestEndpoint(string api, string path, Dictionary<string, string> parameters, Dictionary<string, string> query)
         {
+            api = api.Trim('/');
+            path = path.Trim('/');
             FormatRequestPathWithParameters(ref path, parameters);
             FormatRequestPathWithQuery(ref path, query);
-            return api + path;
+            return '/' + api + '/' + path;
         }
 
         private static void FormatRequestPathWithParameters(ref string path, Dictionary<string, string> parameters)

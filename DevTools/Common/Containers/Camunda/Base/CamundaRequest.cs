@@ -6,17 +6,17 @@ using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Enums;
 using VXDesign.Store.DevTools.Common.Entities.HTTP;
-using VXDesign.Store.DevTools.Common.Services.Camunda;
+using VXDesign.Store.DevTools.Common.Services.Syrinx;
 using VXDesign.Store.DevTools.Common.Utils.Camunda;
 
 namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 {
-    public interface ICamundaRequestModel : IRequest
+    public interface ICamundaRequest : IRequest
     {
         CamundaAction Action { get; }
     }
 
-    public abstract class CamundaRequestModel<TResponseModel> : ICamundaRequestModel where TResponseModel : ICamundaResponseModel, new()
+    public abstract class CamundaRequest<TResponse> : ICamundaRequest where TResponse : ICamundaResponse, new()
     {
         [JsonIgnore]
         public abstract CamundaAction Action { get; }
@@ -60,6 +60,6 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
             }
         }
 
-        public async Task<TResponseModel> SendRequest(ICamundaClientService service) => await service.Send<CamundaRequestModel<TResponseModel>, TResponseModel>(this);
+        public async Task<TResponse> SendRequest(ISyrinxClientService service) => await service.Send<CamundaRequest<TResponse>, TResponse>(this);
     }
 }
