@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using NLog;
+using NLog.Config;
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Containers.Camunda.ExternalTask.Entities;
 using VXDesign.Store.DevTools.Common.Containers.Properties;
@@ -23,7 +25,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         {
             internal PropertyInfo Property { get; set; }
             internal CamundaWorkerVariableAttribute Attribute { get; set; }
-            internal string GetVariableName => Attribute.Name ?? Property.Name.ToCamelCase();
+            internal string GetVariableName => Attribute.Name ?? Property.Name;
         }
 
         private static IEnumerable<VariableProperty> GetVariablePropertiesAndAttributes(Type type, CamundaVariableDirection direction) => type
@@ -36,7 +38,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
             .Where(arg => arg.Attribute != null && arg.Attribute.Direction.HasFlag(direction))
             .ToList();
 
-        public static IEnumerable<string> InputVariableNames(Type type) => GetVariablePropertiesAndAttributes(type, CamundaVariableDirection.Input).Select(variable => variable.GetVariableName);
+        internal static IEnumerable<string> InputVariableNames(Type type) => GetVariablePropertiesAndAttributes(type, CamundaVariableDirection.Input).Select(variable => variable.GetVariableName);
 
         internal void InitializeVariables(IReadOnlyCamundaVariables variables)
         {
@@ -114,7 +116,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
             return variables;
         }
 
-        public abstract void Execute();
+        public abstract void Execute(ILogger logger);
     }
 
     public class CamundaWorkers<TProperties> where TProperties : CamundaWorkersProperties, new()
@@ -128,9 +130,15 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
             {
             }
 
-            public CamundaWorkersBuilder SetProperties(IConfiguration configuration)
+            public CamundaWorkersBuilder SetProperties(Func<IConfiguration> configuration)
             {
-                Properties = PropertiesCreator.Create<TProperties>(configuration);
+                Properties = PropertiesCreator.Create<TProperties>(configuration());
+                return this;
+            }
+
+            public CamundaWorkersBuilder SetLogger(Func<LoggingConfiguration> configuration)
+            {
+                LogManager.Configuration = configuration();
                 return this;
             }
 
@@ -163,6 +171,8 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 
         private async Task Fetch<TCamundaWorker>() where TCamundaWorker : CamundaWorker, new()
         {
+            var logger = LogManager.GetLogger(typeof(TCamundaWorker).FullName);
+
             var topics = new CamundaTopics
             {
                 new CamundaTopic
@@ -175,7 +185,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 
             while (true)
             {
-                Console.WriteLine($"{typeof(TCamundaWorker).Name}: fetching task");
+                logger.Debug("Fetching task");
 
                 var response = await new ExternalTask.Models.ExternalTask.FetchAndLockRequest
                 {
@@ -188,20 +198,19 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 
                 if (!response.IsWithoutErrors())
                 {
-                    Console.WriteLine($"{typeof(TCamundaWorker).Name}: failed to fetch task");
-                    // Log the issue
+                    logger.Error("Failed to fetch task");
                 }
                 else if (response.Response.Count > 0)
                 {
-                    Console.WriteLine($"{typeof(TCamundaWorker).Name}: execute task");
-                    await Run<TCamundaWorker>(response.Response[0]);
+                    logger.Debug("Executing task");
+                    await Run<TCamundaWorker>(logger, response.Response[0]);
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
         }
 
-        private async Task Run<TCamundaWorker>(LockedExternalTaskListItem item) where TCamundaWorker : CamundaWorker, new()
+        private async Task Run<TCamundaWorker>(ILogger logger, LockedExternalTaskListItem item) where TCamundaWorker : CamundaWorker, new()
         {
             var worker = new TCamundaWorker();
             worker.InitializeVariables(item.Variables);
@@ -214,18 +223,19 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
                 {
                     var token = cancellationTokenSource.Token;
 #pragma warning disable 4014
-                    Task.Run(async () => await ExtendLock<TCamundaWorker>(item, token), token);
+                    Task.Run(async () => await ExtendLock(logger, item, token), token);
 #pragma warning restore 4014
-                    worker.Execute();
+                    worker.Execute(logger);
                     isSuccess = true;
                 }
                 catch (CamundaWorkerExecutionIsNotCompletedYet)
                 {
-                    Console.WriteLine($"{typeof(TCamundaWorker).Name}: skip task...");
+                    logger.Debug("Skipping task");
                     return;
                 }
                 catch (Exception e)
                 {
+                    logger.Fatal("Failed to perform task");
                     exception = e;
                     isSuccess = false;
                 }
@@ -263,19 +273,22 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
                 if (!response.IsWithoutErrors())
                 {
                     retries--;
-                    Console.WriteLine($"{typeof(TCamundaWorker).Name}: couldn't complete task or handle failure, retry...");
-                    // Log the issue
+                    logger.Error($"Couldn't {(isSuccess ? "complete task" : "handle failure")}, retry... (remaining attempts: {retries})");
                 }
-                else break;
+                else
+                {
+                    logger.Debug($"{(isSuccess ? "Complete task" : "Handle failure")} process is successful");
+                    break;
+                }
             }
 
             if (retries == 0)
             {
-                Console.WriteLine($"{typeof(TCamundaWorker).Name}: couldn't complete task or handle failure, rollback task");
+                logger.Error($"Couldn't {(isSuccess ? "complete task" : "handle failure")}, stop retrying");
             }
         }
 
-        private async Task ExtendLock<TCamundaWorker>(LockedExternalTaskListItem item, CancellationToken token) where TCamundaWorker : CamundaWorker, new()
+        private async Task ExtendLock(ILogger logger, LockedExternalTaskListItem item, CancellationToken token)
         {
             while (true)
             {
@@ -285,7 +298,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 
                     while (true)
                     {
-                        Console.WriteLine($"{typeof(TCamundaWorker).Name}: extending lock");
+                        logger.Debug("Extending lock");
 
                         var response = await new ExternalTask.Models.ExternalTask.ExtendLockRequest(item.Id)
                         {
@@ -295,9 +308,14 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 
                         if (!response.IsWithoutErrors())
                         {
+                            logger.Error("Couldn't extend lock for task");
                             await Task.Delay(TimeSpan.FromSeconds(5), token);
                         }
-                        else break;
+                        else
+                        {
+                            logger.Debug("Extend lock process is successful");
+                            break;
+                        }
                     }
                 }
                 catch
