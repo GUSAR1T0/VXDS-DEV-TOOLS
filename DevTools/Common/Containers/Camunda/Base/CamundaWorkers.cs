@@ -148,11 +148,18 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
                 return this;
             }
 
-            public CamundaWorkers<TProperties> Create()
+            public CamundaWorkers<TProperties> Launch()
             {
-                var workers = new CamundaWorkers<TProperties>(this);
-                Task.WaitAll(workers.RunnableTasks.Select(task => task(workers)).ToArray());
-                return workers;
+                try
+                {
+                    var workers = new CamundaWorkers<TProperties>(this);
+                    Task.WaitAll(workers.RunnableTasks.Select(task => task(workers)).ToArray());
+                    return workers;
+                }
+                finally
+                {
+                    LogManager.Shutdown();
+                }
             }
         }
 
@@ -164,7 +171,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 
         internal CamundaWorkers(CamundaWorkersBuilder builder)
         {
-            Properties = builder.Properties;
+            Properties = builder.Properties ?? throw CommonExceptions.PropertiesAreEmpty();
             Service = new SyrinxClientService(Properties.SyrinxProperties);
             RunnableTasks = builder.RunnableTasks;
         }

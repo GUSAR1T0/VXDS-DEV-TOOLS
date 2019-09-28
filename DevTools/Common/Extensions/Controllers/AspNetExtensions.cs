@@ -1,18 +1,37 @@
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using NLog;
+using Microsoft.Extensions.Logging;
+using NLog.Web;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 using VXDesign.Store.DevTools.Common.Services.Authorization;
+using VXDesign.Store.DevTools.Common.Utils.Base;
 using VXDesign.Store.DevTools.Common.Utils.Properties;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace VXDesign.Store.DevTools.Common.Extensions.Controllers
 {
     public static class AspNetCoreExtensions
     {
+        #region Web host configuration
+
+        public static IWebHostBuilder UseNLogExtension(this IWebHostBuilder builder) => builder.ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.SetMinimumLevel(LogLevel.Trace);
+            })
+            .UseNLog();
+
+        public static void LaunchWebApplication(this IWebHost webHost) => ConsoleApplicationLauncher.Launch(webHost.Run);
+
+        #endregion
+
         #region Functions to add services
 
         private static T AddService<T>(Func<T> serviceCreator, Func<Func<IServiceProvider, T>, IServiceCollection> addToCollectionFunction) where T : class

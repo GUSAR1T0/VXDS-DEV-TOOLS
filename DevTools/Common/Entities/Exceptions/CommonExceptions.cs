@@ -11,6 +11,8 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
         public static BadRequestException SyrinxHasSentErrorResponse<TModel>(TModel model) where TModel : ICamundaResponse =>
             new BadRequestException($"Failed to send request to Camunda through Syrinx: {model.Status} \"{model.Reason}\"");
 
+        public static CamundaWorkersBuilderException PropertiesAreEmpty() => new CamundaWorkersBuilderException("Couldn't launch workers because properties are empty");
+
         #endregion
 
         #region Authentication

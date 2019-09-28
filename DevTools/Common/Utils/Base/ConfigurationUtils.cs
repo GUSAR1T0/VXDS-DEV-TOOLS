@@ -10,10 +10,11 @@ namespace VXDesign.Store.DevTools.Common.Utils.Base
         public static LoggingConfiguration GetLoggerConfiguration()
         {
             var config = new LoggingConfiguration();
-            var consoleTarget = new ColoredConsoleTarget("ConsoleOutput")
+            var consoleTarget = new ConsoleTarget("ConsoleOutput")
             {
-                Layout = @"${longdate} | ${uppercase:${level}} | ${logger} | ${message} ${exception}"
+                Layout = @" ${uppercase:${level}:padding=5} | ${longdate} | ${logger}${newline}       | ${message} ${exception}"
             };
+
             config.AddTarget(consoleTarget);
             config.AddRuleForAllLevels(consoleTarget);
             return config;

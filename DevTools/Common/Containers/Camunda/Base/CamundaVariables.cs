@@ -11,9 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
     public interface ICamundaVariable
     {
         T To<T>();
-
         object To(Type type);
-
         string ToString();
     }
 
