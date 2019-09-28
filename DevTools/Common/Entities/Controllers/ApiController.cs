@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Models.Authorization;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Controllers
 {

@@ -1,3 +1,4 @@
+using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 
 namespace VXDesign.Store.DevTools.SRS.Camunda
@@ -8,7 +9,7 @@ namespace VXDesign.Store.DevTools.SRS.Camunda
         public string Host { get; set; }
 
         [PropertyField]
-        public string Api { get; set; } = "/rest/engine/default";
+        public string Api { get; set; } = "rest/engine/default";
 
         [PropertyField]
         public string Login { get; set; }

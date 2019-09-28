@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using VXDesign.Store.DevTools.Common.Entities.Camunda;
+using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Extensions.Camunda;
 
 namespace VXDesign.Store.DevTools.Common.Utils.Camunda
@@ -35,7 +35,17 @@ namespace VXDesign.Store.DevTools.Common.Utils.Camunda
                 case StringVariable.TypeName:
                     return ((string) obj["value"]).Convert();
                 case JsonVariable.TypeName:
-                    return JsonConvert.DeserializeObject((string) obj["value"]).Convert();
+                    var json = JsonConvert.DeserializeObject((string) obj["value"]);
+                    if (json is JObject objectContent && objectContent.ContainsKey("extendType") && (string) objectContent["extendType"] == DecimalVariable.ExtendTypeName)
+                    {
+                        // decimal
+                        var decimalStringValue = (string) objectContent["value"];
+                        var decimalConvertedValue = Convert.ToDecimal(decimalStringValue);
+                        return ((decimal?) decimalConvertedValue).Convert();
+                    }
+
+                    // object
+                    return json.Convert();
                 case FileVariable.TypeName:
                     var data = obj["value"].Type != JTokenType.Null ? (byte[]) obj["value"] : null;
                     var fileName = (string) obj["valueInfo"]["filename"];

@@ -1,5 +1,5 @@
 using System;
-using VXDesign.Store.DevTools.Common.Entities.Camunda;
+using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
 
 namespace VXDesign.Store.DevTools.Common.Extensions.Camunda
 {
@@ -18,6 +18,8 @@ namespace VXDesign.Store.DevTools.Common.Extensions.Camunda
         internal static ICamundaVariable Convert(this long? value) => new LongVariable(value);
 
         internal static ICamundaVariable Convert(this double? value) => new DoubleVariable(value);
+
+        internal static ICamundaVariable Convert(this decimal? value) => new DecimalVariable(value);
 
         internal static ICamundaVariable Convert(this DateTime? value) => new DateTimeVariable(value);
 
@@ -44,6 +46,8 @@ namespace VXDesign.Store.DevTools.Common.Extensions.Camunda
         internal static long? Convert(this LongVariable variable) => variable?.Value;
 
         internal static double? Convert(this DoubleVariable variable) => variable?.Value;
+
+        internal static decimal? Convert(this DecimalVariable variable) => (decimal?) variable?.Value;
 
         internal static DateTime? Convert(this DateTimeVariable variable) => variable?.Value;
 

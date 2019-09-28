@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using VXDesign.Store.DevTools.Common.Utils.HTTP;
+using VXDesign.Store.DevTools.Common.Services.HTTP;
 
 namespace VXDesign.Store.DevTools.SRS.Camunda
 {

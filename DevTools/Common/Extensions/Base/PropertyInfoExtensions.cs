@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Globalization;
 using System.Reflection;
 
@@ -12,7 +13,17 @@ namespace VXDesign.Store.DevTools.Common.Extensions.Base
             {
                 try
                 {
-                    return string.IsNullOrWhiteSpace(possible?.ToString()) ? null : Convert.ChangeType(possible, objectType, CultureInfo.InvariantCulture);
+                    if (string.IsNullOrWhiteSpace(possible?.ToString()))
+                    {
+                        return null;
+                    }
+
+                    if (possible is IEnumerable enumerable)
+                    {
+                        return enumerable;
+                    }
+
+                    return Convert.ChangeType(possible, objectType, CultureInfo.InvariantCulture);
                 }
                 catch
                 {

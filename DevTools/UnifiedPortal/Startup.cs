@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
-using VXDesign.Store.DevTools.Common.Utils.Camunda;
-using VXDesign.Store.DevTools.Common.Utils.DataStorage;
+using VXDesign.Store.DevTools.Common.Services.Authorization;
+using VXDesign.Store.DevTools.Common.Services.DataStorage;
+using VXDesign.Store.DevTools.Common.Services.Syrinx;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal
@@ -25,13 +26,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
         public void ConfigureServices(IServiceCollection services)
         {
             var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
-            services.SetupAuthentication(portalProperties.AuthorizationTokenProperties);
+            services.AddScopedService<ISyrinxClientService>(() => new SyrinxClientService(portalProperties.SyrinxProperties));
+            services.AddScopedService<IUserDataService>(() => new UserDataService(portalProperties.DatabaseConnectionProperties));
+            var authorizationService = services.AddScopedService<IAuthorizationService>(() => new AuthorizationService(portalProperties.AuthorizationTokenProperties));
+            services.SetupAuthentication(authorizationService);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);
             services.ConfigureSwaggerDocument("1.0", "Unified Portal");
-            services.AddScoped<ICamundaClientService>(factory => new CamundaClientService(portalProperties.SyrinxProperties));
-            services.AddScoped<IUserDataService>(factory => new UserDataService(portalProperties.DatabaseConnectionProperties));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
