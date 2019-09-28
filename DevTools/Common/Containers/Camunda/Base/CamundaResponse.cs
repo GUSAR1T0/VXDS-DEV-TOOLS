@@ -5,7 +5,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
 {
     public interface ICamundaResponse : IResponse
     {
-        Dictionary<string, string> Errors { get; set; }
+        object Errors { get; set; }
     }
 
     public class IntermediateCamundaResponse<TObject> : ICamundaResponse
@@ -13,7 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public int Status { get; set; }
         public string Output { get; set; }
         public string Reason { get; set; }
-        public Dictionary<string, string> Errors { get; set; }
+        public object Errors { get; set; }
         public TObject Response { get; set; }
     }
 

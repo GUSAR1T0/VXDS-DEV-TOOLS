@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Extensions.Base;
@@ -30,8 +31,7 @@ namespace VXDesign.Store.DevTools.Common.Extensions.Camunda
             }
             else
             {
-                // TODO: Can be string or dictionary output
-                response.Errors = JsonConvert.DeserializeObject<Dictionary<string, string>>(intermediateResponse.Output, settings);
+                response.Errors = JsonConvert.DeserializeObject(intermediateResponse.Output, settings);
             }
 
             response.Status = intermediateResponse.Status;
