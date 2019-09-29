@@ -1,18 +1,18 @@
 using VXDesign.Store.DevTools.Common.Containers.DataStorage;
-using VXDesign.Store.DevTools.UnifiedPortal.Models.Authorization;
+using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
 
-namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
+namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
 {
     internal static class AuthorizationModelExtensions
     {
-        internal static UserAuthorizationModel ToModel(this UserAuthorizationEntity entity) => new UserAuthorizationModel
+        internal static UserModel ToModel(this UserAuthorizationEntity entity) => new UserModel
         {
             Email = entity.Email,
             FirstName = entity.FirstName,
             LastName = entity.LastName
         };
 
-        internal static UserRegistrationEntity ToEntity(this RegistrationModel model) => new UserRegistrationEntity
+        internal static UserRegistrationEntity ToEntity(this SignUpModel model) => new UserRegistrationEntity
         {
             Email = model.Email,
             FirstName = model.FirstName,

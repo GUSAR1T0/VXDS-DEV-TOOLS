@@ -11,8 +11,5 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Properties
 
         [PropertyField(Key = "Database")]
         public DatabaseConnectionProperties DatabaseConnectionProperties { get; set; }
-
-        [PropertyField(Key = "AuthorizationToken")]
-        public AuthorizationTokenProperties AuthorizationTokenProperties { get; set; }
     }
 }

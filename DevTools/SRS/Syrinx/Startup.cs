@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
+using VXDesign.Store.DevTools.Common.Services.Authorization;
+using VXDesign.Store.DevTools.Common.Services.DataStorage;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;
 
@@ -23,6 +25,11 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
         {
             var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
             services.AddScopedService<ICamundaServerService>(() => new CamundaServerService(portalProperties.CamundaProperties));
+            services.AddScopedService<IUserDataService>(() => new UserDataService(portalProperties.DatabaseConnectionProperties));
+            var authorizationService = services.AddScopedService<IAuthorizationService>(() => new AuthorizationService(portalProperties.AuthorizationTokenProperties));
+            services.SetupAuthentication(authorizationService);
+
+            services.AddCors();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -42,10 +49,18 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
                 app.UseHsts();
             }
 
+            app.UseCors(policyBuilder => policyBuilder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+            );
+
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
 
             app.SetupApiPath();

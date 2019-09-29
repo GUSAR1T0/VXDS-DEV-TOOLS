@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using VXDesign.Store.DevTools.Common.Entities.Enums;
 
-namespace VXDesign.Store.DevTools.SRS.Syrinx.Models
+namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda
 {
     public class CamundaRequestModel
     {

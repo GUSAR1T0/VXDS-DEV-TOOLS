@@ -1,14 +1,12 @@
-namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Authorization
+namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
 {
-    public class AuthenticationModel
+    public class SignInModel
     {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
     }
 
-    public class RegistrationModel
+    public class SignUpModel
     {
         public string Email { get; set; }
         public string Password { get; set; }
@@ -16,7 +14,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Authorization
         public string LastName { get; set; }
     }
 
-    public class UserAuthorizationModel
+    public class UserModel
     {
         public string Email { get; set; }
         public string FirstName { get; set; }

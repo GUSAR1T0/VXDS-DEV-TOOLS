@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using NLog;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
@@ -56,7 +55,12 @@ namespace VXDesign.Store.DevTools.Common.Extensions.Controllers
 
         public static void SetupAuthentication(this IServiceCollection services, IAuthorizationService authorizationService)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = authorizationService.GetServerTokenValidationParameters();

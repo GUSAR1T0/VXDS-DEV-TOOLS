@@ -1,6 +1,6 @@
 using VXDesign.Store.DevTools.Common.Attributes;
+using VXDesign.Store.DevTools.Common.Containers.Properties;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
-using VXDesign.Store.DevTools.SRS.Camunda;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Properties
 {
@@ -8,5 +8,11 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Properties
     {
         [PropertyField(Key = "Camunda")]
         public CamundaProperties CamundaProperties { get; set; }
+
+        [PropertyField(Key = "Database")]
+        public DatabaseConnectionProperties DatabaseConnectionProperties { get; set; }
+
+        [PropertyField(Key = "AuthorizationToken")]
+        public AuthorizationTokenProperties AuthorizationTokenProperties { get; set; }
     }
 }

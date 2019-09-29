@@ -13,5 +13,12 @@ namespace VXDesign.Store.DevTools.Common.Containers.Properties
 
         [PropertyField]
         public string CamundaRequestEndpoint { get; set; } = "camunda/request";
+        
+        /**
+         * TODO: Endpoints for:
+         *       - sign in
+         *       - sign up
+         *       - logout
+        **/
     }
 }

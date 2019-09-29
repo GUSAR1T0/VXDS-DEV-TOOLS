@@ -105,7 +105,7 @@
                         return false;
                     }
 
-                    axios.post(apis.RegisterUser, ruleForm).then(response => {
+                    axios.post(apis.SignUp, ruleForm).then(response => {
                         this.$store.commit("login", {
                             accessToken: response.data.accessToken,
                             refreshToken: response.data.refreshToken,

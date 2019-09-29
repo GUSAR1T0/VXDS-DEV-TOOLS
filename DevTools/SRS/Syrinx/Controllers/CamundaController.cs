@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
@@ -8,8 +9,7 @@ using VXDesign.Store.DevTools.Common.Entities.Controllers;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
-using VXDesign.Store.DevTools.SRS.Syrinx.Models;
-using CamundaRequestModel = VXDesign.Store.DevTools.SRS.Syrinx.Models.CamundaRequestModel;
+using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
@@ -29,6 +29,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// </summary>
         /// <returns>String value of Camunda server version, e.g. "7.11"</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         [HttpGet("version")]
         public string GetSupportedVersion() => "7.11";
 
@@ -37,6 +38,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// </summary>
         /// <returns>List of objects with collected endpoints information</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         [HttpGet("info")]
         public IEnumerable<CamundaEndpointModel> GetSupportedApi() => CamundaEndpoint.GetAll().Select(CamundaEndpointModel.Transform);
 
@@ -47,6 +49,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// <returns>Response from Camunda server</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [Authorize]
         [HttpPost("request")]
         public Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => HandleExceptionIfThrown(async () =>
         {

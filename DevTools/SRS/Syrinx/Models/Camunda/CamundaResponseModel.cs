@@ -1,4 +1,4 @@
-namespace VXDesign.Store.DevTools.SRS.Syrinx.Models
+namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda
 {
     public class CamundaResponseModel
     {

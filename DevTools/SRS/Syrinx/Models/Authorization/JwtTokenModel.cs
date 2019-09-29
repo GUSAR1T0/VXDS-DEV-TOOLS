@@ -1,4 +1,4 @@
-namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Authorization
+namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
 {
     public class JwtTokenModel
     {

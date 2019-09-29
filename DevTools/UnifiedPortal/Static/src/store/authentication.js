@@ -31,7 +31,7 @@ function revoke(state, data) {
     };
 
     const accessToken = localStorage.getItem("access-token");
-    axios.delete(apis.RevokeToken, getConfig(accessToken))
+    axios.post(apis.Logout, getConfig(accessToken))
         .then(reset)
         .catch(reset);
 }
@@ -66,7 +66,7 @@ export default {
                     const accessToken = localStorage.getItem("access-token");
                     const refreshToken = localStorage.getItem("refresh-token");
                     if (error.response.status === 401 && accessToken && refreshToken) {
-                        client.post(apis.GenerateToken, {
+                        client.post(apis.Refresh, {
                             accessToken: accessToken,
                             refreshToken: refreshToken
                         }).then(response => {

@@ -67,7 +67,7 @@
                         return false;
                     }
 
-                    axios.post(apis.GenerateToken, ruleForm).then(response => {
+                    axios.post(apis.SignIn, ruleForm).then(response => {
                         this.$store.commit("login", {
                             accessToken: response.data.accessToken,
                             refreshToken: response.data.refreshToken,
