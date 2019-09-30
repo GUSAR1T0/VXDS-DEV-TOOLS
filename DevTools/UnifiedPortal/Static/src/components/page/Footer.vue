@@ -5,12 +5,12 @@
 </template>
 
 <script>
-    import getYearForFooter from "@/extensions/getYearForFooter";
+    import { getYearsForFooter } from "@/extensions/utils";
 
     export default {
         name: "Footer",
         computed: {
-            year: getYearForFooter
+            year: getYearsForFooter
         }
     };
 </script>

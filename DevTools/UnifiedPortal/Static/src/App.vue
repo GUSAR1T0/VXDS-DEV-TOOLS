@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <el-container class="app-container">
-            <NavigationBar/>
+            <NavigationBar v-if="isAuthenticated"/>
             <el-container>
                 <el-header class="app-header" height="auto">
                     <Header/>
@@ -26,7 +26,8 @@
     import Header from "@/components/page/Header.vue";
     import HeaderDivider from "@/components/page/HeaderDivider.vue";
     import Footer from "@/components/page/Footer.vue";
-    import { mapMutations } from "vuex";
+    import { mapGetters } from "vuex";
+    import { ON_LOAD_REQUEST } from "@/constants/actions";
 
     export default {
         components: {
@@ -36,12 +37,17 @@
             Footer
         },
         computed: {
-            ...mapMutations([
-                "login"
+            ...mapGetters([
+                "isAuthenticated",
+                "getFullName"
             ])
         },
         mounted() {
-            this.$store.commit("login");
+            this.$store.dispatch(ON_LOAD_REQUEST).then(() => {
+                this.$router.push("/");
+            }).catch(() => {
+                this.$router.push("/auth");
+            });
         }
     };
 </script>

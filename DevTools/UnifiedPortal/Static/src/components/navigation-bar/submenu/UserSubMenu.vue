@@ -10,12 +10,6 @@
                 <span slot="title" class="el-nav-menu-vertical-item">Sign Out</span>
             </el-menu-item>
         </div>
-        <div v-else>
-            <el-menu-item index="/auth">
-                <fa class="fa-submenu-item" icon="sign-in-alt"/>
-                <span slot="title" class="el-nav-menu-vertical-item">Authorization</span>
-            </el-menu-item>
-        </div>
     </div>
 </template>
 
@@ -23,7 +17,8 @@
 </style>
 
 <script>
-    import { mapGetters, mapMutations } from "vuex";
+    import { mapGetters } from "vuex";
+    import { LOGOUT_REQUEST } from "@/constants/actions";
 
     export default {
         name: "UserSubMenu",
@@ -31,21 +26,18 @@
             ...mapGetters([
                 "isAuthenticated",
                 "getFullName"
-            ]),
-            ...mapMutations([
-                "logout"
             ])
         },
         methods: {
             logoutAction() {
-                this.$store.commit("logout", {
-                    complete: () => {
-                        this.$router.push("/");
-                        this.$notify.info({
-                            title: "Info",
-                            message: "You are logged out"
-                        });
-                    }
+                this.$store.dispatch(LOGOUT_REQUEST).then(() => {
+                    this.$router.push("/auth");
+                    this.$notify.info({
+                        title: "Info",
+                        message: "You are logged out"
+                    });
+                }).catch(() => {
+                    this.$router.push("/auth");
                 });
             }
         }

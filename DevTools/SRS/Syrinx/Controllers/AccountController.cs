@@ -93,7 +93,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public async Task<ActionResult<JwtTokenModel>> GenerateToken([FromBody] JwtTokenModel model) => await HandleExceptionIfThrown(async () =>
+        public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await HandleExceptionIfThrown(async () =>
         {
             IEnumerable<Claim> claims;
             string id;

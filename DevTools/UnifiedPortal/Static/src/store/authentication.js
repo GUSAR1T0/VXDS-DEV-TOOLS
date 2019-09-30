@@ -1,40 +1,14 @@
-import axios from "axios";
+import HttpClient from "@/extensions/httpClient";
+import { getTokens, setTokens, removeTokens } from "@/extensions/tokens";
+import { getHeaders } from "@/extensions/utils";
 import apis from "@/constants/apis";
-
-function getConfig(accessToken) {
-    return {
-        headers: {
-            "Authorization": "Bearer " + accessToken
-        }
-    };
-}
-
-function invoke(state, response, data) {
-    state.isAuthenticated = true;
-    state.firstName = response.data.firstName;
-    state.lastName = response.data.lastName;
-    if (data && data.complete) {
-        data.complete(`${state.firstName} ${state.lastName}`);
-    }
-}
-
-function revoke(state, data) {
-    const reset = () => {
-        localStorage.removeItem("access-token");
-        localStorage.removeItem("refresh-token");
-        state.isAuthenticated = false;
-        state.firstName = "";
-        state.lastName = "";
-        if (data && data.complete) {
-            data.complete();
-        }
-    };
-
-    const accessToken = localStorage.getItem("access-token");
-    axios.post(apis.Logout, getConfig(accessToken))
-        .then(reset)
-        .catch(reset);
-}
+import {
+    LOGOUT_REQUEST,
+    ON_LOAD_REQUEST,
+    REFRESH_REQUEST,
+    SIGN_IN_REQUEST,
+    SIGN_UP_REQUEST
+} from "@/constants/actions";
 
 export default {
     state: {
@@ -51,41 +25,113 @@ export default {
         }
     },
     mutations: {
-        login(state, data) {
-            if (data && data.accessToken && data.refreshToken) {
-                localStorage.setItem("access-token", data.accessToken);
-                localStorage.setItem("refresh-token", data.refreshToken);
-            } else {
-                data = {};
-                data.accessToken = localStorage.getItem("access-token");
-            }
-
-            if (data.accessToken) {
-                let client = axios.create();
-                client.interceptors.response.use(response => response, error => {
-                    const accessToken = localStorage.getItem("access-token");
-                    const refreshToken = localStorage.getItem("refresh-token");
-                    if (error.response.status === 401 && accessToken && refreshToken) {
-                        client.post(apis.Refresh, {
-                            accessToken: accessToken,
-                            refreshToken: refreshToken
-                        }).then(response => {
-                            localStorage.setItem("access-token", response.data.accessToken);
-                            localStorage.setItem("refresh-token", response.data.refreshToken);
-
-                            client.get(apis.GetUserData, getConfig(response.data.accessToken))
-                                .then(response => invoke(state, response, data))
-                                .catch(() => revoke(state, data));
-                        }).catch(() => revoke(state, data));
-                    }
-                    return Promise.reject(error);
-                });
-
-                client.get(apis.GetUserData, getConfig(data.accessToken))
-                    .then(response => invoke(state, response, data))
-                    .catch(() => revoke(state, data));
-            }
+        [SIGN_IN_REQUEST]: (state, data) => {
+            state.isAuthenticated = true;
+            state.firstName = data.firstName;
+            state.lastName = data.lastName;
         },
-        logout: (state, data) => revoke(state, data)
+        [LOGOUT_REQUEST]: state => {
+            state.isAuthenticated = false;
+            state.firstName = "";
+            state.lastName = "";
+        }
+    },
+    actions: {
+        [ON_LOAD_REQUEST]: ({commit, dispatch}) => {
+            return new Promise((resolve, reject) => {
+                const {accessToken, refreshToken} = getTokens();
+                if (accessToken && refreshToken) {
+                    let client = new HttpClient();
+                    client.axios.get(apis.GetUserData, getHeaders(accessToken)).then(response => {
+                        commit(SIGN_IN_REQUEST, response.data);
+                        resolve();
+                    }).catch(() => {
+                        dispatch(REFRESH_REQUEST);
+                        resolve();
+                    });
+                } else {
+                    removeTokens();
+                    reject();
+                }
+            });
+        },
+        [SIGN_IN_REQUEST]: ({commit}, signInForm) => {
+            return new Promise((resolve, reject) => {
+                let client = new HttpClient();
+                client.axios.post(apis.SignIn, signInForm).then(firstResponse => {
+                    setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
+                    client.axios.get(apis.GetUserData, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                        commit(SIGN_IN_REQUEST, secondResponse.data);
+                        resolve();
+                    }).catch(error => {
+                        removeTokens();
+                        reject(error);
+                    });
+                }).catch(error => {
+                    removeTokens();
+                    reject(error);
+                });
+            });
+        },
+        [SIGN_UP_REQUEST]: ({commit}, signUpForm) => {
+            return new Promise((resolve, reject) => {
+                let client = new HttpClient();
+                client.axios.post(apis.SignUp, signUpForm).then(firstResponse => {
+                    setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
+                    client.axios.get(apis.GetUserData, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                        commit(SIGN_IN_REQUEST, secondResponse.data);
+                        resolve();
+                    }).catch(error => {
+                        removeTokens();
+                        reject(error);
+                    });
+                }).catch(error => {
+                    removeTokens();
+                    reject(error);
+                });
+            });
+        },
+        [REFRESH_REQUEST]: ({commit}, tokens) => {
+            return new Promise((resolve, reject) => {
+                if (tokens.accessToken && tokens.refreshToken) {
+                    let client = new HttpClient();
+                    client.post(apis.Refresh, tokens).then(firstResponse => {
+                        setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
+                        client.axios.get(apis.GetUserData, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                            commit(SIGN_IN_REQUEST, secondResponse.data);
+                            resolve();
+                        }).catch(error => {
+                            removeTokens();
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        removeTokens();
+                        reject(error);
+                    });
+                } else {
+                    removeTokens();
+                    reject();
+                }
+            });
+        },
+        [LOGOUT_REQUEST]: ({commit}) => {
+            return new Promise((resolve, reject) => {
+                const {accessToken, refreshToken} = getTokens();
+                if (accessToken && refreshToken) {
+                    let client = new HttpClient();
+                    client.axios.post(apis.Logout, null, getHeaders(accessToken)).then(() => {
+                        commit(LOGOUT_REQUEST);
+                        removeTokens();
+                        resolve();
+                    }).catch(error => {
+                        removeTokens();
+                        reject(error);
+                    });
+                } else {
+                    removeTokens();
+                    reject();
+                }
+            });
+        }
     }
 };

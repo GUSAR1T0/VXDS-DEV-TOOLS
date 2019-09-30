@@ -1,15 +1,20 @@
 <template>
     <div class="authorization">
+        <div class="alert-message">
+            <el-alert title="Welcome to the system" type="info" effect="light" center :closable="false" >
+                <div class="alert-description">Before we'll start, please log in</div>
+            </el-alert>
+        </div>
         <el-row class="main-container">
             <el-col :span="24">
-                <el-tabs type="border-card" :stretch="isStretch">
+                <el-tabs type="border-card" :stretch="true">
                     <el-tab-pane>
                         <span slot="label"><fa icon="sign-in-alt"/> | Sign In</span>
                         <SignIn/>
                     </el-tab-pane>
                     <el-tab-pane>
-                        <span slot="label"><fa icon="user-plus"/> | Request Registration</span>
-                        <RequestRegistration/>
+                        <span slot="label"><fa icon="user-plus"/> | Sign Up</span>
+                        <SignUp/>
                     </el-tab-pane>
                 </el-tabs>
             </el-col>
@@ -17,7 +22,23 @@
     </div>
 </template>
 
+<style scoped>
+    .alert-message {
+        padding-bottom: 25px;
+    }
+
+    .alert-description {
+        font-size: 24px;
+        padding-bottom: 5px;
+    }
+</style>
+
 <style>
+    .el-alert__title {
+        font-size: 36px;
+        line-height: normal !important;
+    }
+
     .el-input__inner:focus {
         border-color: #F56C6C !important;
         outline: none;
@@ -30,33 +51,13 @@
 
 <script>
     import SignIn from "@/components/authorization/SignIn.vue";
-    import RequestRegistration from "@/components/authorization/RequestRegistration.vue";
-    import { mapGetters } from "vuex";
+    import SignUp from "@/components/authorization/SignUp.vue";
 
     export default {
         name: "Authorization",
         components: {
             SignIn,
-            RequestRegistration
-        },
-        computed: {
-            ...mapGetters([
-                "isAuthenticated"
-            ])
-        },
-        data() {
-            return {
-                isStretch: true
-            };
-        },
-        mounted() {
-            if (this.isAuthenticated) {
-                this.$router.push("/");
-                this.$notify.warning({
-                    title: "Warning",
-                    message: "You have already logged in"
-                });
-            }
+            SignUp
         }
     };
 </script>
