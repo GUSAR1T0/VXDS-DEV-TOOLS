@@ -1,7 +1,13 @@
 import HttpClient from "@/extensions/httpClient";
 import { getTokens, setTokens, removeTokens } from "@/extensions/tokens";
 import { getHeaders } from "@/extensions/utils";
-import apis from "@/constants/apis";
+import {
+    GET_USER_DATA_ENDPOINT,
+    LOGOUT_ENDPOINT,
+    REFRESH_ENDPOINT,
+    SIGN_IN_ENDPOINT,
+    SIGN_UP_ENDPOINT
+} from "@/constants/endpoints";
 import {
     LOGOUT_REQUEST,
     ON_LOAD_REQUEST,
@@ -41,13 +47,16 @@ export default {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
-                    let client = new HttpClient();
-                    client.axios.get(apis.GetUserData, getHeaders(accessToken)).then(response => {
-                        commit(SIGN_IN_REQUEST, response.data);
-                        resolve();
-                    }).catch(() => {
-                        dispatch(REFRESH_REQUEST);
-                        resolve();
+                    HttpClient.init().then(client => {
+                        client.get(GET_USER_DATA_ENDPOINT, getHeaders(accessToken)).then(response => {
+                            commit(SIGN_IN_REQUEST, response.data);
+                            resolve();
+                        }).catch(() => {
+                            dispatch(REFRESH_REQUEST);
+                            resolve();
+                        });
+                    }).catch(error => {
+                        reject(error)
                     });
                 } else {
                     removeTokens();
@@ -57,47 +66,10 @@ export default {
         },
         [SIGN_IN_REQUEST]: ({commit}, signInForm) => {
             return new Promise((resolve, reject) => {
-                let client = new HttpClient();
-                client.axios.post(apis.SignIn, signInForm).then(firstResponse => {
-                    setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                    client.axios.get(apis.GetUserData, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
-                        commit(SIGN_IN_REQUEST, secondResponse.data);
-                        resolve();
-                    }).catch(error => {
-                        removeTokens();
-                        reject(error);
-                    });
-                }).catch(error => {
-                    removeTokens();
-                    reject(error);
-                });
-            });
-        },
-        [SIGN_UP_REQUEST]: ({commit}, signUpForm) => {
-            return new Promise((resolve, reject) => {
-                let client = new HttpClient();
-                client.axios.post(apis.SignUp, signUpForm).then(firstResponse => {
-                    setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                    client.axios.get(apis.GetUserData, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
-                        commit(SIGN_IN_REQUEST, secondResponse.data);
-                        resolve();
-                    }).catch(error => {
-                        removeTokens();
-                        reject(error);
-                    });
-                }).catch(error => {
-                    removeTokens();
-                    reject(error);
-                });
-            });
-        },
-        [REFRESH_REQUEST]: ({commit}, tokens) => {
-            return new Promise((resolve, reject) => {
-                if (tokens.accessToken && tokens.refreshToken) {
-                    let client = new HttpClient();
-                    client.post(apis.Refresh, tokens).then(firstResponse => {
+                HttpClient.init().then(client => {
+                    client.post(SIGN_IN_ENDPOINT, signInForm).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                        client.axios.get(apis.GetUserData, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                        client.get(GET_USER_DATA_ENDPOINT, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
                             commit(SIGN_IN_REQUEST, secondResponse.data);
                             resolve();
                         }).catch(error => {
@@ -107,6 +79,52 @@ export default {
                     }).catch(error => {
                         removeTokens();
                         reject(error);
+                    });
+                }).catch(error => {
+                    reject(error)
+                });
+            });
+        },
+        [SIGN_UP_REQUEST]: ({commit}, signUpForm) => {
+            return new Promise((resolve, reject) => {
+                HttpClient.init().then(client => {
+                    client.post(SIGN_UP_ENDPOINT, signUpForm).then(firstResponse => {
+                        setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
+                        client.get(GET_USER_DATA_ENDPOINT, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                            commit(SIGN_IN_REQUEST, secondResponse.data);
+                            resolve();
+                        }).catch(error => {
+                            removeTokens();
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        removeTokens();
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error)
+                });
+            });
+        },
+        [REFRESH_REQUEST]: ({commit}, tokens) => {
+            return new Promise((resolve, reject) => {
+                if (tokens.accessToken && tokens.refreshToken) {
+                    HttpClient.init().then(client => {
+                        client.post(REFRESH_ENDPOINT, tokens).then(firstResponse => {
+                            setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
+                            client.get(GET_USER_DATA_ENDPOINT, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                                commit(SIGN_IN_REQUEST, secondResponse.data);
+                                resolve();
+                            }).catch(error => {
+                                removeTokens();
+                                reject(error);
+                            });
+                        }).catch(error => {
+                            removeTokens();
+                            reject(error);
+                        });
+                    }).catch(error => {
+                        reject(error)
                     });
                 } else {
                     removeTokens();
@@ -118,14 +136,17 @@ export default {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
-                    let client = new HttpClient();
-                    client.axios.post(apis.Logout, null, getHeaders(accessToken)).then(() => {
-                        commit(LOGOUT_REQUEST);
-                        removeTokens();
-                        resolve();
+                    HttpClient.init().then(client => {
+                        client.post(LOGOUT_ENDPOINT, null, getHeaders(accessToken)).then(() => {
+                            commit(LOGOUT_REQUEST);
+                            removeTokens();
+                            resolve();
+                        }).catch(error => {
+                            removeTokens();
+                            reject(error);
+                        });
                     }).catch(error => {
-                        removeTokens();
-                        reject(error);
+                        reject(error)
                     });
                 } else {
                     removeTokens();
