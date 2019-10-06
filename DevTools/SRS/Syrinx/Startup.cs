@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VXDesign.Store.DevTools.Common.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
 using VXDesign.Store.DevTools.Common.Services.Authorization;
-using VXDesign.Store.DevTools.Common.Services.DataStorage;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;
 
@@ -25,8 +25,8 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
         {
             var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
             services.AddScopedService<ICamundaServerService>(() => new CamundaServerService(portalProperties.CamundaProperties));
-            services.AddScopedService<IUserDataService>(() => new UserDataService(portalProperties.DatabaseConnectionProperties));
-            var authorizationService = services.AddScopedService<IAuthorizationService>(() => new AuthorizationService(portalProperties.AuthorizationTokenProperties));
+            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(portalProperties.DatabaseConnectionProperties));
+            var authorizationService = services.AddScopedService<IAuthorizationService>(() => new AuthorizationService(portalProperties.AuthorizationTokenProperties, userDataStore));
             services.SetupAuthentication(authorizationService);
 
             services.AddCors();

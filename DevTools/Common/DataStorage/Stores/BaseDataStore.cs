@@ -1,13 +1,13 @@
 using MongoDB.Driver;
 using VXDesign.Store.DevTools.Common.Containers.Properties;
 
-namespace VXDesign.Store.DevTools.Common.Services.DataStorage
+namespace VXDesign.Store.DevTools.Common.DataStorage.Stores
 {
-    public abstract class BaseDataService
+    public abstract class BaseDataStore
     {
         protected IMongoDatabase Client { get; }
 
-        protected BaseDataService(DatabaseConnectionProperties properties)
+        protected BaseDataStore(DatabaseConnectionProperties properties)
         {
             Client = new MongoClient(properties.ConnectionString).GetDatabase(properties.Database);
         }

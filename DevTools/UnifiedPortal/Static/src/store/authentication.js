@@ -140,7 +140,7 @@ export default {
                 }
             });
         },
-        [LOGOUT_REQUEST]: ({commit}) => {
+        [LOGOUT_REQUEST]: ({commit, dispatch}) => {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
@@ -149,9 +149,21 @@ export default {
                             commit(LOGOUT_REQUEST);
                             removeTokens();
                             resolve();
-                        }).catch(error => {
-                            removeTokens();
-                            reject(error);
+                        }).catch(() => {
+                            dispatch(REFRESH_REQUEST).then(() => {
+                                const {accessToken, refreshToken} = getTokens();
+                                client.post(LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
+                                    commit(LOGOUT_REQUEST);
+                                    removeTokens();
+                                    resolve();
+                                }).catch(error => {
+                                    removeTokens();
+                                    reject(error);
+                                });
+                            }).catch(error => {
+                                removeTokens();
+                                reject(error);
+                            });
                         });
                     }).catch(error => {
                         removeTokens();
@@ -159,7 +171,7 @@ export default {
                     });
                 } else {
                     removeTokens();
-                    reject();
+                    resolve();
                 }
             });
         }

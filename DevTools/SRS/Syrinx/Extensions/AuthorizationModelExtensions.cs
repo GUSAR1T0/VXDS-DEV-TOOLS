@@ -1,4 +1,6 @@
-using VXDesign.Store.DevTools.Common.Containers.DataStorage;
+using System.IdentityModel.Tokens.Jwt;
+using VXDesign.Store.DevTools.Common.DataStorage.Entities;
+using VXDesign.Store.DevTools.Common.Entities.Authorization;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
@@ -18,6 +20,12 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
             FirstName = model.FirstName,
             LastName = model.LastName,
             Password = model.Password
+        };
+
+        internal static JwtTokenModel GetJwtTokenModel(this RawJwtToken token) => new JwtTokenModel
+        {
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(token.AccessToken),
+            RefreshToken = token.RefreshToken
         };
     }
 }

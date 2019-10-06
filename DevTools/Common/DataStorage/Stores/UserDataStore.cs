@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using VXDesign.Store.DevTools.Common.Containers.DataStorage;
 using VXDesign.Store.DevTools.Common.Containers.Properties;
+using VXDesign.Store.DevTools.Common.DataStorage.Entities;
 
-namespace VXDesign.Store.DevTools.Common.Services.DataStorage
+namespace VXDesign.Store.DevTools.Common.DataStorage.Stores
 {
-    public interface IUserDataService
+    public interface IUserDataStore
     {
         Task<UserAuthorizationEntity> GetEntityById(string id);
         Task<string> GetRefreshTokenById(string id);
@@ -14,12 +14,12 @@ namespace VXDesign.Store.DevTools.Common.Services.DataStorage
         Task<UserAuthorizationEntity> Create(UserRegistrationEntity entity);
     }
 
-    public class UserDataService : BaseDataService, IUserDataService
+    public class UserDataStore : BaseDataStore, IUserDataStore
     {
         private IMongoCollection<UserAuthorizationEntity> Authorizations { get; }
         private IMongoCollection<UserRegistrationEntity> Registrations { get; }
 
-        public UserDataService(DatabaseConnectionProperties properties) : base(properties)
+        public UserDataStore(DatabaseConnectionProperties properties) : base(properties)
         {
             const string collection = "Users";
             Authorizations = Client.GetCollection<UserAuthorizationEntity>(collection);

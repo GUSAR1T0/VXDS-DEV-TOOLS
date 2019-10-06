@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace VXDesign.Store.DevTools.Common.Containers.DataStorage
+namespace VXDesign.Store.DevTools.Common.DataStorage.Entities
 {
     public abstract class GeneralUserEntity : IDataEntity
     {

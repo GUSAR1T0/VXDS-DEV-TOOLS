@@ -28,14 +28,13 @@ export default class HttpClient {
         return this.axios.post(`${this.syrinxHost}/${this.syrinxApi}/${endpoint}`, data, config);
     }
 
-    // eslint-disable-next-line no-unused-vars
-    handleUnauthorizedResponse = ({commit, dispatch}) => {
+    handleUnauthorizedResponse = (dispatch) => {
         this.axios.interceptors.response.use(response => response, error => {
             const {accessToken, refreshToken} = getTokens();
             if (error.response.status === 401 && accessToken && refreshToken) {
                 dispatch(REFRESH_REQUEST);
             }
-            return Promise.reject(error);
+            return Promise.resolve();
         });
         return this;
     };

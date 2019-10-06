@@ -1,14 +1,8 @@
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Services.DataStorage;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
 using IAuthorizationService = VXDesign.Store.DevTools.Common.Services.Authorization.IAuthorizationService;
@@ -19,19 +13,11 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
     public class AccountController : ApiController
     {
         private readonly IAuthorizationService authorizationService;
-        private readonly IUserDataService userDataService;
 
-        public AccountController(IAuthorizationService authorizationService, IUserDataService userDataService)
+        public AccountController(IAuthorizationService authorizationService)
         {
             this.authorizationService = authorizationService;
-            this.userDataService = userDataService;
         }
-
-        private JwtTokenModel GetJwtTokenModel(IEnumerable<Claim> claims) => new JwtTokenModel
-        {
-            AccessToken = new JwtSecurityTokenHandler().WriteToken(authorizationService.GenerateAccessToken(claims)),
-            RefreshToken = authorizationService.GenerateRefreshToken()
-        };
 
         /// <summary>
         /// Authenticates some user and generates JSON Web Token
@@ -44,21 +30,8 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [HttpPost("sign-in")]
         public async Task<ActionResult<JwtTokenModel>> SignIn([FromBody] SignInModel model) => await HandleExceptionIfThrown(async () =>
         {
-            IEnumerable<Claim> claims;
-            string id;
-
-            if (!string.IsNullOrWhiteSpace(model.Email) && !string.IsNullOrWhiteSpace(model.Password))
-            {
-                id = await userDataService.GetIdByUser(model.Email, model.Password);
-                var identity = authorizationService.GetIdentity(id);
-                if (identity == null) throw CommonExceptions.InvalidEmailOrPassword();
-                claims = identity.Claims.ToList();
-            }
-            else throw CommonExceptions.NoAuthenticationData();
-
-            var tokens = GetJwtTokenModel(claims);
-            await userDataService.UpdateRefreshToken(id, tokens.RefreshToken);
-            return tokens;
+            var token = await authorizationService.SignIn(model.Email, model.Password);
+            return token.GetJwtTokenModel();
         });
 
         /// <summary>
@@ -72,16 +45,8 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [HttpPost("sign-up")]
         public async Task<ActionResult<JwtTokenModel>> SignUp([FromBody] SignUpModel model) => await HandleExceptionIfThrown(async () =>
         {
-            if (await userDataService.GetIdByUser(model.Email) != null) throw CommonExceptions.UserHasAlreadyExist();
-
-            var entity = await userDataService.Create(model.ToEntity());
-            var identity = authorizationService.GetIdentity(entity.Id);
-            if (identity == null) throw CommonExceptions.InvalidEmailOrPassword();
-            var claims = identity.Claims.ToList();
-
-            var tokens = GetJwtTokenModel(claims);
-            await userDataService.UpdateRefreshToken(entity.Id, tokens.RefreshToken);
-            return tokens;
+            var token = await authorizationService.SignUp(model.ToEntity());
+            return token.GetJwtTokenModel();
         });
 
         /// <summary>
@@ -95,22 +60,8 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [HttpPost("refresh")]
         public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await HandleExceptionIfThrown(async () =>
         {
-            IEnumerable<Claim> claims;
-            string id;
-
-            if (!string.IsNullOrWhiteSpace(model.AccessToken) && !string.IsNullOrWhiteSpace(model.RefreshToken))
-            {
-                var principal = authorizationService.GetClaimsPrincipalDataFromToken(model.AccessToken);
-                claims = principal.Claims.ToList();
-                id = authorizationService.GetUserId(claims);
-                var storedRefreshToken = await userDataService.GetRefreshTokenById(id);
-                if (storedRefreshToken?.Equals(model.RefreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent();
-            }
-            else throw CommonExceptions.NoAuthenticationData();
-
-            var tokens = GetJwtTokenModel(claims);
-            await userDataService.UpdateRefreshToken(id, tokens.RefreshToken);
-            return tokens;
+            var token = await authorizationService.RefreshToken(model.AccessToken, model.RefreshToken);
+            return token.GetJwtTokenModel();
         });
 
         /// <summary>
@@ -118,15 +69,10 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// </summary>
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpPost("logout")]
-        public async Task Logout()
-        {
-            var id = authorizationService.GetUserId(User.Claims);
-            var identity = authorizationService.GetIdentity(id);
-            identity.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
-            await userDataService.UpdateRefreshToken(id, null);
-        }
+        public async Task Logout() => await authorizationService.Logout(User.Claims);
 
         /// <summary>
         /// Obtains authorization user data by token
@@ -138,11 +84,16 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [HttpGet]
         public async Task<UserModel> GetUserData()
         {
-            var id = authorizationService.GetUserId(User.Claims);
-            var entity = await userDataService.GetEntityById(id);
-            return entity.ToModel();
+            var userData = await authorizationService.GetUserData(User.Claims);
+            return userData.ToModel();
         }
 
+        /// <summary>
+        /// Tests authentication token from derived servers
+        /// </summary>
+        /// <returns><c>True</c> if token is validated</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpGet("verify")]
         public bool VerifyAuthentication() => true;

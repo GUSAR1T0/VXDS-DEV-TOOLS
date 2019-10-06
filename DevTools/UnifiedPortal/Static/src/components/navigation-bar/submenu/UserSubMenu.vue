@@ -31,13 +31,13 @@
         methods: {
             logoutAction() {
                 this.$store.dispatch(LOGOUT_REQUEST).then(() => {
-                    this.$router.push("/auth");
+                    this.$router.push("/auth").catch(() => {});
                     this.$notify.info({
                         title: "Info",
                         message: "You are logged out"
                     });
                 }).catch(() => {
-                    this.$router.push("/auth");
+                    this.$router.push("/auth").catch(() => {});
                 });
             }
         }
