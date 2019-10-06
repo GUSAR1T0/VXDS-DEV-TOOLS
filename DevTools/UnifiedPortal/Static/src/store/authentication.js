@@ -151,7 +151,7 @@ export default {
                             resolve();
                         }).catch(() => {
                             dispatch(REFRESH_REQUEST).then(() => {
-                                const {accessToken, refreshToken} = getTokens();
+                                const {accessToken} = getTokens();
                                 client.post(LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
                                     commit(LOGOUT_REQUEST);
                                     removeTokens();
