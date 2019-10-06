@@ -13,5 +13,8 @@ namespace VXDesign.Store.DevTools.Common.Containers.Properties
 
         [PropertyField]
         public string CamundaRequestEndpoint { get; set; } = "camunda/request";
+
+        [PropertyField]
+        public string VerifyAuthenticationEndpoint { get; set; } = "account/verify";
     }
 }

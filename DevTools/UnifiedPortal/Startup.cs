@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
-using VXDesign.Store.DevTools.Common.Services.Authorization;
-using VXDesign.Store.DevTools.Common.Services.DataStorage;
 using VXDesign.Store.DevTools.Common.Services.Syrinx;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
@@ -26,10 +24,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
         public void ConfigureServices(IServiceCollection services)
         {
             var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
-            services.AddScopedService<ISyrinxClientService>(() => new SyrinxClientService(portalProperties.SyrinxProperties));
-            services.AddScopedService<IUserDataService>(() => new UserDataService(portalProperties.DatabaseConnectionProperties));
-            var authorizationService = services.AddScopedService<IAuthorizationService>(() => new AuthorizationService(portalProperties.AuthorizationTokenProperties));
-            services.SetupAuthentication(authorizationService);
+            services.AddScopedService<ISyrinxCamundaClientService>(() => new SyrinxCamundaClientService(portalProperties.SyrinxProperties));
+            services.AddScopedService<ISyrinxAuthenticationClientService>(() => new SyrinxAuthenticationClientService(portalProperties.SyrinxProperties));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);

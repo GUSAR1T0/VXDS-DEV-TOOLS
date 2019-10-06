@@ -1,7 +1,7 @@
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 
-namespace VXDesign.Store.DevTools.SRS.Camunda
+namespace VXDesign.Store.DevTools.Common.Containers.Properties
 {
     public class CamundaProperties : IPropertiesMarker
     {

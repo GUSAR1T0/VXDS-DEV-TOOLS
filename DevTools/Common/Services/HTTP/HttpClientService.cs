@@ -21,7 +21,7 @@ namespace VXDesign.Store.DevTools.Common.Services.HTTP
 
         private HttpClient httpClient;
 
-        private HttpClient HttpClient => httpClient ?? (httpClient = Initialize());
+        protected HttpClient HttpClient => httpClient ?? (httpClient = Initialize());
 
         protected abstract HttpClient Initialize();
 
@@ -72,12 +72,15 @@ namespace VXDesign.Store.DevTools.Common.Services.HTTP
 
         private static void FormatRequestPathWithParameters(ref string path, Dictionary<string, string> parameters)
         {
-            path = string.Join("", path.Split(new[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries).Select((item, index) => index % 2 == 1 ? parameters[item] : item));
+            if (parameters?.Any() == true)
+            {
+                path = string.Join("", path.Split(new[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries).Select((item, index) => index % 2 == 1 ? parameters[item] : item));
+            }
         }
 
         private static void FormatRequestPathWithQuery(ref string path, Dictionary<string, string> query)
         {
-            if (query.Any())
+            if (query?.Any() == true)
             {
                 path += '?' + string.Join('&', query.Select(item => $"{item.Key.ToCamelCase()}={item.Value}"));
             }

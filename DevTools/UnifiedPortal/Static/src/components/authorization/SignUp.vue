@@ -1,48 +1,50 @@
 <template>
-    <div class="request-registration">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px"
-                 @submit.native.prevent="submitForm('ruleForm')">
+    <div class="sign-up">
+        <el-form :model="signUpForm" :rules="signUpRules" ref="signUpForm" label-width="120px"
+                 @submit.native.prevent="submitForm('signUpForm')">
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="firstName" label="First Name">
-                        <el-input v-model="ruleForm.firstName" clearable></el-input>
+                        <el-input v-model="signUpForm.firstName" clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="lastName" label="Last Name">
-                        <el-input v-model="ruleForm.lastName" clearable></el-input>
+                        <el-input v-model="signUpForm.lastName" clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="email" label="Email Address">
-                        <el-input v-model="ruleForm.email" clearable></el-input>
+                        <el-input v-model="signUpForm.email" clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="password" label="Password">
-                        <el-input v-model="ruleForm.password" show-password clearable></el-input>
+                        <el-input v-model="signUpForm.password" show-password clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="passwordConfirmation" label="Confirmation">
-                        <el-input v-model="ruleForm.passwordConfirmation" show-password clearable></el-input>
+                        <el-input v-model="signUpForm.passwordConfirmation" show-password clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
-                <el-form-item>
-                    <el-button type="danger" class="auth-button" native-type="submit">
-                        Send Request
-                    </el-button>
-                </el-form-item>
+                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                    <el-form-item>
+                        <el-button type="danger" class="auth-button" native-type="submit">
+                            Sign Up
+                        </el-button>
+                    </el-form-item>
+                </el-col>
             </el-row>
         </el-form>
     </div>
@@ -52,26 +54,25 @@
 </style>
 
 <script>
-    import RequestRegistrationValidations from "@/extensions/validations";
-    import axios from "axios";
-    import apis from "@/constants/apis";
-    import { mapMutations } from "vuex";
+    import SignUpValidations from "@/extensions/validations";
+    import { mapGetters } from "vuex";
+    import { SIGN_UP_REQUEST } from "@/constants/actions";
 
-    let ruleForm = {
+    let signUpForm = {
         firstName: "",
         lastName: "",
         email: "",
         password: "",
         passwordConfirmation: ""
     };
-    let validations = new RequestRegistrationValidations(ruleForm);
+    let validations = new SignUpValidations(signUpForm);
 
     export default {
         name: "RequestRegistration",
         data() {
             return {
-                ruleForm: ruleForm,
-                rules: {
+                signUpForm,
+                signUpRules: {
                     firstName: [
                         {required: true, message: "Please, input first name", trigger: "change"},
                         {min: 2, max: 30, message: "Length should be 2 to 30", trigger: "change"}
@@ -94,8 +95,8 @@
             };
         },
         computed: {
-            ...mapMutations([
-                "login"
+            ...mapGetters([
+                "getFullName"
             ])
         },
         methods: {
@@ -105,22 +106,16 @@
                         return false;
                     }
 
-                    axios.post(apis.RegisterUser, ruleForm).then(response => {
-                        this.$store.commit("login", {
-                            accessToken: response.data.accessToken,
-                            refreshToken: response.data.refreshToken,
-                            complete: fullName => {
-                                this.$router.push("/");
-                                this.$notify.info({
-                                    title: "Info",
-                                    message: "You are registered as " + fullName
-                                });
-                            }
+                    this.$store.dispatch(SIGN_UP_REQUEST, signUpForm).then(() => {
+                        this.$router.push("/");
+                        this.$notify.info({
+                            title: "Info",
+                            message: `You are registered as ${this.getFullName}`
                         });
                     }).catch(error => {
                         this.$notify.error({
                             title: "Error",
-                            message: error.response.data
+                            message: `Failed to sign up: ${error.response.data}`
                         });
                     });
                 });

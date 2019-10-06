@@ -18,7 +18,7 @@ namespace VXDesign.Store.DevTools.Common.Containers.Properties
         public string SecretKey { get; set; }
 
         [PropertyField(Key = "ExpireTime")]
-        public double ExpireTimeInSeconds { get; set; } = TimeSpan.FromMinutes(1).TotalSeconds;
+        public double ExpireTimeInSeconds { get; set; } = TimeSpan.FromHours(1).TotalSeconds;
 
         public SymmetricSecurityKey SymmetricSecurityKey => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
 

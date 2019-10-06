@@ -1,7 +1,7 @@
 using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
 using VXDesign.Store.DevTools.SRS.Camunda;
-using VXDesign.Store.DevTools.SRS.Syrinx.Models;
-using CamundaRequestModel = VXDesign.Store.DevTools.SRS.Syrinx.Models.CamundaRequestModel;
+using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
+using CamundaRequestModel = VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda.CamundaRequestModel;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
 {

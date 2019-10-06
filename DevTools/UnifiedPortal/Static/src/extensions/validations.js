@@ -1,4 +1,4 @@
-class RequestRegistrationValidations {
+export default class SignUpValidations {
     constructor(ruleForm) {
         this.ruleForm = ruleForm;
     }
@@ -23,5 +23,3 @@ class RequestRegistrationValidations {
         }
     };
 }
-
-export default RequestRegistrationValidations;

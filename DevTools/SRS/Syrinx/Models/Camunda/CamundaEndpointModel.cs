@@ -1,7 +1,7 @@
 using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Extensions.Base;
 
-namespace VXDesign.Store.DevTools.SRS.Syrinx.Models
+namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda
 {
     public class CamundaEndpointModel
     {

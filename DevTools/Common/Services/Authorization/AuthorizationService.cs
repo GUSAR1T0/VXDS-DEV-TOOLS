@@ -4,8 +4,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using VXDesign.Store.DevTools.Common.Containers.Properties;
+using VXDesign.Store.DevTools.Common.DataStorage.Entities;
+using VXDesign.Store.DevTools.Common.DataStorage.Stores;
+using VXDesign.Store.DevTools.Common.Entities.Authorization;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 
 namespace VXDesign.Store.DevTools.Common.Services.Authorization
@@ -17,24 +21,100 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
 
     public interface IAuthorizationService
     {
-        JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims);
-        ClaimsIdentity GetIdentity(string id);
-        string GetUserId(IEnumerable<Claim> claims);
-        string GenerateRefreshToken();
-        ClaimsPrincipal GetClaimsPrincipalDataFromToken(string accessToken);
+        Task<RawJwtToken> SignIn(string email, string password);
+        Task<RawJwtToken> SignUp(UserRegistrationEntity entity);
+        Task<RawJwtToken> RefreshToken(string accessToken, string refreshToken);
+        Task Logout(IEnumerable<Claim> claims);
+        Task<UserAuthorizationEntity> GetUserData(IEnumerable<Claim> claims);
+
         TokenValidationParameters GetServerTokenValidationParameters(bool validateLifetime = true);
     }
 
     public class AuthorizationService : IAuthorizationService
     {
         private readonly AuthorizationTokenProperties authorizationTokenProperties;
+        private readonly IUserDataStore userDataStore;
 
-        public AuthorizationService(AuthorizationTokenProperties authorizationTokenProperties)
+        public AuthorizationService(AuthorizationTokenProperties authorizationTokenProperties, IUserDataStore userDataStore)
         {
             this.authorizationTokenProperties = authorizationTokenProperties;
+            this.userDataStore = userDataStore;
         }
 
-        public JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims)
+        public async Task<RawJwtToken> SignIn(string email, string password)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password)) throw CommonExceptions.NoAuthenticationData();
+
+            var id = await userDataStore.GetIdByUser(email, password);
+            var identity = GetIdentity(id);
+            if (identity == null) throw CommonExceptions.InvalidEmailOrPassword();
+
+            var token = new RawJwtToken
+            {
+                AccessToken = GenerateAccessToken(identity.Claims.ToList()),
+                RefreshToken = GenerateRefreshToken()
+            };
+
+            await userDataStore.UpdateRefreshToken(id, token.RefreshToken);
+
+            return token;
+        }
+
+        public async Task<RawJwtToken> SignUp(UserRegistrationEntity entity)
+        {
+            if (await userDataStore.GetIdByUser(entity.Email) != null) throw CommonExceptions.UserHasAlreadyExist();
+
+            var user = await userDataStore.Create(entity);
+            var identity = GetIdentity(user.Id);
+            if (identity == null) throw CommonExceptions.InvalidEmailOrPassword();
+
+            var token = new RawJwtToken
+            {
+                AccessToken = GenerateAccessToken(identity.Claims.ToList()),
+                RefreshToken = GenerateRefreshToken()
+            };
+
+            await userDataStore.UpdateRefreshToken(user.Id, token.RefreshToken);
+
+            return token;
+        }
+
+        public async Task<RawJwtToken> RefreshToken(string accessToken, string refreshToken)
+        {
+            if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken)) throw CommonExceptions.NoAuthenticationData();
+
+            var principal = GetClaimsPrincipalDataFromToken(accessToken);
+            var claims = principal.Claims.ToList();
+            var id = GetUserId(claims);
+            var storedRefreshToken = await userDataStore.GetRefreshTokenById(id);
+            if (storedRefreshToken?.Equals(refreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent();
+
+            var token = new RawJwtToken
+            {
+                AccessToken = GenerateAccessToken(claims.ToList()),
+                RefreshToken = GenerateRefreshToken()
+            };
+
+            await userDataStore.UpdateRefreshToken(id, token.RefreshToken);
+
+            return token;
+        }
+
+        public async Task Logout(IEnumerable<Claim> claims)
+        {
+            var id = GetUserId(claims);
+            var identity = GetIdentity(id);
+            identity.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
+            await userDataStore.UpdateRefreshToken(id, null);
+        }
+
+        public async Task<UserAuthorizationEntity> GetUserData(IEnumerable<Claim> claims)
+        {
+            var id = GetUserId(claims);
+            return await userDataStore.GetEntityById(id);
+        }
+
+        private JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims)
         {
             var now = DateTime.UtcNow;
             return new JwtSecurityToken(
@@ -47,18 +127,18 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
             );
         }
 
-        public ClaimsIdentity GetIdentity(string id) => !string.IsNullOrWhiteSpace(id)
+        private static ClaimsIdentity GetIdentity(string id) => !string.IsNullOrWhiteSpace(id)
             ? new ClaimsIdentity(new List<Claim>
             {
                 new Claim(AuthorizationClaimName.UserId, id)
             }, "Token")
             : null;
 
-        public string GetUserId(IEnumerable<Claim> claims) => GetClaimValue(claims, AuthorizationClaimName.UserId);
+        private static string GetUserId(IEnumerable<Claim> claims) => GetClaimValue(claims, AuthorizationClaimName.UserId);
 
         private static string GetClaimValue(IEnumerable<Claim> claims, string key) => claims.FirstOrDefault(c => string.Equals(c.Type, key, StringComparison.InvariantCultureIgnoreCase))?.Value;
 
-        public string GenerateRefreshToken()
+        private static string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
             using (var random = RandomNumberGenerator.Create())
@@ -68,7 +148,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
             }
         }
 
-        public ClaimsPrincipal GetClaimsPrincipalDataFromToken(string accessToken)
+        private ClaimsPrincipal GetClaimsPrincipalDataFromToken(string accessToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(accessToken, GetServerTokenValidationParameters(false), out var securityToken);
