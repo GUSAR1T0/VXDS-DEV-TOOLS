@@ -10,14 +10,19 @@ using HttpMethod = VXDesign.Store.DevTools.Common.Entities.Enums.HttpMethod;
 
 namespace VXDesign.Store.DevTools.Common.Services.Syrinx
 {
-    public interface ISyrinxClientService
+    public interface ISyrinxCamundaClientService
     {
         Task<TResponseModel> Send<TRequestModel, TResponseModel>(TRequestModel request) where TRequestModel : ICamundaRequest where TResponseModel : ICamundaResponse, new();
     }
 
-    public class SyrinxClientService : ISyrinxClientService
+    public class SyrinxCamundaClientService : ISyrinxCamundaClientService
     {
         private readonly SyrinxProperties properties;
+
+        public SyrinxCamundaClientService(SyrinxProperties properties)
+        {
+            this.properties = properties;
+        }
 
         private HttpClient GetHttpClient()
         {
@@ -25,11 +30,6 @@ namespace VXDesign.Store.DevTools.Common.Services.Syrinx
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return httpClient;
-        }
-
-        public SyrinxClientService(SyrinxProperties properties)
-        {
-            this.properties = properties;
         }
 
         public async Task<TResponseModel> Send<TRequestModel, TResponseModel>(TRequestModel request) where TRequestModel : ICamundaRequest where TResponseModel : ICamundaResponse, new()

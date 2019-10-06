@@ -54,3 +54,16 @@ h6 {
     text-align: center;
     margin: 20px 0;
 }
+
+.main-loading-spinner-custom > div > .el-icon-loading,
+.main-loading-spinner-custom > div > .el-loading-text {
+    color: #F56C6C;
+}
+
+.main-loading-spinner-custom > div > .el-icon-loading {
+    font-size: 48px;
+}
+
+.main-loading-spinner-custom > div > .el-loading-text {
+    font-size: 24px;
+}

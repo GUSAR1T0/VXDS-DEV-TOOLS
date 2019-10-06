@@ -6,18 +6,18 @@ export function getYearsForFooter() {
     return `${firstYear + (currentYear !== firstYear ? `-${currentYear}` : "")}`;
 }
 
-export function getHeaders(accessToken = null) {
+export function getConfiguration(notSavedAccessToken = null) {
     let headers = {};
 
     const setToken = (token) => {
         headers["Authorization"] = `Bearer ${token}`;
     };
-    if (accessToken) {
-        setToken(accessToken);
+    if (notSavedAccessToken) {
+        setToken(notSavedAccessToken);
     } else {
-        let {savedAccessToken} = getTokens();
-        if (savedAccessToken) {
-            setToken(savedAccessToken);
+        let {accessToken} = getTokens();
+        if (accessToken) {
+            setToken(accessToken);
         }
     }
 

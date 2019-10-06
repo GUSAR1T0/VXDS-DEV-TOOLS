@@ -43,10 +43,20 @@
             ])
         },
         mounted() {
-            this.$store.dispatch(ON_LOAD_REQUEST).then(() => {
-                this.$router.push("/");
+            const loading = this.$loading({
+                lock: true,
+                text: "Loading",
+                spinner: "el-icon-loading",
+                background: "rgba(255, 255, 255, 1)",
+                customClass: "main-loading-spinner-custom"
+            });
+
+            this.$store.dispatch(ON_LOAD_REQUEST, window.location.pathname).then(redirectTo => {
+                this.$router.push(redirectTo).catch(() => {});
+                loading.close();
             }).catch(() => {
-                this.$router.push("/auth");
+                this.$router.push("/auth").catch(() => {});
+                loading.close();
             });
         }
     };

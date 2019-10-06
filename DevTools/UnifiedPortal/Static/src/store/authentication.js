@@ -1,6 +1,6 @@
 import HttpClient from "@/extensions/httpClient";
 import { getTokens, setTokens, removeTokens } from "@/extensions/tokens";
-import { getHeaders } from "@/extensions/utils";
+import { getConfiguration } from "@/extensions/utils";
 import {
     GET_USER_DATA_ENDPOINT,
     LOGOUT_ENDPOINT,
@@ -43,20 +43,24 @@ export default {
         }
     },
     actions: {
-        [ON_LOAD_REQUEST]: ({commit, dispatch}) => {
+        [ON_LOAD_REQUEST]: ({commit, dispatch}, redirectTo) => {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
                     HttpClient.init().then(client => {
-                        client.get(GET_USER_DATA_ENDPOINT, getHeaders(accessToken)).then(response => {
+                        client.get(GET_USER_DATA_ENDPOINT, getConfiguration(accessToken)).then(response => {
                             commit(SIGN_IN_REQUEST, response.data);
-                            resolve();
+                            resolve(redirectTo);
                         }).catch(() => {
-                            dispatch(REFRESH_REQUEST);
-                            resolve();
+                            dispatch(REFRESH_REQUEST).then(() => {
+                                resolve(redirectTo);
+                            }).catch(() => {
+                                reject();
+                            });
                         });
                     }).catch(error => {
-                        reject(error)
+                        removeTokens();
+                        reject(error);
                     });
                 } else {
                     removeTokens();
@@ -69,7 +73,7 @@ export default {
                 HttpClient.init().then(client => {
                     client.post(SIGN_IN_ENDPOINT, signInForm).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                        client.get(GET_USER_DATA_ENDPOINT, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                        client.get(GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken)).then(secondResponse => {
                             commit(SIGN_IN_REQUEST, secondResponse.data);
                             resolve();
                         }).catch(error => {
@@ -81,7 +85,8 @@ export default {
                         reject(error);
                     });
                 }).catch(error => {
-                    reject(error)
+                    removeTokens();
+                    reject(error);
                 });
             });
         },
@@ -90,7 +95,7 @@ export default {
                 HttpClient.init().then(client => {
                     client.post(SIGN_UP_ENDPOINT, signUpForm).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                        client.get(GET_USER_DATA_ENDPOINT, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                        client.get(GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken)).then(secondResponse => {
                             commit(SIGN_IN_REQUEST, secondResponse.data);
                             resolve();
                         }).catch(error => {
@@ -102,17 +107,19 @@ export default {
                         reject(error);
                     });
                 }).catch(error => {
-                    reject(error)
+                    removeTokens();
+                    reject(error);
                 });
             });
         },
-        [REFRESH_REQUEST]: ({commit}, tokens) => {
+        [REFRESH_REQUEST]: ({commit}) => {
             return new Promise((resolve, reject) => {
-                if (tokens.accessToken && tokens.refreshToken) {
+                const {accessToken, refreshToken} = getTokens();
+                if (accessToken && refreshToken) {
                     HttpClient.init().then(client => {
-                        client.post(REFRESH_ENDPOINT, tokens).then(firstResponse => {
+                        client.post(REFRESH_ENDPOINT, {accessToken, refreshToken}).then(firstResponse => {
                             setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                            client.get(GET_USER_DATA_ENDPOINT, getHeaders(firstResponse.data.accessToken)).then(secondResponse => {
+                            client.get(GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken)).then(secondResponse => {
                                 commit(SIGN_IN_REQUEST, secondResponse.data);
                                 resolve();
                             }).catch(error => {
@@ -124,7 +131,8 @@ export default {
                             reject(error);
                         });
                     }).catch(error => {
-                        reject(error)
+                        removeTokens();
+                        reject(error);
                     });
                 } else {
                     removeTokens();
@@ -137,7 +145,7 @@ export default {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
                     HttpClient.init().then(client => {
-                        client.post(LOGOUT_ENDPOINT, null, getHeaders(accessToken)).then(() => {
+                        client.post(LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
                             commit(LOGOUT_REQUEST);
                             removeTokens();
                             resolve();
@@ -146,7 +154,8 @@ export default {
                             reject(error);
                         });
                     }).catch(error => {
-                        reject(error)
+                        removeTokens();
+                        reject(error);
                     });
                 } else {
                     removeTokens();

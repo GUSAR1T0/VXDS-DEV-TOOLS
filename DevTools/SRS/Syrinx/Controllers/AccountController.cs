@@ -142,5 +142,9 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
             var entity = await userDataService.GetEntityById(id);
             return entity.ToModel();
         }
+
+        [Authorize]
+        [HttpGet("verify")]
+        public bool VerifyAuthentication() => true;
     }
 }

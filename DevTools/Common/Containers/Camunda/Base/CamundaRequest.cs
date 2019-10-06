@@ -60,6 +60,6 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
             }
         }
 
-        public async Task<TResponse> SendRequest(ISyrinxClientService service) => await service.Send<CamundaRequest<TResponse>, TResponse>(this);
+        public async Task<TResponse> SendRequest(ISyrinxCamundaClientService service) => await service.Send<CamundaRequest<TResponse>, TResponse>(this);
     }
 }

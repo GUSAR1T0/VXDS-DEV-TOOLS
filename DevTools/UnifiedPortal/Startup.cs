@@ -24,7 +24,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
         public void ConfigureServices(IServiceCollection services)
         {
             var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
-            services.AddScopedService<ISyrinxClientService>(() => new SyrinxClientService(portalProperties.SyrinxProperties));
+            services.AddScopedService<ISyrinxCamundaClientService>(() => new SyrinxCamundaClientService(portalProperties.SyrinxProperties));
+            services.AddScopedService<ISyrinxAuthenticationClientService>(() => new SyrinxAuthenticationClientService(portalProperties.SyrinxProperties));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);

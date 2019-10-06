@@ -166,13 +166,13 @@ namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base
         public static CamundaWorkersBuilder Builder() => new CamundaWorkersBuilder();
 
         internal TProperties Properties { get; }
-        private ISyrinxClientService Service { get; }
+        private ISyrinxCamundaClientService Service { get; }
         internal List<Func<CamundaWorkers<TProperties>, Task>> RunnableTasks { get; }
 
         internal CamundaWorkers(CamundaWorkersBuilder builder)
         {
             Properties = builder.Properties ?? throw CommonExceptions.PropertiesAreEmpty();
-            Service = new SyrinxClientService(Properties.SyrinxProperties);
+            Service = new SyrinxCamundaClientService(Properties.SyrinxProperties);
             RunnableTasks = builder.RunnableTasks;
         }
 
