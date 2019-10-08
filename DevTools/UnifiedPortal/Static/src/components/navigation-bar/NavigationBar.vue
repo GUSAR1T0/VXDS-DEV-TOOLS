@@ -7,31 +7,52 @@
                          height="40px" class="el-nav-menu-logo">
                 </template>
             </CollapsibleMenuItem>
-            <CollapsibleSubMenu class="el-nav-menu-vertical-pages" menuName="Pages">
-                <template slot="icon">
+            <!-- B: Pages -->
+            <el-submenu class="el-nav-menu-vertical-pages" index="Pages">
+                <template slot="title">
                     <fa class="fa-submenu" icon="align-justify"/>
+                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">Pages</span>
                 </template>
-                <template slot="submenu">
+                <el-menu-item-group v-if="isCollapse">
+                    <span slot="title" class="el-nav-menu-vertical-group-title">Pages</span>
+                    <PagesSubMenu/>
+                </el-menu-item-group>
+                <template v-else>
                     <PagesSubMenu/>
                 </template>
-            </CollapsibleSubMenu>
-            <CollapsibleSubMenu class="el-nav-menu-vertical-user" menuName="User">
-                <template slot="icon">
+            </el-submenu>
+            <!-- E: Pages -->
+            <!-- B: User -->
+            <el-submenu class="el-nav-menu-vertical-user" index="User">
+                <template slot="title">
                     <fa v-if="isAuthenticated" class="fa-submenu" icon="user-circle"/>
                     <fa v-else class="fa-submenu" icon="question-circle"/>
+                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">User</span>
                 </template>
-                <template slot="submenu">
+                <el-menu-item-group v-if="isCollapse">
+                    <span slot="title" class="el-nav-menu-vertical-group-title">User</span>
+                    <UserSubMenu/>
+                </el-menu-item-group>
+                <template v-else>
                     <UserSubMenu/>
                 </template>
-            </CollapsibleSubMenu>
-            <CollapsibleSubMenu class="el-nav-menu-vertical-footer" menuName="More">
-                <template slot="icon">
+            </el-submenu>
+            <!-- E: User -->
+            <!-- B: More -->
+            <el-submenu class="el-nav-menu-vertical-footer" index="More">
+                <template slot="title">
                     <fa class="fa-submenu" icon="ellipsis-h"/>
+                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">More</span>
                 </template>
-                <template slot="submenu">
+                <el-menu-item-group v-if="isCollapse">
+                    <span slot="title" class="el-nav-menu-vertical-group-title">More</span>
+                    <MoreSubMenu/>
+                </el-menu-item-group>
+                <template v-else>
                     <MoreSubMenu/>
                 </template>
-            </CollapsibleSubMenu>
+            </el-submenu>
+            <!-- E: More -->
         </el-menu>
     </div>
 </template>
@@ -66,11 +87,17 @@
 <style scoped src="@/styles/navigation-bar.css">
 </style>
 
+<style scoped src="@/styles/submenu.css">
+    .el-nav-menu-vertical-group-title {
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+</style>
+
 <script>
     import { mapGetters } from "vuex";
 
     import CollapsibleMenuItem from "@/components/navigation-bar/submenu/CollapsibleMenuItem.vue";
-    import CollapsibleSubMenu from "@/components/navigation-bar/submenu/CollapsibleSubMenu.vue";
     import PagesSubMenu from "@/components/navigation-bar/submenu/PagesSubMenu.vue";
     import UserSubMenu from "@/components/navigation-bar/submenu/UserSubMenu.vue";
     import MoreSubMenu from "@/components/navigation-bar/submenu/MoreSubMenu.vue";
@@ -85,7 +112,6 @@
         },
         components: {
             CollapsibleMenuItem,
-            CollapsibleSubMenu,
             PagesSubMenu,
             UserSubMenu,
             MoreSubMenu
