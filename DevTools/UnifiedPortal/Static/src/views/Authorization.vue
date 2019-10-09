@@ -1,7 +1,16 @@
 <template>
     <div class="authorization">
         <div class="alert-message">
-            <el-alert title="Welcome to the system" type="info" effect="light" center :closable="false" >
+            <el-alert type="info" effect="light" center :closable="false">
+                <span slot="title">
+                    <el-row type="flex" justify="center" align="middle" style="padding-top: 5px">
+                        <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="64px"
+                             height="64px"/>
+                    </el-row>
+                    <el-row>
+                        Welcome to the system
+                    </el-row>
+                </span>
                 <div class="alert-description">Before we'll start, please log in</div>
             </el-alert>
         </div>
