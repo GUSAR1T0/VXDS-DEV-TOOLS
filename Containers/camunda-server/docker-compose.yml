@@ -1,8 +1,24 @@
 version: "3.7"
 
 services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    hostname: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=sa
+      - POSTGRES_PASSWORD=<2019!Pass>
+      - POSTGRES_DB=master
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
   camunda-server:
     image: camunda-server
+    depends_on:
+      - postgres
     build:
       context: ../../ExtTools/CamundaServer
       dockerfile: ../../Containers/camunda-server/Dockerfile
@@ -13,3 +29,7 @@ services:
       - "9201:9201"
     networks:
       - default
+    command: java -jar -Dspring.datasource.url=jdbc:postgresql://postgres:5432/master CamundaServer.jar
+
+volumes:
+  postgres-data:
