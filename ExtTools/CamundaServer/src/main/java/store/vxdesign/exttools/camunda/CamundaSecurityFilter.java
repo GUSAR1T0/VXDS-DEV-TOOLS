@@ -23,19 +23,18 @@ public class CamundaSecurityFilter {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "camunda.bpm.admin-user.rest-auth.required")
+    @ConditionalOnProperty(name = "camunda.bpm.rest-auth.required")
     public FilterRegistrationBean<Filter> registerAuthenticationProvider() {
         var registration = new FilterRegistrationBean<>();
         registration.setName("camunda-auth");
         registration.setFilter(createAuthenticationProvider());
-        registration.addInitParameter("authentication-provider",
-                "org.camunda.bpm.engine.rest.security.auth.impl.HttpBasicAuthenticationProvider");
-        registration.addUrlPatterns("/*");
+        registration.addInitParameter("authentication-provider", "org.camunda.bpm.engine.rest.security.auth.impl.HttpBasicAuthenticationProvider");
+        registration.addUrlPatterns("/rest/*");
         return registration;
     }
 
     @Bean
-    @ConditionalOnProperty(name = "camunda.bpm.admin-user.rest-auth.required")
+    @ConditionalOnProperty(name = "camunda.bpm.rest-auth.required")
     public Filter createAuthenticationProvider() {
         return (servletRequest, servletResponse, filterChain) -> {
             var authHeader = ((HttpServletRequest) servletRequest).getHeader("Authorization");

@@ -1,3 +1,7 @@
+spring.datasource:
+  username: sa
+  password: <2019!Pass>
+  url: jdbc:postgresql://localhost:5432/master
 camunda.bpm:
   admin-user:
     id: vxdesign
@@ -5,8 +9,11 @@ camunda.bpm:
     firstName: Roman
     lastName: Mashenkin
     email: xromash@vxdesign.store
-    rest-auth:
-      required: false
+  database:
+    type: postgres
+    schema-update: true
+  rest-auth:
+    required: true
   filter:
     create: All tasks
 server.port: 9201
