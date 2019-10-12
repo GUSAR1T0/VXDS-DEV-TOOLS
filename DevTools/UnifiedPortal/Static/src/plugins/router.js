@@ -30,7 +30,7 @@ export default new Router({
         {
             path: "/user/:email?",
             name: "user",
-            component: () => import(/* webpackChunkName: "user" */ "../views/UserInfo.vue"),
+            component: () => import(/* webpackChunkName: "user-info" */ "../views/UserInfo.vue"),
             meta: {
                 pageName: "User Info"
             },

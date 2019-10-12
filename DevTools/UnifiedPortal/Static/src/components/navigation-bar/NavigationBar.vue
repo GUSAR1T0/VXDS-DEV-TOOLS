@@ -1,25 +1,19 @@
 <template>
     <div class="nav">
-        <el-menu class="el-nav-menu-vertical" :collapse="isCollapse" :router="true" :default-active="$route.path">
-            <CollapsibleMenuItem class="el-nav-menu-vertical-header" menuName="Home" index="/">
-                <template slot="icon">
-                    <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="40px"
-                         height="40px" class="el-nav-menu-logo">
-                </template>
-            </CollapsibleMenuItem>
+        <el-menu class="el-nav-menu-vertical" :collapse-transition="false" :collapse="true" :router="true" :default-active="$route.path">
+            <el-menu-item class="el-nav-menu-vertical-header" index="/">
+                <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="40px"
+                     height="40px" class="el-nav-menu-logo">
+            </el-menu-item>
             <!-- B: Pages -->
             <el-submenu class="el-nav-menu-vertical-pages" index="Pages">
                 <template slot="title">
                     <fa class="fa-submenu" icon="align-justify"/>
-                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">Pages</span>
                 </template>
-                <el-menu-item-group v-if="isCollapse">
+                <el-menu-item-group>
                     <span slot="title" class="el-nav-menu-vertical-group-title">Pages</span>
                     <PagesSubMenu/>
                 </el-menu-item-group>
-                <template v-else>
-                    <PagesSubMenu/>
-                </template>
             </el-submenu>
             <!-- E: Pages -->
             <!-- B: User -->
@@ -27,30 +21,22 @@
                 <template slot="title">
                     <fa v-if="isAuthenticated" class="fa-submenu" icon="user-circle"/>
                     <fa v-else class="fa-submenu" icon="question-circle"/>
-                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">User</span>
                 </template>
-                <el-menu-item-group v-if="isCollapse">
+                <el-menu-item-group>
                     <span slot="title" class="el-nav-menu-vertical-group-title">User</span>
                     <UserSubMenu/>
                 </el-menu-item-group>
-                <template v-else>
-                    <UserSubMenu/>
-                </template>
             </el-submenu>
             <!-- E: User -->
             <!-- B: More -->
             <el-submenu class="el-nav-menu-vertical-footer" index="More">
                 <template slot="title">
                     <fa class="fa-submenu" icon="ellipsis-h"/>
-                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">More</span>
                 </template>
-                <el-menu-item-group v-if="isCollapse">
+                <el-menu-item-group>
                     <span slot="title" class="el-nav-menu-vertical-group-title">More</span>
                     <MoreSubMenu/>
                 </el-menu-item-group>
-                <template v-else>
-                    <MoreSubMenu/>
-                </template>
             </el-submenu>
             <!-- E: More -->
         </el-menu>
@@ -84,7 +70,7 @@
     }
 </style>
 
-<style scoped src="@/styles/navigation-bar.css">
+<style scoped src="@/styles/navigation-bar.css" id="navmenu">
 </style>
 
 <style scoped src="@/styles/submenu.css">
@@ -97,7 +83,6 @@
 <script>
     import { mapGetters } from "vuex";
 
-    import CollapsibleMenuItem from "@/components/navigation-bar/submenu/CollapsibleMenuItem.vue";
     import PagesSubMenu from "@/components/navigation-bar/submenu/PagesSubMenu.vue";
     import UserSubMenu from "@/components/navigation-bar/submenu/UserSubMenu.vue";
     import MoreSubMenu from "@/components/navigation-bar/submenu/MoreSubMenu.vue";
@@ -105,16 +90,24 @@
     export default {
         name: "NavigationBar",
         computed: {
-            ...mapGetters({
-                isAuthenticated: "isAuthenticated",
-                isCollapse: "isNavigationBarCollapse"
-            })
+            ...mapGetters([
+                "isAuthenticated"
+            ])
         },
         components: {
-            CollapsibleMenuItem,
             PagesSubMenu,
             UserSubMenu,
             MoreSubMenu
+        },
+        mounted() {
+            let navmenu = document.getElementsByClassName("el-nav-menu-vertical");
+            window.onscroll = function () {
+                navmenu[0].style.top = (window.pageYOffset || document.documentElement.scrollTop) + "px";
+            };
+        },
+        updated() {
+            let navmenu = document.getElementsByClassName("el-nav-menu-vertical");
+            navmenu[0].style.top = "0px";
         }
     };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <el-container class="app-container" v-if="!this.loadingIsActive">
+        <el-container class="app-container" v-if="!loadingIsActive">
             <NavigationBar v-if="isAuthenticated"/>
             <el-container>
                 <el-header class="app-header" height="auto">
@@ -29,8 +29,6 @@
     import { mapGetters } from "vuex";
     import { ON_LOAD_REQUEST } from "@/constants/actions";
 
-    let loadingIsActive = true;
-
     export default {
         components: {
             NavigationBar,
@@ -40,7 +38,7 @@
         },
         data() {
             return {
-                loadingIsActive
+                loadingIsActive: true
             };
         },
         computed: {
@@ -64,9 +62,9 @@
             };
 
             this.$store.dispatch(ON_LOAD_REQUEST, window.location.pathname).then(redirectTo => {
-                this.$router.push(redirectTo).then(() => completeLoading()).catch(() => {});
+                this.$router.push(redirectTo).then(() => completeLoading()).catch(() => completeLoading());
             }).catch(() => {
-                this.$router.push("/auth").then(() => completeLoading()).catch(() => {});
+                this.$router.push("/auth").then(() => completeLoading()).catch(() => completeLoading());
             });
         }
     };

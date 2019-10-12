@@ -6,8 +6,6 @@ import {
     faEllipsisH,
     faHome,
     faInfoCircle,
-    faAngleRight,
-    faAngleLeft,
     faSignOutAlt,
     faSignInAlt,
     faUserPlus,
@@ -16,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faUserCircle, faUserAlt, faEllipsisH, faHome, faInfoCircle, faAngleRight, faAngleLeft, faSignOutAlt,
+library.add(faUserCircle, faUserAlt, faEllipsisH, faHome, faInfoCircle, faSignOutAlt,
     faSignInAlt, faUserPlus, faQuestionCircle, faAlignJustify);
 
 Vue.component("fa", FontAwesomeIcon);
