@@ -82,7 +82,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpGet]
-        public async Task<UserModel> GetUserData()
+        public async Task<UserAuthorizationModel> GetUserData()
         {
             var userData = await authorizationService.GetUserData(User.Claims);
             return userData.ToModel();

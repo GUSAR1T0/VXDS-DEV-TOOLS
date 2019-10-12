@@ -28,6 +28,15 @@ export default new Router({
             beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsNotRequired
         },
         {
+            path: "/user/:email?",
+            name: "user",
+            component: () => import(/* webpackChunkName: "user" */ "../views/UserInfo.vue"),
+            meta: {
+                pageName: "User Info"
+            },
+            beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsRequired
+        },
+        {
             path: "/about",
             name: "about",
             // route level code-splitting

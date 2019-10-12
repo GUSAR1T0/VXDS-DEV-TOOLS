@@ -49,7 +49,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// <returns>Response from Camunda server</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost("request")]
         public Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => HandleExceptionIfThrown(async () =>
         {

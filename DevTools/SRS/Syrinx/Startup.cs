@@ -24,8 +24,13 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
         public void ConfigureServices(IServiceCollection services)
         {
             var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
+
+            // Stores
+            var mongoDbClient = services.AddScopedService(() => BaseDataStore.Initialize(portalProperties.DatabaseConnectionProperties));
+            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(mongoDbClient));
+
+            // Services
             services.AddScopedService<ICamundaServerService>(() => new CamundaServerService(portalProperties.CamundaProperties));
-            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(portalProperties.DatabaseConnectionProperties));
             var authorizationService = services.AddScopedService<IAuthorizationService>(() => new AuthorizationService(portalProperties.AuthorizationTokenProperties, userDataStore));
             services.SetupAuthentication(authorizationService);
 

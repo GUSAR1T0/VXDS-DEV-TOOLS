@@ -1,4 +1,5 @@
 import { getTokens } from "@/extensions/tokens";
+import randomColor from "randomcolor";
 
 export function getYearsForFooter() {
     let firstYear = 2019;
@@ -22,4 +23,20 @@ export function getConfiguration(notSavedAccessToken = null) {
     }
 
     return {headers};
+}
+
+export function generateColor() {
+    return randomColor({
+        luminosity: "dark",
+        format: "rgba",
+        alpha: 0.75
+    });
+}
+
+export function getUserFullName(firstName, lastName) {
+    return `${firstName} ${lastName}`;
+}
+
+export function getUserInitials(firstName, lastName) {
+    return (firstName.substr(0, 1) + lastName.substr(0, 1)).toUpperCase();
 }

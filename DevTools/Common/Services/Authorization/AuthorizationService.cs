@@ -43,11 +43,18 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
 
         public async Task<RawJwtToken> SignIn(string email, string password)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password)) throw CommonExceptions.NoAuthenticationData();
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                throw CommonExceptions.NoAuthenticationData();
+            }
 
-            var id = await userDataStore.GetIdByUser(email, password);
+            var id = await userDataStore.GetUserIdByAccessData(email, password);
+            if (id == null)
+            {
+                throw CommonExceptions.InvalidEmailOrPassword();
+            }
+
             var identity = GetIdentity(id);
-            if (identity == null) throw CommonExceptions.InvalidEmailOrPassword();
 
             var token = new RawJwtToken
             {
@@ -55,18 +62,34 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
                 RefreshToken = GenerateRefreshToken()
             };
 
-            await userDataStore.UpdateRefreshToken(id, token.RefreshToken);
+            await userDataStore.UpdateRefreshTokenById(id, token.RefreshToken);
 
             return token;
         }
 
         public async Task<RawJwtToken> SignUp(UserRegistrationEntity entity)
         {
-            if (await userDataStore.GetIdByUser(entity.Email) != null) throw CommonExceptions.UserHasAlreadyExist();
+            if (string.IsNullOrWhiteSpace(entity.Email) || string.IsNullOrWhiteSpace(entity.Password))
+            {
+                throw CommonExceptions.NoAuthenticationData();
+            }
 
-            var user = await userDataStore.Create(entity);
+            if (await userDataStore.GetUserIdByAccessData(entity.Email) != null)
+            {
+                throw CommonExceptions.UserHasAlreadyExist();
+            }
+
+            UserAuthorizationEntity user;
+            try
+            {
+                user = await userDataStore.Create(entity);
+            }
+            catch (Exception e)
+            {
+                throw CommonExceptions.RegistrationIsFailed(e.Message);
+            }
+
             var identity = GetIdentity(user.Id);
-            if (identity == null) throw CommonExceptions.InvalidEmailOrPassword();
 
             var token = new RawJwtToken
             {
@@ -74,14 +97,17 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
                 RefreshToken = GenerateRefreshToken()
             };
 
-            await userDataStore.UpdateRefreshToken(user.Id, token.RefreshToken);
+            await userDataStore.UpdateRefreshTokenById(user.Id, token.RefreshToken);
 
             return token;
         }
 
         public async Task<RawJwtToken> RefreshToken(string accessToken, string refreshToken)
         {
-            if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken)) throw CommonExceptions.NoAuthenticationData();
+            if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken))
+            {
+                throw CommonExceptions.NoAuthenticationData();
+            }
 
             var principal = GetClaimsPrincipalDataFromToken(accessToken);
             var claims = principal.Claims.ToList();
@@ -95,7 +121,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
                 RefreshToken = GenerateRefreshToken()
             };
 
-            await userDataStore.UpdateRefreshToken(id, token.RefreshToken);
+            await userDataStore.UpdateRefreshTokenById(id, token.RefreshToken);
 
             return token;
         }
@@ -104,14 +130,14 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
         {
             var id = GetUserId(claims);
             var identity = GetIdentity(id);
-            identity.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
-            await userDataStore.UpdateRefreshToken(id, null);
+            identity?.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
+            await userDataStore.UpdateRefreshTokenById(id, null);
         }
 
         public async Task<UserAuthorizationEntity> GetUserData(IEnumerable<Claim> claims)
         {
             var id = GetUserId(claims);
-            return await userDataStore.GetEntityById(id);
+            return await userDataStore.GetAuthorizationEntityById(id);
         }
 
         private JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims)

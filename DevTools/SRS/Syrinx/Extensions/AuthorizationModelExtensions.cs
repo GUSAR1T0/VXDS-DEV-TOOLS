@@ -7,11 +7,12 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
 {
     internal static class AuthorizationModelExtensions
     {
-        internal static UserModel ToModel(this UserAuthorizationEntity entity) => new UserModel
+        internal static UserAuthorizationModel ToModel(this UserAuthorizationEntity entity) => new UserAuthorizationModel
         {
             Email = entity.Email,
             FirstName = entity.FirstName,
-            LastName = entity.LastName
+            LastName = entity.LastName,
+            Color = entity.Color
         };
 
         internal static UserRegistrationEntity ToEntity(this SignUpModel model) => new UserRegistrationEntity
@@ -19,7 +20,8 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            Password = model.Password
+            Password = model.Password,
+            Color = model.Color
         };
 
         internal static JwtTokenModel GetJwtTokenModel(this RawJwtToken token) => new JwtTokenModel

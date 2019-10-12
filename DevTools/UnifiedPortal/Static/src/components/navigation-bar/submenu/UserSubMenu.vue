@@ -1,11 +1,11 @@
 <template>
     <div class="user">
         <div v-if="isAuthenticated">
-            <el-menu-item>
+            <el-menu-item index="/user">
                 <fa class="fa-submenu-item" icon="user-alt"/>
                 <span slot="title" class="el-nav-menu-vertical-item">{{ getFullName }}</span>
             </el-menu-item>
-            <el-menu-item @click="logoutAction">
+            <el-menu-item @click="logoutAction" index="logout">
                 <fa class="fa-submenu-item" icon="sign-out-alt"/>
                 <span slot="title" class="el-nav-menu-vertical-item">Sign Out</span>
             </el-menu-item>
@@ -25,7 +25,8 @@
         computed: {
             ...mapGetters([
                 "isAuthenticated",
-                "getFullName"
+                "getEmail",
+                "getFullName",
             ])
         },
         methods: {

@@ -19,6 +19,8 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 
         public static BadRequestException InvalidEmailOrPassword() => new BadRequestException("Failed to authenticate user due to invalid email or password");
 
+        public static BadRequestException RegistrationIsFailed(string message) => new BadRequestException($"Failed to register user due to the following reasons: {message}");
+
         public static BadRequestException NoAuthenticationData() => new BadRequestException("No data for authentication");
 
         public static BadRequestException RefreshTokensAreDifferent() => new BadRequestException("Refresh tokens are different");

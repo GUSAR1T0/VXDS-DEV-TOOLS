@@ -7,9 +7,14 @@ namespace VXDesign.Store.DevTools.Common.DataStorage.Stores
     {
         protected IMongoDatabase Client { get; }
 
-        protected BaseDataStore(DatabaseConnectionProperties properties)
+        protected BaseDataStore(IMongoDatabase client)
         {
-            Client = new MongoClient(properties.ConnectionString).GetDatabase(properties.Database);
+            Client = client;
+        }
+
+        public static IMongoDatabase Initialize(DatabaseConnectionProperties properties)
+        {
+            return new MongoClient(properties.ConnectionString).GetDatabase(properties.Database);
         }
     }
 }

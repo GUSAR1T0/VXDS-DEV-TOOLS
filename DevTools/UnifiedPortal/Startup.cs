@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VXDesign.Store.DevTools.Common.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
+using VXDesign.Store.DevTools.Common.Services.Base;
 using VXDesign.Store.DevTools.Common.Services.Syrinx;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
@@ -24,8 +26,15 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
         public void ConfigureServices(IServiceCollection services)
         {
             var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
+
+            // Stores
+            var mongoDbClient = services.AddScopedService(() => BaseDataStore.Initialize(portalProperties.DatabaseConnectionProperties));
+            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(mongoDbClient));
+
+            // Services
             services.AddScopedService<ISyrinxCamundaClientService>(() => new SyrinxCamundaClientService(portalProperties.SyrinxProperties));
             services.AddScopedService<ISyrinxAuthenticationClientService>(() => new SyrinxAuthenticationClientService(portalProperties.SyrinxProperties));
+            services.AddScopedService<IUserService>(() => new UserService(userDataStore));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);

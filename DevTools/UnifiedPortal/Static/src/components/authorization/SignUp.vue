@@ -1,5 +1,6 @@
 <template>
     <div class="sign-up">
+        <UserCard :user="signUpForm" style="padding-bottom: 5px"/>
         <el-form :model="signUpForm" :rules="signUpRules" ref="signUpForm" label-width="120px"
                  @submit.native.prevent="submitForm('signUpForm')">
             <el-row class="auth-field-element" type="flex" justify="center">
@@ -39,8 +40,17 @@
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                    <el-form-item prop="avatar" label="Color">
+                        <el-button ref="colorButton" style="width: 100%" @click="generateColor">
+                            Generate new color
+                        </el-button>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row class="auth-field-element" type="flex" justify="center">
+                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
-                        <el-button type="danger" class="auth-button" native-type="submit">
+                        <el-button type="danger" ref="signUpButton" class="auth-button" native-type="submit">
                             Sign Up
                         </el-button>
                     </el-form-item>
@@ -57,18 +67,24 @@
     import SignUpValidations from "@/extensions/validations";
     import { mapGetters } from "vuex";
     import { SIGN_UP_REQUEST } from "@/constants/actions";
+    import UserCard from "@/components/user/UserCard.vue";
+    import { generateColor } from "@/extensions/utils";
 
     let signUpForm = {
         firstName: "",
         lastName: "",
         email: "",
         password: "",
-        passwordConfirmation: ""
+        passwordConfirmation: "",
+        color: generateColor()
     };
     let validations = new SignUpValidations(signUpForm);
 
     export default {
         name: "RequestRegistration",
+        components: {
+            UserCard
+        },
         data() {
             return {
                 signUpForm,
@@ -100,19 +116,26 @@
             ])
         },
         methods: {
+            generateColor() {
+                this.signUpForm.color = generateColor();
+            },
             submitForm(formName) {
+                this.$refs.signUpButton.loading = true;
                 this.$refs[formName].validate((valid) => {
                     if (!valid) {
+                        this.$refs.signUpButton.loading = false;
                         return false;
                     }
 
-                    this.$store.dispatch(SIGN_UP_REQUEST, signUpForm).then(() => {
+                    this.$store.dispatch(SIGN_UP_REQUEST, this.signUpForm).then(() => {
+                        this.$refs.signUpButton.loading = false;
                         this.$router.push("/");
                         this.$notify.info({
                             title: "Info",
                             message: `You are registered as ${this.getFullName}`
                         });
                     }).catch(error => {
+                        this.$refs.signUpButton.loading = false;
                         this.$notify.error({
                             title: "Error",
                             message: `Failed to sign up: ${error.response.data}`

@@ -14,6 +14,8 @@ namespace VXDesign.Store.DevTools.Common.DataStorage.Entities
         public string LastName { get; set; }
 
         public string Email { get; set; }
+
+        public string Color { get; set; }
     }
 
     [BsonIgnoreExtraElements]
@@ -26,5 +28,10 @@ namespace VXDesign.Store.DevTools.Common.DataStorage.Entities
     public class UserRegistrationEntity : GeneralUserEntity
     {
         public string Password { get; set; }
+    }
+
+    [BsonIgnoreExtraElements]
+    public class FullUserDataEntity : GeneralUserEntity
+    {
     }
 }

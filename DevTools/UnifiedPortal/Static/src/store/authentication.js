@@ -1,6 +1,6 @@
 import HttpClient from "@/extensions/httpClient";
 import { getTokens, setTokens, removeTokens } from "@/extensions/tokens";
-import { getConfiguration } from "@/extensions/utils";
+import { getConfiguration, getUserFullName, getUserInitials } from "@/extensions/utils";
 import {
     GET_USER_DATA_ENDPOINT,
     LOGOUT_ENDPOINT,
@@ -15,31 +15,47 @@ import {
     SIGN_IN_REQUEST,
     SIGN_UP_REQUEST
 } from "@/constants/actions";
+import { SYRINX } from "@/constants/servers";
 
 export default {
     state: {
+        isAuthenticated: false,
+        email: "",
         firstName: "",
         lastName: "",
-        isAuthenticated: false
+        color: ""
     },
     getters: {
         isAuthenticated: state => {
             return state.isAuthenticated;
         },
+        getEmail: state => {
+            return state.email;
+        },
         getFullName: state => {
-            return `${state.firstName} ${state.lastName}`;
+            return getUserFullName(state.firstName, state.lastName);
+        },
+        getInitials: state => {
+            return getUserInitials(state.firstName, state.lastName);
+        },
+        getColor: state => {
+            return state.color;
         }
     },
     mutations: {
         [SIGN_IN_REQUEST]: (state, data) => {
             state.isAuthenticated = true;
+            state.email = data.email;
             state.firstName = data.firstName;
             state.lastName = data.lastName;
+            state.color = data.color;
         },
         [LOGOUT_REQUEST]: state => {
             state.isAuthenticated = false;
+            state.email = "";
             state.firstName = "";
             state.lastName = "";
+            state.color = "";
         }
     },
     actions: {
@@ -48,7 +64,7 @@ export default {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
                     HttpClient.init().then(client => {
-                        client.get(GET_USER_DATA_ENDPOINT, getConfiguration(accessToken)).then(response => {
+                        client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(accessToken)).then(response => {
                             commit(SIGN_IN_REQUEST, response.data);
                             resolve(redirectTo);
                         }).catch(() => {
@@ -71,12 +87,13 @@ export default {
         [SIGN_IN_REQUEST]: ({commit}, signInForm) => {
             return new Promise((resolve, reject) => {
                 HttpClient.init().then(client => {
-                    client.post(SIGN_IN_ENDPOINT, signInForm).then(firstResponse => {
+                    client.post(SYRINX, SIGN_IN_ENDPOINT, signInForm, undefined).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                        client.get(GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken)).then(secondResponse => {
-                            commit(SIGN_IN_REQUEST, secondResponse.data);
-                            resolve();
-                        }).catch(error => {
+                        client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
+                            .then(secondResponse => {
+                                commit(SIGN_IN_REQUEST, secondResponse.data);
+                                resolve();
+                            }).catch(error => {
                             removeTokens();
                             reject(error);
                         });
@@ -93,12 +110,13 @@ export default {
         [SIGN_UP_REQUEST]: ({commit}, signUpForm) => {
             return new Promise((resolve, reject) => {
                 HttpClient.init().then(client => {
-                    client.post(SIGN_UP_ENDPOINT, signUpForm).then(firstResponse => {
+                    client.post(SYRINX, SIGN_UP_ENDPOINT, signUpForm, undefined).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                        client.get(GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken)).then(secondResponse => {
-                            commit(SIGN_IN_REQUEST, secondResponse.data);
-                            resolve();
-                        }).catch(error => {
+                        client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
+                            .then(secondResponse => {
+                                commit(SIGN_IN_REQUEST, secondResponse.data);
+                                resolve();
+                            }).catch(error => {
                             removeTokens();
                             reject(error);
                         });
@@ -117,12 +135,13 @@ export default {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
                     HttpClient.init().then(client => {
-                        client.post(REFRESH_ENDPOINT, {accessToken, refreshToken}).then(firstResponse => {
+                        client.post(SYRINX, REFRESH_ENDPOINT, {accessToken, refreshToken}, undefined).then(firstResponse => {
                             setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                            client.get(GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken)).then(secondResponse => {
-                                commit(SIGN_IN_REQUEST, secondResponse.data);
-                                resolve();
-                            }).catch(error => {
+                            client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
+                                .then(secondResponse => {
+                                    commit(SIGN_IN_REQUEST, secondResponse.data);
+                                    resolve();
+                                }).catch(error => {
                                 removeTokens();
                                 reject(error);
                             });
@@ -145,14 +164,14 @@ export default {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
                     HttpClient.init().then(client => {
-                        client.post(LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
+                        client.post(SYRINX, LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
                             commit(LOGOUT_REQUEST);
                             removeTokens();
                             resolve();
                         }).catch(() => {
                             dispatch(REFRESH_REQUEST).then(() => {
                                 const {accessToken} = getTokens();
-                                client.post(LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
+                                client.post(SYRINX, LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
                                     commit(LOGOUT_REQUEST);
                                     removeTokens();
                                     resolve();
