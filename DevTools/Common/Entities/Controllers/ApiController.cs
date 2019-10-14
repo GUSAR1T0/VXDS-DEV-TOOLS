@@ -15,7 +15,40 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             }
             catch (BadRequestException e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(new
+                {
+                    e.Message
+                });
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(new
+                {
+                    e.Message
+                });
+            }
+        }
+
+        protected ActionResult HandleExceptionIfThrown(Action action)
+        {
+            try
+            {
+                action();
+                return Ok();
+            }
+            catch (BadRequestException e)
+            {
+                return BadRequest(new
+                {
+                    e.Message
+                });
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(new
+                {
+                    e.Message
+                });
             }
         }
 
@@ -27,7 +60,40 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             }
             catch (BadRequestException e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(new
+                {
+                    e.Message
+                });
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(new
+                {
+                    e.Message
+                });
+            }
+        }
+
+        protected async Task<ActionResult> HandleExceptionIfThrown(Func<Task> action)
+        {
+            try
+            {
+                await action();
+                return Ok();
+            }
+            catch (BadRequestException e)
+            {
+                return BadRequest(new
+                {
+                    e.Message
+                });
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(new
+                {
+                    e.Message
+                });
             }
         }
     }

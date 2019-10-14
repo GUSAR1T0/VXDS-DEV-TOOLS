@@ -1,12 +1,14 @@
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.DataStorage.Entities;
 using VXDesign.Store.DevTools.Common.DataStorage.Stores;
+using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 
 namespace VXDesign.Store.DevTools.Common.Services.Base
 {
     public interface IUserService
     {
-        Task<FullUserDataEntity> GetUserByEmail(string email);
+        Task<UserProfileEntity> GetUserProfileByEmail(string email);
+        Task UpdateUserProfile(UserProfileEntity entity);
     }
 
     public class UserService : IUserService
@@ -18,14 +20,35 @@ namespace VXDesign.Store.DevTools.Common.Services.Base
             this.userDataStore = userDataStore;
         }
 
-        public async Task<FullUserDataEntity> GetUserByEmail(string email)
+        public async Task<UserProfileEntity> GetUserProfileByEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                return null;
+                throw CommonExceptions.FailedToGetProfileDueToMissedEmail();
             }
 
-            return await userDataStore.GetUserByEmail(email);
+            var entity = await userDataStore.GetProfileByEmail(email);
+            if (entity == null)
+            {
+                throw CommonExceptions.UserWasNotFound(email);
+            }
+
+            return entity;
+        }
+
+        public async Task UpdateUserProfile(UserProfileEntity entity)
+        {
+            if (string.IsNullOrWhiteSpace(entity.Id))
+            {
+                throw CommonExceptions.FailedToUpdateProfileDueToMissedId();
+            }
+
+            if (!await userDataStore.IsUserExist(entity.Id))
+            {
+                throw CommonExceptions.UserWasNotFound();
+            }
+
+            await userDataStore.UpdateProfile(entity);
         }
     }
 }

@@ -20,9 +20,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         }
 
         /// <summary>
-        /// Obtains full user data by email
+        /// Obtains user profile data by email
         /// </summary>
-        /// <param name="email">Unique ID for user</param>
+        /// <param name="email">Unique email address for user</param>
         /// <returns>User data if it was found</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -30,15 +30,27 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpGet]
-        public async Task<ActionResult<FullUserDataModel>> GetUser([FromQuery] string email)
+        public async Task<ActionResult<UserProfileModel>> GetUserProfile([FromQuery] string email) => await HandleExceptionIfThrown(async () =>
         {
-            var entity = await userService.GetUserByEmail(email);
-            if (entity != null)
-            {
-                return entity.ToModel();
-            }
+            var entity = await userService.GetUserProfileByEmail(email);
+            return entity.ToModel();
+        });
 
-            return NotFound();
-        }
+        /// <summary>
+        /// Updates user profile
+        /// </summary>
+        /// <param name="model">Model of user profile for update</param>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SyrinxVerifiedAuthentication]
+        [HttpPut]
+        public async Task<ActionResult> UpdateUserProfile([FromBody] UserProfileModel model) => await HandleExceptionIfThrown(async () =>
+        {
+            var entity = model.ToEntity();
+            await userService.UpdateUserProfile(entity);
+        });
     }
 }

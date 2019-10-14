@@ -1,8 +1,8 @@
 <template>
     <div class="more">
         <el-menu-item>
-            <fa class="fa-submenu-item" icon="ellipsis-h"/>
-            <span slot="title" class="el-nav-menu-vertical-item">One more thing...</span>
+            <fa class="fa-submenu-item" icon="tools"/>
+            <span slot="title" class="el-nav-menu-vertical-item">Settings</span>
         </el-menu-item>
     </div>
 </template>

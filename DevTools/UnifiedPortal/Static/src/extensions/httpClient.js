@@ -44,6 +44,11 @@ export default class HttpClient {
         let {host, api} = getHostAndApi(this.env, server);
         return this.axios.post(`${host}/${api}/${endpoint}`, data, config);
     }
+    
+    put(server, endpoint, data = null, config = undefined) {
+        let {host, api} = getHostAndApi(this.env, server);
+        return this.axios.put(`${host}/${api}/${endpoint}`, data, config);
+    }
 
     handleUnauthorizedResponse = (dispatch) => {
         this.axios.interceptors.response.use(response => response, error => {

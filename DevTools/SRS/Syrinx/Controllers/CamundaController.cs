@@ -51,7 +51,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("request")]
-        public Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => HandleExceptionIfThrown(async () =>
+        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await HandleExceptionIfThrown(async () =>
         {
             var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode();
             return (await camundaServerService.Send(model.ToEntity(endpoint))).ToModel();

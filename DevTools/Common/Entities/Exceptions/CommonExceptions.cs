@@ -30,5 +30,19 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
         public static BadRequestException UserHasAlreadyExist() => new BadRequestException("User with this email has already exist");
 
         #endregion
+
+        #region Users
+
+        public static BadRequestException FailedToGetProfileDueToMissedEmail() => new BadRequestException("Failed to get user profile due to missed email");
+
+        public static BadRequestException FailedToUpdateProfileDueToMissedId() => new BadRequestException("Failed to update user profile due to missed ID");
+
+        public static NotFoundException UserWasNotFound(string email = null)
+        {
+            var message = !string.IsNullOrWhiteSpace(email) ? $"User with email \"{email}\" was not found" : "Requested user was not found";
+            return new NotFoundException(message);
+        }
+
+        #endregion
     }
 }

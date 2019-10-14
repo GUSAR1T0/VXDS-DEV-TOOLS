@@ -67,8 +67,9 @@
     import SignUpValidations from "@/extensions/validations";
     import { mapGetters } from "vuex";
     import { SIGN_UP_REQUEST } from "@/constants/actions";
-    import UserCard from "@/components/user/UserCard.vue";
     import { generateColor } from "@/extensions/utils";
+
+    import UserCard from "@/components/user/UserCard.vue";
 
     let signUpForm = {
         firstName: "",
@@ -138,7 +139,7 @@
                         this.$refs.signUpButton.loading = false;
                         this.$notify.error({
                             title: "Error",
-                            message: `Failed to sign up: ${error.response.data}`
+                            message: `Failed to sign up: ${error.response.data.message}`
                         });
                     });
                 });

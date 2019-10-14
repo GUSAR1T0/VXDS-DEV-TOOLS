@@ -30,9 +30,9 @@ export default new Router({
         {
             path: "/user/:email?",
             name: "user",
-            component: () => import(/* webpackChunkName: "user-info" */ "../views/UserInfo.vue"),
+            component: () => import(/* webpackChunkName: "user-profile" */ "../views/UserProfile.vue"),
             meta: {
-                pageName: "User Info"
+                    pageName: "User Profile"
             },
             beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsRequired
         },

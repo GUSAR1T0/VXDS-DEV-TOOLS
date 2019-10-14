@@ -45,6 +45,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpGet("env")]
         public Dictionary<string, string> GetEnvironmentVariables() => new Dictionary<string, string>
         {
+            // TODO: should be like as a part of lookup
             { "LOCALHOST_API", "api" },
             { "SYRINX_HOST", syrinxProperties.Host },
             { "SYRINX_API", syrinxProperties.Api }

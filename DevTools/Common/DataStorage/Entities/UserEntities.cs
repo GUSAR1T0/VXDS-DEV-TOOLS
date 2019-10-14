@@ -31,7 +31,9 @@ namespace VXDesign.Store.DevTools.Common.DataStorage.Entities
     }
 
     [BsonIgnoreExtraElements]
-    public class FullUserDataEntity : GeneralUserEntity
+    public class UserProfileEntity : GeneralUserEntity
     {
+        public string Location { get; set; }
+        public string Bio { get; set; }
     }
 }

@@ -19,8 +19,7 @@
             <!-- B: User -->
             <el-submenu class="el-nav-menu-vertical-user" index="User">
                 <template slot="title">
-                    <fa v-if="isAuthenticated" class="fa-submenu" icon="user-circle"/>
-                    <fa v-else class="fa-submenu" icon="question-circle"/>
+                    <fa class="fa-submenu" icon="user-circle"/>
                 </template>
                 <el-menu-item-group>
                     <span slot="title" class="el-nav-menu-vertical-group-title">User</span>
@@ -81,19 +80,12 @@
 </style>
 
 <script>
-    import { mapGetters } from "vuex";
-
     import PagesSubMenu from "@/components/navigation-bar/submenu/PagesSubMenu.vue";
     import UserSubMenu from "@/components/navigation-bar/submenu/UserSubMenu.vue";
     import MoreSubMenu from "@/components/navigation-bar/submenu/MoreSubMenu.vue";
 
     export default {
         name: "NavigationBar",
-        computed: {
-            ...mapGetters([
-                "isAuthenticated"
-            ])
-        },
         components: {
             PagesSubMenu,
             UserSubMenu,

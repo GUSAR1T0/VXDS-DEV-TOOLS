@@ -82,7 +82,7 @@
                         this.$refs.signInButton.loading = false;
                         this.$notify.error({
                             title: "Error",
-                            message: `Failed to sign in: ${error.response.data}`
+                            message: `Failed to sign in: ${error.response.data.message}`
                         });
                     });
                 });

@@ -6,4 +6,5 @@ export const LOGOUT_ENDPOINT = "account/logout";
 export const GET_USER_DATA_ENDPOINT = "account";
 
 // User endpoints
-export const GET_FULL_USER_DATA_ENDPOINT = "user";
+export const GET_PROFILE_ENDPOINT = "user";
+export const UPDATE_PROFILE_ENDPOINT = "user";

@@ -48,7 +48,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
                 throw CommonExceptions.NoAuthenticationData();
             }
 
-            var id = await userDataStore.GetUserIdByAccessData(email, password);
+            var id = await userDataStore.GetIdByAccessData(email, password);
             if (id == null)
             {
                 throw CommonExceptions.InvalidEmailOrPassword();
@@ -74,7 +74,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
                 throw CommonExceptions.NoAuthenticationData();
             }
 
-            if (await userDataStore.GetUserIdByAccessData(entity.Email) != null)
+            if (await userDataStore.GetIdByAccessData(entity.Email) != null)
             {
                 throw CommonExceptions.UserHasAlreadyExist();
             }
@@ -137,7 +137,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
         public async Task<UserAuthorizationEntity> GetUserData(IEnumerable<Claim> claims)
         {
             var id = GetUserId(claims);
-            return await userDataStore.GetAuthorizationEntityById(id);
+            return await userDataStore.GetAuthorizationById(id);
         }
 
         private JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims)
