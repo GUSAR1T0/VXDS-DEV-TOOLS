@@ -12,8 +12,32 @@ services:
       - POSTGRES_DB=master
     ports:
       - "5432:5432"
+    networks:
+      - postgres-network
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    hostname: pgadmin
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=xromash@vxdesign.store
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "9502:80"
+    networks:
+      - postgres-network
+    volumes:
+      - pgadmin-data:/root/.pgadmin
+    depends_on:
+      - postgres
+
+networks:
+  postgres-network:
+    driver: bridge
+
 volumes:
   postgres-data:
+  pgadmin-data:

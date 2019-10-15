@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-camunda:/var/lib/postgresql/data
 
   camunda-server:
     image: camunda-server
@@ -32,4 +32,4 @@ services:
     command: java -jar -Dspring.datasource.url=jdbc:postgresql://postgres:5432/master CamundaServer.jar
 
 volumes:
-  postgres-data:
+  postgres-camunda:
