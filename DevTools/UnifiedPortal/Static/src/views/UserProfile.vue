@@ -8,18 +8,18 @@
         <el-main>
             <el-card shadow="hover">
                 <div slot="header">
-                    <h3>General</h3>
+                    <h3>General Info</h3>
                 </div>
                 <UserCard :user="user"/>
                 <HorizontalDivider v-if="noDetails" name="Details"/>
                 <div v-if="!noDetails && isAboutMe" style="margin-top: 20px"></div>
                 <UserInfoRow v-if="user.location" name="Location" :value-input="user.location"/>
                 <UserInfoRow v-if="user.bio" name="Bio" :value-input="user.bio"/>
-                <el-button v-if="isAboutMe" style="width: 100%" type="danger" plain @click="openUserUpdateForm">
+                <el-button v-if="isAboutMe" style="width: 100%" type="danger" plain @click="openUserGeneralInfoUpdateForm">
                     <fa icon="edit"></fa>
                 </el-button>
-                <UserUpdateForm :user="user" :user-update-form="userUpdateForm" :page-status="pageStatus"
-                                :closed="submitUserUpdateForm"/>
+                <UserGeneralInfoUpdateForm :user="user" :user-general-info-update-form="userGeneralInfoUpdateForm" :page-status="pageStatus"
+                                           :closed="submitUserGeneralInfoUpdateForm"/>
             </el-card>
             <el-card shadow="hover" style="margin-top: 25px">
                 <div slot="header">
@@ -49,7 +49,7 @@
     import UserCard from "@/components/user/UserCard.vue";
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import UserInfoRow from "@/components/user/UserInfoRow.vue";
-    import UserUpdateForm from "@/components/user/UserUpdateForm.vue";
+    import UserGeneralInfoUpdateForm from "@/components/user/UserGeneralInfoUpdateForm.vue";
 
     let user = {
         id: "",
@@ -71,12 +71,12 @@
             UserCard,
             HorizontalDivider,
             UserInfoRow,
-            UserUpdateForm
+            UserGeneralInfoUpdateForm
         },
         data() {
             return {
                 user,
-                userUpdateForm: {},
+                userGeneralInfoUpdateForm: {},
                 loadingIsActive: true,
                 pageStatus
             };
@@ -116,11 +116,11 @@
                     });
                 }));
             },
-            openUserUpdateForm() {
-                this.userUpdateForm = JSON.parse(JSON.stringify(this.user));
+            openUserGeneralInfoUpdateForm() {
+                this.userGeneralInfoUpdateForm = JSON.parse(JSON.stringify(this.user));
                 this.pageStatus.userUpdateFormDialogVisible = true;
             },
-            submitUserUpdateForm() {
+            submitUserGeneralInfoUpdateForm() {
                 this.fillForm(this.$route.params.email);
             }
         },

@@ -1,6 +1,6 @@
 using System;
 
-namespace VXDesign.Store.DevTools.Common.Entities.Enums
+namespace VXDesign.Store.DevTools.Common.Enums.Camunda
 {
     [Flags]
     public enum CamundaVariableDirection

@@ -3,7 +3,7 @@ using VXDesign.Store.DevTools.Common.DataStorage.Entities;
 using VXDesign.Store.DevTools.Common.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 
-namespace VXDesign.Store.DevTools.Common.Services.Base
+namespace VXDesign.Store.DevTools.Common.Services.AST
 {
     public interface IUserService
     {
@@ -14,10 +14,12 @@ namespace VXDesign.Store.DevTools.Common.Services.Base
     public class UserService : IUserService
     {
         private readonly IUserDataStore userDataStore;
+        private readonly IUserRoleStore userRoleStore;
 
-        public UserService(IUserDataStore userDataStore)
+        public UserService(IUserDataStore userDataStore, IUserRoleStore userRoleStore)
         {
             this.userDataStore = userDataStore;
+            this.userRoleStore = userRoleStore;
         }
 
         public async Task<UserProfileEntity> GetUserProfileByEmail(string email)
@@ -31,6 +33,11 @@ namespace VXDesign.Store.DevTools.Common.Services.Base
             if (entity == null)
             {
                 throw CommonExceptions.UserWasNotFound(email);
+            }
+
+            if (!string.IsNullOrWhiteSpace(entity.RoleId))
+            {
+                entity.Role = await userRoleStore.GetUserRoleById(entity.RoleId);
             }
 
             return entity;

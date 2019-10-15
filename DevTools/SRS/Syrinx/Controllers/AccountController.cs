@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
-using IAuthorizationService = VXDesign.Store.DevTools.Common.Services.Authorization.IAuthorizationService;
+using IAuthorizationService = VXDesign.Store.DevTools.Common.Services.AST.IAuthorizationService;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {

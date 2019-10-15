@@ -5,7 +5,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
 {
     internal static class UserModelExtensions
     {
-        internal static UserProfileModel ToModel(this UserProfileEntity entity) => new UserProfileModel
+        internal static UserProfileGetModel ToModel(this UserProfileEntity entity) => new UserProfileGetModel
         {
             Id = entity.Id,
             Email = entity.Email,
@@ -13,18 +13,19 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
             LastName = entity.LastName,
             Color = entity.Color,
             Location = entity.Location,
-            Bio = entity.Bio
+            Bio = entity.Bio,
+            Role = entity.Role.ToModel()
         };
 
-        internal static UserProfileEntity ToEntity(this UserProfileModel model) => new UserProfileEntity
+        internal static UserProfileEntity ToEntity(this UserProfileGeneralInfoUpdateModel model, string id) => new UserProfileEntity
         {
-            Id = model.Id,
+            Id = id,
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
             Color = model.Color,
             Location = model.Location,
-            Bio = model.Bio
+            Bio = model.Bio,
         };
     }
 }

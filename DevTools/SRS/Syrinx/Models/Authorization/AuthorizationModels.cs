@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
 {
     public class SignInModel

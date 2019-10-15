@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VXDesign.Store.DevTools.Common.Attributes;
-using VXDesign.Store.DevTools.Common.Entities.Enums;
+using VXDesign.Store.DevTools.Common.Enums.Camunda;
+using VXDesign.Store.DevTools.Common.Enums.HTTP;
 using VXDesign.Store.DevTools.Common.Extensions.Base;
 
 namespace VXDesign.Store.DevTools.Common.Containers.Camunda.Base

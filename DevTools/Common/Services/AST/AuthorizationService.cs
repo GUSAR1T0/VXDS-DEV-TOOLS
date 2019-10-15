@@ -6,13 +6,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using VXDesign.Store.DevTools.Common.Containers.AST.Authorization;
 using VXDesign.Store.DevTools.Common.Containers.Properties;
 using VXDesign.Store.DevTools.Common.DataStorage.Entities;
 using VXDesign.Store.DevTools.Common.DataStorage.Stores;
-using VXDesign.Store.DevTools.Common.Entities.Authorization;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 
-namespace VXDesign.Store.DevTools.Common.Services.Authorization
+namespace VXDesign.Store.DevTools.Common.Services.AST
 {
     internal static class AuthorizationClaimName
     {
@@ -82,7 +82,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Authorization
             UserAuthorizationEntity user;
             try
             {
-                user = await userDataStore.Create(entity);
+                user = await userDataStore.CreateUser(entity);
             }
             catch (Exception e)
             {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Services.Base;
+using VXDesign.Store.DevTools.Common.Services.AST;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.User;
 
@@ -30,15 +30,16 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpGet]
-        public async Task<ActionResult<UserProfileModel>> GetUserProfile([FromQuery] string email) => await HandleExceptionIfThrown(async () =>
+        public async Task<ActionResult<UserProfileGetModel>> GetUserProfile([FromQuery] string email) => await HandleExceptionIfThrown(async () =>
         {
             var entity = await userService.GetUserProfileByEmail(email);
             return entity.ToModel();
         });
 
         /// <summary>
-        /// Updates user profile
+        /// Updates user profile data
         /// </summary>
+        /// <param name="id">ID of user for update</param>
         /// <param name="model">Model of user profile for update</param>
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -46,10 +47,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
-        [HttpPut]
-        public async Task<ActionResult> UpdateUserProfile([FromBody] UserProfileModel model) => await HandleExceptionIfThrown(async () =>
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateUserProfile(string id, [FromBody] UserProfileGeneralInfoUpdateModel model) => await HandleExceptionIfThrown(async () =>
         {
-            var entity = model.ToEntity();
+            var entity = model.ToEntity(id);
             await userService.UpdateUserProfile(entity);
         });
     }

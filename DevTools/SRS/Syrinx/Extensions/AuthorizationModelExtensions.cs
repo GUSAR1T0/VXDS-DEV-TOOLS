@@ -1,6 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
+using VXDesign.Store.DevTools.Common.Containers.AST.Authorization;
 using VXDesign.Store.DevTools.Common.DataStorage.Entities;
-using VXDesign.Store.DevTools.Common.Entities.Authorization;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions

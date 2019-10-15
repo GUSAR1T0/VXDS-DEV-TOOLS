@@ -12,7 +12,7 @@ namespace VXDesign.Store.DevTools.Common.DataStorage.Stores
         Task<string> GetRefreshTokenById(string id);
         Task<string> GetIdByAccessData(string email, string password = null);
         Task UpdateRefreshTokenById(string id, string refreshToken);
-        Task<UserAuthorizationEntity> Create(UserRegistrationEntity entity);
+        Task<UserAuthorizationEntity> CreateUser(UserRegistrationEntity entity);
 
         #endregion
 
@@ -55,7 +55,7 @@ namespace VXDesign.Store.DevTools.Common.DataStorage.Stores
             await Authorizations.UpdateOneAsync(user => user.Id == id, Builders<UserAuthorizationEntity>.Update.Set(user => user.RefreshToken, refreshToken));
         }
 
-        public async Task<UserAuthorizationEntity> Create(UserRegistrationEntity entity)
+        public async Task<UserAuthorizationEntity> CreateUser(UserRegistrationEntity entity)
         {
             entity.Email = entity.Email.ToLowerInvariant();
             await Registrations.InsertOneAsync(entity);

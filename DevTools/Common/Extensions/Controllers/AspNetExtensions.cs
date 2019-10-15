@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
-using VXDesign.Store.DevTools.Common.Services.Authorization;
+using VXDesign.Store.DevTools.Common.Services.AST;
 using VXDesign.Store.DevTools.Common.Utils.Base;
 using VXDesign.Store.DevTools.Common.Utils.Properties;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;

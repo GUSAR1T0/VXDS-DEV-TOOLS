@@ -35,5 +35,9 @@ namespace VXDesign.Store.DevTools.Common.DataStorage.Entities
     {
         public string Location { get; set; }
         public string Bio { get; set; }
+        public string RoleId { get; set; }
+
+        [BsonIgnore]
+        public UserRoleEntity Role { get; set; }
     }
 }

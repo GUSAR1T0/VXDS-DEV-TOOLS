@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Entities.HTTP;
 using VXDesign.Store.DevTools.Common.Extensions.Base;
-using HttpMethod = VXDesign.Store.DevTools.Common.Entities.Enums.HttpMethod;
+using HttpMethod = VXDesign.Store.DevTools.Common.Enums.HTTP.HttpMethod;
 
 namespace VXDesign.Store.DevTools.Common.Services.HTTP
 {

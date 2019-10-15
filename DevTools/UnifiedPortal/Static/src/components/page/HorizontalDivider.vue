@@ -6,7 +6,11 @@
     </div>
 </template>
 
-<style scoped src="@/styles/custom-divider.css">
+<style scoped>
+    .divider-content {
+        text-transform: uppercase;
+        font-size: 16px;
+    }
 </style>
 
 <script>

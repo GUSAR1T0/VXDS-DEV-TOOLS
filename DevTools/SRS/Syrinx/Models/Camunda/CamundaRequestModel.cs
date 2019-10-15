@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using VXDesign.Store.DevTools.Common.Entities.Enums;
+using VXDesign.Store.DevTools.Common.Enums;
+using VXDesign.Store.DevTools.Common.Enums.Camunda;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda
 {

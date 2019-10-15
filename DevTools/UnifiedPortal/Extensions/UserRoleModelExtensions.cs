@@ -1,0 +1,20 @@
+using VXDesign.Store.DevTools.Common.DataStorage.Entities;
+using VXDesign.Store.DevTools.UnifiedPortal.Models.User;
+
+namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
+{
+    internal static class UserRoleModelExtensions
+    {
+        internal static UserRoleModel ToModel(this UserRoleEntity entity) => new UserRoleModel
+        {
+            Id = entity.Id,
+            Name = entity.Name
+        };
+
+        internal static UserRoleEntity ToEntity(this UserRoleModel model, string id = null) => new UserRoleEntity
+        {
+            Id = id ?? model.Id,
+            Name = model.Name
+        };
+    }
+}

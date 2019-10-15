@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Containers.Properties;
 using VXDesign.Store.DevTools.Common.Containers.Syrinx.VerifyAuthentication;
 using VXDesign.Store.DevTools.Common.Services.HTTP;
-using HttpMethod = VXDesign.Store.DevTools.Common.Entities.Enums.HttpMethod;
+using HttpMethod = VXDesign.Store.DevTools.Common.Enums.HTTP.HttpMethod;
 
 namespace VXDesign.Store.DevTools.Common.Services.Syrinx
 {

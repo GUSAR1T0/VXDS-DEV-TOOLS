@@ -1,6 +1,6 @@
 using Microsoft.IdentityModel.Tokens;
 
-namespace VXDesign.Store.DevTools.Common.Entities.Authorization
+namespace VXDesign.Store.DevTools.Common.Containers.AST.Authorization
 {
     public class RawJwtToken
     {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
-using VXDesign.Store.DevTools.Common.Services.Authorization;
+using VXDesign.Store.DevTools.Common.Services.AST;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;
 

@@ -1,6 +1,7 @@
 using VXDesign.Store.DevTools.Common.Attributes;
+using VXDesign.Store.DevTools.Common.Enums.HTTP;
 
-namespace VXDesign.Store.DevTools.Common.Entities.Enums
+namespace VXDesign.Store.DevTools.Common.Enums.Camunda
 {
     public enum CamundaAction
     {

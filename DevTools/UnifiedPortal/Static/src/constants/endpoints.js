@@ -7,4 +7,4 @@ export const GET_USER_DATA_ENDPOINT = "account";
 
 // User endpoints
 export const GET_PROFILE_ENDPOINT = "user";
-export const UPDATE_PROFILE_ENDPOINT = "user";
+export const UPDATE_PROFILE_ENDPOINT = "user/{id}";

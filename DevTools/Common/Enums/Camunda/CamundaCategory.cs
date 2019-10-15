@@ -1,6 +1,6 @@
 using VXDesign.Store.DevTools.Common.Attributes;
 
-namespace VXDesign.Store.DevTools.Common.Entities.Enums
+namespace VXDesign.Store.DevTools.Common.Enums.Camunda
 {
     public enum CamundaCategory
     {

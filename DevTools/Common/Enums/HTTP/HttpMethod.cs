@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace VXDesign.Store.DevTools.Common.Entities.Enums
+namespace VXDesign.Store.DevTools.Common.Enums.HTTP
 {
     public enum HttpMethod
     {
