@@ -6,9 +6,9 @@ namespace VXDesign.Store.DevTools.Common.Containers.Properties
     public class DatabaseConnectionProperties : IPropertiesMarker
     {
         [PropertyField]
-        public string ConnectionString { get; set; }
+        public string DataStoreConnectionString { get; set; }
 
         [PropertyField]
-        public string Database { get; set; }
+        public string LogStoreConnectionString { get; set; }
     }
 }

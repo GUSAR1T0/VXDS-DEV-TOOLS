@@ -14,10 +14,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
             Color = entity.Color,
             Location = entity.Location,
             Bio = entity.Bio,
-            Role = entity.Role.ToModel()
+//            Role = entity.Role.ToModel()
         };
 
-        internal static UserProfileEntity ToEntity(this UserProfileGeneralInfoUpdateModel model, string id) => new UserProfileEntity
+        internal static UserProfileEntity ToEntity(this UserProfileGeneralInfoUpdateModel model, int id) => new UserProfileEntity
         {
             Id = id,
             Email = model.Email,

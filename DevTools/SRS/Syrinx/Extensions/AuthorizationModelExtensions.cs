@@ -9,6 +9,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
     {
         internal static UserAuthorizationModel ToModel(this UserAuthorizationEntity entity) => new UserAuthorizationModel
         {
+            Id = entity.Id,
             Email = entity.Email,
             FirstName = entity.FirstName,
             LastName = entity.LastName,

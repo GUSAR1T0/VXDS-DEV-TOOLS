@@ -50,6 +50,7 @@
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import UserInfoRow from "@/components/user/UserInfoRow.vue";
     import UserGeneralInfoUpdateForm from "@/components/user/UserGeneralInfoUpdateForm.vue";
+    import { SIGN_IN_REQUEST } from "@/constants/actions";
 
     let user = {
         id: "",
@@ -93,7 +94,7 @@
             }
         },
         methods: {
-            fillForm(email) {
+            fillForm(email, reloadAuthenticationData = false) {
                 this.loadingIsActive = true;
                 let emailQueried = email === undefined ? this.getEmail : email;
                 let query = `${GET_PROFILE_ENDPOINT}?email=${emailQueried}`;
@@ -107,6 +108,10 @@
                     this.user.color = response.data.color;
                     this.user.location = response.data.location;
                     this.user.bio = response.data.bio;
+
+                    if (reloadAuthenticationData) {
+                        this.$store.commit(SIGN_IN_REQUEST, response.data);
+                    }
                 }).catch(error => {
                     this.loadingIsActive = false;
                     this.$router.back();
@@ -121,7 +126,7 @@
                 this.pageStatus.userUpdateFormDialogVisible = true;
             },
             submitUserGeneralInfoUpdateForm() {
-                this.fillForm(this.$route.params.email);
+                this.fillForm(this.$route.params.email, true);
             }
         },
         mounted() {

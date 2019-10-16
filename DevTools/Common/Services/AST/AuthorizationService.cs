@@ -62,7 +62,7 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
                 RefreshToken = GenerateRefreshToken()
             };
 
-            await userDataStore.UpdateRefreshTokenById(id, token.RefreshToken);
+            await userDataStore.UpdateRefreshTokenById(id.Value, token.RefreshToken);
 
             return token;
         }
@@ -111,7 +111,7 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
 
             var principal = GetClaimsPrincipalDataFromToken(accessToken);
             var claims = principal.Claims.ToList();
-            var id = GetUserId(claims);
+            var id = GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims();
             var storedRefreshToken = await userDataStore.GetRefreshTokenById(id);
             if (storedRefreshToken?.Equals(refreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent();
 
@@ -128,7 +128,7 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
 
         public async Task Logout(IEnumerable<Claim> claims)
         {
-            var id = GetUserId(claims);
+            var id = GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims();
             var identity = GetIdentity(id);
             identity?.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
             await userDataStore.UpdateRefreshTokenById(id, null);
@@ -136,7 +136,7 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
 
         public async Task<UserAuthorizationEntity> GetUserData(IEnumerable<Claim> claims)
         {
-            var id = GetUserId(claims);
+            var id = GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims();
             return await userDataStore.GetAuthorizationById(id);
         }
 
@@ -153,14 +153,14 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
             );
         }
 
-        private static ClaimsIdentity GetIdentity(string id) => !string.IsNullOrWhiteSpace(id)
+        private static ClaimsIdentity GetIdentity(int? id) => id.HasValue
             ? new ClaimsIdentity(new List<Claim>
             {
-                new Claim(AuthorizationClaimName.UserId, id)
+                new Claim(AuthorizationClaimName.UserId, id.ToString())
             }, "Token")
             : null;
 
-        private static string GetUserId(IEnumerable<Claim> claims) => GetClaimValue(claims, AuthorizationClaimName.UserId);
+        private static int? GetUserId(IEnumerable<Claim> claims) => int.TryParse(GetClaimValue(claims, AuthorizationClaimName.UserId), out var value) ? value : (int?) null;
 
         private static string GetClaimValue(IEnumerable<Claim> claims, string key) => claims.FirstOrDefault(c => string.Equals(c.Type, key, StringComparison.InvariantCultureIgnoreCase))?.Value;
 

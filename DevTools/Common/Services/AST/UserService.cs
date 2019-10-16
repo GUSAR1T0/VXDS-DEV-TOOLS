@@ -14,12 +14,10 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
     public class UserService : IUserService
     {
         private readonly IUserDataStore userDataStore;
-        private readonly IUserRoleStore userRoleStore;
 
-        public UserService(IUserDataStore userDataStore, IUserRoleStore userRoleStore)
+        public UserService(IUserDataStore userDataStore)
         {
             this.userDataStore = userDataStore;
-            this.userRoleStore = userRoleStore;
         }
 
         public async Task<UserProfileEntity> GetUserProfileByEmail(string email)
@@ -35,21 +33,11 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
                 throw CommonExceptions.UserWasNotFound(email);
             }
 
-            if (!string.IsNullOrWhiteSpace(entity.RoleId))
-            {
-                entity.Role = await userRoleStore.GetUserRoleById(entity.RoleId);
-            }
-
             return entity;
         }
 
         public async Task UpdateUserProfile(UserProfileEntity entity)
         {
-            if (string.IsNullOrWhiteSpace(entity.Id))
-            {
-                throw CommonExceptions.FailedToUpdateProfileDueToMissedId();
-            }
-
             if (!await userDataStore.IsUserExist(entity.Id))
             {
                 throw CommonExceptions.UserWasNotFound();

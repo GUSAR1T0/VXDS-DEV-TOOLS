@@ -10,7 +10,7 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
         Task<IEnumerable<UserRoleEntity>> GetUserRoles();
         Task AddUserRole(UserRoleEntity entity);
         Task UpdateUserRole(UserRoleEntity entity);
-        Task DeleteUserRoleById(string id);
+        Task DeleteUserRoleById(int id);
     }
 
     public class UserRoleService : IUserRoleService
@@ -28,6 +28,6 @@ namespace VXDesign.Store.DevTools.Common.Services.AST
 
         public async Task UpdateUserRole(UserRoleEntity entity) => await userRoleStore.UpdateUserRole(entity);
 
-        public async Task DeleteUserRoleById(string id) => await userRoleStore.DeleteUserRoleById(id);
+        public async Task DeleteUserRoleById(int id) => await userRoleStore.DeleteUserRoleById(id);
     }
 }

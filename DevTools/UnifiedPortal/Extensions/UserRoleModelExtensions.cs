@@ -11,7 +11,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
             Name = entity.Name
         };
 
-        internal static UserRoleEntity ToEntity(this UserRoleModel model, string id = null) => new UserRoleEntity
+        internal static UserRoleEntity ToEntity(this UserRoleModel model, int? id = null) => new UserRoleEntity
         {
             Id = id ?? model.Id,
             Name = model.Name

@@ -48,7 +48,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUserProfile(string id, [FromBody] UserProfileGeneralInfoUpdateModel model) => await HandleExceptionIfThrown(async () =>
+        public async Task<ActionResult> UpdateUserProfile(int id, [FromBody] UserProfileGeneralInfoUpdateModel model) => await HandleExceptionIfThrown(async () =>
         {
             var entity = model.ToEntity(id);
             await userService.UpdateUserProfile(entity);

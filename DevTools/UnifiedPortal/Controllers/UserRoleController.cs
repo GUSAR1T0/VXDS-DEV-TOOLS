@@ -60,7 +60,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpPut("{id}")]
-        public async Task UpdateUserRole(string id, [FromBody] UserRoleModel model) => await HandleExceptionIfThrown(async () => await userRoleService.UpdateUserRole(model.ToEntity(id)));
+        public async Task UpdateUserRole(int id, [FromBody] UserRoleModel model) => await HandleExceptionIfThrown(async () => await userRoleService.UpdateUserRole(model.ToEntity(id)));
 
         /// <summary>
         /// Removes an existed user role
@@ -73,6 +73,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpDelete("{id}")]
-        public async Task DeleteUserRole(string id) => await HandleExceptionIfThrown(async () => await userRoleService.DeleteUserRoleById(id));
+        public async Task DeleteUserRole(int id) => await HandleExceptionIfThrown(async () => await userRoleService.DeleteUserRoleById(id));
     }
 }

@@ -28,14 +28,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
 
             // Stores
-            var mongoDbClient = services.AddScopedService(() => BaseDataStore.Initialize(portalProperties.DatabaseConnectionProperties));
-            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(mongoDbClient));
-            var userRoleStore = services.AddScopedService<IUserRoleStore>(() => new UserRoleStore(mongoDbClient));
+//            var mongoDbClient = services.AddScopedService(() => BaseMongoDataStore.Initialize(portalProperties.DatabaseConnectionProperties));
+            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(portalProperties.DatabaseConnectionProperties));
+            var userRoleStore = services.AddScopedService<IUserRoleStore>(() => new UserRoleStore(portalProperties.DatabaseConnectionProperties));
 
             // Services
             services.AddScopedService<ISyrinxCamundaClientService>(() => new SyrinxCamundaClientService(portalProperties.SyrinxProperties));
             services.AddScopedService<ISyrinxAuthenticationClientService>(() => new SyrinxAuthenticationClientService(portalProperties.SyrinxProperties));
-            services.AddScopedService<IUserService>(() => new UserService(userDataStore, userRoleStore));
+            services.AddScopedService<IUserService>(() => new UserService(userDataStore));
             services.AddScopedService<IUserRoleService>(() => new UserRoleService(userRoleStore));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

@@ -29,13 +29,13 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 
         public static BadRequestException UserHasAlreadyExist() => new BadRequestException("User with this email has already exist");
 
+        public static BadRequestException FailedToReadAuthenticationDataFromClaims() => new BadRequestException("Failed to read authentication data from claims");
+
         #endregion
 
         #region Users
 
         public static BadRequestException FailedToGetProfileDueToMissedEmail() => new BadRequestException("Failed to get user profile due to missed email");
-
-        public static BadRequestException FailedToUpdateProfileDueToMissedId() => new BadRequestException("Failed to update user profile due to missed ID");
 
         public static NotFoundException UserWasNotFound(string email = null)
         {
