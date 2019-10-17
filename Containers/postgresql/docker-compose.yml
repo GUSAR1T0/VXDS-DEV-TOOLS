@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=<2019!Pass>
       - POSTGRES_DB=master
     ports:
-      - "5432:5432"
+      - "9501:5432"
     networks:
       - postgres-network
     volumes:
@@ -26,7 +26,7 @@ services:
       - PGADMIN_DEFAULT_EMAIL=xromash@vxdesign.store
       - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
-      - "9502:80"
+      - "9601:80"
     networks:
       - postgres-network
     volumes:
