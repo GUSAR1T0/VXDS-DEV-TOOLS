@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Extensions.Base;
 using VXDesign.Store.DevTools.Common.Extensions.HTTP;

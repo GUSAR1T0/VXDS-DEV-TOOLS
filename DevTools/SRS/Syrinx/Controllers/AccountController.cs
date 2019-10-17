@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
+using VXDesign.Store.DevTools.Common.Services.Operations;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
-using IAuthorizationService = VXDesign.Store.DevTools.Common.Services.AST.IAuthorizationService;
+using IAuthorizationService = VXDesign.Store.DevTools.SRS.Authorization.IAuthorizationService;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
@@ -14,7 +15,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
     {
         private readonly IAuthorizationService authorizationService;
 
-        public AccountController(IAuthorizationService authorizationService)
+        public AccountController(IOperationService operationService, IAuthorizationService authorizationService) : base(operationService)
         {
             this.authorizationService = authorizationService;
         }
@@ -24,11 +25,12 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// </summary>
         /// <param name="model">Authentication model with needed fields</param>
         /// <returns>String values of access and refresh tokens</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(JwtTokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [HttpPost("sign-in")]
-        public async Task<ActionResult<JwtTokenModel>> SignIn([FromBody] SignInModel model) => await HandleExceptionIfThrown(async () =>
+        public async Task<ActionResult<JwtTokenModel>> SignIn([FromBody] SignInModel model) => await Execute(async operation =>
         {
             var token = await authorizationService.SignIn(model.Email, model.Password);
             return token.GetJwtTokenModel();
@@ -39,11 +41,11 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// </summary>
         /// <param name="model">Registration model with needed fields</param>
         /// <returns>String values of access and refresh tokens</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(JwtTokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("sign-up")]
-        public async Task<ActionResult<JwtTokenModel>> SignUp([FromBody] SignUpModel model) => await HandleExceptionIfThrown(async () =>
+        public async Task<ActionResult<JwtTokenModel>> SignUp([FromBody] SignUpModel model) => await Execute(async operation =>
         {
             var token = await authorizationService.SignUp(model.ToEntity());
             return token.GetJwtTokenModel();
@@ -54,11 +56,11 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// </summary>
         /// <param name="model">Refresh token model with needed fields</param>
         /// <returns>String values of access and refresh tokens</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(JwtTokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await HandleExceptionIfThrown(async () =>
+        public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await Execute(async operation =>
         {
             var token = await authorizationService.RefreshToken(model.AccessToken, model.RefreshToken);
             return token.GetJwtTokenModel();
@@ -69,24 +71,27 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// </summary>
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpPost("logout")]
-        public async Task Logout() => await authorizationService.Logout(User.Claims);
+        public async Task<ActionResult> Logout() => await Execute(async context => await authorizationService.Logout(User.Claims));
 
         /// <summary>
         /// Obtains authorization user data by token
         /// </summary>
         /// <returns>Authorization user data</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserAuthorizationModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [Authorize]
         [HttpGet]
-        public async Task<UserAuthorizationModel> GetUserData()
+        public async Task<ActionResult<UserAuthorizationModel>> GetUserData() => await Execute(async operation =>
         {
             var userData = await authorizationService.GetUserData(User.Claims);
             return userData.ToModel();
-        }
+        });
 
         /// <summary>
         /// Tests authentication token from derived servers

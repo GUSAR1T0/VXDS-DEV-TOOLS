@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using VXDesign.Store.DevTools.Common.Containers.Syrinx.VerifyAuthentication;
+using VXDesign.Store.DevTools.Common.Entities.Syrinx;
 using VXDesign.Store.DevTools.Common.Extensions.HTTP;
 
 namespace VXDesign.Store.DevTools.Common.Services.Syrinx

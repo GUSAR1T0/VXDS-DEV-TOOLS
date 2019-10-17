@@ -1,99 +1,70 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
+using VXDesign.Store.DevTools.Common.Services.Operations;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Controllers
 {
     public abstract class ApiController : ControllerBase
     {
-        protected ActionResult<T> HandleExceptionIfThrown<T>(Func<T> action)
+        private readonly IOperationService operationService;
+
+        protected ApiController(IOperationService operationService)
         {
-            try
-            {
-                return action();
-            }
-            catch (BadRequestException e)
-            {
-                return BadRequest(new
-                {
-                    e.Message
-                });
-            }
-            catch (NotFoundException e)
-            {
-                return NotFound(new
-                {
-                    e.Message
-                });
-            }
+            this.operationService = operationService;
         }
 
-        protected ActionResult HandleExceptionIfThrown(Action action)
+        private static ObjectResult InternalServerError(object value) => new ObjectResult(value)
+        {
+            StatusCode = StatusCodes.Status500InternalServerError
+        };
+
+        private static ObjectResult HandleException(Func<ResponseResult, ObjectResult> response, Exception exception) => response(new ResponseResult
+        {
+            Message = exception.Message
+        });
+
+        protected async Task<ActionResult> Execute(Func<IOperation, Task> action)
         {
             try
             {
-                action();
+                await operationService.Make(action);
                 return Ok();
             }
             catch (BadRequestException e)
             {
-                return BadRequest(new
-                {
-                    e.Message
-                });
+                return HandleException(BadRequest, e);
             }
             catch (NotFoundException e)
             {
-                return NotFound(new
-                {
-                    e.Message
-                });
+                return HandleException(NotFound, e);
+            }
+            catch (Exception e)
+            {
+                return HandleException(InternalServerError, e);
             }
         }
 
-        protected async Task<ActionResult<T>> HandleExceptionIfThrown<T>(Func<Task<T>> action)
+        protected async Task<ActionResult<T>> Execute<T>(Func<IOperation, Task<T>> action)
         {
             try
             {
-                return await action();
+                return await operationService.Make(action);
             }
             catch (BadRequestException e)
             {
-                return BadRequest(new
-                {
-                    e.Message
-                });
+                return HandleException(BadRequest, e);
             }
             catch (NotFoundException e)
             {
-                return NotFound(new
-                {
-                    e.Message
-                });
+                return HandleException(NotFound, e);
             }
-        }
-
-        protected async Task<ActionResult> HandleExceptionIfThrown(Func<Task> action)
-        {
-            try
+            catch (Exception e)
             {
-                await action();
-                return Ok();
-            }
-            catch (BadRequestException e)
-            {
-                return BadRequest(new
-                {
-                    e.Message
-                });
-            }
-            catch (NotFoundException e)
-            {
-                return NotFound(new
-                {
-                    e.Message
-                });
+                return HandleException(InternalServerError, e);
             }
         }
     }

@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using VXDesign.Store.DevTools.Common.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
-using VXDesign.Store.DevTools.Common.Services.AST;
+using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Common.Storage.DataStores;
+using VXDesign.Store.DevTools.SRS.Authorization;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;
 
@@ -23,16 +25,36 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
+            // Portal properties
+            services.SetupProperties<PortalProperties>(Configuration);
+
+            // Operations handler
+            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
 
             // Stores
-//            var mongoDbClient = services.AddScopedService(() => BaseMongoDataStore.Initialize(portalProperties.DatabaseConnectionProperties));
-            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(portalProperties.DatabaseConnectionProperties));
+            services.AddScoped<IUserDataStore>(factory => new UserDataStore(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
 
             // Services
-            services.AddScopedService<ICamundaServerService>(() => new CamundaServerService(portalProperties.CamundaProperties));
-            var authorizationService = services.AddScopedService<IAuthorizationService>(() => new AuthorizationService(portalProperties.AuthorizationTokenProperties, userDataStore));
-            services.SetupAuthentication(authorizationService);
+            services.AddScoped<ICamundaServerService>(factory => new CamundaServerService(factory.GetService<PortalProperties>().CamundaProperties));
+            services.AddScoped<IAuthorizationService>(factory =>
+            {
+                var properties = factory.GetService<PortalProperties>().AuthorizationTokenProperties;
+                var userDataStore = factory.GetService<IUserDataStore>();
+                return new AuthorizationService(properties, userDataStore);
+            });
+
+            // Authorization mechanism (workaround)
+            var authorizationService = services.BuildServiceProvider().GetService<IAuthorizationService>();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = true;
+                options.TokenValidationParameters = authorizationService.GetServerTokenValidationParameters();
+            });
 
             services.AddCors();
 

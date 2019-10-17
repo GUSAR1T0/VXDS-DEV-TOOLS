@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 {
@@ -6,7 +6,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
     {
         #region Camunda / SRS
 
-        public static BadRequestException CamundaEndpointIsNotFoundByActionCode() => new BadRequestException("Failed to find a endpoint by action code");
+        public static NotFoundException CamundaEndpointIsNotFoundByActionCode() => new NotFoundException("Failed to find a endpoint by action code");
 
         public static BadRequestException SyrinxHasSentErrorResponse<TModel>(TModel model) where TModel : ICamundaResponse =>
             new BadRequestException($"Failed to send request to Camunda through Syrinx: {model.Status} \"{model.Reason}\"");
@@ -15,11 +15,9 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 
         #endregion
 
-        #region Authentication
+        #region Authentication / Users
 
-        public static BadRequestException InvalidEmailOrPassword() => new BadRequestException("Failed to authenticate user due to invalid email or password");
-
-        public static BadRequestException RegistrationIsFailed(string message) => new BadRequestException($"Failed to register user due to the following reasons: {message}");
+        public static BadRequestException RegistrationIsFailed() => new BadRequestException("Failed to register user");
 
         public static BadRequestException NoAuthenticationData() => new BadRequestException("No data for authentication");
 
@@ -31,17 +29,13 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 
         public static BadRequestException FailedToReadAuthenticationDataFromClaims() => new BadRequestException("Failed to read authentication data from claims");
 
-        #endregion
-
-        #region Users
-
-        public static BadRequestException FailedToGetProfileDueToMissedEmail() => new BadRequestException("Failed to get user profile due to missed email");
-
         public static NotFoundException UserWasNotFound(string email = null)
         {
             var message = !string.IsNullOrWhiteSpace(email) ? $"User with email \"{email}\" was not found" : "Requested user was not found";
             return new NotFoundException(message);
         }
+
+        public static BadRequestException FailedToGetProfileDueToMissedEmail() => new BadRequestException("Failed to get user profile due to missed email");
 
         #endregion
     }

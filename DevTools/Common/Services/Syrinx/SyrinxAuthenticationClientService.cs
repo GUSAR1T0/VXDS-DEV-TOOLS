@@ -2,8 +2,8 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using VXDesign.Store.DevTools.Common.Containers.Properties;
-using VXDesign.Store.DevTools.Common.Containers.Syrinx.VerifyAuthentication;
+using VXDesign.Store.DevTools.Common.Entities.Properties;
+using VXDesign.Store.DevTools.Common.Entities.Syrinx;
 using VXDesign.Store.DevTools.Common.Services.HTTP;
 using HttpMethod = VXDesign.Store.DevTools.Common.Enums.HTTP.HttpMethod;
 
