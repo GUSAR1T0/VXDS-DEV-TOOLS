@@ -1,5 +1,6 @@
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
+using VXDesign.Store.DevTools.SRS.Authorization;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Properties
 {

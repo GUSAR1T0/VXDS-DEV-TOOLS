@@ -7,6 +7,7 @@ using VXDesign.Store.DevTools.Common.Services.Operations;
 using VXDesign.Store.DevTools.Common.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.User;
+using VXDesign.Store.DevTools.UnifiedPortal.Utils;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
@@ -31,9 +32,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpGet]
-        public async Task<ActionResult<UserProfileGetModel>> GetUserProfile([FromQuery] string email) => await Execute(async operation =>
+        public async Task<ActionResult<UserProfileGetModel>> GetUserProfile([FromQuery] string email) => await Execute(OperationContexts.GetUserProfile, async operation =>
         {
-            var entity = await userService.GetUserProfileByEmail(email);
+            var entity = await userService.GetUserProfileByEmail(operation, email);
             return entity.ToModel();
         });
 
@@ -49,10 +50,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUserProfile(int id, [FromBody] UserProfileGeneralInfoUpdateModel model) => await Execute(async operation =>
+        public async Task<ActionResult> UpdateUserProfile(int id, [FromBody] UserProfileGeneralInfoUpdateModel model) => await Execute(OperationContexts.UpdateUserProfile, async operation =>
         {
             var entity = model.ToEntity(id);
-            await userService.UpdateUserProfile(entity);
+            await userService.UpdateUserProfile(operation, entity);
         });
     }
 }

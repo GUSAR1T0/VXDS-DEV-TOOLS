@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Storage;
 using VXDesign.Store.DevTools.Common.Storage.DataStores;
 
@@ -7,8 +8,8 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
 {
     public interface IUserService
     {
-        Task<UserProfileEntity> GetUserProfileByEmail(string email);
-        Task UpdateUserProfile(UserProfileEntity entity);
+        Task<UserProfileEntity> GetUserProfileByEmail(IOperation operation, string email);
+        Task UpdateUserProfile(IOperation operation, UserProfileEntity entity);
     }
 
     public class UserService : IUserService
@@ -20,14 +21,14 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
             this.userDataStore = userDataStore;
         }
 
-        public async Task<UserProfileEntity> GetUserProfileByEmail(string email)
+        public async Task<UserProfileEntity> GetUserProfileByEmail(IOperation operation, string email)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
                 throw CommonExceptions.FailedToGetProfileDueToMissedEmail();
             }
 
-            var entity = await userDataStore.GetProfileByEmail(email);
+            var entity = await userDataStore.GetProfileByEmail(operation, email);
             if (entity == null)
             {
                 throw CommonExceptions.UserWasNotFound(email);
@@ -36,14 +37,14 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
             return entity;
         }
 
-        public async Task UpdateUserProfile(UserProfileEntity entity)
+        public async Task UpdateUserProfile(IOperation operation, UserProfileEntity entity)
         {
-            if (!await userDataStore.IsUserExist(entity.Id))
+            if (!await userDataStore.IsUserExist(operation, entity.Id))
             {
                 throw CommonExceptions.UserWasNotFound();
             }
 
-            await userDataStore.UpdateProfile(entity);
+            await userDataStore.UpdateProfile(operation, entity);
         }
     }
 }

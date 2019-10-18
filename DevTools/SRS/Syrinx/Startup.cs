@@ -32,7 +32,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
             services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
 
             // Stores
-            services.AddScoped<IUserDataStore>(factory => new UserDataStore(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
+            services.AddScoped<IUserDataStore, UserDataStore>();
 
             // Services
             services.AddScoped<ICamundaServerService>(factory => new CamundaServerService(factory.GetService<PortalProperties>().CamundaProperties));

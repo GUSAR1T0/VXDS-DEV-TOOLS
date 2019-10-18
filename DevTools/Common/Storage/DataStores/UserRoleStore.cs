@@ -1,91 +1,69 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dapper;
-using Npgsql;
-using VXDesign.Store.DevTools.Common.Entities.Properties;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Storage;
 
 namespace VXDesign.Store.DevTools.Common.Storage.DataStores
 {
     public interface IUserRoleStore
     {
-        Task<UserRoleEntity> GetUserRoleById(int id);
-        Task<IEnumerable<UserRoleEntity>> GetUserRoles();
-        Task AddUserRole(UserRoleEntity entity);
-        Task UpdateUserRole(UserRoleEntity entity);
-        Task DeleteUserRoleById(int id);
+        Task<UserRoleEntity> GetUserRoleById(IOperation operation, int id);
+        Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation);
+        Task AddUserRole(IOperation operation, UserRoleEntity entity);
+        Task UpdateUserRole(IOperation operation, UserRoleEntity entity);
+        Task DeleteUserRoleById(IOperation operation, int id);
     }
 
     public class UserRoleStore : BaseDataStore, IUserRoleStore
     {
-        public UserRoleStore(DatabaseConnectionProperties properties) : base(properties)
+        public async Task<UserRoleEntity> GetUserRoleById(IOperation operation, int id)
         {
+            return await operation.Connection.QuerySingleOrDefaultAsync<UserRoleEntity>(new { Id = id }, @"
+                SELECT
+                    [Id],
+                    [Name]
+                FROM [authorization].[UserRole]
+                WHERE [Id] = @Id
+            ");
         }
 
-        public async Task<UserRoleEntity> GetUserRoleById(int id)
+        public async Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation)
         {
-            using (var connection = new NpgsqlConnection(Properties.DataStoreConnectionString))
-            {
-                await connection.OpenAsync();
-                return await connection.QueryFirstOrDefaultAsync<UserRoleEntity>(@"
-                    SELECT
-                        ""Id"",
-                        ""Name""
-                    FROM ""authorization"".""UserRole""
-                    WHERE ""Id"" = @Id
-                ", new { Id = id });
-            }
+            return await operation.Connection.QueryAsync<UserRoleEntity>(@"
+                SELECT
+                    [Id],
+                    [Name]
+                FROM [authorization].[UserRole]
+            ");
         }
 
-        public async Task<IEnumerable<UserRoleEntity>> GetUserRoles()
+        public async Task AddUserRole(IOperation operation, UserRoleEntity entity)
         {
-            using (var connection = new NpgsqlConnection(Properties.DataStoreConnectionString))
-            {
-                await connection.OpenAsync();
-                return await connection.QueryAsync<UserRoleEntity>(@"
-                    SELECT
-                        ""Id"",
-                        ""Name""
-                    FROM ""authorization"".""UserRole""
-                ");
-            }
+            await operation.Connection.ExecuteAsync(new { entity.Name }, @"
+                INSERT INTO [authorization].[UserRole] ([Name])
+                VALUES (@Name)
+            ");
         }
 
-        public async Task AddUserRole(UserRoleEntity entity)
+        public async Task UpdateUserRole(IOperation operation, UserRoleEntity entity)
         {
-            using (var connection = new NpgsqlConnection(Properties.DataStoreConnectionString))
+            await operation.Connection.ExecuteAsync(new
             {
-                await connection.OpenAsync();
-                await connection.ExecuteAsync(@"
-                    INSERT INTO ""authorization"".""UserRole"" (""Name"")
-                    VALUES (@Name)
-                ", new { entity.Name });
-            }
+                entity.Id,
+                entity.Name
+            }, @"
+                UPDATE [authorization].[UserRole]
+                SET [Name] = @Name
+                WHERE [Id] = @Id
+            ");
         }
 
-        public async Task UpdateUserRole(UserRoleEntity entity)
+        public async Task DeleteUserRoleById(IOperation operation, int id)
         {
-            using (var connection = new NpgsqlConnection(Properties.DataStoreConnectionString))
-            {
-                await connection.OpenAsync();
-                await connection.ExecuteAsync(@"
-                    UPDATE ""authorization"".""UserRole""
-                    SET ""Name"" = @Name
-                    WHERE ""Id"" = @Id
-                ", new { entity.Id, entity.Name });
-            }
-        }
-
-        public async Task DeleteUserRoleById(int id)
-        {
-            using (var connection = new NpgsqlConnection(Properties.DataStoreConnectionString))
-            {
-                await connection.OpenAsync();
-                await connection.ExecuteAsync(@"
-                    DELETE FROM ""authorization"".""UserRole""
-                    WHERE ""Id"" = @Id
-                ", new { Id = id });
-            }
+            await operation.Connection.ExecuteAsync(new { Id = id }, @"
+                DELETE FROM [authorization].[UserRole]
+                WHERE [Id] = @Id
+            ");
         }
     }
 }

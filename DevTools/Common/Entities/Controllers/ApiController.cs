@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Common.Utils.Authorization;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Controllers
 {
     public abstract class ApiController : ControllerBase
     {
         private readonly IOperationService operationService;
+
+        private int UserId => AuthorizationUtils.GetUserId(User.Claims) ?? -1; // -1 => GUEST / UNAUTHORIZED USER
 
         protected ApiController(IOperationService operationService)
         {
@@ -27,11 +30,11 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             Message = exception.Message
         });
 
-        protected async Task<ActionResult> Execute(Func<IOperation, Task> action)
+        protected async Task<ActionResult> Execute(Func<OperationContext> context, Func<IOperation, Task> action)
         {
             try
             {
-                await operationService.Make(action);
+                await operationService.Make(UserId, context(), action);
                 return Ok();
             }
             catch (BadRequestException e)
@@ -48,11 +51,11 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             }
         }
 
-        protected async Task<ActionResult<T>> Execute<T>(Func<IOperation, Task<T>> action)
+        protected async Task<ActionResult<T>> Execute<T>(Func<OperationContext> context, Func<IOperation, Task<T>> action)
         {
             try
             {
-                return await operationService.Make(action);
+                return await operationService.Make(UserId, context(), action);
             }
             catch (BadRequestException e)
             {

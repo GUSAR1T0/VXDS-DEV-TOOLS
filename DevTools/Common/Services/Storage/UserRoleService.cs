@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Storage;
 using VXDesign.Store.DevTools.Common.Storage.DataStores;
 
@@ -7,10 +8,10 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
 {
     public interface IUserRoleService
     {
-        Task<IEnumerable<UserRoleEntity>> GetUserRoles();
-        Task AddUserRole(UserRoleEntity entity);
-        Task UpdateUserRole(UserRoleEntity entity);
-        Task DeleteUserRoleById(int id);
+        Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation);
+        Task AddUserRole(IOperation operation, UserRoleEntity entity);
+        Task UpdateUserRole(IOperation operation, UserRoleEntity entity);
+        Task DeleteUserRoleById(IOperation operation, int id);
     }
 
     public class UserRoleService : IUserRoleService
@@ -22,12 +23,12 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
             this.userRoleStore = userRoleStore;
         }
 
-        public async Task<IEnumerable<UserRoleEntity>> GetUserRoles() => await userRoleStore.GetUserRoles();
+        public async Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation) => await userRoleStore.GetUserRoles(operation);
 
-        public async Task AddUserRole(UserRoleEntity entity) => await userRoleStore.AddUserRole(entity);
+        public async Task AddUserRole(IOperation operation, UserRoleEntity entity) => await userRoleStore.AddUserRole(operation, entity);
 
-        public async Task UpdateUserRole(UserRoleEntity entity) => await userRoleStore.UpdateUserRole(entity);
+        public async Task UpdateUserRole(IOperation operation, UserRoleEntity entity) => await userRoleStore.UpdateUserRole(operation, entity);
 
-        public async Task DeleteUserRoleById(int id) => await userRoleStore.DeleteUserRoleById(id);
+        public async Task DeleteUserRoleById(IOperation operation, int id) => await userRoleStore.DeleteUserRoleById(operation, id);
     }
 }

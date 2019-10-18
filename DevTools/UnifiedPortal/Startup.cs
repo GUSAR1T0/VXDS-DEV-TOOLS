@@ -33,8 +33,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
 
             // Stores
-            services.AddScoped<IUserDataStore>(factory => new UserDataStore(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
-            services.AddScoped<IUserRoleStore>(factory => new UserRoleStore(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
+            services.AddScoped<IUserDataStore, UserDataStore>();
+            services.AddScoped<IUserRoleStore, UserRoleStore>();
 
             // Services
             services.AddScoped<ISyrinxCamundaClientService>(factory => new SyrinxCamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));

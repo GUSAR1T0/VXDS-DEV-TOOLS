@@ -8,5 +8,5 @@ RUN mvn clean install
 FROM openjdk:12-alpine
 WORKDIR /app
 COPY --from=builder /repo/target/CamundaServer.jar .
-EXPOSE 9201
+EXPOSE 9221
 CMD java -jar CamundaServer.jar

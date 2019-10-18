@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
 using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Common.Utils.Authorization;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
+using VXDesign.Store.DevTools.SRS.Syrinx.Utils;
 using IAuthorizationService = VXDesign.Store.DevTools.SRS.Authorization.IAuthorizationService;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
@@ -30,9 +32,9 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [HttpPost("sign-in")]
-        public async Task<ActionResult<JwtTokenModel>> SignIn([FromBody] SignInModel model) => await Execute(async operation =>
+        public async Task<ActionResult<JwtTokenModel>> SignIn([FromBody] SignInModel model) => await Execute(OperationContexts.SignIn, async operation =>
         {
-            var token = await authorizationService.SignIn(model.Email, model.Password);
+            var token = await authorizationService.SignIn(operation, model.Email, model.Password);
             return token.GetJwtTokenModel();
         });
 
@@ -45,9 +47,9 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("sign-up")]
-        public async Task<ActionResult<JwtTokenModel>> SignUp([FromBody] SignUpModel model) => await Execute(async operation =>
+        public async Task<ActionResult<JwtTokenModel>> SignUp([FromBody] SignUpModel model) => await Execute(OperationContexts.SignUp, async operation =>
         {
-            var token = await authorizationService.SignUp(model.ToEntity());
+            var token = await authorizationService.SignUp(operation, model.ToEntity());
             return token.GetJwtTokenModel();
         });
 
@@ -60,9 +62,9 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await Execute(async operation =>
+        public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await Execute(OperationContexts.RefreshToken, async operation =>
         {
-            var token = await authorizationService.RefreshToken(model.AccessToken, model.RefreshToken);
+            var token = await authorizationService.RefreshToken(operation, model.AccessToken, model.RefreshToken);
             return token.GetJwtTokenModel();
         });
 
@@ -75,7 +77,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpPost("logout")]
-        public async Task<ActionResult> Logout() => await Execute(async context => await authorizationService.Logout(User.Claims));
+        public async Task<ActionResult> Logout() => await Execute(OperationContexts.Logout, async operation => await authorizationService.Logout(operation, User.Claims));
 
         /// <summary>
         /// Obtains authorization user data by token
@@ -87,9 +89,9 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserAuthorizationModel>> GetUserData() => await Execute(async operation =>
+        public async Task<ActionResult<UserAuthorizationModel>> GetUserData() => await Execute(OperationContexts.GetUserData, async operation =>
         {
-            var userData = await authorizationService.GetUserData(User.Claims);
+            var userData = await authorizationService.GetUserData(operation, User.Claims);
             return userData.ToModel();
         });
 
@@ -101,6 +103,6 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpGet("verify")]
-        public bool VerifyAuthentication() => true;
+        public int? VerifyAuthentication() => AuthorizationUtils.GetUserId(User.Claims);
     }
 }

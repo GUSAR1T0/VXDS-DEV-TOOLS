@@ -2,8 +2,9 @@ using System;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using VXDesign.Store.DevTools.Common.Attributes;
+using VXDesign.Store.DevTools.Common.Entities.Properties;
 
-namespace VXDesign.Store.DevTools.Common.Entities.Properties
+namespace VXDesign.Store.DevTools.SRS.Authorization
 {
     public class AuthorizationTokenProperties : IPropertiesMarker
     {

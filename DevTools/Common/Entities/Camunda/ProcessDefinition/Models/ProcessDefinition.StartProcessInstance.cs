@@ -18,9 +18,9 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.ProcessDefinition.Mode
             public static void SetVariablesWithErrorField(out ICamundaVariables refToRequestVariables, ICamundaVariables newVariables)
             {
                 refToRequestVariables = newVariables;
-                if (!refToRequestVariables.ContainsKey("error"))
+                if (!refToRequestVariables.ContainsKey("Error"))
                 {
-                    refToRequestVariables.Add("error", "");
+                    refToRequestVariables.Add("Error", "");
                 }
             }
         }

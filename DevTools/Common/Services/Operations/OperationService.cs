@@ -7,12 +7,14 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
 {
     public interface IOperationService
     {
-        Task Make(Func<IOperation, Task> action);
-        Task<T> Make<T>(Func<IOperation, Task<T>> action);
+        Task Make(int userId, OperationContext context, Func<IOperation, Task> action);
+        Task<T> Make<T>(int userId, OperationContext context, Func<IOperation, Task<T>> action);
     }
 
     public class OperationService : IOperationService
     {
+        private const string ErrorMessage = "Failed to perform action correctly";
+
         private readonly DatabaseConnectionProperties properties;
 
         public OperationService(DatabaseConnectionProperties properties)
@@ -20,19 +22,46 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
             this.properties = properties;
         }
 
-        public async Task Make(Func<IOperation, Task> action)
+        private static object GetExceptionContent(Exception exception) => new
         {
-            using (var operation = new Operation(properties))
+            Type = exception.GetType().FullName,
+            exception.Source,
+            exception.Data,
+            exception.Message,
+            exception.StackTrace
+        };
+
+        public async Task Make(int userId, OperationContext context, Func<IOperation, Task> action)
+        {
+            using (var operation = new Operation(userId, context, properties))
             {
-                await action(operation);
+                try
+                {
+                    await action(operation);
+                }
+                catch (Exception e)
+                {
+                    operation.IsSuccess = false;
+                    await operation.Logger<OperationService>().Error(ErrorMessage, GetExceptionContent(e));
+                    throw;
+                }
             }
         }
 
-        public async Task<T> Make<T>(Func<IOperation, Task<T>> action)
+        public async Task<T> Make<T>(int userId, OperationContext context, Func<IOperation, Task<T>> action)
         {
-            using (var operation = new Operation(properties))
+            using (var operation = new Operation(userId, context, properties))
             {
-                return await action(operation);
+                try
+                {
+                    return await action(operation);
+                }
+                catch (Exception e)
+                {
+                    operation.IsSuccess = false;
+                    await operation.Logger<OperationService>().Error(ErrorMessage, GetExceptionContent(e));
+                    throw;
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using VXDesign.Store.DevTools.Common.Entities.Syrinx;
 using VXDesign.Store.DevTools.Common.Extensions.HTTP;
+using VXDesign.Store.DevTools.Common.Utils.Authorization;
 
 namespace VXDesign.Store.DevTools.Common.Services.Syrinx
 {
@@ -25,7 +26,15 @@ namespace VXDesign.Store.DevTools.Common.Services.Syrinx
                     Token = token
                 });
 
-                if (result.IsWithoutErrors()) return;
+                if (result.IsWithoutErrors())
+                {
+                    if (!string.IsNullOrWhiteSpace(result.Output))
+                    {
+                        context.HttpContext.User.AddIdentity(AuthorizationUtils.GetClaimsIdentity(result.Output));
+                    }
+
+                    return;
+                }
             }
 
             context.Result = new UnauthorizedResult();
