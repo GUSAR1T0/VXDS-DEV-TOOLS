@@ -35,6 +35,7 @@
 <script>
     import { mapGetters } from "vuex";
     import { SIGN_IN_REQUEST } from "@/constants/actions";
+    import { renderErrorNotificationMessage } from "@/extensions/utils";
 
     let signInForm = {
         email: "",
@@ -74,15 +75,20 @@
                     this.$store.dispatch(SIGN_IN_REQUEST, this.signInForm).then(() => {
                         this.$refs.signInButton.loading = false;
                         this.$router.push("/");
+                        const h = this.$createElement;
                         this.$notify.info({
-                            title: "Info",
-                            message: `You are logged in as ${this.getFullName}`
+                            title: "You are logged in",
+                            message: h("div", null, [
+                                "Welcome back, ",
+                                h("strong", null, this.getFullName)
+                            ])
                         });
                     }).catch(error => {
                         this.$refs.signInButton.loading = false;
                         this.$notify.error({
-                            title: "Error",
-                            message: `Failed to sign in: ${error.response.data.message}`
+                            title: "Failed to sign in",
+                            duration: 10000,
+                            message: renderErrorNotificationMessage(this.$createElement, error.response)
                         });
                     });
                 });

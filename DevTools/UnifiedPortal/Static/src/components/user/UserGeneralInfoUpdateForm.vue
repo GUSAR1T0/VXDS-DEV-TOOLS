@@ -28,14 +28,14 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="location" label="Location">
-                        <el-input v-model="userGeneralInfoUpdateForm.location" clearable></el-input>
+                        <el-input v-model="userGeneralInfoUpdateForm.location" clearable maxlength="255" show-word-limit></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="bio" label="Bio">
-                        <el-input type="textarea" autosize v-model="userGeneralInfoUpdateForm.bio" clearable></el-input>
+                        <el-input type="textarea" :rows="2" v-model="userGeneralInfoUpdateForm.bio" clearable maxlength="1000" show-word-limit></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -64,7 +64,7 @@
 </style>
 
 <script>
-    import { generateColor, getConfiguration } from "@/extensions/utils";
+    import { generateColor, getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import HttpClient from "@/extensions/httpClient";
     import { LOCALHOST } from "@/constants/servers";
     import { UPDATE_PROFILE_ENDPOINT } from "@/constants/endpoints";
@@ -88,16 +88,17 @@
                 userGeneralInfoUpdateRules: {
                     firstName: [
                         {required: true, message: "Please, input first name", trigger: "change"},
-                        {min: 2, max: 30, message: "Length should be 2 to 30", trigger: "change"}
+                        {min: 2, max: 30, message: "Length should be from 2 to 30", trigger: "change"}
                     ],
                     lastName: [
                         {required: true, message: "Please, input last name", trigger: "change"},
-                        {min: 2, max: 30, message: "Length should be 2 to 30", trigger: "change"}
+                        {min: 2, max: 30, message: "Length should be from 2 to 30", trigger: "change"}
                     ],
                     email: [
                         {required: true, message: "Please, input email address", trigger: "change"},
-                        {type: "email", message: "Please, input correct email address", trigger: "change"}
-                    ],
+                        {type: "email", message: "Please, input correct email address", trigger: "change"},
+                        {min: 3, max: 254, message: "Length should be from 3 to 254", trigger: "change"}
+                    ]
                 }
             };
         },
@@ -134,15 +135,16 @@
                                 this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
                                 this.$notify.info({
-                                    title: "Info",
-                                    message: "Your profile was updated successfully"
+                                    title: "Profile was updated",
+                                    message: "Your profile changes took effect"
                                 });
                             }).catch(error => {
                                 this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
                                 this.$notify.error({
-                                    title: "Error",
-                                    message: `Your profile was not updated: ${error.response.data.message}`
+                                    title: "Failed to update profile",
+                                    duration: 10000,
+                                    message: renderErrorNotificationMessage(this.$createElement, error.response)
                                 });
                             });
                         }).catch(() => {
@@ -152,8 +154,8 @@
                         this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
                         this.$notify.warning({
-                            title: "Warning",
-                            message: "Your profile was not updated due to lack of changes"
+                            title: "Profile wasn't updated",
+                            message: "No change to update your profile"
                         });
                     }
                 });

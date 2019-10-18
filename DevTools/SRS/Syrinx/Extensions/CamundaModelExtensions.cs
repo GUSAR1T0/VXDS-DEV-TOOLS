@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
 using CamundaRequestModel = VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda.CamundaRequestModel;

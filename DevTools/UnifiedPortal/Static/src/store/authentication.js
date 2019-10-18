@@ -87,7 +87,7 @@ export default {
         [SIGN_IN_REQUEST]: ({commit}, signInForm) => {
             return new Promise((resolve, reject) => {
                 HttpClient.init().then(client => {
-                    client.post(SYRINX, SIGN_IN_ENDPOINT, signInForm, undefined).then(firstResponse => {
+                    client.post(SYRINX, SIGN_IN_ENDPOINT, signInForm).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
                         client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
                             .then(secondResponse => {
@@ -110,7 +110,7 @@ export default {
         [SIGN_UP_REQUEST]: ({commit}, signUpForm) => {
             return new Promise((resolve, reject) => {
                 HttpClient.init().then(client => {
-                    client.post(SYRINX, SIGN_UP_ENDPOINT, signUpForm, undefined).then(firstResponse => {
+                    client.post(SYRINX, SIGN_UP_ENDPOINT, signUpForm).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
                         client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
                             .then(secondResponse => {
@@ -135,7 +135,7 @@ export default {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
                     HttpClient.init().then(client => {
-                        client.post(SYRINX, REFRESH_ENDPOINT, {accessToken, refreshToken}, undefined).then(firstResponse => {
+                        client.post(SYRINX, REFRESH_ENDPOINT, {accessToken, refreshToken}).then(firstResponse => {
                             setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
                             client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
                                 .then(secondResponse => {

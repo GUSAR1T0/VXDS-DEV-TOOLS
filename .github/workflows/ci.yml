@@ -19,10 +19,9 @@ jobs:
     - uses: actions/checkout@v1
       with:
         fetch-depth: 1
-    - run: docker-compose -f Containers/mongodb/docker-compose.yml build --no-cache
-    - run: docker-compose -f Containers/mssql/docker-compose.yml build --no-cache
-    - run: docker-compose -f Containers/postgresql/docker-compose.yml build --no-cache
     - run: docker-compose -f Containers/camunda-server/docker-compose.yml build --no-cache
+    - run: docker-compose -f Containers/mssql/docker-compose.yml build --no-cache
+    - run: docker-compose -f Containers/mongodb/docker-compose.yml build --no-cache
 
   ext_tools:
   

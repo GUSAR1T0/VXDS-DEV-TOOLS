@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using VXDesign.Store.DevTools.Common.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
-using VXDesign.Store.DevTools.Common.Services.AST;
+using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Common.Services.Storage;
 using VXDesign.Store.DevTools.Common.Services.Syrinx;
+using VXDesign.Store.DevTools.Common.Storage.DataStores;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal
@@ -25,18 +26,21 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
+            // Portal properties
+            services.SetupProperties<PortalProperties>(Configuration);
+
+            // Operations handler
+            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties, "VXDS_UP"));
 
             // Stores
-            var mongoDbClient = services.AddScopedService(() => BaseDataStore.Initialize(portalProperties.DatabaseConnectionProperties));
-            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(mongoDbClient));
-            var userRoleStore = services.AddScopedService<IUserRoleStore>(() => new UserRoleStore(mongoDbClient));
+            services.AddScoped<IUserDataStore, UserDataStore>();
+            services.AddScoped<IUserRoleStore, UserRoleStore>();
 
             // Services
-            services.AddScopedService<ISyrinxCamundaClientService>(() => new SyrinxCamundaClientService(portalProperties.SyrinxProperties));
-            services.AddScopedService<ISyrinxAuthenticationClientService>(() => new SyrinxAuthenticationClientService(portalProperties.SyrinxProperties));
-            services.AddScopedService<IUserService>(() => new UserService(userDataStore, userRoleStore));
-            services.AddScopedService<IUserRoleService>(() => new UserRoleService(userRoleStore));
+            services.AddScoped<ISyrinxCamundaClientService>(factory => new SyrinxCamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
+            services.AddScoped<ISyrinxAuthenticationClientService>(factory => new SyrinxAuthenticationClientService(factory.GetService<PortalProperties>().SyrinxProperties));
+            services.AddScoped<IUserService>(factory => new UserService(factory.GetService<IUserDataStore>()));
+            services.AddScoped<IUserRoleService>(factory => new UserRoleService(factory.GetService<IUserRoleStore>()));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);

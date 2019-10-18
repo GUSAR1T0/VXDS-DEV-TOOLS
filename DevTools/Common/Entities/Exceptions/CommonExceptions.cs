@@ -1,4 +1,6 @@
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using System;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 {
@@ -6,42 +8,42 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
     {
         #region Camunda / SRS
 
-        public static BadRequestException CamundaEndpointIsNotFoundByActionCode() => new BadRequestException("Failed to find a endpoint by action code");
+        public static NotFoundException CamundaEndpointIsNotFoundByActionCode(IOperation operation) => new NotFoundException(operation, "Failed to find a endpoint by action code");
 
-        public static BadRequestException SyrinxHasSentErrorResponse<TModel>(TModel model) where TModel : ICamundaResponse =>
-            new BadRequestException($"Failed to send request to Camunda through Syrinx: {model.Status} \"{model.Reason}\"");
+        public static BadRequestException SyrinxHasSentErrorResponse<TModel>(IOperation operation, TModel model) where TModel : ICamundaResponse =>
+            new BadRequestException(operation, $"Failed to send request to Camunda through Syrinx: {model.Status} \"{model.Reason}\"");
 
         public static CamundaWorkersBuilderException PropertiesAreEmpty() => new CamundaWorkersBuilderException("Couldn't launch workers because properties are empty");
 
-        #endregion
-
-        #region Authentication
-
-        public static BadRequestException InvalidEmailOrPassword() => new BadRequestException("Failed to authenticate user due to invalid email or password");
-
-        public static BadRequestException RegistrationIsFailed(string message) => new BadRequestException($"Failed to register user due to the following reasons: {message}");
-
-        public static BadRequestException NoAuthenticationData() => new BadRequestException("No data for authentication");
-
-        public static BadRequestException RefreshTokensAreDifferent() => new BadRequestException("Refresh tokens are different");
-
-        public static BadRequestException InvalidTokenInHeader() => new BadRequestException("Failed to define a token from header");
-
-        public static BadRequestException UserHasAlreadyExist() => new BadRequestException("User with this email has already exist");
+        public static CamundaWorkersBuilderException LogScopeIsNotStated() => new CamundaWorkersBuilderException("Couldn't launch workers because log scope is not stated");
 
         #endregion
 
-        #region Users
+        #region Authentication / Users
 
-        public static BadRequestException FailedToGetProfileDueToMissedEmail() => new BadRequestException("Failed to get user profile due to missed email");
+        public static BadRequestException RegistrationIsFailed(IOperation operation) => new BadRequestException(operation, "Failed to register user");
 
-        public static BadRequestException FailedToUpdateProfileDueToMissedId() => new BadRequestException("Failed to update user profile due to missed ID");
+        public static BadRequestException NoAuthenticationData(IOperation operation) => new BadRequestException(operation, "No data for authentication");
 
-        public static NotFoundException UserWasNotFound(string email = null)
+        public static BadRequestException RefreshTokensAreDifferent(IOperation operation) => new BadRequestException(operation, "Refresh tokens are different");
+
+        public static BadRequestException InvalidTokenInHeader(IOperation operation) => new BadRequestException(operation, "Failed to define a token from header");
+
+        public static BadRequestException UserHasAlreadyExist(IOperation operation) => new BadRequestException(operation, "User with this email has already exist");
+
+        public static BadRequestException FailedToReadAuthenticationDataFromClaims(IOperation operation) => new BadRequestException(operation, "Failed to read authentication data from claims");
+
+        public static BadRequestException AuthenticationFailed(IOperation operation) => new BadRequestException(operation, "Authentication failed");
+
+        public static NotFoundException UserWasNotFound(IOperation operation, string email = null)
         {
             var message = !string.IsNullOrWhiteSpace(email) ? $"User with email \"{email}\" was not found" : "Requested user was not found";
-            return new NotFoundException(message);
+            return new NotFoundException(operation, message);
         }
+
+        public static BadRequestException FailedToGetProfileDueToMissedEmail(IOperation operation) => new BadRequestException(operation, "Failed to get user profile due to missed email");
+
+        public static Exception AccessWasNotAccepted() => new Exception("Access wasn't accepted");
 
         #endregion
     }

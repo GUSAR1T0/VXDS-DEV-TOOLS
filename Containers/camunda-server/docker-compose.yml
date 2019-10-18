@@ -1,24 +1,41 @@
 version: "3.7"
 
 services:
-  postgres:
+  postgres-camunda:
     image: postgres
-    container_name: postgres
-    hostname: postgres
+    container_name: postgres-camunda
+    hostname: postgres-camunda
     restart: always
     environment:
       - POSTGRES_USER=sa
       - POSTGRES_PASSWORD=<2019!Pass>
       - POSTGRES_DB=master
     ports:
-      - "5432:5432"
+      - "9521:5432"
+    networks:
+      - postgres-network
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-camunda-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    hostname: pgadmin
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=xromash@vxdesign.store
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "9601:80"
+    networks:
+      - postgres-network
+    volumes:
+      - pgadmin-data:/root/.pgadmin
+    depends_on:
+      - postgres-camunda
 
   camunda-server:
     image: camunda-server
-    depends_on:
-      - postgres
     build:
       context: ../../ExtTools/CamundaServer
       dockerfile: ../../Containers/camunda-server/Dockerfile
@@ -26,10 +43,17 @@ services:
     hostname: camunda-server
     restart: always
     ports:
-      - "9201:9201"
+      - "9221:9221"
     networks:
-      - default
-    command: java -jar -Dspring.datasource.url=jdbc:postgresql://postgres:5432/master CamundaServer.jar
+      - postgres-network
+    depends_on:
+      - postgres-camunda
+    command: java -jar -Dspring.datasource.url=jdbc:postgresql://postgres-camunda:5432/master CamundaServer.jar
+
+networks:
+  postgres-network:
+    driver: bridge
 
 volumes:
-  postgres-data:
+  postgres-camunda-data:
+  pgadmin-data:

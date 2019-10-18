@@ -3,7 +3,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using VXDesign.Store.DevTools.Common.Containers.Properties;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
+using VXDesign.Store.DevTools.Common.Entities.Properties;
 using VXDesign.Store.DevTools.Common.Services.HTTP;
 
 namespace VXDesign.Store.DevTools.SRS.Camunda
@@ -36,6 +37,6 @@ namespace VXDesign.Store.DevTools.SRS.Camunda
 
         private string BasicAuth() => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{properties.Login}:{properties.Password}"));
 
-        public override async Task<CamundaResponse> Send(CamundaRequest request) => await Send(properties.Api, request.Endpoint.Path, request.Endpoint.Method, request);
+        public override async Task<CamundaResponse> Send(IOperation operation, CamundaRequest request) => await Send(operation, properties.Api, request.Endpoint.Path, request.Endpoint.Method, request);
     }
 }

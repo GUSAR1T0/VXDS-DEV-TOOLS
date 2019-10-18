@@ -93,13 +93,17 @@
         },
         mounted() {
             let navmenu = document.getElementsByClassName("el-nav-menu-vertical");
-            window.onscroll = function () {
-                navmenu[0].style.top = (window.pageYOffset || document.documentElement.scrollTop) + "px";
-            };
+            if (navmenu) {
+                window.onscroll = function () {
+                    navmenu[0].style.top = (window.pageYOffset || document.documentElement.scrollTop) + "px";
+                };
+            }
         },
         updated() {
             let navmenu = document.getElementsByClassName("el-nav-menu-vertical");
-            navmenu[0].style.top = "0px";
+            if (navmenu) {
+                navmenu[0].style.top = "0px";
+            }
         }
     };
 </script>

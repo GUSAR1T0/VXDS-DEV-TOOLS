@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Containers.Properties;
+using VXDesign.Store.DevTools.Common.Entities.Properties;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers

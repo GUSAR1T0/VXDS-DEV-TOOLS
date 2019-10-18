@@ -16,4 +16,4 @@ camunda.bpm:
     required: true
   filter:
     create: All tasks
-server.port: 9201
+server.port: 9221

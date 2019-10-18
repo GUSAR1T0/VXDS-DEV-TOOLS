@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
+using VXDesign.Store.DevTools.Common.Services.Operations;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
+using VXDesign.Store.DevTools.SRS.Syrinx.Utils;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
@@ -19,7 +21,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
     {
         private readonly ICamundaServerService camundaServerService;
 
-        public CamundaController(ICamundaServerService camundaServerService)
+        public CamundaController(IOperationService operationService, ICamundaServerService camundaServerService) : base(operationService)
         {
             this.camundaServerService = camundaServerService;
         }
@@ -47,14 +49,15 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// </summary>
         /// <param name="model">Parameters to Camunda server</param>
         /// <returns>Response from Camunda server</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(CamundaResponseModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [HttpPost("request")]
-        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await HandleExceptionIfThrown(async () =>
+        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await Execute(OperationContexts.SendRequest, async operation =>
         {
-            var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode();
-            return (await camundaServerService.Send(model.ToEntity(endpoint))).ToModel();
+            var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode(operation);
+            return (await camundaServerService.Send(operation, model.ToEntity(endpoint))).ToModel();
         });
     }
 }

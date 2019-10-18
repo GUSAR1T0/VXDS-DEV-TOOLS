@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Extensions.Base;
 using VXDesign.Store.DevTools.Common.Extensions.HTTP;
 using VXDesign.Store.DevTools.Common.Utils.Camunda;
@@ -9,7 +10,7 @@ namespace VXDesign.Store.DevTools.Common.Extensions.Camunda
 {
     internal static class CamundaResponseExtensions
     {
-        internal static TResponse PostHandle<TResponse>(this TResponse response) where TResponse : ICamundaResponse
+        internal static TResponse PostHandle<TResponse>(this TResponse response, IOperation operation) where TResponse : ICamundaResponse
         {
             var settings = new JsonSerializerSettings
             {
@@ -17,7 +18,7 @@ namespace VXDesign.Store.DevTools.Common.Extensions.Camunda
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            if (!response.IsWithoutErrors()) throw CommonExceptions.SyrinxHasSentErrorResponse(response);
+            if (!response.IsWithoutErrors()) throw CommonExceptions.SyrinxHasSentErrorResponse(operation, response);
 
             var intermediateResponse = JsonConvert.DeserializeObject<IntermediateCamundaResponse<object>>(response.Output, settings);
 

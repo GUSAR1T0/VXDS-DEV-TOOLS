@@ -43,8 +43,9 @@
     import { mapGetters } from "vuex";
     import HttpClient from "@/extensions/httpClient";
     import { GET_PROFILE_ENDPOINT } from "@/constants/endpoints";
-    import { getConfiguration } from "@/extensions/utils";
+    import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import { LOCALHOST } from "@/constants/servers";
+    import { SIGN_IN_REQUEST } from "@/constants/actions";
 
     import UserCard from "@/components/user/UserCard.vue";
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
@@ -93,7 +94,7 @@
             }
         },
         methods: {
-            fillForm(email) {
+            fillForm(email, reloadAuthenticationData = false) {
                 this.loadingIsActive = true;
                 let emailQueried = email === undefined ? this.getEmail : email;
                 let query = `${GET_PROFILE_ENDPOINT}?email=${emailQueried}`;
@@ -107,12 +108,17 @@
                     this.user.color = response.data.color;
                     this.user.location = response.data.location;
                     this.user.bio = response.data.bio;
+
+                    if (reloadAuthenticationData) {
+                        this.$store.commit(SIGN_IN_REQUEST, response.data);
+                    }
                 }).catch(error => {
                     this.loadingIsActive = false;
                     this.$router.back();
                     this.$notify.error({
-                        title: "Error",
-                        message: `Failed to load user profile: ${error.response.data.message}`
+                        title: "Failed to load user profile",
+                        duration: 10000,
+                        message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });
                 }));
             },
@@ -121,7 +127,7 @@
                 this.pageStatus.userUpdateFormDialogVisible = true;
             },
             submitUserGeneralInfoUpdateForm() {
-                this.fillForm(this.$route.params.email);
+                this.fillForm(this.$route.params.email, true);
             }
         },
         mounted() {

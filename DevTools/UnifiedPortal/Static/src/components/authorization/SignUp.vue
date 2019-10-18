@@ -67,7 +67,7 @@
     import SignUpValidations from "@/extensions/validations";
     import { mapGetters } from "vuex";
     import { SIGN_UP_REQUEST } from "@/constants/actions";
-    import { generateColor } from "@/extensions/utils";
+    import { generateColor, renderErrorNotificationMessage } from "@/extensions/utils";
 
     import UserCard from "@/components/user/UserCard.vue";
 
@@ -92,15 +92,16 @@
                 signUpRules: {
                     firstName: [
                         {required: true, message: "Please, input first name", trigger: "change"},
-                        {min: 2, max: 30, message: "Length should be 2 to 30", trigger: "change"}
+                        {min: 2, max: 30, message: "Length should be from 2 to 30", trigger: "change"}
                     ],
                     lastName: [
                         {required: true, message: "Please, input last name", trigger: "change"},
-                        {min: 2, max: 30, message: "Length should be 2 to 30", trigger: "change"}
+                        {min: 2, max: 30, message: "Length should be from 2 to 30", trigger: "change"}
                     ],
                     email: [
                         {required: true, message: "Please, input email address", trigger: "change"},
-                        {type: "email", message: "Please, input correct email address", trigger: "change"}
+                        {type: "email", message: "Please, input correct email address", trigger: "change"},
+                        {min: 3, max: 254, message: "Length should be from 3 to 254", trigger: "change"}
                     ],
                     password: [
                         {required: true, validator: validations.validatePassword, trigger: "change"}
@@ -131,15 +132,20 @@
                     this.$store.dispatch(SIGN_UP_REQUEST, this.signUpForm).then(() => {
                         this.$refs.signUpButton.loading = false;
                         this.$router.push("/");
+                        const h = this.$createElement;
                         this.$notify.info({
-                            title: "Info",
-                            message: `You are registered as ${this.getFullName}`
+                            title: "You are registered",
+                            message: h("div", null, [
+                                "Welcome to the system, ",
+                                h("strong", null, this.getFullName)
+                            ])
                         });
                     }).catch(error => {
                         this.$refs.signUpButton.loading = false;
                         this.$notify.error({
-                            title: "Error",
-                            message: `Failed to sign up: ${error.response.data.message}`
+                            title: "Failed to sign up",
+                            duration: 10000,
+                            message: renderErrorNotificationMessage(this.$createElement, error.response)
                         });
                     });
                 });
