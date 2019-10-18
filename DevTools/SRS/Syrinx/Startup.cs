@@ -29,7 +29,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
             services.SetupProperties<PortalProperties>(Configuration);
 
             // Operations handler
-            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
+            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties, "VXDS_SRS"));
 
             // Stores
             services.AddScoped<IUserDataStore, UserDataStore>();

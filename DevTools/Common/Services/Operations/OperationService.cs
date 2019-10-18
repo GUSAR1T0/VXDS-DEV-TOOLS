@@ -14,12 +14,15 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
     public class OperationService : IOperationService
     {
         private const string ErrorMessage = "Failed to perform action correctly";
+        private const string SuccessMessage = "Action was performed correctly";
 
         private readonly DatabaseConnectionProperties properties;
+        private readonly string scope;
 
-        public OperationService(DatabaseConnectionProperties properties)
+        public OperationService(DatabaseConnectionProperties properties, string scope)
         {
             this.properties = properties;
+            this.scope = scope;
         }
 
         private static object GetExceptionContent(Exception exception) => new
@@ -33,34 +36,48 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
 
         public async Task Make(int userId, OperationContext context, Func<IOperation, Task> action)
         {
-            using (var operation = new Operation(userId, context, properties))
+            using (var operation = new Operation(scope, userId, context, properties))
             {
+                var isSuccess = true;
                 try
                 {
                     await action(operation);
+                    await operation.Logger<OperationService>().Debug(SuccessMessage);
                 }
                 catch (Exception e)
                 {
-                    operation.IsSuccess = false;
+                    isSuccess = false;
                     await operation.Logger<OperationService>().Error(ErrorMessage, GetExceptionContent(e));
                     throw;
+                }
+                finally
+                {
+                    await operation.Complete(isSuccess);
                 }
             }
         }
 
         public async Task<T> Make<T>(int userId, OperationContext context, Func<IOperation, Task<T>> action)
         {
-            using (var operation = new Operation(userId, context, properties))
+            using (var operation = new Operation(scope, userId, context, properties))
             {
+                var isSuccess = true;
+                var logger = operation.Logger<OperationService>();
                 try
                 {
-                    return await action(operation);
+                    var result = await action(operation);
+                    await logger.Debug(SuccessMessage);
+                    return result;
                 }
                 catch (Exception e)
                 {
-                    operation.IsSuccess = false;
-                    await operation.Logger<OperationService>().Error(ErrorMessage, GetExceptionContent(e));
+                    isSuccess = false;
+                    await logger.Error(ErrorMessage, GetExceptionContent(e));
                     throw;
+                }
+                finally
+                {
+                    await operation.Complete(isSuccess);
                 }
             }
         }

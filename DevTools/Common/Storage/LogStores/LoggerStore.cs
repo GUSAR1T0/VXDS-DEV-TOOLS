@@ -15,7 +15,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStores
 
     public class LoggerStore : BaseLogStore<LoggerEntity>, ILoggerStore
     {
-        public LoggerStore(string logStoreConnectionString) : base(logStoreConnectionString, "Logs")
+        public LoggerStore(string logStoreConnectionString, string scope) : base(logStoreConnectionString, "logs", scope)
         {
         }
 

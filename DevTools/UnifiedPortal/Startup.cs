@@ -30,7 +30,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             services.SetupProperties<PortalProperties>(Configuration);
 
             // Operations handler
-            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties));
+            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties, "VXDS_UP"));
 
             // Stores
             services.AddScoped<IUserDataStore, UserDataStore>();

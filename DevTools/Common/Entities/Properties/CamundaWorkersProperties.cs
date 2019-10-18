@@ -8,10 +8,13 @@ namespace VXDesign.Store.DevTools.Common.Entities.Properties
         [PropertyField(Key = "Syrinx")]
         public SyrinxProperties SyrinxProperties { get; set; }
 
+        [PropertyField(Key = "Database")]
+        public DatabaseConnectionProperties DatabaseConnectionProperties { get; set; }
+
         #region Fetch and Lock
 
         [PropertyField]
-        public int FetchTimeout { get; set; } = (int) TimeSpan.FromSeconds(1).TotalMilliseconds;
+        public int FetchTimeout { get; set; } = (int) TimeSpan.FromSeconds(5).TotalMilliseconds;
 
         [PropertyField]
         public bool UsePriority { get; set; } = true;
@@ -30,7 +33,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Properties
         #region Failure
 
         [PropertyField(Key = "RetriesAfterFailure")]
-        public int CountOfRetriesWhenFailuresAre { get; set; } = 3;
+        public int CountOfRetriesWhenFailuresAre { get; set; } = 5;
 
         [PropertyField]
         public int RetryAfterFailureTimeout { get; set; } = (int) TimeSpan.FromSeconds(30).TotalMilliseconds;

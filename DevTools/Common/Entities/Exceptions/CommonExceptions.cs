@@ -13,6 +13,8 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 
         public static CamundaWorkersBuilderException PropertiesAreEmpty() => new CamundaWorkersBuilderException("Couldn't launch workers because properties are empty");
 
+        public static CamundaWorkersBuilderException LogScopeIsNotStated() => new CamundaWorkersBuilderException("Couldn't launch workers because log scope is not stated");
+
         #endregion
 
         #region Authentication / Users

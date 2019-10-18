@@ -6,12 +6,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStores
     {
         protected IMongoCollection<TEntity> Collection { get; }
 
-        protected BaseLogStore(string logStoreConnectionString, string collection)
+        protected BaseLogStore(string logStoreConnectionString, string schema, string collection)
         {
-            var urlToMongoDb = new MongoUrl(logStoreConnectionString);
-            var databaseName = urlToMongoDb.DatabaseName;
-            var connectionStringWithoutDatabaseName = logStoreConnectionString.Remove(logStoreConnectionString.Length - urlToMongoDb.DatabaseName.Length - 1);
-            Collection = new MongoClient(connectionStringWithoutDatabaseName).GetDatabase(databaseName).GetCollection<TEntity>(collection);
+            Collection = new MongoClient(logStoreConnectionString).GetDatabase(schema).GetCollection<TEntity>(collection);
         }
     }
 }

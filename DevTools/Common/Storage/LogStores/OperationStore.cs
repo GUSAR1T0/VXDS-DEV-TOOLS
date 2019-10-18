@@ -13,7 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStores
 
     public class OperationStore : BaseLogStore<OperationEntity>, IOperationStore
     {
-        public OperationStore(string logStoreConnectionString) : base(logStoreConnectionString, "Operations")
+        public OperationStore(string logStoreConnectionString, string scope) : base(logStoreConnectionString, "operations", scope)
         {
         }
 
