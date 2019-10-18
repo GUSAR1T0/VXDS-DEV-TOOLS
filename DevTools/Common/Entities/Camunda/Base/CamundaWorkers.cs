@@ -173,10 +173,10 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
         public static CamundaWorkersBuilder Builder() => new CamundaWorkersBuilder();
         private static string GetTopicName(Type type) => type.GetCustomAttributes<CamundaWorkerTopicAttribute>(false).FirstOrDefault()?.Name ?? type.Name;
 
-        internal TProperties Properties { get; }
-        internal IOperationService OperationService { get; }
+        private TProperties Properties { get; }
+        private IOperationService OperationService { get; }
         private ISyrinxCamundaClientService Service { get; }
-        internal List<Func<CamundaWorkers<TProperties>, Task>> RunnableTasks { get; }
+        private List<Func<CamundaWorkers<TProperties>, Task>> RunnableTasks { get; }
 
         internal CamundaWorkers(CamundaWorkersBuilder builder)
         {
@@ -212,7 +212,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
                     MaxTasks = 1,
                     WorkerId = $"w-{Properties.WorkerKeyword}-{DateTime.Today:yyyyMMddhhmmss}",
                     Topics = topics
-                }.SendRequest(Service);
+                }.SendRequest(operation, Service);
 
                 if (!response.IsWithoutErrors())
                 {
@@ -224,13 +224,13 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
                 else if (response.Response.Count > 0)
                 {
                     await logger.Debug("Executing task");
-                    await Run<TCamundaWorker>(logger, response.Response[0]);
+                    await Run<TCamundaWorker>(operation, logger, response.Response[0]);
                     await Task.Delay(TimeSpan.FromSeconds(1));
                 }
             }
         }
 
-        private async Task Run<TCamundaWorker>(IOperationLogger logger, LockedExternalTaskListItem item) where TCamundaWorker : CamundaWorker, new()
+        private async Task Run<TCamundaWorker>(IOperation operation, IOperationLogger logger, LockedExternalTaskListItem item) where TCamundaWorker : CamundaWorker, new()
         {
             var worker = new TCamundaWorker();
             worker.InitializeVariables(item.Variables);
@@ -243,7 +243,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
                 {
                     var token = cancellationTokenSource.Token;
 #pragma warning disable 4014
-                    Task.Run(async () => await ExtendLock(logger, item, token), token);
+                    Task.Run(async () => await ExtendLock(operation, logger, item, token), token);
 #pragma warning restore 4014
                     worker.Execute(logger);
                     isSuccess = true;
@@ -275,7 +275,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
                     {
                         WorkerId = item.WorkerId,
                         Variables = worker.CollectVariables()
-                    }.SendRequest(Service);
+                    }.SendRequest(operation, Service);
                 }
                 else
                 {
@@ -287,7 +287,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
                         ErrorDetails = exception.StackTrace,
                         Retries = countOfRetries,
                         RetryTimeout = Properties.RetryAfterFailureTimeout
-                    }.SendRequest(Service);
+                    }.SendRequest(operation, Service);
                 }
 
                 if (!response.IsWithoutErrors())
@@ -311,7 +311,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
             }
         }
 
-        private async Task ExtendLock(IOperationLogger logger, LockedExternalTaskListItem item, CancellationToken token)
+        private async Task ExtendLock(IOperation operation, IOperationLogger logger, LockedExternalTaskListItem item, CancellationToken token)
         {
             while (true)
             {
@@ -327,7 +327,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
                         {
                             WorkerId = item.WorkerId,
                             NewDuration = Properties.LockDuration
-                        }.SendRequest(Service);
+                        }.SendRequest(operation, Service);
 
                         if (!response.IsWithoutErrors())
                         {

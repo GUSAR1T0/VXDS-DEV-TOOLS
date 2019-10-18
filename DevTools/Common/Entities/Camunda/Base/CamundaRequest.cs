@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.HTTP;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Enums.Camunda;
 using VXDesign.Store.DevTools.Common.Services.Syrinx;
 using VXDesign.Store.DevTools.Common.Utils.Camunda;
@@ -60,6 +61,6 @@ namespace VXDesign.Store.DevTools.Common.Entities.Camunda.Base
             }
         }
 
-        public async Task<TResponse> SendRequest(ISyrinxCamundaClientService service) => await service.Send<CamundaRequest<TResponse>, TResponse>(this);
+        public async Task<TResponse> SendRequest(IOperation operation, ISyrinxCamundaClientService service) => await service.Send<CamundaRequest<TResponse>, TResponse>(operation, this);
     }
 }

@@ -64,7 +64,7 @@
 </style>
 
 <script>
-    import { generateColor, getConfiguration } from "@/extensions/utils";
+    import { generateColor, getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import HttpClient from "@/extensions/httpClient";
     import { LOCALHOST } from "@/constants/servers";
     import { UPDATE_PROFILE_ENDPOINT } from "@/constants/endpoints";
@@ -135,15 +135,16 @@
                                 this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
                                 this.$notify.info({
-                                    title: "Info",
-                                    message: "Your profile was updated successfully"
+                                    title: "Profile was updated",
+                                    message: "Your profile changes took effect"
                                 });
                             }).catch(error => {
                                 this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
                                 this.$notify.error({
-                                    title: "Error",
-                                    message: `Your profile was not updated: ${error.response.data.message}`
+                                    title: "Failed to update profile",
+                                    duration: 10000,
+                                    message: renderErrorNotificationMessage(this.$createElement, error.response)
                                 });
                             });
                         }).catch(() => {
@@ -153,8 +154,8 @@
                         this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
                         this.$notify.warning({
-                            title: "Warning",
-                            message: "Your profile was not updated due to lack of changes"
+                            title: "Profile wasn't updated",
+                            message: "No change to update your profile"
                         });
                     }
                 });

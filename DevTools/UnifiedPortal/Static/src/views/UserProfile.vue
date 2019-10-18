@@ -43,14 +43,14 @@
     import { mapGetters } from "vuex";
     import HttpClient from "@/extensions/httpClient";
     import { GET_PROFILE_ENDPOINT } from "@/constants/endpoints";
-    import { getConfiguration } from "@/extensions/utils";
+    import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import { LOCALHOST } from "@/constants/servers";
+    import { SIGN_IN_REQUEST } from "@/constants/actions";
 
     import UserCard from "@/components/user/UserCard.vue";
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import UserInfoRow from "@/components/user/UserInfoRow.vue";
     import UserGeneralInfoUpdateForm from "@/components/user/UserGeneralInfoUpdateForm.vue";
-    import { SIGN_IN_REQUEST } from "@/constants/actions";
 
     let user = {
         id: "",
@@ -116,8 +116,9 @@
                     this.loadingIsActive = false;
                     this.$router.back();
                     this.$notify.error({
-                        title: "Error",
-                        message: `Failed to load user profile: ${error.response.data.message}`
+                        title: "Failed to load user profile",
+                        duration: 10000,
+                        message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });
                 }));
             },

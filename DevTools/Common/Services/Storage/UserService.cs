@@ -25,13 +25,13 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                throw CommonExceptions.FailedToGetProfileDueToMissedEmail();
+                throw CommonExceptions.FailedToGetProfileDueToMissedEmail(operation);
             }
 
             var entity = await userDataStore.GetProfileByEmail(operation, email);
             if (entity == null)
             {
-                throw CommonExceptions.UserWasNotFound(email);
+                throw CommonExceptions.UserWasNotFound(operation, email);
             }
 
             return entity;
@@ -41,7 +41,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
         {
             if (!await userDataStore.IsUserExist(operation, entity.Id))
             {
-                throw CommonExceptions.UserWasNotFound();
+                throw CommonExceptions.UserWasNotFound(operation);
             }
 
             await userDataStore.UpdateProfile(operation, entity);

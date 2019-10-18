@@ -1,19 +1,16 @@
 <template>
     <div class="authorization">
         <div class="alert-message">
-            <el-alert type="info" effect="light" center :closable="false">
-                <span slot="title">
-                    <el-row type="flex" justify="center" align="middle" style="padding-top: 5px">
-                        <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="64px"
-                             height="64px"/>
-                    </el-row>
-                    <el-row>
-                        Welcome to the system
-                    </el-row>
-                </span>
-                <div class="alert-description">Before we'll start, please log in</div>
-            </el-alert>
+            <el-row type="flex" justify="center" align="middle" style="padding-top: 5px">
+                <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="64px"
+                     height="64px"/>
+            </el-row>
+            <el-row class="alert-title">
+                Welcome to the system
+            </el-row>
+            <el-row class="alert-description">Before we'll start, please log in</el-row>
         </div>
+        <HorizontalDivider/>
         <el-row class="main-container">
             <el-col :span="24">
                 <el-tabs type="border-card" :stretch="true">
@@ -32,22 +29,22 @@
 </template>
 
 <style scoped>
-    .alert-message {
-        padding-bottom: 25px;
-    }
-
-    .alert-description {
-        font-size: 24px;
-        padding-bottom: 5px;
-    }
-</style>
-
-<style>
-    .el-alert__title {
+    .alert-title {
         font-size: 36px;
         line-height: normal !important;
     }
 
+    .alert-description {
+        font-size: 24px;
+        padding-top: 5px;
+    }
+    
+    .alert-message {
+        padding: 25px 0;
+    }
+</style>
+
+<style>
     .el-input__inner:focus {
         border-color: #F56C6C !important;
         outline: none;
@@ -59,12 +56,14 @@
 </style>
 
 <script>
+    import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import SignIn from "@/components/authorization/SignIn.vue";
     import SignUp from "@/components/authorization/SignUp.vue";
 
     export default {
         name: "Authorization",
         components: {
+            HorizontalDivider,
             SignIn,
             SignUp
         }

@@ -34,8 +34,8 @@
                 this.$store.dispatch(LOGOUT_REQUEST).then(() => {
                     this.$router.push("/auth").catch(() => {});
                     this.$notify.info({
-                        title: "Info",
-                        message: "You are logged out"
+                        title: "You are logged out",
+                        message: "Waiting for you again"
                     });
                 }).catch(() => {
                     this.$router.push("/auth").catch(() => {});

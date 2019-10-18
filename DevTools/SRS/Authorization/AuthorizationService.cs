@@ -39,13 +39,13 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                throw CommonExceptions.NoAuthenticationData();
+                throw CommonExceptions.NoAuthenticationData(operation);
             }
 
             var id = await userDataStore.GetIdByAccessData(operation, email, password);
             if (id == null)
             {
-                throw CommonExceptions.UserWasNotFound(email);
+                throw CommonExceptions.AuthenticationFailed(operation);
             }
 
             var identity = GetIdentity(id);
@@ -65,18 +65,18 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
         {
             if (string.IsNullOrWhiteSpace(entity.Email) || string.IsNullOrWhiteSpace(entity.Password))
             {
-                throw CommonExceptions.NoAuthenticationData();
+                throw CommonExceptions.NoAuthenticationData(operation);
             }
 
             if (await userDataStore.GetIdByAccessData(operation, entity.Email) != null)
             {
-                throw CommonExceptions.UserHasAlreadyExist();
+                throw CommonExceptions.UserHasAlreadyExist(operation);
             }
 
             var user = await userDataStore.CreateUser(operation, entity);
             if (user == null)
             {
-                throw CommonExceptions.RegistrationIsFailed();
+                throw CommonExceptions.RegistrationIsFailed(operation);
             }
 
             var identity = GetIdentity(user.Id);
@@ -96,14 +96,14 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
         {
             if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken))
             {
-                throw CommonExceptions.NoAuthenticationData();
+                throw CommonExceptions.NoAuthenticationData(operation);
             }
 
-            var principal = GetClaimsPrincipalDataFromToken(accessToken);
+            var principal = GetClaimsPrincipalDataFromToken(operation, accessToken);
             var claims = principal.Claims.ToList();
-            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims();
+            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
             var storedRefreshToken = await userDataStore.GetRefreshTokenById(operation, id);
-            if (storedRefreshToken?.Equals(refreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent();
+            if (storedRefreshToken?.Equals(refreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent(operation);
 
             var token = new RawJwtToken
             {
@@ -118,7 +118,7 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
 
         public async Task Logout(IOperation operation, IEnumerable<Claim> claims)
         {
-            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims();
+            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
             var identity = GetIdentity(id);
             identity?.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
             await userDataStore.UpdateRefreshTokenById(operation, id, null);
@@ -126,7 +126,7 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
 
         public async Task<UserAuthorizationEntity> GetUserData(IOperation operation, IEnumerable<Claim> claims)
         {
-            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims();
+            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
             return await userDataStore.GetAuthorizationById(operation, id);
         }
 
@@ -145,14 +145,14 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
 
         private static ClaimsIdentity GetIdentity(int? id) => id.HasValue ? AuthorizationUtils.GetClaimsIdentity(id.ToString()) : null;
 
-        private ClaimsPrincipal GetClaimsPrincipalDataFromToken(string accessToken)
+        private ClaimsPrincipal GetClaimsPrincipalDataFromToken(IOperation operation, string accessToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(accessToken, GetServerTokenValidationParameters(false), out var securityToken);
             if (!(securityToken is JwtSecurityToken jwtSecurityToken) ||
                 !jwtSecurityToken.Header.Alg.Equals(authorizationTokenProperties.SecurityAlgorithm, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw CommonExceptions.InvalidTokenInHeader();
+                throw CommonExceptions.InvalidTokenInHeader(operation);
             }
 
             return principal;

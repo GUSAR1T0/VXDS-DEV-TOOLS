@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 using VXDesign.Store.DevTools.Common.Entities.Syrinx;
 using VXDesign.Store.DevTools.Common.Services.HTTP;
@@ -37,10 +38,10 @@ namespace VXDesign.Store.DevTools.Common.Services.Syrinx
             return httpClient;
         }
 
-        public override async Task<VerifyAuthenticationResponse> Send(VerifyAuthenticationRequest request)
+        public override async Task<VerifyAuthenticationResponse> Send(IOperation operation, VerifyAuthenticationRequest request)
         {
             SetupHeaders(request);
-            return await Send(properties.Api, properties.VerifyAuthenticationEndpoint, HttpMethod.Get, request);
+            return await Send(operation, properties.Api, properties.VerifyAuthenticationEndpoint, HttpMethod.Get, request);
         }
     }
 }

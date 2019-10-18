@@ -25,8 +25,15 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             StatusCode = StatusCodes.Status500InternalServerError
         };
 
+        private static ObjectResult HandleException(Func<ResponseResult, ObjectResult> response, ManagedException exception) => response(new ResponseResult
+        {
+            OperationId = exception.OperationId,
+            Message = exception.Message
+        });
+
         private static ObjectResult HandleException(Func<ResponseResult, ObjectResult> response, Exception exception) => response(new ResponseResult
         {
+            OperationId = "Non-operational incident",
             Message = exception.Message
         });
 

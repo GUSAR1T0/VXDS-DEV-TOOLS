@@ -54,10 +54,10 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [HttpPost("request")]
-        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await Execute(OperationContexts.SendRequest, async _ =>
+        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await Execute(OperationContexts.SendRequest, async operation =>
         {
-            var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode();
-            return (await camundaServerService.Send(model.ToEntity(endpoint))).ToModel();
+            var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode(operation);
+            return (await camundaServerService.Send(operation, model.ToEntity(endpoint))).ToModel();
         });
     }
 }

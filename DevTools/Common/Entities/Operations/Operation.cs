@@ -9,6 +9,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
     {
         bool? IsSuccess { get; }
 
+        string OperationId { get; }
         IOperationConnection Connection { get; }
         IOperationLogger Logger<T>();
 
@@ -20,7 +21,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
         private readonly ILoggerStore loggerStore;
         private readonly IOperationStore operationStore;
 
-        private string OperationId { get; }
+        public string OperationId { get; }
         public bool? IsSuccess { get; private set; }
         public IOperationConnection Connection { get; }
 

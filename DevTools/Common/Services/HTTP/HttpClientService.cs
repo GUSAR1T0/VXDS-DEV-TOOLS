@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Entities.HTTP;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Extensions.Base;
 using HttpMethod = VXDesign.Store.DevTools.Common.Enums.HTTP.HttpMethod;
 
@@ -12,7 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Services.HTTP
 {
     public interface IHttpClientService<in TRequest, TResponse> where TRequest : IRequest where TResponse : IResponse, new()
     {
-        Task<TResponse> Send(TRequest request);
+        Task<TResponse> Send(IOperation operation, TRequest request);
     }
 
     public abstract class HttpClientService<TRequest, TResponse> : IHttpClientService<TRequest, TResponse> where TRequest : IRequest where TResponse : IResponse, new()
@@ -25,9 +26,9 @@ namespace VXDesign.Store.DevTools.Common.Services.HTTP
 
         protected abstract HttpClient Initialize();
 
-        public abstract Task<TResponse> Send(TRequest request);
+        public abstract Task<TResponse> Send(IOperation operation, TRequest request);
 
-        protected async Task<TResponse> Send(string api, string path, HttpMethod method, TRequest request)
+        protected async Task<TResponse> Send(IOperation operation, string api, string path, HttpMethod method, TRequest request)
         {
             var fullRequestEndpoint = CreateFullRequestEndpoint(api, path, request.Path, request.Query);
 
