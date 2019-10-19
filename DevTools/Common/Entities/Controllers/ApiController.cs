@@ -25,7 +25,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             StatusCode = StatusCodes.Status500InternalServerError
         };
 
-        private static ObjectResult HandleException(Func<ResponseResult, ObjectResult> response, ManagedException exception) => response(new ResponseResult
+        private static ObjectResult HandleException(Func<ResponseResult, ObjectResult> response, OperationException exception) => response(new ResponseResult
         {
             OperationId = exception.OperationId.ToString(),
             Message = exception.Message
@@ -53,6 +53,10 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             {
                 return HandleException(NotFound, e);
             }
+            catch (OperationException e)
+            {
+                return HandleException(BadRequest, e);
+            }
             catch (Exception e)
             {
                 return HandleException(InternalServerError, e);
@@ -73,6 +77,10 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             catch (NotFoundException e)
             {
                 return HandleException(NotFound, e);
+            }
+            catch (OperationException e)
+            {
+                return HandleException(BadRequest, e);
             }
             catch (Exception e)
             {

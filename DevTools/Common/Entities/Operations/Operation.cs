@@ -30,7 +30,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
         {
             loggerStore = new LoggerStore(properties.LogStoreConnectionString, scope);
 
-            Connection = new OperationConnection(properties.DataStoreConnectionString);
+            Connection = new OperationConnection(this, properties.DataStoreConnectionString);
             operationStore = new OperationStore(Connection);
             OperationId = operationStore.Start(scope, context).Result;
         }
@@ -39,8 +39,8 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
 
         public async Task Complete(bool isSuccessful)
         {
-            IsSuccessful = isSuccessful;
             await operationStore.Stop(OperationId, isSuccessful);
+            IsSuccessful = isSuccessful;
         }
 
         public void Dispose()

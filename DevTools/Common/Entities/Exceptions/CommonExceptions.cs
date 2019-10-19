@@ -6,6 +6,14 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 {
     public static class CommonExceptions
     {
+        #region System
+
+        public static OperationException TransactionHasAlreadyBegun(IOperation operation) => new OperationException(operation, "Transaction has already begun");
+
+        public static OperationException OperationHasAlreadyCompleted(IOperation operation) => new OperationException(operation, "Operation has already completed");
+
+        #endregion
+
         #region Camunda / SRS
 
         public static NotFoundException CamundaEndpointIsNotFoundByActionCode(IOperation operation) => new NotFoundException(operation, "Failed to find a endpoint by action code");

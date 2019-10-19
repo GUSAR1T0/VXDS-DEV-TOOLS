@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 
@@ -13,7 +14,8 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
 
     public class OperationService : IOperationService
     {
-        private const string ErrorMessage = "Failed to perform action correctly";
+        private const string OperationErrorMessage = "Failed to perform action correctly";
+        private const string TransactionRollbackErrorMessage = "Failed to rollback transaction";
         private const string SuccessMessage = "Action was performed correctly";
 
         private readonly DatabaseConnectionProperties properties;
@@ -44,23 +46,53 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
         {
             using (var operation = new Operation(scope, context, properties))
             {
-                var isSuccess = true;
+                var isSuccessful = true;
                 var logger = operation.Logger<OperationService>();
                 try
                 {
-                    var result = await action(operation);
-                    await logger.Debug(SuccessMessage);
-                    return result;
-                }
-                catch (Exception e)
-                {
-                    isSuccess = false;
-                    await logger.Error(ErrorMessage, GetExceptionContent(e));
-                    throw;
+                    using (var transaction = ((OperationConnection) operation.Connection).BeginTransaction())
+                    {
+                        try
+                        {
+                            var result = await action(operation);
+                            transaction.Commit();
+                            await logger.Debug(SuccessMessage);
+                            return result;
+                        }
+                        catch (Exception actionException)
+                        {
+                            isSuccessful = false;
+
+                            var retries = 5;
+                            while (retries > 0)
+                            {
+                                try
+                                {
+                                    transaction.Rollback();
+                                    break;
+                                }
+                                catch (Exception rollbackException)
+                                {
+                                    retries--;
+                                    await logger.Error($"{TransactionRollbackErrorMessage}, remaining attempts: {retries}", GetExceptionContent(rollbackException));
+                                    await Task.Delay(TimeSpan.FromSeconds(1));
+                                }
+                            }
+
+                            if (retries == 0)
+                            {
+                                await logger.Error($"{TransactionRollbackErrorMessage}, operation couldn't be aborted");
+                            }
+
+                            await logger.Error(OperationErrorMessage, GetExceptionContent(actionException));
+                            throw new OperationException(operation, actionException);
+                        }
+                    }
                 }
                 finally
                 {
-                    await operation.Complete(isSuccess);
+                    ((OperationConnection) operation.Connection).EndTransaction();
+                    await operation.Complete(isSuccessful);
                 }
             }
         }
