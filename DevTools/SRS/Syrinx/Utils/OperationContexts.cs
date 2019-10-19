@@ -10,17 +10,39 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Utils
 
         #region Account
 
-        internal static OperationContext SignIn() => OperationContext.Create(Authorization, nameof(AccountController.SignIn));
-        internal static OperationContext SignUp() => OperationContext.Create(Authorization, nameof(AccountController.SignUp));
-        internal static OperationContext RefreshToken() => OperationContext.Create(Authorization, nameof(AccountController.RefreshToken));
-        internal static OperationContext Logout() => OperationContext.Create(Authorization, nameof(AccountController.Logout));
-        internal static OperationContext GetUserData() => OperationContext.Create(Authorization, nameof(AccountController.GetUserData));
+        internal static OperationContext.OperationContextBuilder SignIn(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(Authorization, nameof(AccountController.SignIn));
+        }
+
+        internal static OperationContext.OperationContextBuilder SignUp(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(Authorization, nameof(AccountController.SignUp));
+        }
+
+        internal static OperationContext.OperationContextBuilder RefreshToken(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(Authorization, nameof(AccountController.RefreshToken));
+        }
+
+        internal static OperationContext.OperationContextBuilder Logout(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(Authorization, nameof(AccountController.Logout));
+        }
+
+        internal static OperationContext.OperationContextBuilder GetUserData(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(Authorization, nameof(AccountController.GetUserData));
+        }
 
         #endregion
 
         #region Camunda
 
-        internal static OperationContext SendRequest() => OperationContext.Create(Camunda, nameof(CamundaController.SendRequest));
+        internal static OperationContext.OperationContextBuilder SendRequest(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(Camunda, nameof(CamundaController.SendRequest));
+        }
 
         #endregion
     }

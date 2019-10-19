@@ -23,12 +23,13 @@ namespace VXDesign.Store.DevTools.Common.Services.Syrinx
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            const int guestUserId = -1;
-            var operationContext = OperationContext.Create(nameof(SyrinxVerifiedAuthenticationService), "OnAuthorization");
-
+            var operationContext = OperationContext.Builder()
+                .SetName(nameof(SyrinxVerifiedAuthenticationService), "OnAuthorization")
+                .SetUserId(null, true)
+                .Create();
             try
             {
-                await operationService.Make(guestUserId, operationContext, async operation =>
+                await operationService.Make(operationContext, async operation =>
                 {
                     var token = context.HttpContext.Request?.Headers["Authorization"];
                     if (!string.IsNullOrWhiteSpace(token))

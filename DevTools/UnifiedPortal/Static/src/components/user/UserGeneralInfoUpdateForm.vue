@@ -155,7 +155,7 @@
 
                         this.$notify.warning({
                             title: "Profile wasn't updated",
-                            message: "No change to update your profile"
+                            message: "No change for update of your profile"
                         });
                     }
                 });

@@ -16,11 +16,11 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
 
     public class OperationLogger<T> : IOperationLogger
     {
-        private readonly string operationId;
+        private readonly int operationId;
         private readonly ILogger logger;
         private readonly ILoggerStore loggerStore;
 
-        public OperationLogger(ILoggerStore loggerStore, string operationId)
+        public OperationLogger(ILoggerStore loggerStore, int operationId)
         {
             this.loggerStore = loggerStore;
             this.operationId = operationId;

@@ -5,7 +5,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 {
     public class ManagedException : Exception
     {
-        public string OperationId { get; }
+        public int OperationId { get; }
 
         public ManagedException(IOperation operation, string message) : base(message)
         {

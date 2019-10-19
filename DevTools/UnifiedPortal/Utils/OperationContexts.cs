@@ -10,17 +10,39 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
 
         #region User
 
-        internal static OperationContext GetUserProfile() => OperationContext.Create(User, nameof(UserController.GetUserProfile));
-        internal static OperationContext UpdateUserProfile() => OperationContext.Create(User, nameof(UserController.UpdateUserProfile));
+        internal static OperationContext.OperationContextBuilder GetUserProfile(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(User, nameof(UserController.GetUserProfile));
+        }
+
+        internal static OperationContext.OperationContextBuilder UpdateUserProfile(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(User, nameof(UserController.UpdateUserProfile));
+        }
 
         #endregion
 
         #region UserRole
 
-        internal static OperationContext GetUserRoles() => OperationContext.Create(UserRole, nameof(UserRoleController.GetUserRoles));
-        internal static OperationContext AddUserRole() => OperationContext.Create(UserRole, nameof(UserRoleController.AddUserRole));
-        internal static OperationContext UpdateUserRole() => OperationContext.Create(UserRole, nameof(UserRoleController.UpdateUserRole));
-        internal static OperationContext DeleteUserRole() => OperationContext.Create(UserRole, nameof(UserRoleController.DeleteUserRole));
+        internal static OperationContext.OperationContextBuilder GetUserRoles(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(UserRole, nameof(UserRoleController.GetUserRoles));
+        }
+
+        internal static OperationContext.OperationContextBuilder AddUserRole(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(UserRole, nameof(UserRoleController.AddUserRole));
+        }
+
+        internal static OperationContext.OperationContextBuilder UpdateUserRole(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(UserRole, nameof(UserRoleController.UpdateUserRole));
+        }
+
+        internal static OperationContext.OperationContextBuilder DeleteUserRole(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(UserRole, nameof(UserRoleController.DeleteUserRole));
+        }
 
         #endregion
     }

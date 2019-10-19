@@ -7,8 +7,8 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
 {
     public interface IOperationService
     {
-        Task Make(int userId, OperationContext context, Func<IOperation, Task> action);
-        Task<T> Make<T>(int userId, OperationContext context, Func<IOperation, Task<T>> action);
+        Task Make(OperationContext context, Func<IOperation, Task> action);
+        Task<T> Make<T>(OperationContext context, Func<IOperation, Task<T>> action);
     }
 
     public class OperationService : IOperationService
@@ -34,32 +34,15 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
             exception.StackTrace
         };
 
-        public async Task Make(int userId, OperationContext context, Func<IOperation, Task> action)
+        public async Task Make(OperationContext context, Func<IOperation, Task> action) => await Make(context, async operation =>
         {
-            using (var operation = new Operation(scope, userId, context, properties))
-            {
-                var isSuccess = true;
-                try
-                {
-                    await action(operation);
-                    await operation.Logger<OperationService>().Debug(SuccessMessage);
-                }
-                catch (Exception e)
-                {
-                    isSuccess = false;
-                    await operation.Logger<OperationService>().Error(ErrorMessage, GetExceptionContent(e));
-                    throw;
-                }
-                finally
-                {
-                    await operation.Complete(isSuccess);
-                }
-            }
-        }
+            await action(operation);
+            return true;
+        });
 
-        public async Task<T> Make<T>(int userId, OperationContext context, Func<IOperation, Task<T>> action)
+        public async Task<T> Make<T>(OperationContext context, Func<IOperation, Task<T>> action)
         {
-            using (var operation = new Operation(scope, userId, context, properties))
+            using (var operation = new Operation(scope, context, properties))
             {
                 var isSuccess = true;
                 var logger = operation.Logger<OperationService>();

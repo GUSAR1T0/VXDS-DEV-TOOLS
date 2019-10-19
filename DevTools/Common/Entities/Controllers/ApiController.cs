@@ -13,7 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
     {
         private readonly IOperationService operationService;
 
-        private int UserId => AuthorizationUtils.GetUserId(User.Claims) ?? -1; // -1 => GUEST / UNAUTHORIZED USER
+        private int? UserId => AuthorizationUtils.GetUserId(User.Claims); // null => GUEST / UNAUTHORIZED USER
 
         protected ApiController(IOperationService operationService)
         {
@@ -27,7 +27,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
 
         private static ObjectResult HandleException(Func<ResponseResult, ObjectResult> response, ManagedException exception) => response(new ResponseResult
         {
-            OperationId = exception.OperationId,
+            OperationId = exception.OperationId.ToString(),
             Message = exception.Message
         });
 
@@ -37,11 +37,12 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             Message = exception.Message
         });
 
-        protected async Task<ActionResult> Execute(Func<OperationContext> context, Func<IOperation, Task> action)
+        protected async Task<ActionResult> Execute(Func<OperationContext.OperationContextBuilder, OperationContext.OperationContextBuilder> builder, Func<IOperation, Task> action)
         {
             try
             {
-                await operationService.Make(UserId, context(), action);
+                var operationContext = builder(OperationContext.Builder()).SetUserId(UserId).Create();
+                await operationService.Make(operationContext, action);
                 return Ok();
             }
             catch (BadRequestException e)
@@ -58,11 +59,12 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             }
         }
 
-        protected async Task<ActionResult<T>> Execute<T>(Func<OperationContext> context, Func<IOperation, Task<T>> action)
+        protected async Task<ActionResult<T>> Execute<T>(Func<OperationContext.OperationContextBuilder, OperationContext.OperationContextBuilder> builder, Func<IOperation, Task<T>> action)
         {
             try
             {
-                return await operationService.Make(UserId, context(), action);
+                var operationContext = builder(OperationContext.Builder()).SetUserId(UserId).Create();
+                return await operationService.Make(operationContext, action);
             }
             catch (BadRequestException e)
             {

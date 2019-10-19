@@ -1,19 +1,19 @@
 using System;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
+using VXDesign.Store.DevTools.Common.Storage.DataStores;
 using VXDesign.Store.DevTools.Common.Storage.LogStores;
+using IOperationStore = VXDesign.Store.DevTools.Common.Storage.DataStores.IOperationStore;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Operations
 {
     public interface IOperation : IDisposable
     {
-        bool? IsSuccess { get; }
+        int OperationId { get; }
+        bool? IsSuccessful { get; }
 
-        string OperationId { get; }
         IOperationConnection Connection { get; }
         IOperationLogger Logger<T>();
-
-        Task Complete(bool isSuccess);
     }
 
     public class Operation : IOperation
@@ -21,25 +21,26 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
         private readonly ILoggerStore loggerStore;
         private readonly IOperationStore operationStore;
 
-        public string OperationId { get; }
-        public bool? IsSuccess { get; private set; }
+        public int OperationId { get; }
+        public bool? IsSuccessful { get; private set; }
+
         public IOperationConnection Connection { get; }
 
-        public Operation(string scope, int userId, OperationContext context, DatabaseConnectionProperties properties)
+        internal Operation(string scope, OperationContext context, DatabaseConnectionProperties properties)
         {
             loggerStore = new LoggerStore(properties.LogStoreConnectionString, scope);
-            operationStore = new OperationStore(properties.LogStoreConnectionString, scope);
 
-            OperationId = operationStore.Start(userId, context).Result;
-            Connection = new OperationConnection(OperationId, properties.DataStoreConnectionString);
+            Connection = new OperationConnection(properties.DataStoreConnectionString);
+            operationStore = new OperationStore(Connection);
+            OperationId = operationStore.Start(scope, context).Result;
         }
 
         public IOperationLogger Logger<T>() => new OperationLogger<T>(loggerStore, OperationId);
 
-        public async Task Complete(bool isSuccess)
+        public async Task Complete(bool isSuccessful)
         {
-            IsSuccess = isSuccess;
-            await operationStore.Stop(OperationId, isSuccess);
+            IsSuccessful = isSuccessful;
+            await operationStore.Stop(OperationId, isSuccessful);
         }
 
         public void Dispose()
