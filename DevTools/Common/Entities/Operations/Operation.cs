@@ -20,8 +20,9 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
     {
         private readonly ILoggerStore loggerStore;
         private readonly IOperationStore operationStore;
+        private readonly int? operationId;
 
-        public int OperationId { get; }
+        public int OperationId => operationId ?? -1; // -1: when operation is ready to be started but the record isn't stored into DB
         public bool? IsSuccessful { get; private set; }
 
         public IOperationConnection Connection { get; }
@@ -32,7 +33,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
 
             Connection = new OperationConnection(this, properties.DataStoreConnectionString);
             operationStore = new OperationStore(Connection);
-            OperationId = operationStore.Start(scope, context).Result;
+            operationId = operationStore.Start(scope, context).Result;
         }
 
         public IOperationLogger Logger<T>() => new OperationLogger<T>(loggerStore, OperationId);

@@ -27,6 +27,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
 
     public class UserDataStore : BaseDataStore, IUserDataStore
     {
+        #region Autorization
+
         public async Task<UserAuthorizationEntity> GetAuthorizationById(IOperation operation, int id)
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new { Id = id }, @"
@@ -103,6 +105,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             ");
         }
 
+        #endregion
+
+        #region Users
+
         public async Task<bool> IsUserExist(IOperation operation, int id)
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
@@ -151,5 +157,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                 WHERE [Id] = @Id
             ");
         }
+
+        #endregion
     }
 }
