@@ -69,6 +69,9 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
             }
             else
             {
@@ -82,9 +85,6 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
                 .AllowAnyMethod()
                 .AllowCredentials()
             );
-
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

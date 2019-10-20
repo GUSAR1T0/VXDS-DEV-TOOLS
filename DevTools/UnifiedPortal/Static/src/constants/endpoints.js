@@ -5,6 +5,13 @@ export const REFRESH_ENDPOINT = "account/refresh";
 export const LOGOUT_ENDPOINT = "account/logout";
 export const GET_USER_DATA_ENDPOINT = "account";
 
+// Lookup endpoints
+export const GET_LOOKUP_VALUES_ENDPOINT = "lookup/values";
+
 // User endpoints
-export const GET_PROFILE_ENDPOINT = "user";
-export const UPDATE_PROFILE_ENDPOINT = "user/{id}";
+export const GET_PROFILE_ENDPOINT = "user/{id}";
+export const UPDATE_PROFILE_GENERAL_INFO_ENDPOINT = "user/{id}/general";
+export const UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT = "user/{id}/accountSpecific";
+
+// User roles endpoints
+export const GET_USER_ROLES_ENDPOINT = "userRole/list";

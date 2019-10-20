@@ -14,7 +14,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
             Color = entity.Color,
             Location = entity.Location,
             Bio = entity.Bio,
-//            Role = entity.Role.ToModel()
+            UserRole = entity.UserRole?.ToModel()
         };
 
         internal static UserProfileEntity ToEntity(this UserProfileGeneralInfoUpdateModel model, int id) => new UserProfileEntity
@@ -25,7 +25,13 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
             LastName = model.LastName,
             Color = model.Color,
             Location = model.Location,
-            Bio = model.Bio,
+            Bio = model.Bio
+        };
+
+        internal static UserProfileEntity ToEntity(this UserProfileAccountSpecificInfoUpdateModel model, int id) => new UserProfileEntity
+        {
+            Id = id,
+            UserRoleId = model.UserRoleId
         };
     }
 }

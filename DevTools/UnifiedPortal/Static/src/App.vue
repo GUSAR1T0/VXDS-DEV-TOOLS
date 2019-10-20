@@ -22,12 +22,13 @@
 </style>
 
 <script>
+    import { mapGetters } from "vuex";
+    import { ON_LOAD_ACCOUNT_REQUEST, ON_LOAD_LOOKUP_REQUEST, RESET_PATH_FOR_REDIRECTION } from "@/constants/actions";
+
     import NavigationBar from "@/components/navigation-bar/NavigationBar.vue";
     import Header from "@/components/page/Header.vue";
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import Footer from "@/components/page/Footer.vue";
-    import { mapGetters } from "vuex";
-    import { ON_LOAD_REQUEST } from "@/constants/actions";
 
     export default {
         components: {
@@ -61,10 +62,15 @@
                 this.loadingIsActive = false;
             };
 
-            this.$store.dispatch(ON_LOAD_REQUEST, window.location.pathname).then(redirectTo => {
-                this.$router.push(redirectTo).then(() => completeLoading()).catch(() => completeLoading());
+            this.$store.dispatch(ON_LOAD_LOOKUP_REQUEST).then(() => {
+                this.$store.dispatch(ON_LOAD_ACCOUNT_REQUEST, this.$store.getters.getPathForRedirection).then(redirectTo => {
+                    this.$router.push(redirectTo).then(() => completeLoading()).catch(() => completeLoading());
+                }).catch(() => {
+                    this.$router.push("/auth").then(() => completeLoading()).catch(() => completeLoading());
+                });
+                this.$store.dispatch(RESET_PATH_FOR_REDIRECTION);
             }).catch(() => {
-                this.$router.push("/auth").then(() => completeLoading()).catch(() => completeLoading());
+                // TODO: Error case handling
             });
         }
     };

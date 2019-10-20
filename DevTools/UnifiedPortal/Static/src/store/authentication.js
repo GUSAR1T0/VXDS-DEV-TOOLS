@@ -9,8 +9,8 @@ import {
     SIGN_UP_ENDPOINT
 } from "@/constants/endpoints";
 import {
+    ON_LOAD_ACCOUNT_REQUEST,
     LOGOUT_REQUEST,
-    ON_LOAD_REQUEST,
     REFRESH_REQUEST,
     SIGN_IN_REQUEST,
     SIGN_UP_REQUEST
@@ -20,17 +20,19 @@ import { SYRINX } from "@/constants/servers";
 export default {
     state: {
         isAuthenticated: false,
-        email: "",
+        id: null,
         firstName: "",
         lastName: "",
-        color: ""
+        color: "",
+        userPermissions: 0,
+        userRolePermissions: 0
     },
     getters: {
         isAuthenticated: state => {
             return state.isAuthenticated;
         },
-        getEmail: state => {
-            return state.email;
+        getUserId: state => {
+            return state.id;
         },
         getFullName: state => {
             return getUserFullName(state.firstName, state.lastName);
@@ -40,44 +42,47 @@ export default {
         },
         getColor: state => {
             return state.color;
+        },
+        hasUserPermission: state => permission => {
+            return state.userPermissions & permission;
+        },
+        hasUserRolePermission: state => permission => {
+            return state.userRolePermissions & permission;
         }
     },
     mutations: {
         [SIGN_IN_REQUEST]: (state, data) => {
             state.isAuthenticated = true;
-            state.email = data.email;
+            state.id = data.id;
             state.firstName = data.firstName;
             state.lastName = data.lastName;
             state.color = data.color;
+            state.userPermissions = data.userPermissions;
+            state.userRolePermissions = data.userRolePermissions;
         },
         [LOGOUT_REQUEST]: state => {
             state.isAuthenticated = false;
-            state.email = "";
+            state.id = null;
             state.firstName = "";
             state.lastName = "";
             state.color = "";
+            state.userPermissions = 0;
+            state.userRolePermissions = 0;
         }
     },
     actions: {
-        [ON_LOAD_REQUEST]: ({commit, dispatch}, redirectTo) => {
+        [ON_LOAD_ACCOUNT_REQUEST]: ({commit, dispatch}, redirectTo) => {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
-                    HttpClient.init().then(client => {
-                        client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(accessToken)).then(response => {
+                    HttpClient.init().get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(accessToken))
+                        .then(response => {
                             commit(SIGN_IN_REQUEST, response.data);
                             resolve(redirectTo);
-                        }).catch(() => {
-                            dispatch(REFRESH_REQUEST).then(() => {
-                                resolve(redirectTo);
-                            }).catch(() => {
-                                reject();
-                            });
+                        })
+                        .catch(() => {
+                            dispatch(REFRESH_REQUEST).then(() => resolve(redirectTo)).catch(() => reject());
                         });
-                    }).catch(error => {
-                        removeTokens();
-                        reject(error);
-                    });
                 } else {
                     removeTokens();
                     reject();
@@ -86,21 +91,18 @@ export default {
         },
         [SIGN_IN_REQUEST]: ({commit}, signInForm) => {
             return new Promise((resolve, reject) => {
-                HttpClient.init().then(client => {
-                    client.post(SYRINX, SIGN_IN_ENDPOINT, signInForm).then(firstResponse => {
-                        setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                        client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
-                            .then(secondResponse => {
-                                commit(SIGN_IN_REQUEST, secondResponse.data);
-                                resolve();
-                            }).catch(error => {
+                let client = HttpClient.init();
+                client.post(SYRINX, SIGN_IN_ENDPOINT, signInForm).then(firstResponse => {
+                    setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
+                    client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
+                        .then(secondResponse => {
+                            commit(SIGN_IN_REQUEST, secondResponse.data);
+                            resolve();
+                        })
+                        .catch(error => {
                             removeTokens();
                             reject(error);
                         });
-                    }).catch(error => {
-                        removeTokens();
-                        reject(error);
-                    });
                 }).catch(error => {
                     removeTokens();
                     reject(error);
@@ -109,21 +111,18 @@ export default {
         },
         [SIGN_UP_REQUEST]: ({commit}, signUpForm) => {
             return new Promise((resolve, reject) => {
-                HttpClient.init().then(client => {
-                    client.post(SYRINX, SIGN_UP_ENDPOINT, signUpForm).then(firstResponse => {
-                        setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                        client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
-                            .then(secondResponse => {
-                                commit(SIGN_IN_REQUEST, secondResponse.data);
-                                resolve();
-                            }).catch(error => {
+                let client = HttpClient.init();
+                client.post(SYRINX, SIGN_UP_ENDPOINT, signUpForm).then(firstResponse => {
+                    setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
+                    client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
+                        .then(secondResponse => {
+                            commit(SIGN_IN_REQUEST, secondResponse.data);
+                            resolve();
+                        })
+                        .catch(error => {
                             removeTokens();
                             reject(error);
                         });
-                    }).catch(error => {
-                        removeTokens();
-                        reject(error);
-                    });
                 }).catch(error => {
                     removeTokens();
                     reject(error);
@@ -134,21 +133,18 @@ export default {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
-                    HttpClient.init().then(client => {
-                        client.post(SYRINX, REFRESH_ENDPOINT, {accessToken, refreshToken}).then(firstResponse => {
-                            setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                            client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
-                                .then(secondResponse => {
-                                    commit(SIGN_IN_REQUEST, secondResponse.data);
-                                    resolve();
-                                }).catch(error => {
+                    let client = HttpClient.init();
+                    client.post(SYRINX, REFRESH_ENDPOINT, {accessToken, refreshToken}).then(firstResponse => {
+                        setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
+                        client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
+                            .then(secondResponse => {
+                                commit(SIGN_IN_REQUEST, secondResponse.data);
+                                resolve();
+                            })
+                            .catch(error => {
                                 removeTokens();
                                 reject(error);
                             });
-                        }).catch(error => {
-                            removeTokens();
-                            reject(error);
-                        });
                     }).catch(error => {
                         removeTokens();
                         reject(error);
@@ -163,30 +159,28 @@ export default {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
-                    HttpClient.init().then(client => {
-                        client.post(SYRINX, LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
-                            commit(LOGOUT_REQUEST);
-                            removeTokens();
-                            resolve();
-                        }).catch(() => {
-                            dispatch(REFRESH_REQUEST).then(() => {
-                                const {accessToken} = getTokens();
-                                client.post(SYRINX, LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
+                    let client = HttpClient.init();
+                    client.post(SYRINX, LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
+                        commit(LOGOUT_REQUEST);
+                        removeTokens();
+                        resolve();
+                    }).catch(() => {
+                        dispatch(REFRESH_REQUEST).then(() => {
+                            const {accessToken} = getTokens();
+                            client.post(SYRINX, LOGOUT_ENDPOINT, null, getConfiguration(accessToken))
+                                .then(() => {
                                     commit(LOGOUT_REQUEST);
                                     removeTokens();
                                     resolve();
-                                }).catch(error => {
+                                })
+                                .catch(error => {
                                     removeTokens();
                                     reject(error);
                                 });
-                            }).catch(error => {
-                                removeTokens();
-                                reject(error);
-                            });
+                        }).catch(error => {
+                            removeTokens();
+                            reject(error);
                         });
-                    }).catch(error => {
-                        removeTokens();
-                        reject(error);
                     });
                 } else {
                     removeTokens();

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
@@ -27,11 +28,11 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
             this.scope = scope;
         }
 
-        private static object GetExceptionContent(Exception exception) => new
+        private static dynamic GetExceptionContent(Exception exception) => new
         {
             Type = exception.GetType().FullName,
             exception.Source,
-            exception.Data,
+            Data = JsonConvert.SerializeObject(exception.Data),
             exception.Message,
             exception.StackTrace
         };

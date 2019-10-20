@@ -28,7 +28,7 @@ export default new Router({
             beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsNotRequired
         },
         {
-            path: "/user/:email?",
+            path: "/user/:id?",
             name: "user",
             component: () => import(/* webpackChunkName: "user-profile" */ "../views/UserProfile.vue"),
             meta: {

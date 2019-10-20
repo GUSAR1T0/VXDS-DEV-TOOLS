@@ -20,6 +20,6 @@ namespace VXDesign.Store.DevTools.Common.Entities.Storage
 
         public string Message { get; set; }
 
-        public object Value { get; set; }
+        public dynamic Value { get; set; }
     }
 }

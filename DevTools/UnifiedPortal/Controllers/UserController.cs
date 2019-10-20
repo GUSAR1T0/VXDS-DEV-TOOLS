@@ -24,36 +24,60 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <summary>
         /// Obtains user profile data by email
         /// </summary>
-        /// <param name="email">Unique email address for user</param>
+        /// <param name="id">Unique user ID</param>
         /// <returns>User data if it was found</returns>
         [ProducesResponseType(typeof(UserProfileGetModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
-        [HttpGet]
-        public async Task<ActionResult<UserProfileGetModel>> GetUserProfile([FromQuery] string email) => await Execute(OperationContexts.GetUserProfile, async operation =>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserProfileGetModel>> GetUserProfile(int id) => await Execute(OperationContexts.GetUserProfile, async operation =>
         {
-            var entity = await userService.GetUserProfileByEmail(operation, email);
+            var entity = await userService.GetUserProfileById(operation, id);
             return entity.ToModel();
         });
 
         /// <summary>
-        /// Updates user profile data
+        /// Updates user profile general info data
         /// </summary>
-        /// <param name="id">ID of user for update</param>
-        /// <param name="model">Model of user profile for update</param>
+        /// <param name="id">Unique user ID for update</param>
+        /// <param name="model">Model of user profile general info for update</param>
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUserProfile(int id, [FromBody] UserProfileGeneralInfoUpdateModel model) => await Execute(OperationContexts.UpdateUserProfile, async operation =>
+        [HttpPut("{id}/general")]
+        public async Task<ActionResult> UpdateUserProfileGeneralInfo(int id, [FromBody] UserProfileGeneralInfoUpdateModel model)
         {
-            var entity = model.ToEntity(id);
-            await userService.UpdateUserProfile(operation, entity);
-        });
+            return await Execute(OperationContexts.UpdateUserProfileGeneralInfo, async operation =>
+            {
+                var entity = model.ToEntity(id);
+                await userService.UpdateUserProfileGeneralInfo(operation, entity);
+            });
+        }
+
+        /// <summary>
+        /// Updates user profile account specific info data
+        /// </summary>
+        /// <param name="id">Unique user ID for update</param>
+        /// <param name="model">Model of user profile account specific info for update</param>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [SyrinxVerifiedAuthentication]
+        [HttpPut("{id}/accountSpecific")]
+        public async Task<ActionResult> UpdateUserProfileAccountSpecificInfo(int id, [FromBody] UserProfileAccountSpecificInfoUpdateModel model)
+        {
+            return await Execute(OperationContexts.UpdateUserProfileAccountSpecificInfo, async operation =>
+            {
+                var entity = model.ToEntity(id);
+                await userService.UpdateUserProfileAccountSpecificInfo(operation, entity);
+            });
+        }
     }
 }

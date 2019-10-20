@@ -1,6 +1,7 @@
 <template>
     <div class="nav">
-        <el-menu class="el-nav-menu-vertical" :collapse-transition="false" :collapse="true" :router="true" :default-active="$route.path">
+        <el-menu class="el-nav-menu-vertical" :collapse-transition="false" :collapse="true" :router="true"
+                 :default-active="$route.path">
             <el-menu-item class="el-nav-menu-vertical-header" index="/">
                 <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="40px"
                      height="40px" class="el-nav-menu-logo">
@@ -91,6 +92,11 @@
             UserSubMenu,
             MoreSubMenu
         },
+        methods: {
+            resetPagePosition() {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        },
         mounted() {
             let navmenu = document.getElementsByClassName("el-nav-menu-vertical");
             if (navmenu) {
@@ -100,10 +106,11 @@
             }
         },
         updated() {
-            let navmenu = document.getElementsByClassName("el-nav-menu-vertical");
-            if (navmenu) {
-                navmenu[0].style.top = "0px";
-            }
+            this.resetPagePosition();
+        },
+        beforeRouteUpdate(to, from, next) {
+            this.resetPagePosition();
+            next();
         }
     };
 </script>

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Storage;
+using VXDesign.Store.DevTools.Common.Enums.Operations;
 
 namespace VXDesign.Store.DevTools.Common.Storage.DataStores
 {
@@ -21,9 +22,11 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             return await operation.Connection.QuerySingleOrDefaultAsync<UserRoleEntity>(new { Id = id }, @"
                 SELECT
                     [Id],
-                    [Name]
+                    [Name],
+                    [UserPermissions],
+                    [UserRolePermissions]
                 FROM [authorization].[UserRole]
-                WHERE [Id] = @Id
+                WHERE [Id] = @Id;
             ");
         }
 
@@ -32,16 +35,31 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             return await operation.Connection.QueryAsync<UserRoleEntity>(@"
                 SELECT
                     [Id],
-                    [Name]
+                    [Name],
+                    [UserPermissions],
+                    [UserRolePermissions]
                 FROM [authorization].[UserRole]
             ");
         }
 
         public async Task AddUserRole(IOperation operation, UserRoleEntity entity)
         {
-            await operation.Connection.ExecuteAsync(new { entity.Name }, @"
-                INSERT INTO [authorization].[UserRole] ([Name])
-                VALUES (@Name)
+            await operation.Connection.ExecuteAsync(new
+            {
+                entity.Name,
+                entity.UserPermissions,
+                entity.UserRolePermissions
+            }, @"
+                INSERT INTO [authorization].[UserRole] (
+                    [Name],
+                    [UserPermissions],
+                    [UserRolePermissions]
+                )
+                VALUES (
+                    @Name,
+                    @UserPermissions,
+                    @UserRolePermissions
+                )
             ");
         }
 
@@ -50,10 +68,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             await operation.Connection.ExecuteAsync(new
             {
                 entity.Id,
-                entity.Name
+                entity.Name,
+                entity.UserPermissions,
+                entity.UserRolePermissions
             }, @"
                 UPDATE [authorization].[UserRole]
-                SET [Name] = @Name
+                SET
+                    [Name] = @Name,
+                    [UserPermissions] = @UserPermissions,
+                    [UserRolePermissions] = @UserRolePermissions
                 WHERE [Id] = @Id
             ");
         }

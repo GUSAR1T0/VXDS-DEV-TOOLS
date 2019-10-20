@@ -39,7 +39,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             // Services
             services.AddScoped<ISyrinxCamundaClientService>(factory => new SyrinxCamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
             services.AddScoped<ISyrinxAuthenticationClientService>(factory => new SyrinxAuthenticationClientService(factory.GetService<PortalProperties>().SyrinxProperties));
-            services.AddScoped<IUserService>(factory => new UserService(factory.GetService<IUserDataStore>()));
+            services.AddScoped<IUserService>(factory => new UserService(factory.GetService<IUserDataStore>(), factory.GetService<IUserRoleStore>()));
             services.AddScoped<IUserRoleService>(factory => new UserRoleService(factory.GetService<IUserRoleStore>()));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -53,15 +53,15 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

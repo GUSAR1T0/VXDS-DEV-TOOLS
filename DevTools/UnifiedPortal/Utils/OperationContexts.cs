@@ -5,8 +5,18 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
 {
     internal static class OperationContexts
     {
+        private const string Lookup = "Lookup";
         private const string User = "User";
         private const string UserRole = "UserRole";
+
+        #region Lookup
+
+        internal static OperationContext.OperationContextBuilder GetAllValues(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(Lookup, nameof(LookupController.GetAllValues));
+        }
+
+        #endregion
 
         #region User
 
@@ -15,9 +25,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
             return builder.SetName(User, nameof(UserController.GetUserProfile));
         }
 
-        internal static OperationContext.OperationContextBuilder UpdateUserProfile(OperationContext.OperationContextBuilder builder)
+        internal static OperationContext.OperationContextBuilder UpdateUserProfileGeneralInfo(OperationContext.OperationContextBuilder builder)
         {
-            return builder.SetName(User, nameof(UserController.UpdateUserProfile));
+            return builder.SetName(User, nameof(UserController.UpdateUserProfileGeneralInfo));
+        }
+
+        internal static OperationContext.OperationContextBuilder UpdateUserProfileAccountSpecificInfo(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(User, nameof(UserController.UpdateUserProfileAccountSpecificInfo));
         }
 
         #endregion

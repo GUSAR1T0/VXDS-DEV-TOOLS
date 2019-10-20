@@ -1,8 +1,9 @@
 <template>
-    <el-dialog :visible.sync="pageStatus.userUpdateFormDialogVisible" width="75%" @closed="closed">
-        <span slot="title" class="modal-title">Update user general info</span>
+    <el-dialog :visible.sync="pageStatus.visible" width="75%" @closed="closed">
+        <span slot="title" class="modal-title">Update User General Info</span>
         <UserCard :user="userGeneralInfoUpdateForm" style="padding-bottom: 25px"/>
-        <el-form :model="userGeneralInfoUpdateForm" :rules="userGeneralInfoUpdateRules" ref="userGeneralInfoUpdateForm" label-width="120px"
+        <el-form :model="userGeneralInfoUpdateForm" :rules="userGeneralInfoUpdateRules" ref="userGeneralInfoUpdateForm"
+                 label-width="120px"
                  @submit.native.prevent="submitForm('userGeneralInfoUpdateForm')">
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
@@ -28,14 +29,16 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="location" label="Location">
-                        <el-input v-model="userGeneralInfoUpdateForm.location" clearable maxlength="255" show-word-limit></el-input>
+                        <el-input v-model="userGeneralInfoUpdateForm.location" clearable maxlength="255"
+                                  show-word-limit></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="bio" label="Bio">
-                        <el-input type="textarea" :rows="2" v-model="userGeneralInfoUpdateForm.bio" clearable maxlength="1000" show-word-limit></el-input>
+                        <el-input type="textarea" :rows="2" v-model="userGeneralInfoUpdateForm.bio" clearable
+                                  maxlength="1000" show-word-limit></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -52,7 +55,8 @@
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
                         <el-button type="danger" @click="cancel" plain>Cancel</el-button>
-                        <el-button type="danger" ref="userGeneralInfoUpdateFormButton" native-type="submit">Submit</el-button>
+                        <el-button type="danger" ref="userGeneralInfoUpdateFormButton" native-type="submit">Submit
+                        </el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -67,7 +71,7 @@
     import { generateColor, getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import HttpClient from "@/extensions/httpClient";
     import { LOCALHOST } from "@/constants/servers";
-    import { UPDATE_PROFILE_ENDPOINT } from "@/constants/endpoints";
+    import { UPDATE_PROFILE_GENERAL_INFO_ENDPOINT } from "@/constants/endpoints";
     import format from "string-format";
 
     import UserCard from "@/components/user/UserCard.vue";
@@ -117,7 +121,7 @@
                 this.userGeneralInfoUpdateForm.color = generateColor();
             },
             cancel() {
-                this.pageStatus.userUpdateFormDialogVisible = false;
+                this.pageStatus.visible = false;
             },
             submitForm(formName) {
                 this.$refs.userGeneralInfoUpdateFormButton.loading = true;
@@ -128,29 +132,33 @@
                     }
 
                     if (!this.isNotChanged) {
-                        HttpClient.init().then(client => {
-                            let endpoint = format(UPDATE_PROFILE_ENDPOINT, {id: this.user.id});
-                            client.put(LOCALHOST, endpoint, this.userGeneralInfoUpdateForm, getConfiguration()).then(() => {
-                                this.pageStatus.userUpdateFormDialogVisible = false;
-                                this.$refs.userGeneralInfoUpdateFormButton.loading = false;
+                        let endpoint = format(UPDATE_PROFILE_GENERAL_INFO_ENDPOINT, {id: this.user.id});
+                        HttpClient.init().put(LOCALHOST, endpoint, {
+                            firstName: this.userGeneralInfoUpdateForm.firstName,
+                            lastName: this.userGeneralInfoUpdateForm.lastName,
+                            email: this.userGeneralInfoUpdateForm.email,
+                            color: this.userGeneralInfoUpdateForm.color,
+                            location: this.userGeneralInfoUpdateForm.location,
+                            bio: this.userGeneralInfoUpdateForm.bio
+                        }, getConfiguration()).then(() => {
+                            this.pageStatus.visible = false;
+                            this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
-                                this.$notify.info({
-                                    title: "Profile was updated",
-                                    message: "Your profile changes took effect"
-                                });
-                            }).catch(error => {
-                                this.$refs.userGeneralInfoUpdateFormButton.loading = false;
-
-                                this.$notify.error({
-                                    title: "Failed to update profile",
-                                    duration: 10000,
-                                    message: renderErrorNotificationMessage(this.$createElement, error.response)
-                                });
+                            this.$notify.info({
+                                title: "Profile was updated",
+                                message: "Your profile changes took effect"
                             });
-                        }).catch(() => {
+                        }).catch(error => {
+                            this.$refs.userGeneralInfoUpdateFormButton.loading = false;
+
+                            this.$notify.error({
+                                title: "Failed to update profile",
+                                duration: 10000,
+                                message: renderErrorNotificationMessage(this.$createElement, error.response)
+                            });
                         });
                     } else {
-                        this.pageStatus.userUpdateFormDialogVisible = false;
+                        this.pageStatus.visible = false;
                         this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
                         this.$notify.warning({

@@ -5,12 +5,11 @@
                 <b style="font-size: 18px">{{ name }}</b>
             </el-col>
             <el-col :span="18" style="text-align: left;">
-                <div v-if="valueInput !== undefined" style="font-size: 20px">
-                    {{ valueInput }}
+                <div v-if="value !== undefined" style="font-size: 20px">
+                    {{ value }}
                 </div>
-                <div v-if="valueColor !== undefined">
-                    <el-avatar shape="square" :size="20" :style="getAvatarStyle"></el-avatar>
-                </div>
+                <el-divider v-if="hasDescription" class="divider-editable-row"/>
+                <slot name="description"></slot>
             </el-col>
         </el-row>
         <el-divider class="divider-editable-row"/>
@@ -28,15 +27,8 @@
         name: "UserInfoRow",
         props: {
             name: String,
-            valueInput: String,
-            valueColor: String
-        },
-        computed: {
-            getAvatarStyle() {
-                return {
-                    backgroundColor: this.valueColor
-                };
-            }
+            value: String,
+            hasDescription: Boolean
         }
     };
 </script>

@@ -19,8 +19,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         #region Users
 
         Task<bool> IsUserExist(IOperation operation, int id);
-        Task<UserProfileEntity> GetProfileByEmail(IOperation operation, string email);
-        Task UpdateProfile(IOperation operation, UserProfileEntity entity);
+        Task<UserProfileEntity> GetProfileById(IOperation operation, int id);
+        Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
+        Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
 
         #endregion
     }
@@ -33,13 +34,16 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new { Id = id }, @"
                 SELECT
-                    [Id],
-                    [FirstName],
-                    [LastName],
-                    [Email],
-                    [Color]
-                FROM [authorization].[User]
-                WHERE [Id] = @Id
+                    au.[Id],
+                    au.[FirstName],
+                    au.[LastName],
+                    au.[Email],
+                    au.[Color],
+                    aur.[UserPermissions],
+                    aur.[UserRolePermissions]
+                FROM [authorization].[User] au
+                LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
+                WHERE au.[Id] = @Id
             ");
         }
 
@@ -118,9 +122,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             ");
         }
 
-        public async Task<UserProfileEntity> GetProfileByEmail(IOperation operation, string email)
+        public async Task<UserProfileEntity> GetProfileById(IOperation operation, int id)
         {
-            return await operation.Connection.QuerySingleOrDefaultAsync<UserProfileEntity>(new { Email = email }, @"
+            return await operation.Connection.QuerySingleOrDefaultAsync<UserProfileEntity>(new { Id = id }, @"
                 SELECT
                     [Id],
                     [FirstName],
@@ -128,13 +132,14 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                     [Email],
                     [Color],
                     [Location],
-                    [Bio]
+                    [Bio],
+                    [UserRoleId]
                 FROM [authorization].[User]
-                WHERE [Email] = @Email
+                WHERE [Id] = @Id
             ");
         }
 
-        public async Task UpdateProfile(IOperation operation, UserProfileEntity entity)
+        public async Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity)
         {
             await operation.Connection.ExecuteAsync(new
             {
@@ -154,6 +159,19 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                     [Color] = @Color,
                     [Location] = @Location,
                     [Bio] = @Bio
+                WHERE [Id] = @Id
+            ");
+        }
+
+        public async Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                entity.Id,
+                entity.UserRoleId
+            }, @"
+                UPDATE [authorization].[User]
+                SET [UserRoleId] = @UserRoleId
                 WHERE [Id] = @Id
             ");
         }

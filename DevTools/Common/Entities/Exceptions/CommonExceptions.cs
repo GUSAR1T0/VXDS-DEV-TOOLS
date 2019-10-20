@@ -43,15 +43,11 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 
         public static BadRequestException AuthenticationFailed(IOperation operation) => new BadRequestException(operation, "Authentication failed");
 
-        public static NotFoundException UserWasNotFound(IOperation operation, string email = null)
-        {
-            var message = !string.IsNullOrWhiteSpace(email) ? $"User with email \"{email}\" was not found" : "Requested user was not found";
-            return new NotFoundException(operation, message);
-        }
-
-        public static BadRequestException FailedToGetProfileDueToMissedEmail(IOperation operation) => new BadRequestException(operation, "Failed to get user profile due to missed email");
+        public static NotFoundException UserWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"User with ID \"{id}\" was not found");
 
         public static Exception AccessWasNotAccepted() => new Exception("Access wasn't accepted");
+
+        public static BadRequestException CouldNotChangeOwnUserRole(IOperation operation) => new BadRequestException(operation, "Failed to change user role for yourself");
 
         #endregion
     }

@@ -57,6 +57,14 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
         Task<T> QuerySingleOrDefaultAsync<T>(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
 
         #endregion
+
+        #region QueryMultipleAsync
+
+        Task<SqlMapper.GridReader> QueryMultipleAsync(string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<SqlMapper.GridReader> QueryMultipleAsync(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<SqlMapper.GridReader> QueryMultipleAsync(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+
+        #endregion
     }
 
     public class OperationConnection : IOperationConnection
@@ -260,6 +268,32 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
             var dp = new DynamicParameters();
             parameters(dp);
             return await QuerySingleOrDefaultAsync<T>(dp, command, commandType, commandTimeout);
+        }
+
+        #endregion
+
+        #region QueryMultipleAsync
+
+        private async Task<SqlMapper.GridReader> QueryMultipleAsync(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await Execute(connection.QueryMultipleAsync, parameters, command, commandType, commandTimeout);
+        }
+
+        public async Task<SqlMapper.GridReader> QueryMultipleAsync(string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await QueryMultipleAsync(new DynamicParameters(), command, commandType, commandTimeout);
+        }
+
+        public async Task<SqlMapper.GridReader> QueryMultipleAsync(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await QueryMultipleAsync(new DynamicParameters(parameters), command, commandType, commandTimeout);
+        }
+
+        public async Task<SqlMapper.GridReader> QueryMultipleAsync(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            var dp = new DynamicParameters();
+            parameters(dp);
+            return await QueryMultipleAsync(dp, command, commandType, commandTimeout);
         }
 
         #endregion

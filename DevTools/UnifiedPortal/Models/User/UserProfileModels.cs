@@ -1,3 +1,5 @@
+using VXDesign.Store.DevTools.Common.Enums.Operations;
+
 namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
 {
     public class UserProfileGetModel
@@ -16,7 +18,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
 
         #region System Info
 
-        public UserRoleModel Role { get; set; }
+        public UserRoleModel UserRole { get; set; }
 
         #endregion
     }
@@ -29,5 +31,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
         public string Color { get; set; }
         public string Location { get; set; }
         public string Bio { get; set; }
+    }
+
+    public class UserProfileAccountSpecificInfoUpdateModel
+    {
+        public int? UserRoleId { get; set; }
     }
 }

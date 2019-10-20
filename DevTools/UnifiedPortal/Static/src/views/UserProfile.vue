@@ -1,5 +1,5 @@
 <template>
-    <el-container class="user"
+    <el-container class="user-container"
                   v-loading="loadingIsActive"
                   element-loading-text="Loading"
                   element-loading-spinner="el-icon-loading"
@@ -10,60 +10,99 @@
                 <div slot="header">
                     <h3>General Info</h3>
                 </div>
-                <UserCard :user="user"/>
-                <HorizontalDivider v-if="noDetails" name="Details"/>
-                <div v-if="!noDetails && isAboutMe" style="margin-top: 20px"></div>
-                <UserInfoRow v-if="user.location" name="Location" :value-input="user.location"/>
-                <UserInfoRow v-if="user.bio" name="Bio" :value-input="user.bio"/>
-                <el-button v-if="isAboutMe" style="width: 100%" type="danger" plain @click="openUserGeneralInfoUpdateForm">
-                    <fa icon="edit"></fa>
+                <UserCard :user="getUserProfile"/>
+                <HorizontalDivider v-if="noUserGeneralInfoDetails" name="Details"/>
+                <div v-if="!noUserGeneralInfoDetails && hasPermissionToUpdateUserProfile"
+                     style="margin-top: 20px"></div>
+                <UserInfoRow v-if="getUserProfile.location" name="Location" :value="getUserProfile.location"/>
+                <UserInfoRow v-if="getUserProfile.bio" name="Bio" :value="getUserProfile.bio"/>
+                <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="danger"
+                           plain @click="openUserGeneralInfoUpdateForm">
+                    <span><fa icon="edit"/> | Edit General Info</span>
                 </el-button>
-                <UserGeneralInfoUpdateForm :user="user" :user-general-info-update-form="userGeneralInfoUpdateForm" :page-status="pageStatus"
+                <UserGeneralInfoUpdateForm v-if="hasPermissionToUpdateUserProfile"
+                                           :user="getUserProfile"
+                                           :user-general-info-update-form="getUserGeneralInfoUpdateForm"
+                                           :page-status="dialogStatuses.userGeneralInfoUpdateFormDialog"
                                            :closed="submitUserGeneralInfoUpdateForm"/>
             </el-card>
             <el-card shadow="hover" style="margin-top: 25px">
                 <div slot="header">
-                    <h3>System</h3>
+                    <h3>Account Specific Info</h3>
                 </div>
-                <div style="text-align: left;">
-                    <el-row>Content</el-row>
-                </div>
+                <UserInfoRow v-if="getUserProfile.userRole.id" name="User Role" :value="getUserProfile.userRole.name"
+                             :has-description="hasUserRoleDescription">
+                    <template slot="description">
+                        <el-table :data="getPermissionsTable" style="width: 100%" border>
+                            <el-table-column prop="type" label="Permissions types">
+                                <template slot-scope="scope">
+                                    <strong style="font-size: 16px">{{ scope.row.type }}</strong>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Lists of permissions">
+                                <template slot-scope="scope">
+                                    <div v-for="permission in scope.row.list" v-bind:key="permission"
+                                         style="display: inline-block; padding: 5px">
+                                        <el-tag :type="permission.type" effect="plain" hit>
+                                            {{ permission.name }}
+                                        </el-tag>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </template>
+                </UserInfoRow>
+                <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="danger"
+                           plain @click="openAccountSpecificInfoUpdateForm">
+                    <span><fa icon="edit"/> | Edit Account Specific Info</span>
+                </el-button>
+                <AccountSpecificInfoUpdateForm v-if="hasPermissionToUpdateUserProfile"
+                                               :user="getUserProfile"
+                                               :account-specific-info-update-form="getAccountSpecificInfoUpdateForm"
+                                               :page-status="dialogStatuses.accountSpecificInfoUpdateFormDialog"
+                                               :closed="submitAccountSpecificInfoUpdateForm"/>
             </el-card>
         </el-main>
     </el-container>
 </template>
 
 <style scoped>
-    .user {
+    .user-container {
         margin-top: -17px;
+    }
+
+    .user-container-card-button {
+        width: 100%;
     }
 </style>
 
 <script>
     import { mapGetters } from "vuex";
-    import HttpClient from "@/extensions/httpClient";
     import { GET_PROFILE_ENDPOINT } from "@/constants/endpoints";
-    import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
-    import { LOCALHOST } from "@/constants/servers";
-    import { SIGN_IN_REQUEST } from "@/constants/actions";
+    import { renderErrorNotificationMessage } from "@/extensions/utils";
+    import {
+        PREPARE_ACCOUNT_SPECIFIC_INFO_UPDATE_FORM,
+        PREPARE_USER_GENERAL_INFO_UPDATE_FORM, RESET_USER_PROFILE_STORE_STATE,
+        SIGN_IN_REQUEST,
+        STORE_USER_PROFILE_DATA_REQUEST,
+        STORE_USER_PROFILE_ID_REQUEST
+    } from "@/constants/actions";
+    import { USER_PERMISSION } from "@/constants/permissions";
+    import format from "string-format";
 
     import UserCard from "@/components/user/UserCard.vue";
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import UserInfoRow from "@/components/user/UserInfoRow.vue";
     import UserGeneralInfoUpdateForm from "@/components/user/UserGeneralInfoUpdateForm.vue";
+    import AccountSpecificInfoUpdateForm from "@/components/user/AccountSpecificInfoUpdateForm.vue";
 
-    let user = {
-        id: "",
-        email: "",
-        firstName: "",
-        lastName: "",
-        color: "",
-        location: "",
-        bio: ""
-    };
-
-    let pageStatus = {
-        userUpdateFormDialogVisible: false
+    let dialogStatuses = {
+        userGeneralInfoUpdateFormDialog: {
+            visible: false
+        },
+        accountSpecificInfoUpdateFormDialog: {
+            visible: false
+        }
     };
 
     export default {
@@ -72,43 +111,71 @@
             UserCard,
             HorizontalDivider,
             UserInfoRow,
-            UserGeneralInfoUpdateForm
+            UserGeneralInfoUpdateForm,
+            AccountSpecificInfoUpdateForm
         },
         data() {
             return {
-                user,
-                userGeneralInfoUpdateForm: {},
                 loadingIsActive: true,
-                pageStatus
+                dialogStatuses
             };
         },
         computed: {
             ...mapGetters([
-                "getEmail"
+                "isAboutMe",
+                "getUserId",
+                "hasUserPermission",
+                "getUserProfileId",
+                "getUserProfile",
+                "getLookupValues",
+                "getUserGeneralInfoUpdateForm",
+                "getAccountSpecificInfoUpdateForm"
             ]),
-            isAboutMe() {
-                return this.getEmail === this.user.email;
+            noUserGeneralInfoDetails() {
+                let userProfile = this.getUserProfile;
+                return userProfile.location || userProfile.bio;
             },
-            noDetails() {
-                return this.user.location || this.user.bio;
+            hasUserRoleDescription() {
+                return this.getLookupValues("userPermissions") || this.getLookupValues("userRolePermissions");
+            },
+            hasPermissionToUpdateUserProfile() {
+                return this.isAboutMe(this.getUserId) || this.hasUserPermission(USER_PERMISSION.UPDATE_USER);
+            },
+            getPermissionsTable() {
+                let getPermissionTagType = (permissionsValue, permissionValue) => {
+                    return (permissionsValue & permissionValue) === 0 ? "info" : "danger";
+                };
+                let userProfile = this.getUserProfile;
+                return [
+                    {
+                        type: "User Management",
+                        list: this.getLookupValues("userPermissions").map(permission => {
+                            return {
+                                type: getPermissionTagType(userProfile.userRole.userPermissions, permission.value),
+                                name: permission.name
+                            };
+                        })
+                    },
+                    {
+                        type: "User Role Management",
+                        list: this.getLookupValues("userRolePermissions").map(permission => {
+                            return {
+                                type: getPermissionTagType(userProfile.userRole.userRolePermissions, permission.value),
+                                name: permission.name
+                            };
+                        })
+                    },
+                ];
             }
         },
         methods: {
-            fillForm(email, reloadAuthenticationData = false) {
+            fillForms(reloadAuthenticationData = false) {
                 this.loadingIsActive = true;
-                let emailQueried = email === undefined ? this.getEmail : email;
-                let query = `${GET_PROFILE_ENDPOINT}?email=${emailQueried}`;
-                HttpClient.init().then(client => client.get(LOCALHOST, query, getConfiguration()).then(response => {
+                this.$store.dispatch(STORE_USER_PROFILE_DATA_REQUEST, format(GET_PROFILE_ENDPOINT, {
+                        id: this.getUserProfileId ? this.getUserProfileId : this.getUserId
+                    }
+                )).then(response => {
                     this.loadingIsActive = false;
-
-                    this.user.id = response.data.id;
-                    this.user.email = response.data.email;
-                    this.user.firstName = response.data.firstName;
-                    this.user.lastName = response.data.lastName;
-                    this.user.color = response.data.color;
-                    this.user.location = response.data.location;
-                    this.user.bio = response.data.bio;
-
                     if (reloadAuthenticationData) {
                         this.$store.commit(SIGN_IN_REQUEST, response.data);
                     }
@@ -120,21 +187,34 @@
                         duration: 10000,
                         message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });
-                }));
+                });
             },
             openUserGeneralInfoUpdateForm() {
-                this.userGeneralInfoUpdateForm = JSON.parse(JSON.stringify(this.user));
-                this.pageStatus.userUpdateFormDialogVisible = true;
+                this.$store.commit(PREPARE_USER_GENERAL_INFO_UPDATE_FORM);
+                this.dialogStatuses.userGeneralInfoUpdateFormDialog.visible = true;
             },
             submitUserGeneralInfoUpdateForm() {
-                this.fillForm(this.$route.params.email, true);
+                this.fillForms(this.isAboutMe(this.getUserId));
+            },
+            openAccountSpecificInfoUpdateForm() {
+                this.$store.commit(PREPARE_ACCOUNT_SPECIFIC_INFO_UPDATE_FORM);
+                this.dialogStatuses.accountSpecificInfoUpdateFormDialog.visible = true;
+            },
+            submitAccountSpecificInfoUpdateForm() {
+                this.fillForms(this.isAboutMe(this.getUserId));
             }
         },
         mounted() {
-            this.fillForm(this.$route.params.email);
+            this.$store.commit(STORE_USER_PROFILE_ID_REQUEST, this.$route.params.id);
+            this.fillForms();
         },
         beforeRouteUpdate(to, from, next) {
-            this.fillForm(to.params.email);
+            this.$store.commit(STORE_USER_PROFILE_ID_REQUEST, to.params.id);
+            this.fillForms();
+            next();
+        },
+        beforeRouteLeave(to, from, next) {
+            this.$store.commit(RESET_USER_PROFILE_STORE_STATE);
             next();
         }
     };

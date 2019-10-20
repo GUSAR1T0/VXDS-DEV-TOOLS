@@ -8,43 +8,61 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
 {
     public interface IUserService
     {
-        Task<UserProfileEntity> GetUserProfileByEmail(IOperation operation, string email);
-        Task UpdateUserProfile(IOperation operation, UserProfileEntity entity);
+        Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id);
+        Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
+        Task UpdateUserProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
     }
 
     public class UserService : IUserService
     {
         private readonly IUserDataStore userDataStore;
+        private readonly IUserRoleStore userRoleStore;
 
-        public UserService(IUserDataStore userDataStore)
+        public UserService(IUserDataStore userDataStore, IUserRoleStore userRoleStore)
         {
             this.userDataStore = userDataStore;
+            this.userRoleStore = userRoleStore;
         }
 
-        public async Task<UserProfileEntity> GetUserProfileByEmail(IOperation operation, string email)
+        public async Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw CommonExceptions.FailedToGetProfileDueToMissedEmail(operation);
-            }
-
-            var entity = await userDataStore.GetProfileByEmail(operation, email);
+            var entity = await userDataStore.GetProfileById(operation, id);
             if (entity == null)
             {
-                throw CommonExceptions.UserWasNotFound(operation, email);
+                throw CommonExceptions.UserWasNotFound(operation, id);
+            }
+
+            if (entity.UserRoleId != null)
+            {
+                entity.UserRole = await userRoleStore.GetUserRoleById(operation, entity.UserRoleId.Value);
             }
 
             return entity;
         }
 
-        public async Task UpdateUserProfile(IOperation operation, UserProfileEntity entity)
+        public async Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity)
         {
             if (!await userDataStore.IsUserExist(operation, entity.Id))
             {
-                throw CommonExceptions.UserWasNotFound(operation);
+                throw CommonExceptions.UserWasNotFound(operation, entity.Id);
             }
 
-            await userDataStore.UpdateProfile(operation, entity);
+            await userDataStore.UpdateProfileGeneralInfo(operation, entity);
+        }
+
+        public async Task UpdateUserProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity)
+        {
+            if (!await userDataStore.IsUserExist(operation, entity.Id))
+            {
+                throw CommonExceptions.UserWasNotFound(operation, entity.Id);
+            }
+
+            if (operation.OperationContext.UserId == entity.Id)
+            {
+                throw CommonExceptions.CouldNotChangeOwnUserRole(operation);
+            }
+
+            await userDataStore.UpdateProfileAccountSpecificInfo(operation, entity);
         }
     }
 }
