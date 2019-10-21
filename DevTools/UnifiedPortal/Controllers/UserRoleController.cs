@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
+using VXDesign.Store.DevTools.Common.Enums.Operations;
 using VXDesign.Store.DevTools.Common.Services.Operations;
 using VXDesign.Store.DevTools.Common.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
@@ -29,7 +30,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>List of user roles</returns>
         [ProducesResponseType(typeof(IEnumerable<UserRoleModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<UserRoleModel>>> GetUserRoles() => await Execute(OperationContexts.GetUserRoles, async operation =>
@@ -45,8 +46,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [SyrinxVerifiedAuthentication]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [SyrinxVerifiedAuthentication(userRolePermissions: UserRolePermission.CreateRole)]
         [HttpPost]
         public async Task<ActionResult> AddUserRole([FromBody] UserRoleModel model)
         {
@@ -61,9 +63,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [SyrinxVerifiedAuthentication]
+        [SyrinxVerifiedAuthentication(userRolePermissions: UserRolePermission.UpdateRole)]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUserRole(int id, [FromBody] UserRoleModel model)
         {
@@ -77,9 +80,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [SyrinxVerifiedAuthentication]
+        [SyrinxVerifiedAuthentication(userRolePermissions: UserRolePermission.DeleteRole)]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUserRole(int id) => await Execute(OperationContexts.DeleteUserRole, async operation => await userRoleService.DeleteUserRoleById(operation, id));
     }

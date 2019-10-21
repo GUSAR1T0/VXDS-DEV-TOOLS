@@ -5,7 +5,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Utils
 {
     internal static class OperationContexts
     {
-        private const string Authorization = "Authorization";
+        private const string Authorization = "Authentication";
         private const string Camunda = "Camunda";
 
         #region Account
@@ -33,6 +33,11 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Utils
         internal static OperationContext.OperationContextBuilder GetUserData(OperationContext.OperationContextBuilder builder)
         {
             return builder.SetName(Authorization, nameof(AccountController.GetUserData));
+        }
+
+        public static OperationContext.OperationContextBuilder VerifyAuthentication(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(Authorization, nameof(AccountController.VerifyAuthentication));
         }
 
         #endregion

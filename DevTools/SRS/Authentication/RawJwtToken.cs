@@ -1,6 +1,6 @@
 using Microsoft.IdentityModel.Tokens;
 
-namespace VXDesign.Store.DevTools.SRS.Authorization
+namespace VXDesign.Store.DevTools.SRS.Authentication
 {
     public class RawJwtToken
     {

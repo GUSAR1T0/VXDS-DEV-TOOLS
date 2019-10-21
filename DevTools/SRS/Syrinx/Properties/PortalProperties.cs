@@ -1,6 +1,6 @@
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
-using VXDesign.Store.DevTools.SRS.Authorization;
+using VXDesign.Store.DevTools.SRS.Authentication;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Properties
 {
@@ -12,7 +12,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Properties
         [PropertyField(Key = "Database")]
         public DatabaseConnectionProperties DatabaseConnectionProperties { get; set; }
 
-        [PropertyField(Key = "AuthorizationToken")]
-        public AuthorizationTokenProperties AuthorizationTokenProperties { get; set; }
+        [PropertyField(Key = "AuthenticationToken")]
+        public AuthenticationTokenProperties AuthenticationTokenProperties { get; set; }
     }
 }

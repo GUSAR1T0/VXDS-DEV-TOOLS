@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
-        <AssemblyName>VXDesign.Store.DevTools.SRS.Authorization</AssemblyName>
-        <RootNamespace>VXDesign.Store.DevTools.SRS.Authorization</RootNamespace>
+        <AssemblyName>VXDesign.Store.DevTools.SRS.Authentication</AssemblyName>
+        <RootNamespace>VXDesign.Store.DevTools.SRS.Authentication</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

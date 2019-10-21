@@ -9,11 +9,11 @@ using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Storage;
 using VXDesign.Store.DevTools.Common.Storage.DataStores;
-using VXDesign.Store.DevTools.Common.Utils.Authorization;
+using VXDesign.Store.DevTools.Common.Utils.Authentication;
 
-namespace VXDesign.Store.DevTools.SRS.Authorization
+namespace VXDesign.Store.DevTools.SRS.Authentication
 {
-    public interface IAuthorizationService
+    public interface IAuthenticationService
     {
         Task<RawJwtToken> SignIn(IOperation operation, string email, string password);
         Task<RawJwtToken> SignUp(IOperation operation, UserRegistrationEntity entity);
@@ -24,14 +24,14 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
         TokenValidationParameters GetServerTokenValidationParameters(bool validateLifetime = true);
     }
 
-    public class AuthorizationService : IAuthorizationService
+    public class AuthenticationService : IAuthenticationService
     {
-        private readonly AuthorizationTokenProperties authorizationTokenProperties;
+        private readonly AuthenticationTokenProperties authenticationTokenProperties;
         private readonly IUserDataStore userDataStore;
 
-        public AuthorizationService(AuthorizationTokenProperties authorizationTokenProperties, IUserDataStore userDataStore)
+        public AuthenticationService(AuthenticationTokenProperties authenticationTokenProperties, IUserDataStore userDataStore)
         {
-            this.authorizationTokenProperties = authorizationTokenProperties;
+            this.authenticationTokenProperties = authenticationTokenProperties;
             this.userDataStore = userDataStore;
         }
 
@@ -42,21 +42,21 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
                 throw CommonExceptions.NoAuthenticationData(operation);
             }
 
-            var id = await userDataStore.GetIdByAccessData(operation, email, password);
-            if (id == null)
+            var userIdentityClaims = await userDataStore.GetUserIdentityClaimsByAccessData(operation, email, password);
+            if (userIdentityClaims == null)
             {
                 throw CommonExceptions.AuthenticationFailed(operation);
             }
 
-            var identity = GetIdentity(id);
+            var identity = GetIdentity(userIdentityClaims);
 
             var token = new RawJwtToken
             {
                 AccessToken = GenerateAccessToken(identity.Claims.ToList()),
-                RefreshToken = AuthorizationUtils.GenerateRefreshToken()
+                RefreshToken = AuthenticationUtils.GenerateRefreshToken()
             };
 
-            await userDataStore.UpdateRefreshTokenById(operation, id.Value, token.RefreshToken);
+            await userDataStore.UpdateRefreshTokenById(operation, userIdentityClaims.Id, token.RefreshToken);
 
             return token;
         }
@@ -68,7 +68,7 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
                 throw CommonExceptions.NoAuthenticationData(operation);
             }
 
-            if (await userDataStore.GetIdByAccessData(operation, entity.Email) != null)
+            if (await userDataStore.GetUserIdentityClaimsByAccessData(operation, entity.Email) != null)
             {
                 throw CommonExceptions.UserHasAlreadyExist(operation);
             }
@@ -79,12 +79,12 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
                 throw CommonExceptions.RegistrationIsFailed(operation);
             }
 
-            var identity = GetIdentity(user.Id);
+            var identity = GetIdentity(user);
 
             var token = new RawJwtToken
             {
                 AccessToken = GenerateAccessToken(identity.Claims.ToList()),
-                RefreshToken = AuthorizationUtils.GenerateRefreshToken()
+                RefreshToken = AuthenticationUtils.GenerateRefreshToken()
             };
 
             await userDataStore.UpdateRefreshTokenById(operation, user.Id, token.RefreshToken);
@@ -101,14 +101,14 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
 
             var principal = GetClaimsPrincipalDataFromToken(operation, accessToken);
             var claims = principal.Claims.ToList();
-            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
+            var id = AuthenticationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
             var storedRefreshToken = await userDataStore.GetRefreshTokenById(operation, id);
             if (storedRefreshToken?.Equals(refreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent(operation);
 
             var token = new RawJwtToken
             {
                 AccessToken = GenerateAccessToken(claims.ToList()),
-                RefreshToken = AuthorizationUtils.GenerateRefreshToken()
+                RefreshToken = AuthenticationUtils.GenerateRefreshToken()
             };
 
             await userDataStore.UpdateRefreshTokenById(operation, id, token.RefreshToken);
@@ -118,15 +118,16 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
 
         public async Task Logout(IOperation operation, IEnumerable<Claim> claims)
         {
-            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
-            var identity = GetIdentity(id);
+            var claimsList = claims.ToList();
+            var id = AuthenticationUtils.GetUserId(claimsList) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
+            var identity = GetIdentity(claimsList);
             identity?.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
             await userDataStore.UpdateRefreshTokenById(operation, id, null);
         }
 
         public async Task<UserAuthorizationEntity> GetUserData(IOperation operation, IEnumerable<Claim> claims)
         {
-            var id = AuthorizationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
+            var id = AuthenticationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
             return await userDataStore.GetAuthorizationById(operation, id);
         }
 
@@ -134,23 +135,25 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
         {
             var now = DateTime.UtcNow;
             return new JwtSecurityToken(
-                issuer: authorizationTokenProperties.Issuer,
-                audience: authorizationTokenProperties.Audience,
+                issuer: authenticationTokenProperties.Issuer,
+                audience: authenticationTokenProperties.Audience,
                 notBefore: now,
                 claims: claims,
-                expires: now.AddSeconds(authorizationTokenProperties.ExpireTimeInSeconds),
-                signingCredentials: new SigningCredentials(authorizationTokenProperties.SymmetricSecurityKey, authorizationTokenProperties.SecurityAlgorithm)
+                expires: now.AddSeconds(authenticationTokenProperties.ExpireTimeInSeconds),
+                signingCredentials: new SigningCredentials(authenticationTokenProperties.SymmetricSecurityKey, authenticationTokenProperties.SecurityAlgorithm)
             );
         }
 
-        private static ClaimsIdentity GetIdentity(int? id) => id.HasValue ? AuthorizationUtils.GetClaimsIdentity(id.ToString()) : null;
+        private static ClaimsIdentity GetIdentity(UserAuthorizationEntity entity) => entity != null ? AuthenticationUtils.GetClaimsIdentity(entity) : null;
+
+        private static ClaimsIdentity GetIdentity(IReadOnlyCollection<Claim> claims) => claims?.Count == 3 ? AuthenticationUtils.GetClaimsIdentity(claims) : null;
 
         private ClaimsPrincipal GetClaimsPrincipalDataFromToken(IOperation operation, string accessToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(accessToken, GetServerTokenValidationParameters(false), out var securityToken);
             if (!(securityToken is JwtSecurityToken jwtSecurityToken) ||
-                !jwtSecurityToken.Header.Alg.Equals(authorizationTokenProperties.SecurityAlgorithm, StringComparison.InvariantCultureIgnoreCase))
+                !jwtSecurityToken.Header.Alg.Equals(authenticationTokenProperties.SecurityAlgorithm, StringComparison.InvariantCultureIgnoreCase))
             {
                 throw CommonExceptions.InvalidTokenInHeader(operation);
             }
@@ -161,11 +164,11 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
         public TokenValidationParameters GetServerTokenValidationParameters(bool validateLifetime = true) => new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = authorizationTokenProperties.Issuer,
+            ValidIssuer = authenticationTokenProperties.Issuer,
             ValidateAudience = true,
-            ValidAudience = authorizationTokenProperties.Audience,
+            ValidAudience = authenticationTokenProperties.Audience,
             ValidateLifetime = validateLifetime,
-            IssuerSigningKey = authorizationTokenProperties.SymmetricSecurityKey,
+            IssuerSigningKey = authenticationTokenProperties.SymmetricSecurityKey,
             ValidateIssuerSigningKey = true,
             ClockSkew = TimeSpan.Zero
         };

@@ -17,8 +17,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Common\Common.csproj" />
+        <ProjectReference Include="..\Authentication\Authentication.csproj" />
         <ProjectReference Include="..\Camunda\Camunda.csproj" />
-        <ProjectReference Include="..\Authorization\Authorization.csproj" />
     </ItemGroup>
 
 </Project>

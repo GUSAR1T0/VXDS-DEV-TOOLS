@@ -4,9 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 
-namespace VXDesign.Store.DevTools.SRS.Authorization
+namespace VXDesign.Store.DevTools.SRS.Authentication
 {
-    public class AuthorizationTokenProperties : IPropertiesMarker
+    public class AuthenticationTokenProperties : IPropertiesMarker
     {
         [PropertyField]
         public string Issuer { get; set; }
@@ -18,7 +18,7 @@ namespace VXDesign.Store.DevTools.SRS.Authorization
         public string SecretKey { get; set; }
 
         [PropertyField(Key = "ExpireTime")]
-        public double ExpireTimeInSeconds { get; set; } = TimeSpan.FromHours(1).TotalSeconds;
+        public double ExpireTimeInSeconds { get; set; } = TimeSpan.FromMinutes(5).TotalSeconds;
 
         public SymmetricSecurityKey SymmetricSecurityKey => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
 

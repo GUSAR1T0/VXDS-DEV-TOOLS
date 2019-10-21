@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syrinx", "SRS\Syrinx\Syrinx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camunda", "SRS\Camunda\Camunda.csproj", "{66A3850F-1FD7-4143-B8CD-EB4DEF72E3F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization", "SRS\Authorization\Authorization.csproj", "{19FCFE72-48EE-409D-8560-83B84698AF82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "SRS\Authentication\Authentication.csproj", "{19FCFE72-48EE-409D-8560-83B84698AF82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -44,10 +44,10 @@ export default {
             return state.color;
         },
         hasUserPermission: state => permission => {
-            return state.userPermissions & permission;
+            return permission === 0 || (state.userPermissions & permission) !== 0;
         },
         hasUserRolePermission: state => permission => {
-            return state.userRolePermissions & permission;
+            return permission === 0 || (state.userRolePermissions & permission) !== 0;
         }
     },
     mutations: {

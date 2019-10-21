@@ -27,7 +27,7 @@ export default class HttpClient {
         return new HttpClient();
     }
 
-    get(server, endpoint, config = null) {
+    get(server, endpoint, config = undefined) {
         let {host, api} = getHostAndApi(store.getters.getEnvironmentVariables, server);
         return this.axios.get(`${host}/${api}/${endpoint}`, config);
     }
@@ -42,13 +42,15 @@ export default class HttpClient {
         return this.axios.put(`${host}/${api}/${endpoint}`, data, config);
     }
 
-    handleUnauthorizedResponse = (dispatch) => {
-        this.axios.interceptors.response.use(response => response, error => {
-            const {accessToken, refreshToken} = getTokens();
-            if (error.response.status === 401 && accessToken && refreshToken) {
-                dispatch(REFRESH_REQUEST);
+    handleUnauthorizedResponse = ({dispatch}, config = undefined) => {
+        this.axios.interceptors.response.use(null, async error => {
+            if (config && error.response.status === 401) {
+                const {accessToken, refreshToken} = getTokens();
+                if (accessToken && refreshToken) {
+                    await dispatch(REFRESH_REQUEST);
+                    return Promise.resolve();
+                }
             }
-            return Promise.resolve();
         });
         return this;
     };

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Attributes;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
+using VXDesign.Store.DevTools.Common.Entities.Exceptions;
+using VXDesign.Store.DevTools.Common.Enums.Operations;
 using VXDesign.Store.DevTools.Common.Services.Operations;
 using VXDesign.Store.DevTools.Common.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
@@ -28,7 +30,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>User data if it was found</returns>
         [ProducesResponseType(typeof(UserProfileGetModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("{id}")]
@@ -46,7 +48,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpPut("{id}/general")]
@@ -54,6 +57,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         {
             return await Execute(OperationContexts.UpdateUserProfileGeneralInfo, async operation =>
             {
+                if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
+                {
+                    throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
+                }
+
                 var entity = model.ToEntity(id);
                 await userService.UpdateUserProfileGeneralInfo(operation, entity);
             });
@@ -67,7 +75,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpPut("{id}/accountSpecific")]
@@ -75,6 +84,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         {
             return await Execute(OperationContexts.UpdateUserProfileAccountSpecificInfo, async operation =>
             {
+                if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
+                {
+                    throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
+                }
+
                 var entity = model.ToEntity(id);
                 await userService.UpdateUserProfileAccountSpecificInfo(operation, entity);
             });

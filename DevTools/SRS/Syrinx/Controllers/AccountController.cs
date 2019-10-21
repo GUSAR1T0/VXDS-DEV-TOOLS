@@ -3,23 +3,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Controllers;
+using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Services.Operations;
-using VXDesign.Store.DevTools.Common.Utils.Authorization;
+using VXDesign.Store.DevTools.Common.Utils.Authentication;
+using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
 using VXDesign.Store.DevTools.SRS.Syrinx.Utils;
-using IAuthorizationService = VXDesign.Store.DevTools.SRS.Authorization.IAuthorizationService;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
     [Route("api/[controller]")]
     public class AccountController : ApiController
     {
-        private readonly IAuthorizationService authorizationService;
+        private readonly IAuthenticationService authenticationService;
 
-        public AccountController(IOperationService operationService, IAuthorizationService authorizationService) : base(operationService)
+        public AccountController(IOperationService operationService, IAuthenticationService authenticationService) : base(operationService)
         {
-            this.authorizationService = authorizationService;
+            this.authenticationService = authenticationService;
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [HttpPost("sign-in")]
         public async Task<ActionResult<JwtTokenModel>> SignIn([FromBody] SignInModel model) => await Execute(OperationContexts.SignIn, async operation =>
         {
-            var token = await authorizationService.SignIn(operation, model.Email, model.Password);
+            var token = await authenticationService.SignIn(operation, model.Email, model.Password);
             return token.GetJwtTokenModel();
         });
 
@@ -49,7 +50,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [HttpPost("sign-up")]
         public async Task<ActionResult<JwtTokenModel>> SignUp([FromBody] SignUpModel model) => await Execute(OperationContexts.SignUp, async operation =>
         {
-            var token = await authorizationService.SignUp(operation, model.ToEntity());
+            var token = await authenticationService.SignUp(operation, model.ToEntity());
             return token.GetJwtTokenModel();
         });
 
@@ -64,7 +65,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [HttpPost("refresh")]
         public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await Execute(OperationContexts.RefreshToken, async operation =>
         {
-            var token = await authorizationService.RefreshToken(operation, model.AccessToken, model.RefreshToken);
+            var token = await authenticationService.RefreshToken(operation, model.AccessToken, model.RefreshToken);
             return token.GetJwtTokenModel();
         });
 
@@ -74,10 +75,10 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpPost("logout")]
-        public async Task<ActionResult> Logout() => await Execute(OperationContexts.Logout, async operation => await authorizationService.Logout(operation, User.Claims));
+        public async Task<ActionResult> Logout() => await Execute(OperationContexts.Logout, async operation => await authenticationService.Logout(operation, User.Claims));
 
         /// <summary>
         /// Obtains authorization user data by token
@@ -85,24 +86,38 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// <returns>Authorization user data</returns>
         [ProducesResponseType(typeof(UserAuthorizationModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserAuthorizationModel>> GetUserData() => await Execute(OperationContexts.GetUserData, async operation =>
         {
-            var userData = await authorizationService.GetUserData(operation, User.Claims);
+            var userData = await authenticationService.GetUserData(operation, User.Claims);
             return userData.ToModel();
         });
 
         /// <summary>
-        /// Tests authentication token from derived servers
+        /// Handles queries from derived servers to send available session permissions for user
         /// </summary>
-        /// <returns><c>True</c> if token is validated</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        /// <returns>Authorization user data (user ID and permissions only) if token is validated</returns>
+        [ProducesResponseType(typeof(UserAuthorizationModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpGet("verify")]
-        public int? VerifyAuthentication() => AuthorizationUtils.GetUserId(User.Claims);
+        public async Task<ActionResult<UserAuthorizationModel>> VerifyAuthentication() => await Execute(OperationContexts.VerifyAuthentication, async operation =>
+        {
+            var userId = AuthenticationUtils.GetUserId(User.Claims);
+            if (userId == null)
+            {
+                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status401Unauthorized);
+            }
+
+            return new UserAuthorizationModel
+            {
+                Id = userId.Value,
+                UserPermissions = AuthenticationUtils.GetUserPermissions(User.Claims),
+                UserRolePermissions = AuthenticationUtils.GetUserRolePermissions(User.Claims)
+            };
+        });
     }
 }

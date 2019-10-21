@@ -86,7 +86,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Operations
                             }
 
                             await logger.Error(OperationErrorMessage, GetExceptionContent(actionException));
-                            throw new OperationException(operation, actionException);
+                            throw;
                         }
                     }
                 }

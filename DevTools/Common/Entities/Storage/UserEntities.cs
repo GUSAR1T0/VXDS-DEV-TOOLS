@@ -10,8 +10,8 @@ namespace VXDesign.Store.DevTools.Common.Entities.Storage
         public string Email { get; set; }
         public string Color { get; set; }
 
-        public UserPermission? UserPermissions { get; set; }
-        public UserRolePermission? UserRolePermissions { get; set; }
+        public UserPermission UserPermissions { get; set; } = 0;
+        public UserRolePermission UserRolePermissions { get; set; } = 0;
     }
 
     public class UserRegistrationEntity : UserAuthorizationEntity

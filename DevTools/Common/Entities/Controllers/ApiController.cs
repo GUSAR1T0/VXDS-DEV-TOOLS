@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
+using VXDesign.Store.DevTools.Common.Enums.Operations;
 using VXDesign.Store.DevTools.Common.Services.Operations;
-using VXDesign.Store.DevTools.Common.Utils.Authorization;
+using VXDesign.Store.DevTools.Common.Utils.Authentication;
+using VXDesign.Store.DevTools.Common.Utils.Controllers;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Controllers
 {
@@ -13,29 +15,19 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
     {
         private readonly IOperationService operationService;
 
-        private int? UserId => AuthorizationUtils.GetUserId(User.Claims); // null => GUEST / UNAUTHORIZED USER
+        #region User Claims
+
+        // null => GUEST / UNAUTHORIZED USER
+        protected int? UserId => AuthenticationUtils.GetUserId(User.Claims);
+        protected UserPermission UserPermissions => AuthenticationUtils.GetUserPermissions(User.Claims);
+        protected UserRolePermission UserRolePermissions => AuthenticationUtils.GetUserRolePermissions(User.Claims);
+
+        #endregion
 
         protected ApiController(IOperationService operationService)
         {
             this.operationService = operationService;
         }
-
-        private static ObjectResult InternalServerError(object value) => new ObjectResult(value)
-        {
-            StatusCode = StatusCodes.Status500InternalServerError
-        };
-
-        private static ObjectResult HandleException(Func<ResponseResult, ObjectResult> response, OperationException exception) => response(new ResponseResult
-        {
-            OperationId = exception.OperationId.ToString(),
-            Message = exception.Message
-        });
-
-        private static ObjectResult HandleException(Func<ResponseResult, ObjectResult> response, Exception exception) => response(new ResponseResult
-        {
-            OperationId = "Non-operational incident",
-            Message = exception.Message
-        });
 
         protected async Task<ActionResult> Execute(Func<OperationContext.OperationContextBuilder, OperationContext.OperationContextBuilder> builder, Func<IOperation, Task> action)
         {
@@ -47,19 +39,27 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             }
             catch (BadRequestException e)
             {
-                return HandleException(BadRequest, e);
+                return ApiControllerUtils.HandleException(BadRequest, e);
             }
             catch (NotFoundException e)
             {
-                return HandleException(NotFound, e);
+                return ApiControllerUtils.HandleException(NotFound, e);
+            }
+            catch (AuthenticationException e) when (e.StatusCode == StatusCodes.Status401Unauthorized)
+            {
+                return ApiControllerUtils.HandleException(Unauthorized, e);
+            }
+            catch (AuthenticationException e) when (e.StatusCode == StatusCodes.Status403Forbidden)
+            {
+                return ApiControllerUtils.HandleException(ApiControllerUtils.Forbidden, e);
             }
             catch (OperationException e)
             {
-                return HandleException(BadRequest, e);
+                return ApiControllerUtils.HandleException(BadRequest, e);
             }
             catch (Exception e)
             {
-                return HandleException(InternalServerError, e);
+                return ApiControllerUtils.HandleException(ApiControllerUtils.InternalServerError, e);
             }
         }
 
@@ -72,19 +72,27 @@ namespace VXDesign.Store.DevTools.Common.Entities.Controllers
             }
             catch (BadRequestException e)
             {
-                return HandleException(BadRequest, e);
+                return ApiControllerUtils.HandleException(BadRequest, e);
             }
             catch (NotFoundException e)
             {
-                return HandleException(NotFound, e);
+                return ApiControllerUtils.HandleException(NotFound, e);
+            }
+            catch (AuthenticationException e) when (e.StatusCode == StatusCodes.Status401Unauthorized)
+            {
+                return ApiControllerUtils.HandleException(Unauthorized, e);
+            }
+            catch (AuthenticationException e) when (e.StatusCode == StatusCodes.Status403Forbidden)
+            {
+                return ApiControllerUtils.HandleException(ApiControllerUtils.Forbidden, e);
             }
             catch (OperationException e)
             {
-                return HandleException(BadRequest, e);
+                return ApiControllerUtils.HandleException(BadRequest, e);
             }
             catch (Exception e)
             {
-                return HandleException(InternalServerError, e);
+                return ApiControllerUtils.HandleException(ApiControllerUtils.InternalServerError, e);
             }
         }
     }

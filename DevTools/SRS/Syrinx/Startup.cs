@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
 using VXDesign.Store.DevTools.Common.Services.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStores;
-using VXDesign.Store.DevTools.SRS.Authorization;
+using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;
 
@@ -36,15 +36,15 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
 
             // Services
             services.AddScoped<ICamundaServerService>(factory => new CamundaServerService(factory.GetService<PortalProperties>().CamundaProperties));
-            services.AddScoped<IAuthorizationService>(factory =>
+            services.AddScoped<IAuthenticationService>(factory =>
             {
-                var properties = factory.GetService<PortalProperties>().AuthorizationTokenProperties;
+                var properties = factory.GetService<PortalProperties>().AuthenticationTokenProperties;
                 var userDataStore = factory.GetService<IUserDataStore>();
-                return new AuthorizationService(properties, userDataStore);
+                return new AuthenticationService(properties, userDataStore);
             });
 
             // Authorization mechanism (workaround)
-            var authorizationService = services.BuildServiceProvider().GetService<IAuthorizationService>();
+            var authorizationService = services.BuildServiceProvider().GetService<IAuthenticationService>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

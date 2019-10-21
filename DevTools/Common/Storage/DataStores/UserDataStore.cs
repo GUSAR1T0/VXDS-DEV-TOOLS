@@ -10,7 +10,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
 
         Task<UserAuthorizationEntity> GetAuthorizationById(IOperation operation, int id);
         Task<string> GetRefreshTokenById(IOperation operation, int id);
-        Task<int?> GetIdByAccessData(IOperation operation, string email, string password = null);
+        Task<UserAuthorizationEntity> GetUserIdentityClaimsByAccessData(IOperation operation, string email, string password = null);
         Task UpdateRefreshTokenById(IOperation operation, int id, string refreshToken);
         Task<UserAuthorizationEntity> CreateUser(IOperation operation, UserRegistrationEntity entity);
 
@@ -56,15 +56,19 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             ");
         }
 
-        public async Task<int?> GetIdByAccessData(IOperation operation, string email, string password = null)
+        public async Task<UserAuthorizationEntity> GetUserIdentityClaimsByAccessData(IOperation operation, string email, string password = null)
         {
-            return await operation.Connection.QuerySingleOrDefaultAsync<int?>(new
+            return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new
             {
                 Email = email,
                 Password = password
             }, @"
-                SELECT [Id]
-                FROM [authorization].[User]
+                SELECT
+                    au.[Id],
+                    aur.[UserPermissions],
+                    aur.[UserRolePermissions]
+                FROM [authorization].[User] au
+                LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE [Email] = @Email AND (@Password IS NULL OR [Password] = @Password)
             ");
         }
