@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,10 @@ namespace VXDesign.Store.DevTools.Common.Services.Syrinx
             catch (AuthenticationException e) when (e.StatusCode == StatusCodes.Status403Forbidden)
             {
                 context.Result = ApiControllerUtils.HandleException(ApiControllerUtils.Forbidden, e);
+            }
+            catch (Exception e)
+            {
+                context.Result = ApiControllerUtils.HandleException(ApiControllerUtils.InternalServerError, e);
             }
         }
 

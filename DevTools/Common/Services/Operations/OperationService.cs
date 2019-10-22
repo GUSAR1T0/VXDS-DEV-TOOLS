@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Properties;
 

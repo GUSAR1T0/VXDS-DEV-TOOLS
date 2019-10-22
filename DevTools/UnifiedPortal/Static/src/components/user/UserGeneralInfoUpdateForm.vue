@@ -69,12 +69,12 @@
 
 <script>
     import { generateColor, getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
-    import HttpClient from "@/extensions/httpClient";
     import { LOCALHOST } from "@/constants/servers";
     import { UPDATE_PROFILE_GENERAL_INFO_ENDPOINT } from "@/constants/endpoints";
     import format from "string-format";
 
     import UserCard from "@/components/user/UserCard.vue";
+    import { PUT_HTTP_REQUEST } from "@/constants/actions";
 
     export default {
         name: "UserGeneralInfoUpdateForm",
@@ -132,15 +132,21 @@
                     }
 
                     if (!this.isNotChanged) {
-                        let endpoint = format(UPDATE_PROFILE_GENERAL_INFO_ENDPOINT, {id: this.user.id});
-                        HttpClient.init().put(LOCALHOST, endpoint, {
-                            firstName: this.userGeneralInfoUpdateForm.firstName,
-                            lastName: this.userGeneralInfoUpdateForm.lastName,
-                            email: this.userGeneralInfoUpdateForm.email,
-                            color: this.userGeneralInfoUpdateForm.color,
-                            location: this.userGeneralInfoUpdateForm.location,
-                            bio: this.userGeneralInfoUpdateForm.bio
-                        }, getConfiguration()).then(() => {
+                        this.$store.dispatch(PUT_HTTP_REQUEST, {
+                            server: LOCALHOST,
+                            endpoint: format(UPDATE_PROFILE_GENERAL_INFO_ENDPOINT, {
+                                id: this.user.id
+                            }),
+                            data: {
+                                firstName: this.userGeneralInfoUpdateForm.firstName,
+                                lastName: this.userGeneralInfoUpdateForm.lastName,
+                                email: this.userGeneralInfoUpdateForm.email,
+                                color: this.userGeneralInfoUpdateForm.color,
+                                location: this.userGeneralInfoUpdateForm.location,
+                                bio: this.userGeneralInfoUpdateForm.bio
+                            },
+                            config: getConfiguration()
+                        }).then(() => {
                             this.pageStatus.visible = false;
                             this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 

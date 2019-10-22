@@ -1,10 +1,10 @@
 import {
+    GET_HTTP_REQUEST,
     PREPARE_ACCOUNT_SPECIFIC_INFO_UPDATE_FORM,
     PREPARE_USER_GENERAL_INFO_UPDATE_FORM, RESET_USER_PROFILE_STORE_STATE,
     STORE_USER_PROFILE_DATA_REQUEST,
     STORE_USER_PROFILE_ID_REQUEST
 } from "@/constants/actions";
-import HttpClient from "@/extensions/httpClient";
 import { LOCALHOST } from "@/constants/servers";
 import { getConfiguration } from "@/extensions/utils";
 
@@ -103,13 +103,17 @@ export default {
         }
     },
     actions: {
-        [STORE_USER_PROFILE_DATA_REQUEST]: ({commit}, query) => {
+        [STORE_USER_PROFILE_DATA_REQUEST]: ({commit, dispatch}, query) => {
             return new Promise((resolve, reject) => {
-                HttpClient.init().get(LOCALHOST, query, getConfiguration()).then(response => {
+                dispatch(GET_HTTP_REQUEST, {
+                    server: LOCALHOST,
+                    endpoint: query,
+                    config: getConfiguration()
+                }).then(response => {
                     commit(STORE_USER_PROFILE_DATA_REQUEST, response.data);
                     resolve(response);
                 }).catch(error => reject(error));
             });
         }
     }
-}
+};

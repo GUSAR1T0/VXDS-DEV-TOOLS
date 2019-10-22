@@ -1,4 +1,3 @@
-import HttpClient from "@/extensions/httpClient";
 import { getTokens, setTokens, removeTokens } from "@/extensions/tokens";
 import { getConfiguration, getUserFullName, getUserInitials } from "@/extensions/utils";
 import {
@@ -13,7 +12,7 @@ import {
     LOGOUT_REQUEST,
     REFRESH_REQUEST,
     SIGN_IN_REQUEST,
-    SIGN_UP_REQUEST
+    SIGN_UP_REQUEST, GET_HTTP_REQUEST, POST_HTTP_REQUEST
 } from "@/constants/actions";
 import { SYRINX } from "@/constants/servers";
 
@@ -75,76 +74,100 @@ export default {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
-                    HttpClient.init().get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(accessToken))
-                        .then(response => {
-                            commit(SIGN_IN_REQUEST, response.data);
-                            resolve(redirectTo);
-                        })
-                        .catch(() => {
-                            dispatch(REFRESH_REQUEST).then(() => resolve(redirectTo)).catch(() => reject());
-                        });
+                    dispatch(GET_HTTP_REQUEST, {
+                        server: SYRINX,
+                        endpoint: GET_USER_DATA_ENDPOINT,
+                        config: getConfiguration(accessToken),
+                        reauthenticate: false
+                    }).then(response => {
+                        commit(SIGN_IN_REQUEST, response.data);
+                        resolve(redirectTo);
+                    }).catch(() => {
+                        dispatch(REFRESH_REQUEST).then(() => resolve(redirectTo)).catch(() => reject());
+                    });
                 } else {
                     removeTokens();
                     reject();
                 }
             });
         },
-        [SIGN_IN_REQUEST]: ({commit}, signInForm) => {
+        [SIGN_IN_REQUEST]: ({commit, dispatch}, signInForm) => {
             return new Promise((resolve, reject) => {
-                let client = HttpClient.init();
-                client.post(SYRINX, SIGN_IN_ENDPOINT, signInForm).then(firstResponse => {
+                dispatch(POST_HTTP_REQUEST, {
+                    server: SYRINX,
+                    endpoint: SIGN_IN_ENDPOINT,
+                    data: signInForm,
+                    reauthenticate: false
+                }).then(firstResponse => {
                     setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                    client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
-                        .then(secondResponse => {
-                            commit(SIGN_IN_REQUEST, secondResponse.data);
-                            resolve();
-                        })
-                        .catch(error => {
-                            removeTokens();
-                            reject(error);
-                        });
+                    dispatch(GET_HTTP_REQUEST, {
+                        server: SYRINX,
+                        endpoint: GET_USER_DATA_ENDPOINT,
+                        config: getConfiguration(firstResponse.data.accessToken),
+                        reauthenticate: false
+                    }).then(secondResponse => {
+                        commit(SIGN_IN_REQUEST, secondResponse.data);
+                        resolve();
+                    }).catch(error => {
+                        removeTokens();
+                        reject(error);
+                    });
                 }).catch(error => {
                     removeTokens();
                     reject(error);
                 });
             });
         },
-        [SIGN_UP_REQUEST]: ({commit}, signUpForm) => {
+        [SIGN_UP_REQUEST]: ({commit, dispatch}, signUpForm) => {
             return new Promise((resolve, reject) => {
-                let client = HttpClient.init();
-                client.post(SYRINX, SIGN_UP_ENDPOINT, signUpForm).then(firstResponse => {
+                dispatch(POST_HTTP_REQUEST, {
+                    server: SYRINX,
+                    endpoint: SIGN_UP_ENDPOINT,
+                    data: signUpForm,
+                    reauthenticate: false
+                }).then(firstResponse => {
                     setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                    client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
-                        .then(secondResponse => {
-                            commit(SIGN_IN_REQUEST, secondResponse.data);
-                            resolve();
-                        })
-                        .catch(error => {
-                            removeTokens();
-                            reject(error);
-                        });
+                    dispatch(GET_HTTP_REQUEST, {
+                        server: SYRINX,
+                        endpoint: GET_USER_DATA_ENDPOINT,
+                        config: getConfiguration(firstResponse.data.accessToken),
+                        reauthenticate: false
+                    }).then(secondResponse => {
+                        commit(SIGN_IN_REQUEST, secondResponse.data);
+                        resolve();
+                    }).catch(error => {
+                        removeTokens();
+                        reject(error);
+                    });
                 }).catch(error => {
                     removeTokens();
                     reject(error);
                 });
             });
         },
-        [REFRESH_REQUEST]: ({commit}) => {
+        [REFRESH_REQUEST]: ({commit, dispatch}) => {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
-                    let client = HttpClient.init();
-                    client.post(SYRINX, REFRESH_ENDPOINT, {accessToken, refreshToken}).then(firstResponse => {
+                    dispatch(POST_HTTP_REQUEST, {
+                        server: SYRINX,
+                        endpoint: REFRESH_ENDPOINT,
+                        data: {accessToken, refreshToken},
+                        reauthenticate: false
+                    }).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
-                        client.get(SYRINX, GET_USER_DATA_ENDPOINT, getConfiguration(firstResponse.data.accessToken))
-                            .then(secondResponse => {
-                                commit(SIGN_IN_REQUEST, secondResponse.data);
-                                resolve();
-                            })
-                            .catch(error => {
-                                removeTokens();
-                                reject(error);
-                            });
+                        dispatch(GET_HTTP_REQUEST, {
+                            server: SYRINX,
+                            endpoint: GET_USER_DATA_ENDPOINT,
+                            config: getConfiguration(firstResponse.data.accessToken),
+                            reauthenticate: false
+                        }).then(secondResponse => {
+                            commit(SIGN_IN_REQUEST, secondResponse.data);
+                            resolve();
+                        }).catch(error => {
+                            removeTokens();
+                            reject(error);
+                        });
                     }).catch(error => {
                         removeTokens();
                         reject(error);
@@ -159,28 +182,17 @@ export default {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
-                    let client = HttpClient.init();
-                    client.post(SYRINX, LOGOUT_ENDPOINT, null, getConfiguration(accessToken)).then(() => {
+                    dispatch(POST_HTTP_REQUEST, {
+                        server: SYRINX,
+                        endpoint: LOGOUT_ENDPOINT,
+                        config: getConfiguration(accessToken)
+                    }).then(() => {
                         commit(LOGOUT_REQUEST);
                         removeTokens();
                         resolve();
-                    }).catch(() => {
-                        dispatch(REFRESH_REQUEST).then(() => {
-                            const {accessToken} = getTokens();
-                            client.post(SYRINX, LOGOUT_ENDPOINT, null, getConfiguration(accessToken))
-                                .then(() => {
-                                    commit(LOGOUT_REQUEST);
-                                    removeTokens();
-                                    resolve();
-                                })
-                                .catch(error => {
-                                    removeTokens();
-                                    reject(error);
-                                });
-                        }).catch(error => {
-                            removeTokens();
-                            reject(error);
-                        });
+                    }).catch(error => {
+                        removeTokens();
+                        reject(error);
                     });
                 } else {
                     removeTokens();

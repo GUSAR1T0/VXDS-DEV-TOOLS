@@ -36,10 +36,10 @@
 <script>
     import { mapGetters } from "vuex";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
-    import HttpClient from "@/extensions/httpClient";
     import { LOCALHOST } from "@/constants/servers";
     import { GET_USER_ROLES_ENDPOINT, UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT } from "@/constants/endpoints";
     import format from "string-format";
+    import { GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
 
     export default {
         name: "AccountSpecificInfoUpdateForm",
@@ -66,7 +66,11 @@
         },
         methods: {
             loadUserRoles() {
-                HttpClient.init().get(LOCALHOST, GET_USER_ROLES_ENDPOINT, getConfiguration()).then(response => {
+                this.$store.dispatch(GET_HTTP_REQUEST, {
+                    server: LOCALHOST,
+                    endpoint: GET_USER_ROLES_ENDPOINT,
+                    config: getConfiguration()
+                }).then(response => {
                     this.userRoles = response.data.map(item => {
                         return {
                             value: item.id,
@@ -93,10 +97,16 @@
                     }
 
                     if (!this.isNotChanged) {
-                        let endpoint = format(UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT, {id: this.user.id});
-                        HttpClient.init().put(LOCALHOST, endpoint, {
-                            userRoleId: this.accountSpecificInfoUpdateForm.userRole.id
-                        }, getConfiguration()).then(() => {
+                        this.$store.dispatch(PUT_HTTP_REQUEST, {
+                            server: LOCALHOST,
+                            endpoint: format(UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT, {
+                                id: this.user.id
+                            }),
+                            data: {
+                                userRoleId: this.accountSpecificInfoUpdateForm.userRole.id
+                            },
+                            config: getConfiguration()
+                        }).then(() => {
                             this.pageStatus.visible = false;
                             this.$refs.accountSpecificInfoUpdateFormButton.loading = false;
 

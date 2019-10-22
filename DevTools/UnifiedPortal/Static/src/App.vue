@@ -23,7 +23,12 @@
 
 <script>
     import { mapGetters } from "vuex";
-    import { ON_LOAD_ACCOUNT_REQUEST, ON_LOAD_LOOKUP_REQUEST, RESET_PATH_FOR_REDIRECTION } from "@/constants/actions";
+    import {
+        ON_LOAD_ACCOUNT_REQUEST,
+        ON_LOAD_LOOKUP_REQUEST,
+        REFRESH_REQUEST,
+        RESET_PATH_FOR_REDIRECTION
+    } from "@/constants/actions";
 
     import NavigationBar from "@/components/navigation-bar/NavigationBar.vue";
     import Header from "@/components/page/Header.vue";
@@ -45,7 +50,8 @@
         computed: {
             ...mapGetters([
                 "isAuthenticated",
-                "getFullName"
+                "getFullName",
+                "getReauthenticationTime"
             ])
         },
         mounted() {
@@ -64,13 +70,26 @@
 
             this.$store.dispatch(ON_LOAD_LOOKUP_REQUEST).then(() => {
                 this.$store.dispatch(ON_LOAD_ACCOUNT_REQUEST, this.$store.getters.getPathForRedirection).then(redirectTo => {
-                    this.$router.push(redirectTo).then(() => completeLoading()).catch(() => completeLoading());
+                    this.$router.push(redirectTo).then(() => completeLoading()).catch(() => {
+                        // TODO: Error case handling -> bug #39
+                        completeLoading();
+                    });
                 }).catch(() => {
-                    this.$router.push("/auth").then(() => completeLoading()).catch(() => completeLoading());
+                    this.$router.push("/auth").then(() => completeLoading()).catch(() => {
+                        // TODO: Error case handling -> bug #39
+                        completeLoading();
+                    });
                 });
                 this.$store.dispatch(RESET_PATH_FOR_REDIRECTION);
+
+                let autoReauthentication = setInterval(() => this.$store.dispatch(REFRESH_REQUEST).catch(() => {
+                    this.$router.push("/auth").catch(() => {
+                        // TODO: Error case handling -> bug #39
+                    });
+                    clearInterval(autoReauthentication);
+                }), this.getReauthenticationTime);
             }).catch(() => {
-                // TODO: Error case handling
+                // TODO: Error case handling -> bug #39
             });
         }
     };

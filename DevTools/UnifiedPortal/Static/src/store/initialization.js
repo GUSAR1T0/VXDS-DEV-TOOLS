@@ -2,11 +2,15 @@ import { RESET_PATH_FOR_REDIRECTION, SET_PATH_FOR_REDIRECTION } from "@/constant
 
 export default {
     state: {
-        pathForRedirection: ""
+        pathForRedirection: "",
+        reauthenticationTime: (5 * 60 - 30) * 1000
     },
     getters: {
         getPathForRedirection: state => {
             return state.pathForRedirection;
+        },
+        getReauthenticationTime: state => {
+            return state.reauthenticationTime;
         }
     },
     mutations: {
@@ -22,4 +26,4 @@ export default {
             commit(SET_PATH_FOR_REDIRECTION, "");
         }
     }
-}
+};

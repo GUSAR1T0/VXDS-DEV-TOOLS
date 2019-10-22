@@ -42,14 +42,18 @@ export function getUserInitials(firstName, lastName) {
 }
 
 export function renderErrorNotificationMessage(h, response) {
-    return h("div", null, [
-        "Response (", h("strong", null, response.status), "): ",
-        h("div", {style: "margin-top: 5px; margin-left: 5px"}, [
-            h("strong", null, response.data.message)
-        ]),
-        h("div", {style: "margin-top: 5px"}, "Code of incident:"),
-        h("div", {style: "margin-top: 5px; margin-left: 5px"}, [
-            h("strong", null, response.data.operationId)
-        ])
-    ]);
+    if (response && response.data) {
+        return h("div", null, [
+            "Response (", h("strong", null, response.status), "): ",
+            h("div", {style: "margin-top: 5px; margin-left: 5px"}, [
+                h("strong", null, response.data.message)
+            ]),
+            h("div", {style: "margin-top: 5px"}, "Code of incident:"),
+            h("div", {style: "margin-top: 5px; margin-left: 5px"}, [
+                h("strong", null, response.data.operationId)
+            ])
+        ]);
+    } else {
+        return "Unhandled exception";
+    }
 }
