@@ -13,6 +13,8 @@ new Vue({
     store,
     render: h => h(App),
     beforeCreate() {
+        // eslint-disable-next-line no-console
+        console.log(window.location.pathname);
         this.$store.dispatch(SET_PATH_FOR_REDIRECTION, window.location.pathname);
     }
 }).$mount("#app");

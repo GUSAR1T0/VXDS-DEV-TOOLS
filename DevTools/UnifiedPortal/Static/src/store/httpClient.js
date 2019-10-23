@@ -44,7 +44,17 @@ let getHostAndApi = (state, server) => {
 
 let sendRequest = (state, payload, request) => {
     let client = axios.create();
-    client.interceptors.response.use(undefined, printResponseErrors);
+    client.interceptors.response.use(undefined, error => {
+        let reload = payload.ignoreReloadPage !== true;
+        if (error.response.status === 401) {
+            if (reload) {
+                window.location.reload();
+            }
+        } else {
+            window.history.back();
+        }
+        return printResponseErrors(error);
+    });
     let {host, api} = getHostAndApi(state, payload.server);
     return request(client, host, api);
 };

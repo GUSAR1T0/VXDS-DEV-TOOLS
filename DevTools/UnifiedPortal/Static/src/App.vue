@@ -23,12 +23,7 @@
 
 <script>
     import { mapGetters } from "vuex";
-    import {
-        ON_LOAD_ACCOUNT_REQUEST,
-        ON_LOAD_LOOKUP_REQUEST,
-        REFRESH_REQUEST,
-        RESET_PATH_FOR_REDIRECTION
-    } from "@/constants/actions";
+    import { ON_LOAD_ACCOUNT_REQUEST, ON_LOAD_LOOKUP_REQUEST, RESET_PATH_FOR_REDIRECTION } from "@/constants/actions";
 
     import NavigationBar from "@/components/navigation-bar/NavigationBar.vue";
     import Header from "@/components/page/Header.vue";
@@ -69,6 +64,8 @@
             };
 
             this.$store.dispatch(ON_LOAD_LOOKUP_REQUEST).then(() => {
+                // eslint-disable-next-line no-console
+                console.log(this.$store.getters.getPathForRedirection);
                 this.$store.dispatch(ON_LOAD_ACCOUNT_REQUEST, this.$store.getters.getPathForRedirection).then(redirectTo => {
                     this.$router.push(redirectTo).then(() => completeLoading()).catch(() => {
                         // TODO: Error case handling -> bug #39
@@ -81,13 +78,6 @@
                     });
                 });
                 this.$store.dispatch(RESET_PATH_FOR_REDIRECTION);
-
-                let autoReauthentication = setInterval(() => this.$store.dispatch(REFRESH_REQUEST).catch(() => {
-                    this.$router.push("/auth").catch(() => {
-                        // TODO: Error case handling -> bug #39
-                    });
-                    clearInterval(autoReauthentication);
-                }), this.getReauthenticationTime);
             }).catch(() => {
                 // TODO: Error case handling -> bug #39
             });

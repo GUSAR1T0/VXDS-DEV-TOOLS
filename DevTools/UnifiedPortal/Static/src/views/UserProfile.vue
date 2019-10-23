@@ -138,7 +138,6 @@
                     }
                 }).catch(error => {
                     this.loadingIsActive = false;
-                    this.$router.back();
                     this.$notify.error({
                         title: "Failed to load user profile",
                         duration: 10000,
