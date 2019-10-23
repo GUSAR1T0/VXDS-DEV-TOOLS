@@ -77,8 +77,7 @@ export default {
                     dispatch(GET_HTTP_REQUEST, {
                         server: SYRINX,
                         endpoint: GET_USER_DATA_ENDPOINT,
-                        config: getConfiguration(accessToken),
-                        reauthenticate: false
+                        config: getConfiguration(accessToken)
                     }).then(response => {
                         commit(SIGN_IN_REQUEST, response.data);
                         resolve(redirectTo);
@@ -96,15 +95,13 @@ export default {
                 dispatch(POST_HTTP_REQUEST, {
                     server: SYRINX,
                     endpoint: SIGN_IN_ENDPOINT,
-                    data: signInForm,
-                    reauthenticate: false
+                    data: signInForm
                 }).then(firstResponse => {
                     setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
                     dispatch(GET_HTTP_REQUEST, {
                         server: SYRINX,
                         endpoint: GET_USER_DATA_ENDPOINT,
-                        config: getConfiguration(firstResponse.data.accessToken),
-                        reauthenticate: false
+                        config: getConfiguration(firstResponse.data.accessToken)
                     }).then(secondResponse => {
                         commit(SIGN_IN_REQUEST, secondResponse.data);
                         resolve();
@@ -123,15 +120,13 @@ export default {
                 dispatch(POST_HTTP_REQUEST, {
                     server: SYRINX,
                     endpoint: SIGN_UP_ENDPOINT,
-                    data: signUpForm,
-                    reauthenticate: false
+                    data: signUpForm
                 }).then(firstResponse => {
                     setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
                     dispatch(GET_HTTP_REQUEST, {
                         server: SYRINX,
                         endpoint: GET_USER_DATA_ENDPOINT,
-                        config: getConfiguration(firstResponse.data.accessToken),
-                        reauthenticate: false
+                        config: getConfiguration(firstResponse.data.accessToken)
                     }).then(secondResponse => {
                         commit(SIGN_IN_REQUEST, secondResponse.data);
                         resolve();
@@ -152,15 +147,13 @@ export default {
                     dispatch(POST_HTTP_REQUEST, {
                         server: SYRINX,
                         endpoint: REFRESH_ENDPOINT,
-                        data: {accessToken, refreshToken},
-                        reauthenticate: false
+                        data: {accessToken, refreshToken}
                     }).then(firstResponse => {
                         setTokens(firstResponse.data.accessToken, firstResponse.data.refreshToken);
                         dispatch(GET_HTTP_REQUEST, {
                             server: SYRINX,
                             endpoint: GET_USER_DATA_ENDPOINT,
-                            config: getConfiguration(firstResponse.data.accessToken),
-                            reauthenticate: false
+                            config: getConfiguration(firstResponse.data.accessToken)
                         }).then(secondResponse => {
                             commit(SIGN_IN_REQUEST, secondResponse.data);
                             resolve();
@@ -169,8 +162,12 @@ export default {
                             reject(error);
                         });
                     }).catch(error => {
-                        removeTokens();
-                        reject(error);
+                        if (error.status !== 500) {
+                            removeTokens();
+                            reject(error);
+                        } else {
+                            resolve();
+                        }
                     });
                 } else {
                     removeTokens();

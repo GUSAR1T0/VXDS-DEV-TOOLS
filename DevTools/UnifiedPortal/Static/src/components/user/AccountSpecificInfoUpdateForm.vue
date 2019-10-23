@@ -29,9 +29,19 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
-                        <el-button type="danger" @click="cancel" plain>Cancel</el-button>
-                        <el-button type="danger" ref="accountSpecificInfoUpdateFormButton" native-type="submit">Submit
-                        </el-button>
+                        <el-row type="flex" justify="center" align="middle" :gutter="20">
+                            <el-col :span="12">
+                                <el-button type="danger" @click="cancel" plain style="width: 100%">
+                                    Cancel
+                                </el-button>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-button type="danger" ref="accountSpecificInfoUpdateFormButton" native-type="submit"
+                                           style="width: 100%">
+                                    Submit
+                                </el-button>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                 </el-col>
             </el-row>

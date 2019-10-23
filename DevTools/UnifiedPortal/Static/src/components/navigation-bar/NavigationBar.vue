@@ -24,7 +24,7 @@
                 </template>
                 <el-menu-item-group>
                     <span slot="title" class="el-nav-menu-vertical-group-title">User</span>
-                    <UserSubMenu/>
+                    <UserSubMenu :page-status="pageStatus"/>
                 </el-menu-item-group>
             </el-submenu>
             <!-- E: User -->
@@ -40,6 +40,22 @@
             </el-submenu>
             <!-- E: More -->
         </el-menu>
+        <el-dialog :visible.sync="pageStatus.logoutDialogVisible" width="50%" center>
+            <span slot="title" class="modal-title">Confirmation</span>
+            <h1 class="logout-dialog-header">Are you sure that you want to sign out?</h1>
+            <el-row type="flex" justify="center" align="middle" :gutter="20">
+                <el-col :span="12">
+                    <el-button type="danger" @click="pageStatus.logoutDialogVisible = false" plain style="width: 100%">
+                        Cancel
+                    </el-button>
+                </el-col>
+                <el-col :span="12">
+                    <el-button type="danger" @click="logoutAction" style="width: 100%">
+                        Submit
+                    </el-button>
+                </el-col>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 
@@ -70,10 +86,21 @@
     }
 </style>
 
-<style scoped src="@/styles/navigation-bar.css" id="navmenu">
+<style scoped src="@/styles/navigation-bar.css">
 </style>
 
 <style scoped src="@/styles/submenu.css">
+</style>
+
+<style scoped src="@/styles/modal.css">
+</style>
+
+<style scoped>
+    .logout-dialog-header {
+        text-align: center;
+        margin-bottom: 55px;
+    }
+
     .el-nav-menu-vertical-group-title {
         text-transform: uppercase;
         font-weight: bold;
@@ -81,6 +108,8 @@
 </style>
 
 <script>
+    import { LOGOUT_REQUEST } from "@/constants/actions";
+
     import PagesSubMenu from "@/components/navigation-bar/submenu/PagesSubMenu.vue";
     import UserSubMenu from "@/components/navigation-bar/submenu/UserSubMenu.vue";
     import MoreSubMenu from "@/components/navigation-bar/submenu/MoreSubMenu.vue";
@@ -92,9 +121,30 @@
             UserSubMenu,
             MoreSubMenu
         },
+        data() {
+            return {
+                pageStatus: {
+                    logoutDialogVisible: false
+                }
+            };
+        },
         methods: {
             resetPagePosition() {
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                window.scrollTo({top: 0, behavior: "smooth"});
+            },
+            logoutAction() {
+                this.pageStatus.logoutDialogVisible = false;
+                this.$store.dispatch(LOGOUT_REQUEST).then(() => {
+                    this.$router.push("/auth").catch(() => {
+                    });
+                    this.$notify.info({
+                        title: "You are logged out",
+                        message: "Waiting for you again"
+                    });
+                }).catch(() => {
+                    this.$router.push("/auth").catch(() => {
+                    });
+                });
             }
         },
         mounted() {

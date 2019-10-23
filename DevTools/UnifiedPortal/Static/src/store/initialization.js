@@ -3,7 +3,7 @@ import { RESET_PATH_FOR_REDIRECTION, SET_PATH_FOR_REDIRECTION } from "@/constant
 export default {
     state: {
         pathForRedirection: "",
-        reauthenticationTime: (5 * 60 - 30) * 1000
+        reauthenticationTime: 4 * 60 * 1000
     },
     getters: {
         getPathForRedirection: state => {

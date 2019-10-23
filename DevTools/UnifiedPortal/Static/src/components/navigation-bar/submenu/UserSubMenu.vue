@@ -5,7 +5,7 @@
                 <fa class="fa-submenu-item" icon="user-alt"/>
                 <span slot="title" class="el-nav-menu-vertical-item">{{ getFullName }}</span>
             </el-menu-item>
-            <el-menu-item @click="logoutAction" index="logout">
+            <el-menu-item @click="pageStatus.logoutDialogVisible = true">
                 <fa class="fa-submenu-item" icon="sign-out-alt"/>
                 <span slot="title" class="el-nav-menu-vertical-item">Sign Out</span>
             </el-menu-item>
@@ -16,31 +16,22 @@
 <style scoped src="@/styles/submenu.css">
 </style>
 
+<style scoped src="@/styles/modal.css">
+</style>
+
 <script>
     import { mapGetters } from "vuex";
-    import { LOGOUT_REQUEST } from "@/constants/actions";
 
     export default {
         name: "UserSubMenu",
+        props: {
+            pageStatus: Object
+        },
         computed: {
             ...mapGetters([
                 "isAuthenticated",
-                "getEmail",
                 "getFullName",
             ])
-        },
-        methods: {
-            logoutAction() {
-                this.$store.dispatch(LOGOUT_REQUEST).then(() => {
-                    this.$router.push("/auth").catch(() => {});
-                    this.$notify.info({
-                        title: "You are logged out",
-                        message: "Waiting for you again"
-                    });
-                }).catch(() => {
-                    this.$router.push("/auth").catch(() => {});
-                });
-            }
         }
     };
 </script>
