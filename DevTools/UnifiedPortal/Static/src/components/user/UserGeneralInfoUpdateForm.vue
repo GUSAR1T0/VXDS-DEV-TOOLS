@@ -81,7 +81,7 @@
         props: {
             user: Object,
             userGeneralInfoUpdateForm: Object,
-            pageStatus: Object,
+            pageStatus: Boolean,
             closed: Function
         },
         components: {

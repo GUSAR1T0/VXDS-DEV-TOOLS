@@ -9,7 +9,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
     public interface IUserRoleStore
     {
         Task<UserRoleEntity> GetUserRoleById(IOperation operation, int id);
-        Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation);
+        Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation, bool isFullInfoNeeded);
         Task AddUserRole(IOperation operation, UserRoleEntity entity);
         Task UpdateUserRole(IOperation operation, UserRoleEntity entity);
         Task DeleteUserRoleById(IOperation operation, int id);
@@ -30,14 +30,18 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             ");
         }
 
-        public async Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation)
+        public async Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation, bool isFullInfoNeeded)
         {
-            return await operation.Connection.QueryAsync<UserRoleEntity>(@"
+            var fieldsOfFullInfoQuery = isFullInfoNeeded
+                ? @",
+                    [UserPermissions],
+                    [UserRolePermissions]"
+                : "";
+            return await operation.Connection.QueryAsync<UserRoleEntity>($@"
                 SELECT
                     [Id],
-                    [Name],
-                    [UserPermissions],
-                    [UserRolePermissions]
+                    [Name]
+                    {fieldsOfFullInfoQuery}
                 FROM [authorization].[UserRole]
             ");
         }

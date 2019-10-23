@@ -7,13 +7,22 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="userRole" label="User Role">
-                        <el-select v-model="accountSpecificInfoUpdateForm.userRole.id" placeholder="Select"
-                                   :value="accountSpecificInfoUpdateForm.userRole.id" clearable style="width: 100%"
-                                   :disabled="isAboutMe(getUserId)">
-                            <el-option v-for="item in userRoles" :key="item.value" :label="item.label"
-                                       :value="item.value">
-                            </el-option>
-                        </el-select>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="20">
+                                <el-select v-model="accountSpecificInfoUpdateForm.userRole.id" placeholder="Select"
+                                           :value="accountSpecificInfoUpdateForm.userRole.id" clearable
+                                           style="width: 100%" :disabled="isAboutMe(getUserId)">
+                                    <el-option v-for="item in userRoles" :key="item.value" :label="item.label"
+                                               :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-button type="danger" circle @click="userRolesInfoDialogVisible = true">
+                                    <fa icon="info-circle"/>
+                                </el-button>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -27,6 +36,10 @@
                 </el-col>
             </el-row>
         </el-form>
+        <el-dialog :visible.sync="userRolesInfoDialogVisible" width="75%" style="text-align: center" append-to-body>
+            <span slot="title" class="modal-title">User Roles Description</span>
+            <UserRolesPermissionsTables/>
+        </el-dialog>
     </el-dialog>
 </template>
 
@@ -37,9 +50,14 @@
     import { mapGetters } from "vuex";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import { LOCALHOST } from "@/constants/servers";
-    import { GET_USER_ROLES_ENDPOINT, UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT } from "@/constants/endpoints";
+    import {
+        GET_USER_ROLES_SHORT_INFO_ENDPOINT,
+        UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT
+    } from "@/constants/endpoints";
     import format from "string-format";
     import { GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
+
+    import UserRolesPermissionsTables from "@/components/user/UserRolesPermissionsTables";
 
     export default {
         name: "AccountSpecificInfoUpdateForm",
@@ -49,9 +67,13 @@
             pageStatus: Object,
             closed: Function
         },
+        components: {
+            UserRolesPermissionsTables
+        },
         data() {
             return {
                 accountSpecificInfoUpdateRules: {},
+                userRolesInfoDialogVisible: false,
                 userRoles: []
             };
         },
@@ -68,7 +90,7 @@
             loadUserRoles() {
                 this.$store.dispatch(GET_HTTP_REQUEST, {
                     server: LOCALHOST,
-                    endpoint: GET_USER_ROLES_ENDPOINT,
+                    endpoint: GET_USER_ROLES_SHORT_INFO_ENDPOINT,
                     config: getConfiguration()
                 }).then(response => {
                     this.userRoles = response.data.map(item => {

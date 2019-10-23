@@ -1,11 +1,6 @@
 <template>
-    <el-container class="user-container"
-                  v-loading="loadingIsActive"
-                  element-loading-text="Loading"
-                  element-loading-spinner="el-icon-loading"
-                  element-loading-background="rgba(255, 255, 255, 0.75)"
-                  element-loading-custom-class="main-loading-spinner-custom">
-        <el-main>
+    <LoadingContainer class="user-container" :loading-state="loadingIsActive">
+        <template slot="content">
             <el-card shadow="hover">
                 <div slot="header">
                     <h3>General Info</h3>
@@ -33,23 +28,7 @@
                 <UserInfoRow v-if="getUserProfile.userRole.id" name="User Role" :value="getUserProfile.userRole.name"
                              :has-description="hasUserRoleDescription">
                     <template slot="description">
-                        <el-table :data="getPermissionsTable" style="width: 100%" border>
-                            <el-table-column prop="type" label="Permissions types">
-                                <template slot-scope="scope">
-                                    <strong style="font-size: 16px">{{ scope.row.type }}</strong>
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Lists of permissions">
-                                <template slot-scope="scope">
-                                    <div v-for="permission in scope.row.list" v-bind:key="permission"
-                                         style="display: inline-block; padding: 5px">
-                                        <el-tag :type="permission.type" effect="plain" hit>
-                                            {{ permission.name }}
-                                        </el-tag>
-                                    </div>
-                                </template>
-                            </el-table-column>
-                        </el-table>
+                        <UserRolePermissionsTable :user-role="getUserProfile.userRole"/>
                     </template>
                 </UserInfoRow>
                 <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="danger"
@@ -62,8 +41,8 @@
                                                :page-status="dialogStatuses.accountSpecificInfoUpdateFormDialog"
                                                :closed="submitAccountSpecificInfoUpdateForm"/>
             </el-card>
-        </el-main>
-    </el-container>
+        </template>
+    </LoadingContainer>
 </template>
 
 <style scoped>
@@ -90,9 +69,11 @@
     import { USER_PERMISSION } from "@/constants/permissions";
     import format from "string-format";
 
+    import LoadingContainer from "@/components/page/LoadingContainer.vue";
     import UserCard from "@/components/user/UserCard.vue";
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import UserInfoRow from "@/components/user/UserInfoRow.vue";
+    import UserRolePermissionsTable from "@/components/user/UserRolePermissionsTable.vue";
     import UserGeneralInfoUpdateForm from "@/components/user/UserGeneralInfoUpdateForm.vue";
     import AccountSpecificInfoUpdateForm from "@/components/user/AccountSpecificInfoUpdateForm.vue";
 
@@ -108,9 +89,11 @@
     export default {
         name: "User",
         components: {
+            LoadingContainer,
             UserCard,
             HorizontalDivider,
             UserInfoRow,
+            UserRolePermissionsTable,
             UserGeneralInfoUpdateForm,
             AccountSpecificInfoUpdateForm
         },
@@ -140,32 +123,6 @@
             },
             hasPermissionToUpdateUserProfile() {
                 return this.isAboutMe(this.getUserId) || this.hasUserPermission(USER_PERMISSION.UPDATE_USER);
-            },
-            getPermissionsTable() {
-                let getPermissionTagType = (permissionsValue, permissionValue) => {
-                    return (permissionsValue & permissionValue) === 0 ? "info" : "danger";
-                };
-                let userProfile = this.getUserProfile;
-                return [
-                    {
-                        type: "User Management",
-                        list: this.getLookupValues("userPermissions").map(permission => {
-                            return {
-                                type: getPermissionTagType(userProfile.userRole.userPermissions, permission.value),
-                                name: permission.name
-                            };
-                        })
-                    },
-                    {
-                        type: "User Role Management",
-                        list: this.getLookupValues("userRolePermissions").map(permission => {
-                            return {
-                                type: getPermissionTagType(userProfile.userRole.userRolePermissions, permission.value),
-                                name: permission.name
-                            };
-                        })
-                    },
-                ];
             }
         },
         methods: {

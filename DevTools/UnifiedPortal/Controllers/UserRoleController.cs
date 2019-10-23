@@ -25,18 +25,33 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         }
 
         /// <summary>
-        /// Obtains all user roles
+        /// Obtains all user roles fully (with permissions)
         /// </summary>
         /// <returns>List of user roles</returns>
-        [ProducesResponseType(typeof(IEnumerable<UserRoleModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<UserRoleFullInfoModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
-        [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<UserRoleModel>>> GetUserRoles() => await Execute(OperationContexts.GetUserRoles, async operation =>
+        [HttpGet("list/full")]
+        public async Task<ActionResult<IEnumerable<UserRoleFullInfoModel>>> GetUserRolesFullInfo() => await Execute(OperationContexts.GetUserRolesFullInfo, async operation =>
         {
             var userRoles = await userRoleService.GetUserRoles(operation);
-            return userRoles.Select(userRole => userRole.ToModel());
+            return userRoles.Select(userRole => userRole.ToFullInfoModel());
+        });
+
+        /// <summary>
+        /// Obtains all user roles shortly (without permissions)
+        /// </summary>
+        /// <returns>List of user roles</returns>
+        [ProducesResponseType(typeof(IEnumerable<UserRoleShortInfoModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [SyrinxVerifiedAuthentication]
+        [HttpGet("list/short")]
+        public async Task<ActionResult<IEnumerable<UserRoleShortInfoModel>>> GetUserRolesShortInfo() => await Execute(OperationContexts.GetUserRolesShortInfo, async operation =>
+        {
+            var userRoles = await userRoleService.GetUserRoles(operation, false);
+            return userRoles.Select(userRole => userRole.ToShortInfoModel());
         });
 
         /// <summary>
@@ -50,7 +65,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [SyrinxVerifiedAuthentication(userRolePermissions: UserRolePermission.CreateRole)]
         [HttpPost]
-        public async Task<ActionResult> AddUserRole([FromBody] UserRoleModel model)
+        public async Task<ActionResult> AddUserRole([FromBody] UserRoleFullInfoModel model)
         {
             return await Execute(OperationContexts.AddUserRole, async operation => await userRoleService.AddUserRole(operation, model.ToEntity()));
         }
@@ -68,7 +83,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication(userRolePermissions: UserRolePermission.UpdateRole)]
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUserRole(int id, [FromBody] UserRoleModel model)
+        public async Task<ActionResult> UpdateUserRole(int id, [FromBody] UserRoleFullInfoModel model)
         {
             return await Execute(OperationContexts.UpdateUserRole, async operation => await userRoleService.UpdateUserRole(operation, model.ToEntity(id)));
         }

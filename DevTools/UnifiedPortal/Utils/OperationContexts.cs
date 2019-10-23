@@ -39,9 +39,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
 
         #region UserRole
 
-        internal static OperationContext.OperationContextBuilder GetUserRoles(OperationContext.OperationContextBuilder builder)
+        internal static OperationContext.OperationContextBuilder GetUserRolesFullInfo(OperationContext.OperationContextBuilder builder)
         {
-            return builder.SetName(UserRole, nameof(UserRoleController.GetUserRoles));
+            return builder.SetName(UserRole, nameof(UserRoleController.GetUserRolesFullInfo));
+        }
+
+        internal static OperationContext.OperationContextBuilder GetUserRolesShortInfo(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(UserRole, nameof(UserRoleController.GetUserRolesShortInfo));
         }
 
         internal static OperationContext.OperationContextBuilder AddUserRole(OperationContext.OperationContextBuilder builder)

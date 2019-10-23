@@ -14,4 +14,5 @@ export const UPDATE_PROFILE_GENERAL_INFO_ENDPOINT = "user/{id}/general";
 export const UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT = "user/{id}/accountSpecific";
 
 // User roles endpoints
-export const GET_USER_ROLES_ENDPOINT = "userRole/list";
+export const GET_USER_ROLES_SHORT_INFO_ENDPOINT = "userRole/list/short";
+export const GET_USER_ROLES_FULL_INFO_ENDPOINT = "userRole/list/full";

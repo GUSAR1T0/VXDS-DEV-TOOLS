@@ -5,7 +5,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
 {
     internal static class UserRoleModelExtensions
     {
-        internal static UserRoleModel ToModel(this UserRoleEntity entity) => new UserRoleModel
+        internal static UserRoleFullInfoModel ToFullInfoModel(this UserRoleEntity entity) => new UserRoleFullInfoModel
         {
             Id = entity.Id,
             Name = entity.Name,
@@ -13,7 +13,13 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
             UserRolePermissions = entity.UserRolePermissions
         };
 
-        internal static UserRoleEntity ToEntity(this UserRoleModel model, int? id = null) => new UserRoleEntity
+        internal static UserRoleShortInfoModel ToShortInfoModel(this UserRoleEntity entity) => new UserRoleShortInfoModel
+        {
+            Id = entity.Id,
+            Name = entity.Name
+        };
+
+        internal static UserRoleEntity ToEntity(this UserRoleFullInfoModel model, int? id = null) => new UserRoleEntity
         {
             Id = id ?? model.Id,
             Name = model.Name,

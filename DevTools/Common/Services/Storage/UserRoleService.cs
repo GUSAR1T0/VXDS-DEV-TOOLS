@@ -8,7 +8,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
 {
     public interface IUserRoleService
     {
-        Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation);
+        Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation, bool isFullInfoNeeded = true);
         Task AddUserRole(IOperation operation, UserRoleEntity entity);
         Task UpdateUserRole(IOperation operation, UserRoleEntity entity);
         Task DeleteUserRoleById(IOperation operation, int id);
@@ -23,7 +23,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
             this.userRoleStore = userRoleStore;
         }
 
-        public async Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation) => await userRoleStore.GetUserRoles(operation);
+        public async Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation, bool isFullInfoNeeded = true) => await userRoleStore.GetUserRoles(operation, isFullInfoNeeded);
 
         public async Task AddUserRole(IOperation operation, UserRoleEntity entity) => await userRoleStore.AddUserRole(operation, entity);
 

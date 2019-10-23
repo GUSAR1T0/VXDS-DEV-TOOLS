@@ -1,5 +1,3 @@
-using VXDesign.Store.DevTools.Common.Enums.Operations;
-
 namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
 {
     public class UserProfileGetModel
@@ -18,7 +16,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
 
         #region System Info
 
-        public UserRoleModel UserRole { get; set; }
+        public UserRoleFullInfoModel UserRole { get; set; }
 
         #endregion
     }

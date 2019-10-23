@@ -1,0 +1,60 @@
+<template>
+    <el-table :data="getPermissionsTable" style="width: 100%" border>
+        <el-table-column prop="type" label="Permissions types">
+            <template slot-scope="scope">
+                <strong style="font-size: 16px">{{ scope.row.type }}</strong>
+            </template>
+        </el-table-column>
+        <el-table-column label="Lists of permissions">
+            <template slot-scope="scope">
+                <div v-for="permission in scope.row.list" v-bind:key="permission"
+                     style="display: inline-block; padding: 5px">
+                    <el-tag :type="permission.type" effect="plain" hit>
+                        {{ permission.name }}
+                    </el-tag>
+                </div>
+            </template>
+        </el-table-column>
+    </el-table>
+</template>
+
+<script>
+    import { mapGetters } from "vuex";
+
+    export default {
+        name: "UserRolePermissionsTable",
+        props: {
+            userRole: Object
+        },
+        computed: {
+            ...mapGetters([
+                "getLookupValues"
+            ]),
+            getPermissionsTable() {
+                let getPermissionTagType = (permissionsValue, permissionValue) => {
+                    return (permissionsValue & permissionValue) === 0 ? "info" : "danger";
+                };
+                return [
+                    {
+                        type: "User Management",
+                        list: this.getLookupValues("userPermissions").map(permission => {
+                            return {
+                                type: getPermissionTagType(this.userRole.userPermissions, permission.value),
+                                name: permission.name
+                            };
+                        })
+                    },
+                    {
+                        type: "User Role Management",
+                        list: this.getLookupValues("userRolePermissions").map(permission => {
+                            return {
+                                type: getPermissionTagType(this.userRole.userRolePermissions, permission.value),
+                                name: permission.name
+                            };
+                        })
+                    },
+                ];
+            }
+        }
+    };
+</script>
