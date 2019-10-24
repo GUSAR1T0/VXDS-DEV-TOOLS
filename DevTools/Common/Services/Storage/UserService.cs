@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Entities.Exceptions;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
@@ -8,6 +9,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
 {
     public interface IUserService
     {
+        Task<IEnumerable<UserListItem>> GetUsers(IOperation operation);
         Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id);
         Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateUserProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
@@ -23,6 +25,8 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
             this.userDataStore = userDataStore;
             this.userRoleStore = userRoleStore;
         }
+
+        public async Task<IEnumerable<UserListItem>> GetUsers(IOperation operation) => await userDataStore.GetUsers(operation);
 
         public async Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id)
         {

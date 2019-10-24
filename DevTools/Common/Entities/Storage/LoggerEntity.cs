@@ -16,7 +16,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Storage
 
         public string Logger { get; set; }
 
-        public int OperationId { get; set; }
+        public long OperationId { get; set; }
 
         public string Message { get; set; }
 

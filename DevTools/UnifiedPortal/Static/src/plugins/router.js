@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "@/views/Home.vue";
-import authenticationBasedRouting from "@/extensions/authentication";
 
 Vue.use(Router);
 
@@ -15,8 +14,7 @@ export default new Router({
             component: Home,
             meta: {
                 pageName: "Home Page"
-            },
-            beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsRequired
+            }
         },
         {
             path: "/auth",
@@ -24,17 +22,23 @@ export default new Router({
             component: () => import(/* webpackChunkName: "authorization" */ "../views/Authorization.vue"),
             meta: {
                 pageName: "Authorization"
-            },
-            beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsNotRequired
+            }
         },
         {
             path: "/user/:id?",
             name: "user",
             component: () => import(/* webpackChunkName: "user-profile" */ "../views/UserProfile.vue"),
             meta: {
-                    pageName: "User Profile"
-            },
-            beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsRequired
+                pageName: "User Profile"
+            }
+        },
+        {
+            path: "/users",
+            name: "users",
+            component: () => import(/* webpackChunkName: "users" */ "../views/Users.vue"),
+            meta: {
+                pageName: "Users"
+            }
         },
         {
             path: "/about",
@@ -45,8 +49,7 @@ export default new Router({
             component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
             meta: {
                 pageName: "About"
-            },
-            beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsRequired
+            }
         }
     ]
 });

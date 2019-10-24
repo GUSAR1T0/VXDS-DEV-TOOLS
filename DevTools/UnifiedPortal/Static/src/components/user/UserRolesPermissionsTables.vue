@@ -44,7 +44,6 @@
                     this.userRoles = response.data;
                 }).catch(error => {
                     this.loadingIsActive = false;
-                    this.$router.back();
                     this.$notify.error({
                         title: "Failed to load list of user roles",
                         duration: 10000,

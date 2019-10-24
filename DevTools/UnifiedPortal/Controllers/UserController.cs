@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +24,20 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         {
             this.userService = userService;
         }
+
+        /// <summary>
+        /// Obtains all users info
+        /// </summary>
+        /// <returns>List of users with their info</returns>
+        [ProducesResponseType(typeof(IEnumerable<UserModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [SyrinxVerifiedAuthentication]
+        [HttpGet("list")]
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers() => await Execute(OperationContexts.GetUsers, async operation =>
+        {
+            var users = await userService.GetUsers(operation);
+            return users.Select(user => user.ToModel());
+        });
 
         /// <summary>
         /// Obtains user profile data by email

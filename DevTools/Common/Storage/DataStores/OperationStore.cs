@@ -5,8 +5,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
 {
     public interface IOperationStore
     {
-        Task<int> Start(string scope, OperationContext context);
-        Task Stop(int operationId, bool isSuccessful);
+        Task<long> Start(string scope, OperationContext context);
+        Task Stop(long operationId, bool isSuccessful);
     }
 
     public sealed class OperationStore : BaseDataStore, IOperationStore
@@ -18,9 +18,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             this.connection = connection;
         }
 
-        public async Task<int> Start(string scope, OperationContext context)
+        public async Task<long> Start(string scope, OperationContext context)
         {
-            return await connection.QueryFirstAsync<int>(new
+            return await connection.QueryFirstAsync<long>(new
             {
                 Scope = scope,
                 ContextName = context.Name,
@@ -35,7 +35,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             ");
         }
 
-        public async Task Stop(int operationId, bool isSuccessful)
+        public async Task Stop(long operationId, bool isSuccessful)
         {
             await connection.ExecuteAsync(new
             {

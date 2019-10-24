@@ -1,9 +1,10 @@
 <template>
-    <el-container v-loading="loadingState"
+    <el-container v-loading.fullscreen.lock="loadingState"
                   element-loading-text="Loading"
                   element-loading-spinner="el-icon-loading"
                   element-loading-background="rgba(255, 255, 255, 0.75)"
-                  element-loading-custom-class="main-loading-spinner-custom">
+                  element-loading-custom-class="main-loading-spinner-custom"
+                  class="loading-container">
         <el-main>
             <slot name="content"></slot>
         </el-main>
@@ -11,8 +12,9 @@
 </template>
 
 <style scoped>
-    .user-container {
-        margin-top: -17px;
+    .loading-container {
+        height: 100%;
+        width: 100%;
     }
 </style>
 

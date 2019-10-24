@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Entities.Operations;
 using VXDesign.Store.DevTools.Common.Entities.Storage;
@@ -19,6 +20,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         #region Users
 
         Task<bool> IsUserExist(IOperation operation, int id);
+        Task<IEnumerable<UserListItem>> GetUsers(IOperation operation);
         Task<UserProfileEntity> GetProfileById(IOperation operation, int id);
         Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
@@ -123,6 +125,21 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                 SELECT 1
                 FROM [authorization].[User]
                 WHERE [Id] = @Id
+            ");
+        }
+
+        public async Task<IEnumerable<UserListItem>> GetUsers(IOperation operation)
+        {
+            return await operation.Connection.QueryAsync<UserListItem>(@"
+                SELECT
+                    au.[Id],
+                    [FirstName],
+                    [LastName],
+                    [Email],
+                    [Color],
+                    aur.[Name] AS [UserRole]
+                FROM [authorization].[User] au
+                LEFT JOIN [authorization].[UserRole] aur ON au.[UserRoleId] = aur.[Id]
             ");
         }
 

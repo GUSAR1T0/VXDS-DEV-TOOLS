@@ -87,7 +87,7 @@
     };
 
     export default {
-        name: "User",
+        name: "UserProfile",
         components: {
             LoadingContainer,
             UserCard,

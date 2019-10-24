@@ -5,12 +5,12 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStores
 {
     public interface ILoggerStore
     {
-        Task Trace<T>(int operationId, string message, dynamic value);
-        Task Debug<T>(int operationId, string message, dynamic value);
-        Task Info<T>(int operationId, string message, dynamic value);
-        Task Warn<T>(int operationId, string message, dynamic value);
-        Task Error<T>(int operationId, string message, dynamic value);
-        Task Fatal<T>(int operationId, string message, dynamic value);
+        Task Trace<T>(long operationId, string message, dynamic value);
+        Task Debug<T>(long operationId, string message, dynamic value);
+        Task Info<T>(long operationId, string message, dynamic value);
+        Task Warn<T>(long operationId, string message, dynamic value);
+        Task Error<T>(long operationId, string message, dynamic value);
+        Task Fatal<T>(long operationId, string message, dynamic value);
     }
 
     public class LoggerStore : BaseLogStore<LoggerEntity>, ILoggerStore
@@ -19,37 +19,37 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStores
         {
         }
 
-        public async Task Trace<T>(int operationId, string message, dynamic value)
+        public async Task Trace<T>(long operationId, string message, dynamic value)
         {
             await Log<T>("TRACE", operationId, message, value);
         }
 
-        public async Task Debug<T>(int operationId, string message, dynamic value)
+        public async Task Debug<T>(long operationId, string message, dynamic value)
         {
             await Log<T>("DEBUG", operationId, message, value);
         }
 
-        public async Task Info<T>(int operationId, string message, dynamic value)
+        public async Task Info<T>(long operationId, string message, dynamic value)
         {
             await Log<T>("INFO", operationId, message, value);
         }
 
-        public async Task Warn<T>(int operationId, string message, dynamic value)
+        public async Task Warn<T>(long operationId, string message, dynamic value)
         {
             await Log<T>("WARN", operationId, message, value);
         }
 
-        public async Task Error<T>(int operationId, string message, dynamic value)
+        public async Task Error<T>(long operationId, string message, dynamic value)
         {
             await Log<T>("ERROR", operationId, message, value);
         }
 
-        public async Task Fatal<T>(int operationId, string message, dynamic value)
+        public async Task Fatal<T>(long operationId, string message, dynamic value)
         {
             await Log<T>("FATAL", operationId, message, value);
         }
 
-        private async Task Log<T>(string level, int operationId, string message, dynamic value)
+        private async Task Log<T>(string level, long operationId, string message, dynamic value)
         {
             await Collection.InsertOneAsync(new LoggerEntity
             {

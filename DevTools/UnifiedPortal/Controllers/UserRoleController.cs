@@ -32,7 +32,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
-        [HttpGet("list/full")]
+        [HttpGet("full/list")]
         public async Task<ActionResult<IEnumerable<UserRoleFullInfoModel>>> GetUserRolesFullInfo() => await Execute(OperationContexts.GetUserRolesFullInfo, async operation =>
         {
             var userRoles = await userRoleService.GetUserRoles(operation);
@@ -47,7 +47,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
-        [HttpGet("list/short")]
+        [HttpGet("short/list")]
         public async Task<ActionResult<IEnumerable<UserRoleShortInfoModel>>> GetUserRolesShortInfo() => await Execute(OperationContexts.GetUserRolesShortInfo, async operation =>
         {
             var userRoles = await userRoleService.GetUserRoles(operation, false);

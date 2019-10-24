@@ -10,7 +10,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
     public interface IOperation : IDisposable
     {
         OperationContext OperationContext { get; }
-        int OperationId { get; }
+        long OperationId { get; }
         bool? IsSuccessful { get; }
 
         IOperationConnection Connection { get; }
@@ -21,10 +21,10 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
     {
         private readonly ILoggerStore loggerStore;
         private readonly IOperationStore operationStore;
-        private readonly int? operationId;
+        private readonly long? operationId;
 
         public OperationContext OperationContext { get; }
-        public int OperationId => operationId ?? -1; // -1: when operation is ready to be started but the record isn't stored into DB
+        public long OperationId => operationId ?? -1; // -1: when operation is ready to be started but the record isn't stored into DB
         public bool? IsSuccessful { get; private set; }
 
         public IOperationConnection Connection { get; }

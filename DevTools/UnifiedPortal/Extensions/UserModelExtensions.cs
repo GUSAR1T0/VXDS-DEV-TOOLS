@@ -5,6 +5,16 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
 {
     internal static class UserModelExtensions
     {
+        internal static UserModel ToModel(this UserListItem entity) => new UserModel
+        {
+            Id = entity.Id,
+            Email = entity.Email,
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            Color = entity.Color,
+            UserRole = entity.UserRole
+        };
+
         internal static UserProfileGetModel ToModel(this UserProfileEntity entity) => new UserProfileGetModel
         {
             Id = entity.Id,

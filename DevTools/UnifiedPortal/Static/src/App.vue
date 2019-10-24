@@ -64,9 +64,14 @@
             };
 
             this.$store.dispatch(ON_LOAD_LOOKUP_REQUEST).then(() => {
-                // eslint-disable-next-line no-console
-                console.log(this.$store.getters.getPathForRedirection);
                 this.$store.dispatch(ON_LOAD_ACCOUNT_REQUEST, this.$store.getters.getPathForRedirection).then(redirectTo => {
+                    if (!this.isAuthenticated && redirectTo !== "/auth") {
+                        redirectTo = "/auth";
+                    }
+                    else if (this.isAuthenticated && redirectTo === "/auth") {
+                        redirectTo = "/";
+                    }
+
                     this.$router.push(redirectTo).then(() => completeLoading()).catch(() => {
                         // TODO: Error case handling -> bug #39
                         completeLoading();

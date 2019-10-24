@@ -20,6 +20,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
 
         #region User
 
+        internal static OperationContext.OperationContextBuilder GetUsers(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(User, nameof(UserController.GetUsers));
+        }
+
         internal static OperationContext.OperationContextBuilder GetUserProfile(OperationContext.OperationContextBuilder builder)
         {
             return builder.SetName(User, nameof(UserController.GetUserProfile));

@@ -45,9 +45,8 @@ let getHostAndApi = (state, server) => {
 let sendRequest = (state, payload, request) => {
     let client = axios.create();
     client.interceptors.response.use(undefined, error => {
-        let reload = payload.ignoreReloadPage !== true;
         if (error.response.status === 401) {
-            if (reload) {
+            if (payload.ignoreReloadPage !== true) {
                 window.location.reload();
             }
         } else {
