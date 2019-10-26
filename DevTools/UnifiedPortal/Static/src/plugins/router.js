@@ -41,6 +41,14 @@ export default new Router({
             }
         },
         {
+            path: "/admin",
+            name: "admin",
+            component: () => import(/* webpackChunkName: "admin" */ "../views/AdminPanel.vue"),
+            meta: {
+                pageName: "Admin Panel"
+            }
+        },
+        {
             path: "/about",
             name: "about",
             // route level code-splitting

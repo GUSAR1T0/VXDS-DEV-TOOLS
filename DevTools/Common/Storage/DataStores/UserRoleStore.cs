@@ -23,8 +23,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                 SELECT
                     [Id],
                     [Name],
-                    [UserPermissions],
-                    [UserRolePermissions]
+                    [UserPermissions]
                 FROM [authorization].[UserRole]
                 WHERE [Id] = @Id;
             ");
@@ -34,8 +33,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         {
             var fieldsOfFullInfoQuery = isFullInfoNeeded
                 ? @",
-                    [UserPermissions],
-                    [UserRolePermissions]"
+                    [UserPermissions]"
                 : "";
             return await operation.Connection.QueryAsync<UserRoleEntity>($@"
                 SELECT
@@ -51,18 +49,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             await operation.Connection.ExecuteAsync(new
             {
                 entity.Name,
-                entity.UserPermissions,
-                entity.UserRolePermissions
+                entity.UserPermissions
             }, @"
                 INSERT INTO [authorization].[UserRole] (
                     [Name],
-                    [UserPermissions],
-                    [UserRolePermissions]
+                    [UserPermissions]
                 )
                 VALUES (
                     @Name,
-                    @UserPermissions,
-                    @UserRolePermissions
+                    @UserPermissions
                 )
             ");
         }
@@ -73,14 +68,12 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             {
                 entity.Id,
                 entity.Name,
-                entity.UserPermissions,
-                entity.UserRolePermissions
+                entity.UserPermissions
             }, @"
                 UPDATE [authorization].[UserRole]
                 SET
                     [Name] = @Name,
-                    [UserPermissions] = @UserPermissions,
-                    [UserRolePermissions] = @UserRolePermissions
+                    [UserPermissions] = @UserPermissions
                 WHERE [Id] = @Id
             ");
         }

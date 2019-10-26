@@ -11,6 +11,5 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
     public class UserRoleFullInfoModel : UserRoleShortInfoModel
     {
         public UserPermission UserPermissions { get; set; }
-        public UserRolePermission UserRolePermissions { get; set; }
     }
 }

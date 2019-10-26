@@ -63,7 +63,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
-        [SyrinxVerifiedAuthentication(userRolePermissions: UserRolePermission.CreateRole)]
+        [SyrinxVerifiedAuthentication(UserPermission.AccessToAdminPanel)]
         [HttpPost]
         public async Task<ActionResult> AddUserRole([FromBody] UserRoleFullInfoModel model)
         {
@@ -81,7 +81,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [SyrinxVerifiedAuthentication(userRolePermissions: UserRolePermission.UpdateRole)]
+        [SyrinxVerifiedAuthentication(UserPermission.AccessToAdminPanel)]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUserRole(int id, [FromBody] UserRoleFullInfoModel model)
         {
@@ -98,7 +98,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [SyrinxVerifiedAuthentication(userRolePermissions: UserRolePermission.DeleteRole)]
+        [SyrinxVerifiedAuthentication(UserPermission.AccessToAdminPanel)]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUserRole(int id) => await Execute(OperationContexts.DeleteUserRole, async operation => await userRoleService.DeleteUserRoleById(operation, id));
     }

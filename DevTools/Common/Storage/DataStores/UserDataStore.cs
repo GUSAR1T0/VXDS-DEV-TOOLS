@@ -43,8 +43,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                     au.[LastName],
                     au.[Email],
                     au.[Color],
-                    aur.[UserPermissions],
-                    aur.[UserRolePermissions]
+                    aur.[UserPermissions]
                 FROM [authorization].[User] au
                 LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE au.[Id] = @Id
@@ -69,8 +68,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             }, @"
                 SELECT
                     au.[Id],
-                    aur.[UserPermissions],
-                    aur.[UserRolePermissions]
+                    aur.[UserPermissions]
                 FROM [authorization].[User] au
                 LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE [Email] = @Email AND (@Password IS NULL OR [Password] = @Password)
@@ -82,8 +80,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new { Id = id }, @"
                 SELECT
                     au.[Id],
-                    aur.[UserPermissions],
-                    aur.[UserRolePermissions]
+                    aur.[UserPermissions]
                 FROM [authorization].[User] au
                 LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE au.[Id] = @Id

@@ -7,14 +7,13 @@ namespace VXDesign.Store.DevTools.Common.Attributes
 {
     public class SyrinxVerifiedAuthenticationAttribute : TypeFilterAttribute
     {
-        public SyrinxVerifiedAuthenticationAttribute(UserPermission userPermissions = 0, UserRolePermission userRolePermissions = 0) : base(typeof(SyrinxVerifiedAuthenticationService))
+        public SyrinxVerifiedAuthenticationAttribute(UserPermission userPermissions = 0) : base(typeof(SyrinxVerifiedAuthenticationService))
         {
             Arguments = new object[]
             {
                 new Permissions
                 {
-                    UserPermissions = userPermissions,
-                    UserRolePermissions = userRolePermissions
+                    UserPermissions = userPermissions
                 }
             };
         }

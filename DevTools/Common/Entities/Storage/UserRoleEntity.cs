@@ -7,6 +7,5 @@ namespace VXDesign.Store.DevTools.Common.Entities.Storage
         public int Id { get; set; }
         public string Name { get; set; }
         public UserPermission UserPermissions { get; set; }
-        public UserRolePermission UserRolePermissions { get; set; }
     }
 }
