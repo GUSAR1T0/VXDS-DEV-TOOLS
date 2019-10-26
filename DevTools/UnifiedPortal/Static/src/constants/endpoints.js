@@ -11,6 +11,8 @@ export const GET_LOOKUP_VALUES_ENDPOINT = "lookup/values";
 // User endpoints
 export const GET_USERS_ENDPOINT = "user/list";
 export const GET_PROFILE_ENDPOINT = "user/{id}";
+export const ACTIVATE_USER_ENDPOINT = "user/{id}/activate";
+export const DEACTIVATE_USER_ENDPOINT = "user/{id}/deactivate";
 export const UPDATE_PROFILE_GENERAL_INFO_ENDPOINT = "user/{id}/general";
 export const UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT = "user/{id}/accountSpecific";
 

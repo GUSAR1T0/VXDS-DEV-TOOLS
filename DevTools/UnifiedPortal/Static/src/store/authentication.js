@@ -8,7 +8,6 @@ import {
     SIGN_UP_ENDPOINT
 } from "@/constants/endpoints";
 import {
-    ON_LOAD_ACCOUNT_REQUEST,
     LOGOUT_REQUEST,
     REFRESH_REQUEST,
     SIGN_IN_REQUEST,
@@ -56,8 +55,8 @@ export default {
             state.firstName = data.firstName;
             state.lastName = data.lastName;
             state.color = data.color;
-            state.userPermissions = data.userPermissions;
-            state.userRolePermissions = data.userRolePermissions;
+            state.userPermissions = data.userRole ? data.userRole.userPermissions : data.userPermissions;
+            state.userRolePermissions = data.userRole ? data.userRole.userRolePermissions : data.userRolePermissions;
         },
         [LOGOUT_REQUEST]: state => {
             state.isAuthenticated = false;
@@ -70,27 +69,6 @@ export default {
         }
     },
     actions: {
-        [ON_LOAD_ACCOUNT_REQUEST]: ({commit, dispatch}, redirectTo) => {
-            return new Promise((resolve, reject) => {
-                const {accessToken, refreshToken} = getTokens();
-                if (accessToken && refreshToken) {
-                    dispatch(GET_HTTP_REQUEST, {
-                        server: SYRINX,
-                        endpoint: GET_USER_DATA_ENDPOINT,
-                        config: getConfiguration(accessToken),
-                        ignoreReloadPage: true
-                    }).then(response => {
-                        commit(SIGN_IN_REQUEST, response.data);
-                        resolve(redirectTo);
-                    }).catch(() => {
-                        dispatch(REFRESH_REQUEST).then(() => resolve(redirectTo)).catch(() => reject());
-                    });
-                } else {
-                    removeTokens();
-                    reject();
-                }
-            });
-        },
         [SIGN_IN_REQUEST]: ({commit, dispatch}, signInForm) => {
             return new Promise((resolve, reject) => {
                 dispatch(POST_HTTP_REQUEST, {
@@ -145,7 +123,7 @@ export default {
                 });
             });
         },
-        [REFRESH_REQUEST]: ({commit, dispatch}) => {
+        [REFRESH_REQUEST]: ({commit, dispatch}, redirectTo) => {
             return new Promise((resolve, reject) => {
                 const {accessToken, refreshToken} = getTokens();
                 if (accessToken && refreshToken) {
@@ -163,7 +141,7 @@ export default {
                             ignoreReloadPage: true
                         }).then(secondResponse => {
                             commit(SIGN_IN_REQUEST, secondResponse.data);
-                            resolve();
+                            resolve(redirectTo);
                         }).catch(error => {
                             removeTokens();
                             reject(error);
@@ -173,7 +151,7 @@ export default {
                             removeTokens();
                             reject(error);
                         } else {
-                            resolve();
+                            resolve("/");
                         }
                     });
                 } else {

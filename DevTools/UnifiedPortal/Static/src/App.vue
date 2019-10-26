@@ -23,7 +23,7 @@
 
 <script>
     import { mapGetters } from "vuex";
-    import { ON_LOAD_ACCOUNT_REQUEST, ON_LOAD_LOOKUP_REQUEST, RESET_PATH_FOR_REDIRECTION } from "@/constants/actions";
+    import { ON_LOAD_LOOKUP_REQUEST, REFRESH_REQUEST, RESET_PATH_FOR_REDIRECTION } from "@/constants/actions";
 
     import NavigationBar from "@/components/navigation-bar/NavigationBar.vue";
     import Header from "@/components/page/Header.vue";
@@ -64,7 +64,7 @@
             };
 
             this.$store.dispatch(ON_LOAD_LOOKUP_REQUEST).then(() => {
-                this.$store.dispatch(ON_LOAD_ACCOUNT_REQUEST, this.$store.getters.getPathForRedirection).then(redirectTo => {
+                this.$store.dispatch(REFRESH_REQUEST, this.$store.getters.getPathForRedirection).then(redirectTo => {
                     if (!this.isAuthenticated && redirectTo !== "/auth") {
                         redirectTo = "/auth";
                     }

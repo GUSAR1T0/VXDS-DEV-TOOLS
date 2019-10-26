@@ -6,13 +6,13 @@ namespace VXDesign.Store.DevTools.Common.Enums.Operations
     [Flags]
     public enum UserRolePermission : byte
     {
-        [Description("Create role")]
+        [Description("Create Role")]
         CreateRole = 1,
 
-        [Description("Update role")]
+        [Description("Update Role")]
         UpdateRole = 2,
 
-        [Description("Delete role")]
+        [Description("Delete Role")]
         DeleteRole = 4
     }
 }

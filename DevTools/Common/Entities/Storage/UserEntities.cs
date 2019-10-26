@@ -14,6 +14,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Storage
     public class UserListItem : UserEntity
     {
         public string UserRole { get; set; }
+        public bool IsActivated { get; set; }
     }
 
     public class UserAuthorizationEntity : UserEntity
@@ -27,11 +28,12 @@ namespace VXDesign.Store.DevTools.Common.Entities.Storage
         public string Password { get; set; }
     }
 
-    public class UserProfileEntity : UserAuthorizationEntity
+    public class UserProfileEntity : UserEntity
     {
         public string Location { get; set; }
         public string Bio { get; set; }
         public int? UserRoleId { get; set; }
         public UserRoleEntity UserRole { get; set; }
+        public bool IsActivated { get; set; }
     }
 }

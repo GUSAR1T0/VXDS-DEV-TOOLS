@@ -12,6 +12,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         Task<UserAuthorizationEntity> GetAuthorizationById(IOperation operation, int id);
         Task<string> GetRefreshTokenById(IOperation operation, int id);
         Task<UserAuthorizationEntity> GetUserIdentityClaimsByAccessData(IOperation operation, string email, string password = null);
+        Task<UserAuthorizationEntity> GetUserIdentityClaimsById(IOperation operation, int id);
         Task UpdateRefreshTokenById(IOperation operation, int id, string refreshToken);
         Task<UserAuthorizationEntity> CreateUser(IOperation operation, UserRegistrationEntity entity);
 
@@ -24,6 +25,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         Task<UserProfileEntity> GetProfileById(IOperation operation, int id);
         Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
+        Task ManageUserStatusById(IOperation operation, int id, bool status);
 
         #endregion
     }
@@ -72,6 +74,19 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                 FROM [authorization].[User] au
                 LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE [Email] = @Email AND (@Password IS NULL OR [Password] = @Password)
+            ");
+        }
+
+        public async Task<UserAuthorizationEntity> GetUserIdentityClaimsById(IOperation operation, int id)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new { Id = id }, @"
+                SELECT
+                    au.[Id],
+                    aur.[UserPermissions],
+                    aur.[UserRolePermissions]
+                FROM [authorization].[User] au
+                LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
+                WHERE au.[Id] = @Id
             ");
         }
 
@@ -137,7 +152,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                     [LastName],
                     [Email],
                     [Color],
-                    aur.[Name] AS [UserRole]
+                    aur.[Name] AS [UserRole],
+                    [IsActivated]
                 FROM [authorization].[User] au
                 LEFT JOIN [authorization].[UserRole] aur ON au.[UserRoleId] = aur.[Id]
             ");
@@ -154,7 +170,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                     [Color],
                     [Location],
                     [Bio],
-                    [UserRoleId]
+                    [UserRoleId],
+                    [IsActivated]
                 FROM [authorization].[User]
                 WHERE [Id] = @Id
             ");
@@ -189,10 +206,26 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             await operation.Connection.ExecuteAsync(new
             {
                 entity.Id,
-                entity.UserRoleId
+                entity.UserRoleId,
+                entity.IsActivated
             }, @"
                 UPDATE [authorization].[User]
-                SET [UserRoleId] = @UserRoleId
+                SET
+                    [UserRoleId] = @UserRoleId,
+                    [IsActivated] = @IsActivated
+                WHERE [Id] = @Id
+            ");
+        }
+
+        public async Task ManageUserStatusById(IOperation operation, int id, bool status)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                Id = id,
+                Status = status
+            }, @"
+                UPDATE [authorization].[User]
+                SET [IsActivated] = @Status
                 WHERE [Id] = @Id
             ");
         }

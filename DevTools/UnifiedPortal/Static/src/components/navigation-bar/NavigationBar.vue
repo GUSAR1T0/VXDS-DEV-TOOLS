@@ -17,17 +17,17 @@
                 </el-menu-item-group>
             </el-submenu>
             <!-- E: Pages -->
-            <!-- B: User -->
-            <el-submenu class="el-nav-menu-vertical-user" index="User">
+            <!-- B: Account -->
+            <el-submenu class="el-nav-menu-vertical-user" index="Account">
                 <template slot="title">
                     <fa class="fa-submenu" icon="user-circle"/>
                 </template>
                 <el-menu-item-group>
-                    <span slot="title" class="el-nav-menu-vertical-group-title">User</span>
-                    <UserSubMenu :page-status="pageStatus"/>
+                    <span slot="title" class="el-nav-menu-vertical-group-title">Account</span>
+                    <AccountSubMenu :logout-dialog-status="logoutDialogStatus"/>
                 </el-menu-item-group>
             </el-submenu>
-            <!-- E: User -->
+            <!-- E: Account -->
             <!-- B: More -->
             <el-submenu class="el-nav-menu-vertical-footer" index="More">
                 <template slot="title">
@@ -40,22 +40,10 @@
             </el-submenu>
             <!-- E: More -->
         </el-menu>
-        <el-dialog :visible.sync="pageStatus.logoutDialogVisible" width="50%" center>
-            <span slot="title" class="modal-title">Confirmation</span>
-            <h1 class="logout-dialog-header">Are you sure that you want to sign out?</h1>
-            <el-row type="flex" justify="center" align="middle" :gutter="20">
-                <el-col :span="12">
-                    <el-button type="danger" @click="pageStatus.logoutDialogVisible = false" plain style="width: 100%">
-                        Cancel
-                    </el-button>
-                </el-col>
-                <el-col :span="12">
-                    <el-button type="danger" @click="logoutAction" style="width: 100%">
-                        Submit
-                    </el-button>
-                </el-col>
-            </el-row>
-        </el-dialog>
+        <ConfirmationDialog :dialog-status="logoutDialogStatus"
+                            confirmation-text="Are you sure that you want to sign out?"
+                            :cancel-click-action="() => logoutDialogStatus.visible = false"
+                            :submit-click-action="logoutAction"/>
     </div>
 </template>
 
@@ -96,11 +84,6 @@
 </style>
 
 <style scoped>
-    .logout-dialog-header {
-        text-align: center;
-        margin-bottom: 55px;
-    }
-
     .el-nav-menu-vertical-group-title {
         text-transform: uppercase;
         font-weight: bold;
@@ -111,20 +94,22 @@
     import { LOGOUT_REQUEST } from "@/constants/actions";
 
     import PagesSubMenu from "@/components/navigation-bar/submenu/PagesSubMenu.vue";
-    import UserSubMenu from "@/components/navigation-bar/submenu/UserSubMenu.vue";
+    import AccountSubMenu from "@/components/navigation-bar/submenu/AccountSubMenu.vue";
     import MoreSubMenu from "@/components/navigation-bar/submenu/MoreSubMenu.vue";
+    import ConfirmationDialog from "@/components/page/ConfirmationDialog";
 
     export default {
         name: "NavigationBar",
         components: {
             PagesSubMenu,
-            UserSubMenu,
-            MoreSubMenu
+            AccountSubMenu,
+            MoreSubMenu,
+            ConfirmationDialog
         },
         data() {
             return {
-                pageStatus: {
-                    logoutDialogVisible: false
+                logoutDialogStatus: {
+                    visible: false
                 }
             };
         },
@@ -132,9 +117,11 @@
             resetPagePosition() {
                 window.scrollTo({top: 0, behavior: "smooth"});
             },
-            logoutAction() {
-                this.pageStatus.logoutDialogVisible = false;
+            logoutAction(button) {
+                button.loading = true;
                 this.$store.dispatch(LOGOUT_REQUEST).then(() => {
+                    button.loading = false;
+                    this.logoutDialogStatus.visible = false;
                     this.$router.push("/auth").catch(() => {
                     });
                     this.$notify.info({
@@ -142,6 +129,9 @@
                         message: "Waiting for you again"
                     });
                 }).catch(() => {
+                    button.loading = false;
+                    this.logoutDialogStatus.visible = false;
+                    // TODO: Error case handling -> bug #39
                     this.$router.push("/auth").catch(() => {
                     });
                 });

@@ -14,11 +14,14 @@ import {
     faTools,
     faUsers,
     faExternalLinkAlt,
-    faEnvelope
+    faEnvelope,
+    faMinusCircle,
+    faPlusCircle,
+    faCogs
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faUserCircle, faUserAlt, faEllipsisH, faInfoCircle, faSignOutAlt, faSignInAlt, faUserPlus, faQuestionCircle,
-    faAlignJustify, faEdit, faTools, faUsers, faExternalLinkAlt, faEnvelope);
+    faAlignJustify, faEdit, faTools, faUsers, faExternalLinkAlt, faEnvelope, faMinusCircle, faPlusCircle, faCogs);
 
 Vue.component("fa", FontAwesomeIcon);

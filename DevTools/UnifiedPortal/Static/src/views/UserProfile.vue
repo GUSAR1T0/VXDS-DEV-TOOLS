@@ -31,6 +31,7 @@
                         <UserRolePermissionsTable :user-role="getUserProfile.userRole"/>
                     </template>
                 </UserInfoRow>
+                <UserInfoRow v-if="getUserProfile.isActivated !== undefined" name="User Status" :value="getUserProfile.isActivated ? 'Activated' : 'Deactivated'"/>
                 <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="danger"
                            plain @click="openAccountSpecificInfoUpdateForm">
                     <span><fa icon="edit"/> | Edit Account Specific Info</span>

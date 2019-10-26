@@ -105,9 +105,17 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
             var storedRefreshToken = await userDataStore.GetRefreshTokenById(operation, id);
             if (storedRefreshToken?.Equals(refreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent(operation);
 
+            var user = await userDataStore.GetUserIdentityClaimsById(operation, id);
+            if (user == null)
+            {
+                throw CommonExceptions.AuthenticationFailed(operation);
+            }
+
+            var identity = GetIdentity(user);
+
             var token = new RawJwtToken
             {
-                AccessToken = GenerateAccessToken(claims.ToList()),
+                AccessToken = GenerateAccessToken(identity.Claims.ToList()),
                 RefreshToken = AuthenticationUtils.GenerateRefreshToken()
             };
 

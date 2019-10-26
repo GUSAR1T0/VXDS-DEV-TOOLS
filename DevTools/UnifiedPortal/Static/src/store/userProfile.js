@@ -20,7 +20,8 @@ export default {
             bio: "",
             userRole: {
                 id: null
-            }
+            },
+            isActivated: false
         },
         userGeneralInfoUpdateForm: {},
         accountSpecificInfoUpdateForm: {
@@ -65,6 +66,7 @@ export default {
             state.user.userRole = data.userRole ? data.userRole : {
                 id: null
             };
+            state.user.isActivated = data.isActivated;
         },
         [PREPARE_USER_GENERAL_INFO_UPDATE_FORM]: state => {
             state.userGeneralInfoUpdateForm = JSON.parse(JSON.stringify({
@@ -80,7 +82,8 @@ export default {
             state.accountSpecificInfoUpdateForm = JSON.parse(JSON.stringify({
                 userRole: {
                     id: state.user.userRole.id
-                }
+                },
+                isActivated: state.user.isActivated
             }));
         },
         [RESET_USER_PROFILE_STORE_STATE]: state => {
@@ -94,6 +97,7 @@ export default {
             state.user.userRole = {
                 id: null
             };
+            state.user.isActivated = false;
             state.userGeneralInfoUpdateForm = {};
             state.accountSpecificInfoUpdateForm = {
                 userRole: {

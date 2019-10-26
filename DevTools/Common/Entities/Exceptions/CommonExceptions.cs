@@ -66,7 +66,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
             return new AuthenticationException(operation, message, statusCode);
         }
 
-        public static BadRequestException CouldNotChangeOwnUserRole(IOperation operation) => new BadRequestException(operation, "Failed to change user role for yourself");
+        public static BadRequestException CouldNotChangeOwnAccountSpecificInfo(IOperation operation) => new BadRequestException(operation, "Failed to change account specific info for yourself");
 
         #endregion
     }

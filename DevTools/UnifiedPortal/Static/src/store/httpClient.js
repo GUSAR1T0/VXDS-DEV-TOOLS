@@ -17,9 +17,9 @@ let printResponseErrors = error => {
             message += `\n -> OPERATION ID: ${error.response.data.operationId}`;
         }
         if (error.response.config) {
-            message += `\n -> URL: ${error.response.config.url}`;
+            message += `\n -> URL: ${error.response.config.method.toUpperCase()} ${error.response.config.url}`;
+            message += `\n -> REQUEST: ${JSON.stringify(error.response.config.data, null, 4)}`;
         }
-        message += `\n -> REQUEST: ${JSON.stringify(error.response.request, null, 4)}`;
     }
 
     // eslint-disable-next-line no-console
@@ -49,8 +49,6 @@ let sendRequest = (state, payload, request) => {
             if (payload.ignoreReloadPage !== true) {
                 window.location.reload();
             }
-        } else {
-            window.history.back();
         }
         return printResponseErrors(error);
     });

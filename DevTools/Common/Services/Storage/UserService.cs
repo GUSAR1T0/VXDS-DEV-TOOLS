@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
         Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id);
         Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateUserProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
+        Task ManageUserStatusById(IOperation operation, int id, bool status);
     }
 
     public class UserService : IUserService
@@ -63,10 +64,25 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
 
             if (operation.OperationContext.UserId == entity.Id)
             {
-                throw CommonExceptions.CouldNotChangeOwnUserRole(operation);
+                throw CommonExceptions.CouldNotChangeOwnAccountSpecificInfo(operation);
             }
 
             await userDataStore.UpdateProfileAccountSpecificInfo(operation, entity);
+        }
+
+        public async Task ManageUserStatusById(IOperation operation, int id, bool status)
+        {
+            if (!await userDataStore.IsUserExist(operation, id))
+            {
+                throw CommonExceptions.UserWasNotFound(operation, id);
+            }
+
+            if (operation.OperationContext.UserId == id)
+            {
+                throw CommonExceptions.CouldNotChangeOwnAccountSpecificInfo(operation);
+            }
+
+            await userDataStore.ManageUserStatusById(operation, id, status);
         }
     }
 }

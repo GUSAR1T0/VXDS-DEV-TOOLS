@@ -40,6 +40,16 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
             return builder.SetName(User, nameof(UserController.UpdateUserProfileAccountSpecificInfo));
         }
 
+        internal static OperationContext.OperationContextBuilder DeactivateUser(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(User, nameof(UserController.DeactivateUser));
+        }
+
+        internal static OperationContext.OperationContextBuilder ActivateUser(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(User, nameof(UserController.ActivateUser));
+        }
+
         #endregion
 
         #region UserRole

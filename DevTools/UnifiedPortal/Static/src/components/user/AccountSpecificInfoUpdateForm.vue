@@ -28,6 +28,18 @@
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                    <el-form-item prop="userRole" label="User Status">
+                        <el-radio-group v-model="accountSpecificInfoUpdateForm.isActivated"
+                                        :value="accountSpecificInfoUpdateForm.isActivated"
+                                        style="width: 100%" :disabled="isAboutMe(getUserId)" fill="#F56C6C">
+                            <el-radio-button :label="true">Activated</el-radio-button>
+                            <el-radio-button :label="false">Deactivated</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row class="auth-field-element" type="flex" justify="center">
+                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
                         <el-row type="flex" justify="center" align="middle" :gutter="20">
                             <el-col :span="12">
@@ -93,7 +105,8 @@
                 "getUserId"
             ]),
             isNotChanged() {
-                return this.user.userRole.id === this.accountSpecificInfoUpdateForm.userRole.id;
+                return this.user.userRole.id === this.accountSpecificInfoUpdateForm.userRole.id &&
+                    this.user.isActivated === this.accountSpecificInfoUpdateForm.isActivated;
             }
         },
         methods: {
@@ -135,7 +148,8 @@
                                 id: this.user.id
                             }),
                             data: {
-                                userRoleId: this.accountSpecificInfoUpdateForm.userRole.id
+                                userRoleId: this.accountSpecificInfoUpdateForm.userRole.id,
+                                isActivated: this.accountSpecificInfoUpdateForm.isActivated
                             },
                             config: getConfiguration()
                         }).then(() => {

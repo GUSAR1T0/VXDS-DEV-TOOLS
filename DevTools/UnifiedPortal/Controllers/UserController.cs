@@ -40,7 +40,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         });
 
         /// <summary>
-        /// Obtains user profile data by email
+        /// Obtains user profile data by ID
         /// </summary>
         /// <param name="id">Unique user ID</param>
         /// <returns>User data if it was found</returns>
@@ -109,5 +109,49 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
                 await userService.UpdateUserProfileAccountSpecificInfo(operation, entity);
             });
         }
+
+        /// <summary>
+        /// Activates user account
+        /// </summary>
+        /// <param name="id">Unique user ID</param>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [SyrinxVerifiedAuthentication]
+        [HttpPut("{id}/activate")]
+        public async Task<ActionResult> ActivateUser(int id) => await Execute(OperationContexts.ActivateUser, async operation =>
+        {
+            if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
+            {
+                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
+            }
+
+            await userService.ManageUserStatusById(operation, id, true);
+        });
+
+        /// <summary>
+        /// Deactivates user account
+        /// </summary>
+        /// <param name="id">Unique user ID</param>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [SyrinxVerifiedAuthentication]
+        [HttpPut("{id}/deactivate")]
+        public async Task<ActionResult> DeactivateUser(int id) => await Execute(OperationContexts.DeactivateUser, async operation =>
+        {
+            if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
+            {
+                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
+            }
+
+            await userService.ManageUserStatusById(operation, id, false);
+        });
     }
 }
