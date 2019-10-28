@@ -4,19 +4,29 @@ import {
     faUserCircle,
     faUserAlt,
     faEllipsisH,
-    faHome,
     faInfoCircle,
-    faAngleRight,
-    faAngleLeft,
     faSignOutAlt,
     faSignInAlt,
     faUserPlus,
     faQuestionCircle,
-    faAlignJustify
+    faAlignJustify,
+    faEdit,
+    faTools,
+    faUsers,
+    faExternalLinkAlt,
+    faEnvelope,
+    faMinusCircle,
+    faPlusCircle,
+    faCogs,
+    faClipboardList,
+    faUsersCog
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faUserCircle, faUserAlt, faEllipsisH, faHome, faInfoCircle, faAngleRight, faAngleLeft, faSignOutAlt,
-    faSignInAlt, faUserPlus, faQuestionCircle, faAlignJustify);
+library.add(
+    faUserCircle, faUserAlt, faEllipsisH, faInfoCircle, faSignOutAlt, faSignInAlt, faUserPlus, faQuestionCircle,
+    faAlignJustify, faEdit, faTools, faUsers, faExternalLinkAlt, faEnvelope, faMinusCircle, faPlusCircle, faCogs,
+    faClipboardList, faUsersCog
+);
 
 Vue.component("fa", FontAwesomeIcon);

@@ -1,6 +1,6 @@
 using System;
 using Newtonsoft.Json.Serialization;
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
 
 namespace VXDesign.Store.DevTools.Common.Utils.Camunda
 {

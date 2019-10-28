@@ -1,5 +1,6 @@
 <template>
     <div class="sign-up">
+        <UserCard :user="signUpForm" style="padding-bottom: 5px"/>
         <el-form :model="signUpForm" :rules="signUpRules" ref="signUpForm" label-width="120px"
                  @submit.native.prevent="submitForm('signUpForm')">
             <el-row class="auth-field-element" type="flex" justify="center">
@@ -39,8 +40,17 @@
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                    <el-form-item prop="avatar" label="Color">
+                        <el-button ref="colorButton" style="width: 100%" @click="generateColor">
+                            Generate new color
+                        </el-button>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row class="auth-field-element" type="flex" justify="center">
+                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
-                        <el-button type="danger" class="auth-button" native-type="submit">
+                        <el-button type="danger" ref="signUpButton" class="auth-button" native-type="submit">
                             Sign Up
                         </el-button>
                     </el-form-item>
@@ -57,33 +67,41 @@
     import SignUpValidations from "@/extensions/validations";
     import { mapGetters } from "vuex";
     import { SIGN_UP_REQUEST } from "@/constants/actions";
+    import { generateColor, renderErrorNotificationMessage } from "@/extensions/utils";
+
+    import UserCard from "@/components/user/UserCard.vue";
 
     let signUpForm = {
         firstName: "",
         lastName: "",
         email: "",
         password: "",
-        passwordConfirmation: ""
+        passwordConfirmation: "",
+        color: generateColor()
     };
     let validations = new SignUpValidations(signUpForm);
 
     export default {
         name: "RequestRegistration",
+        components: {
+            UserCard
+        },
         data() {
             return {
                 signUpForm,
                 signUpRules: {
                     firstName: [
                         {required: true, message: "Please, input first name", trigger: "change"},
-                        {min: 2, max: 30, message: "Length should be 2 to 30", trigger: "change"}
+                        {min: 2, max: 30, message: "Length should be from 2 to 30", trigger: "change"}
                     ],
                     lastName: [
                         {required: true, message: "Please, input last name", trigger: "change"},
-                        {min: 2, max: 30, message: "Length should be 2 to 30", trigger: "change"}
+                        {min: 2, max: 30, message: "Length should be from 2 to 30", trigger: "change"}
                     ],
                     email: [
                         {required: true, message: "Please, input email address", trigger: "change"},
-                        {type: "email", message: "Please, input correct email address", trigger: "change"}
+                        {type: "email", message: "Please, input correct email address", trigger: "change"},
+                        {min: 3, max: 254, message: "Length should be from 3 to 254", trigger: "change"}
                     ],
                     password: [
                         {required: true, validator: validations.validatePassword, trigger: "change"}
@@ -100,22 +118,34 @@
             ])
         },
         methods: {
+            generateColor() {
+                this.signUpForm.color = generateColor();
+            },
             submitForm(formName) {
+                this.$refs.signUpButton.loading = true;
                 this.$refs[formName].validate((valid) => {
                     if (!valid) {
+                        this.$refs.signUpButton.loading = false;
                         return false;
                     }
 
-                    this.$store.dispatch(SIGN_UP_REQUEST, signUpForm).then(() => {
+                    this.$store.dispatch(SIGN_UP_REQUEST, this.signUpForm).then(() => {
+                        this.$refs.signUpButton.loading = false;
                         this.$router.push("/");
+                        const h = this.$createElement;
                         this.$notify.info({
-                            title: "Info",
-                            message: `You are registered as ${this.getFullName}`
+                            title: "You are registered",
+                            message: h("div", null, [
+                                "Welcome to the system, ",
+                                h("strong", null, this.getFullName)
+                            ])
                         });
                     }).catch(error => {
+                        this.$refs.signUpButton.loading = false;
                         this.$notify.error({
-                            title: "Error",
-                            message: `Failed to sign up: ${error.response.data}`
+                            title: "Failed to sign up",
+                            duration: 10000,
+                            message: renderErrorNotificationMessage(this.$createElement, error.response)
                         });
                     });
                 });

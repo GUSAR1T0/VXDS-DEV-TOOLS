@@ -2,17 +2,18 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
-using VXDesign.Store.DevTools.Common.Containers.Properties;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
+using VXDesign.Store.DevTools.Common.Entities.Properties;
 using VXDesign.Store.DevTools.Common.Extensions.Camunda;
 using VXDesign.Store.DevTools.Common.Services.HTTP;
-using HttpMethod = VXDesign.Store.DevTools.Common.Entities.Enums.HttpMethod;
+using HttpMethod = VXDesign.Store.DevTools.Common.Enums.HTTP.HttpMethod;
 
 namespace VXDesign.Store.DevTools.Common.Services.Syrinx
 {
     public interface ISyrinxCamundaClientService
     {
-        Task<TResponseModel> Send<TRequestModel, TResponseModel>(TRequestModel request) where TRequestModel : ICamundaRequest where TResponseModel : ICamundaResponse, new();
+        Task<TResponseModel> Send<TRequestModel, TResponseModel>(IOperation operation, TRequestModel request) where TRequestModel : ICamundaRequest where TResponseModel : ICamundaResponse, new();
     }
 
     public class SyrinxCamundaClientService : ISyrinxCamundaClientService
@@ -32,10 +33,10 @@ namespace VXDesign.Store.DevTools.Common.Services.Syrinx
             return httpClient;
         }
 
-        public async Task<TResponseModel> Send<TRequestModel, TResponseModel>(TRequestModel request) where TRequestModel : ICamundaRequest where TResponseModel : ICamundaResponse, new()
+        public async Task<TResponseModel> Send<TRequestModel, TResponseModel>(IOperation operation, TRequestModel request) where TRequestModel : ICamundaRequest where TResponseModel : ICamundaResponse, new()
         {
             var service = new InternalSyrinxClientService<TRequestModel, TResponseModel>(properties, GetHttpClient);
-            return await service.Send(request);
+            return await service.Send(operation, request);
         }
     }
 
@@ -58,6 +59,9 @@ namespace VXDesign.Store.DevTools.Common.Services.Syrinx
 
         protected override HttpClient Initialize() => httpClientGetter();
 
-        public override async Task<TResponseModel> Send(TRequestModel request) => (await Send(properties.Api, properties.CamundaRequestEndpoint, HttpMethod.Post, request)).PostHandle();
+        public override async Task<TResponseModel> Send(IOperation operation, TRequestModel request)
+        {
+            return (await Send(operation, properties.Api, properties.CamundaRequestEndpoint, HttpMethod.Post, request)).PostHandle(operation);
+        }
     }
 }

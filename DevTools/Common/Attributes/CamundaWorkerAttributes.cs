@@ -1,6 +1,5 @@
 using System;
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
-using VXDesign.Store.DevTools.Common.Entities.Enums;
+using VXDesign.Store.DevTools.Common.Enums.Camunda;
 
 namespace VXDesign.Store.DevTools.Common.Attributes
 {

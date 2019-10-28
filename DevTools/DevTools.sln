@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syrinx", "SRS\Syrinx\Syrinx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camunda", "SRS\Camunda\Camunda.csproj", "{66A3850F-1FD7-4143-B8CD-EB4DEF72E3F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "SRS\Authentication\Authentication.csproj", "{19FCFE72-48EE-409D-8560-83B84698AF82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +34,14 @@ Global
 		{66A3850F-1FD7-4143-B8CD-EB4DEF72E3F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66A3850F-1FD7-4143-B8CD-EB4DEF72E3F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66A3850F-1FD7-4143-B8CD-EB4DEF72E3F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19FCFE72-48EE-409D-8560-83B84698AF82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19FCFE72-48EE-409D-8560-83B84698AF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19FCFE72-48EE-409D-8560-83B84698AF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19FCFE72-48EE-409D-8560-83B84698AF82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4894EF11-C5C0-44D8-8FCF-F5E8E7E5DDB5} = {1C83008B-08D9-4EE2-942C-AE6242C40195}
 		{66A3850F-1FD7-4143-B8CD-EB4DEF72E3F9} = {1C83008B-08D9-4EE2-942C-AE6242C40195}
+		{19FCFE72-48EE-409D-8560-83B84698AF82} = {1C83008B-08D9-4EE2-942C-AE6242C40195}
 	EndGlobalSection
 EndGlobal

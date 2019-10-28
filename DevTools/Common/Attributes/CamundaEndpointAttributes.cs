@@ -1,5 +1,6 @@
 using System;
-using VXDesign.Store.DevTools.Common.Entities.Enums;
+using VXDesign.Store.DevTools.Common.Enums.Camunda;
+using VXDesign.Store.DevTools.Common.Enums.HTTP;
 
 namespace VXDesign.Store.DevTools.Common.Attributes
 {

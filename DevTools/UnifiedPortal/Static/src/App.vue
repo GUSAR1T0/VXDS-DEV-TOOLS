@@ -1,11 +1,11 @@
 <template>
     <div id="app">
-        <el-container class="app-container">
+        <el-container class="app-container" v-if="!loadingIsActive">
             <NavigationBar v-if="isAuthenticated"/>
             <el-container>
                 <el-header class="app-header" height="auto">
                     <Header/>
-                    <HeaderDivider :name="$route.meta.pageName"/>
+                    <HorizontalDivider :name="$route.meta.pageName"/>
                 </el-header>
                 <el-main class="app-main">
                     <router-view/>
@@ -22,19 +22,25 @@
 </style>
 
 <script>
+    import { mapGetters } from "vuex";
+    import { ON_LOAD_LOOKUP_REQUEST, REFRESH_REQUEST, RESET_PATH_FOR_REDIRECTION } from "@/constants/actions";
+
     import NavigationBar from "@/components/navigation-bar/NavigationBar.vue";
     import Header from "@/components/page/Header.vue";
-    import HeaderDivider from "@/components/page/HeaderDivider.vue";
+    import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import Footer from "@/components/page/Footer.vue";
-    import { mapGetters } from "vuex";
-    import { ON_LOAD_REQUEST } from "@/constants/actions";
 
     export default {
         components: {
             NavigationBar,
             Header,
-            HeaderDivider,
+            HorizontalDivider,
             Footer
+        },
+        data() {
+            return {
+                loadingIsActive: true
+            };
         },
         computed: {
             ...mapGetters([
@@ -51,12 +57,33 @@
                 customClass: "main-loading-spinner-custom"
             });
 
-            this.$store.dispatch(ON_LOAD_REQUEST, window.location.pathname).then(redirectTo => {
-                this.$router.push(redirectTo).catch(() => {});
+            let completeLoading = () => {
                 loading.close();
+                this.loadingIsActive = false;
+            };
+
+            this.$store.dispatch(ON_LOAD_LOOKUP_REQUEST).then(() => {
+                this.$store.dispatch(REFRESH_REQUEST, this.$store.getters.getPathForRedirection).then(redirectTo => {
+                    if (!this.isAuthenticated && redirectTo !== "/auth") {
+                        redirectTo = "/auth";
+                    }
+                    else if (this.isAuthenticated && redirectTo === "/auth") {
+                        redirectTo = "/";
+                    }
+
+                    this.$router.push(redirectTo).then(() => completeLoading()).catch(() => {
+                        // TODO: Error case handling -> bug #39
+                        completeLoading();
+                    });
+                }).catch(() => {
+                    this.$router.push("/auth").then(() => completeLoading()).catch(() => {
+                        // TODO: Error case handling -> bug #39
+                        completeLoading();
+                    });
+                });
+                this.$store.dispatch(RESET_PATH_FOR_REDIRECTION);
             }).catch(() => {
-                this.$router.push("/auth").catch(() => {});
-                loading.close();
+                // TODO: Error case handling -> bug #39
             });
         }
     };

@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Extensions.Camunda;
 
 namespace VXDesign.Store.DevTools.Common.Utils.Camunda

@@ -1,10 +1,10 @@
-using System;
+using VXDesign.Store.DevTools.Common.Entities.Operations;
 
 namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 {
-    public class BadRequestException : Exception
+    public class BadRequestException : OperationException
     {
-        public BadRequestException(string message) : base(message)
+        public BadRequestException(IOperation operation, string message) : base(operation, message)
         {
         }
     }

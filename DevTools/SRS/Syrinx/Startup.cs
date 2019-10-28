@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using VXDesign.Store.DevTools.Common.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
-using VXDesign.Store.DevTools.Common.Services.Authorization;
+using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Common.Storage.DataStores;
+using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;
 
@@ -23,11 +25,36 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
-            services.AddScopedService<ICamundaServerService>(() => new CamundaServerService(portalProperties.CamundaProperties));
-            var userDataStore = services.AddScopedService<IUserDataStore>(() => new UserDataStore(portalProperties.DatabaseConnectionProperties));
-            var authorizationService = services.AddScopedService<IAuthorizationService>(() => new AuthorizationService(portalProperties.AuthorizationTokenProperties, userDataStore));
-            services.SetupAuthentication(authorizationService);
+            // Portal properties
+            services.SetupProperties<PortalProperties>(Configuration);
+
+            // Operations handler
+            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties, "VXDS_SRS"));
+
+            // Stores
+            services.AddScoped<IUserDataStore, UserDataStore>();
+
+            // Services
+            services.AddScoped<ICamundaServerService>(factory => new CamundaServerService(factory.GetService<PortalProperties>().CamundaProperties));
+            services.AddScoped<IAuthenticationService>(factory =>
+            {
+                var properties = factory.GetService<PortalProperties>().AuthenticationTokenProperties;
+                var userDataStore = factory.GetService<IUserDataStore>();
+                return new AuthenticationService(properties, userDataStore);
+            });
+
+            // Authorization mechanism (workaround)
+            var authorizationService = services.BuildServiceProvider().GetService<IAuthenticationService>();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = true;
+                options.TokenValidationParameters = authorizationService.GetServerTokenValidationParameters();
+            });
 
             services.AddCors();
 
@@ -42,6 +69,9 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
             }
             else
             {
@@ -55,9 +85,6 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
                 .AllowAnyMethod()
                 .AllowCredentials()
             );
-
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

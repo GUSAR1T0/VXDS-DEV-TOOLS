@@ -1,5 +1,5 @@
 using System;
-using VXDesign.Store.DevTools.Common.Containers.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
 
 namespace VXDesign.Store.DevTools.Common.Extensions.Camunda
 {

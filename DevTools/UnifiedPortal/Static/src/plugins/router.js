@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "@/views/Home.vue";
-import authenticationBasedRouting from "@/extensions/authentication";
 
 Vue.use(Router);
 
@@ -15,8 +14,7 @@ export default new Router({
             component: Home,
             meta: {
                 pageName: "Home Page"
-            },
-            beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsRequired
+            }
         },
         {
             path: "/auth",
@@ -24,8 +22,39 @@ export default new Router({
             component: () => import(/* webpackChunkName: "authorization" */ "../views/Authorization.vue"),
             meta: {
                 pageName: "Authorization"
-            },
-            beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsNotRequired
+            }
+        },
+        {
+            path: "/user/:id?",
+            name: "user",
+            component: () => import(/* webpackChunkName: "user-profile" */ "../views/users/UserProfile.vue"),
+            meta: {
+                pageName: "User Profile"
+            }
+        },
+        {
+            path: "/users",
+            name: "users",
+            component: () => import(/* webpackChunkName: "users" */ "../views/users/Users.vue"),
+            meta: {
+                pageName: "Users"
+            }
+        },
+        {
+            path: "/users/roles",
+            name: "roles",
+            component: () => import(/* webpackChunkName: "user-roles" */ "../views/users/UserRoles.vue"),
+            meta: {
+                pageName: "User Roles"
+            }
+        },
+        {
+            path: "/admin",
+            name: "admin",
+            component: () => import(/* webpackChunkName: "admin" */ "../views/admin/AdminPanel.vue"),
+            meta: {
+                pageName: "Admin Panel"
+            }
         },
         {
             path: "/about",
@@ -36,8 +65,7 @@ export default new Router({
             component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
             meta: {
                 pageName: "About"
-            },
-            beforeEnter: authenticationBasedRouting.redirectIfAuthenticationIsRequired
+            }
         }
     ]
 });

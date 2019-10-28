@@ -19,7 +19,9 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
-                        <el-button type="danger" class="auth-button" native-type="submit">Log In</el-button>
+                        <el-button type="danger" ref="signInButton" class="auth-button" native-type="submit">
+                            Log In
+                        </el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -33,6 +35,7 @@
 <script>
     import { mapGetters } from "vuex";
     import { SIGN_IN_REQUEST } from "@/constants/actions";
+    import { renderErrorNotificationMessage } from "@/extensions/utils";
 
     let signInForm = {
         email: "",
@@ -62,21 +65,30 @@
         },
         methods: {
             submitForm(formName) {
+                this.$refs.signInButton.loading = true;
                 this.$refs[formName].validate(valid => {
                     if (!valid) {
+                        this.$refs.signInButton.loading = false;
                         return false;
                     }
 
-                    this.$store.dispatch(SIGN_IN_REQUEST, signInForm).then(() => {
+                    this.$store.dispatch(SIGN_IN_REQUEST, this.signInForm).then(() => {
+                        this.$refs.signInButton.loading = false;
                         this.$router.push("/");
+                        const h = this.$createElement;
                         this.$notify.info({
-                            title: "Info",
-                            message: `You are logged in as ${this.getFullName}`
+                            title: "You are logged in",
+                            message: h("div", null, [
+                                "Welcome back, ",
+                                h("strong", null, this.getFullName)
+                            ])
                         });
                     }).catch(error => {
+                        this.$refs.signInButton.loading = false;
                         this.$notify.error({
-                            title: "Error",
-                            message: `Failed to sign in: ${error.response.data}`
+                            title: "Failed to sign in",
+                            duration: 10000,
+                            message: renderErrorNotificationMessage(this.$createElement, error.response)
                         });
                     });
                 });

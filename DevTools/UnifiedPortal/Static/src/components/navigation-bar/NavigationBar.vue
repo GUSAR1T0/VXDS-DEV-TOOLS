@@ -1,59 +1,49 @@
 <template>
     <div class="nav">
-        <el-menu class="el-nav-menu-vertical" :collapse="isCollapse" :router="true" :default-active="$route.path">
-            <CollapsibleMenuItem class="el-nav-menu-vertical-header" menuName="Home" index="/">
-                <template slot="icon">
-                    <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="40px"
-                         height="40px" class="el-nav-menu-logo">
-                </template>
-            </CollapsibleMenuItem>
+        <el-menu class="el-nav-menu-vertical" :collapse-transition="false" :collapse="true" :router="true"
+                 :default-active="$route.path">
+            <el-menu-item class="el-nav-menu-vertical-header" index="/">
+                <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="40px"
+                     height="40px" class="el-nav-menu-logo">
+            </el-menu-item>
             <!-- B: Pages -->
             <el-submenu class="el-nav-menu-vertical-pages" index="Pages">
                 <template slot="title">
                     <fa class="fa-submenu" icon="align-justify"/>
-                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">Pages</span>
                 </template>
-                <el-menu-item-group v-if="isCollapse">
+                <el-menu-item-group>
                     <span slot="title" class="el-nav-menu-vertical-group-title">Pages</span>
                     <PagesSubMenu/>
                 </el-menu-item-group>
-                <template v-else>
-                    <PagesSubMenu/>
-                </template>
             </el-submenu>
             <!-- E: Pages -->
-            <!-- B: User -->
-            <el-submenu class="el-nav-menu-vertical-user" index="User">
+            <!-- B: Account -->
+            <el-submenu class="el-nav-menu-vertical-user" index="Account">
                 <template slot="title">
-                    <fa v-if="isAuthenticated" class="fa-submenu" icon="user-circle"/>
-                    <fa v-else class="fa-submenu" icon="question-circle"/>
-                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">User</span>
+                    <fa class="fa-submenu" icon="user-circle"/>
                 </template>
-                <el-menu-item-group v-if="isCollapse">
-                    <span slot="title" class="el-nav-menu-vertical-group-title">User</span>
-                    <UserSubMenu/>
+                <el-menu-item-group>
+                    <span slot="title" class="el-nav-menu-vertical-group-title">Account</span>
+                    <AccountSubMenu :logout-dialog-status="logoutDialogStatus"/>
                 </el-menu-item-group>
-                <template v-else>
-                    <UserSubMenu/>
-                </template>
             </el-submenu>
-            <!-- E: User -->
+            <!-- E: Account -->
             <!-- B: More -->
             <el-submenu class="el-nav-menu-vertical-footer" index="More">
                 <template slot="title">
                     <fa class="fa-submenu" icon="ellipsis-h"/>
-                    <span v-if="!isCollapse" slot="title" class="el-nav-menu-vertical-title">More</span>
                 </template>
-                <el-menu-item-group v-if="isCollapse">
+                <el-menu-item-group>
                     <span slot="title" class="el-nav-menu-vertical-group-title">More</span>
                     <MoreSubMenu/>
                 </el-menu-item-group>
-                <template v-else>
-                    <MoreSubMenu/>
-                </template>
             </el-submenu>
             <!-- E: More -->
         </el-menu>
+        <ConfirmationDialog :dialog-status="logoutDialogStatus"
+                            confirmation-text="Are you sure that you want to sign out?"
+                            :cancel-click-action="() => logoutDialogStatus.visible = false"
+                            :submit-click-action="logoutAction"/>
     </div>
 </template>
 
@@ -88,6 +78,12 @@
 </style>
 
 <style scoped src="@/styles/submenu.css">
+</style>
+
+<style scoped src="@/styles/modal.css">
+</style>
+
+<style scoped>
     .el-nav-menu-vertical-group-title {
         text-transform: uppercase;
         font-weight: bold;
@@ -95,26 +91,66 @@
 </style>
 
 <script>
-    import { mapGetters } from "vuex";
+    import { LOGOUT_REQUEST } from "@/constants/actions";
 
-    import CollapsibleMenuItem from "@/components/navigation-bar/submenu/CollapsibleMenuItem.vue";
     import PagesSubMenu from "@/components/navigation-bar/submenu/PagesSubMenu.vue";
-    import UserSubMenu from "@/components/navigation-bar/submenu/UserSubMenu.vue";
+    import AccountSubMenu from "@/components/navigation-bar/submenu/AccountSubMenu.vue";
     import MoreSubMenu from "@/components/navigation-bar/submenu/MoreSubMenu.vue";
+    import ConfirmationDialog from "@/components/page/ConfirmationDialog";
 
     export default {
         name: "NavigationBar",
-        computed: {
-            ...mapGetters({
-                isAuthenticated: "isAuthenticated",
-                isCollapse: "isNavigationBarCollapse"
-            })
-        },
         components: {
-            CollapsibleMenuItem,
             PagesSubMenu,
-            UserSubMenu,
-            MoreSubMenu
+            AccountSubMenu,
+            MoreSubMenu,
+            ConfirmationDialog
+        },
+        data() {
+            return {
+                logoutDialogStatus: {
+                    visible: false
+                }
+            };
+        },
+        methods: {
+            resetPagePosition() {
+                window.scrollTo({top: 0, behavior: "smooth"});
+            },
+            logoutAction(button) {
+                button.loading = true;
+                this.$store.dispatch(LOGOUT_REQUEST).then(() => {
+                    button.loading = false;
+                    this.logoutDialogStatus.visible = false;
+                    this.$router.push("/auth").catch(() => {
+                    });
+                    this.$notify.info({
+                        title: "You are logged out",
+                        message: "Waiting for you again"
+                    });
+                }).catch(() => {
+                    button.loading = false;
+                    this.logoutDialogStatus.visible = false;
+                    // TODO: Error case handling -> bug #39
+                    this.$router.push("/auth").catch(() => {
+                    });
+                });
+            }
+        },
+        mounted() {
+            let navmenu = document.getElementsByClassName("el-nav-menu-vertical");
+            if (navmenu) {
+                window.onscroll = function () {
+                    navmenu[0].style.top = (window.pageYOffset || document.documentElement.scrollTop) + "px";
+                };
+            }
+        },
+        updated() {
+            this.resetPagePosition();
+        },
+        beforeRouteUpdate(to, from, next) {
+            this.resetPagePosition();
+            next();
         }
     };
 </script>

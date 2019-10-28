@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.Extensions.Controllers;
+using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Common.Services.Storage;
 using VXDesign.Store.DevTools.Common.Services.Syrinx;
+using VXDesign.Store.DevTools.Common.Storage.DataStores;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal
@@ -23,9 +26,23 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var portalProperties = services.SetupProperties<PortalProperties>(Configuration);
-            services.AddScopedService<ISyrinxCamundaClientService>(() => new SyrinxCamundaClientService(portalProperties.SyrinxProperties));
-            services.AddScopedService<ISyrinxAuthenticationClientService>(() => new SyrinxAuthenticationClientService(portalProperties.SyrinxProperties));
+            // Portal properties
+            services.SetupProperties<PortalProperties>(Configuration);
+
+            // Operations handler
+            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties, "VXDS_UP"));
+
+            // Stores
+            services.AddScoped<IUserDataStore, UserDataStore>();
+            services.AddScoped<IUserRoleStore, UserRoleStore>();
+            services.AddScoped<IDashboardStore, DashboardStore>();
+
+            // Services
+            services.AddScoped<ISyrinxCamundaClientService>(factory => new SyrinxCamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
+            services.AddScoped<ISyrinxAuthenticationClientService>(factory => new SyrinxAuthenticationClientService(factory.GetService<PortalProperties>().SyrinxProperties));
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -38,15 +55,15 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
