@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         Task AddUserRole(IOperation operation, UserRoleEntity entity);
         Task UpdateUserRole(IOperation operation, UserRoleEntity entity);
         Task DeleteUserRoleById(IOperation operation, int id);
+        Task<bool> IsUserRoleExist(IOperation operation, int id);
     }
 
     public class UserRoleStore : BaseDataStore, IUserRoleStore
@@ -23,8 +24,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                 SELECT
                     [Id],
                     [Name],
-                    [UserPermissions],
-                    [UserRolePermissions]
+                    [UserPermissions]
                 FROM [authorization].[UserRole]
                 WHERE [Id] = @Id;
             ");
@@ -34,8 +34,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         {
             var fieldsOfFullInfoQuery = isFullInfoNeeded
                 ? @",
-                    [UserPermissions],
-                    [UserRolePermissions]"
+                    [UserPermissions]"
                 : "";
             return await operation.Connection.QueryAsync<UserRoleEntity>($@"
                 SELECT
@@ -51,18 +50,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             await operation.Connection.ExecuteAsync(new
             {
                 entity.Name,
-                entity.UserPermissions,
-                entity.UserRolePermissions
+                entity.UserPermissions
             }, @"
                 INSERT INTO [authorization].[UserRole] (
                     [Name],
-                    [UserPermissions],
-                    [UserRolePermissions]
+                    [UserPermissions]
                 )
                 VALUES (
                     @Name,
-                    @UserPermissions,
-                    @UserRolePermissions
+                    @UserPermissions
                 )
             ");
         }
@@ -73,14 +69,12 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             {
                 entity.Id,
                 entity.Name,
-                entity.UserPermissions,
-                entity.UserRolePermissions
+                entity.UserPermissions
             }, @"
                 UPDATE [authorization].[UserRole]
                 SET
                     [Name] = @Name,
-                    [UserPermissions] = @UserPermissions,
-                    [UserRolePermissions] = @UserRolePermissions
+                    [UserPermissions] = @UserPermissions
                 WHERE [Id] = @Id
             ");
         }
@@ -90,6 +84,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             await operation.Connection.ExecuteAsync(new { Id = id }, @"
                 DELETE FROM [authorization].[UserRole]
                 WHERE [Id] = @Id
+            ");
+        }
+
+        public async Task<bool> IsUserRoleExist(IOperation operation, int id)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
+                SELECT TOP (1) 1
+                FROM [authorization].[UserRole]
+                WHERE [Id] = @Id;
             ");
         }
     }

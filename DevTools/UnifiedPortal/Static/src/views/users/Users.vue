@@ -75,13 +75,13 @@
                                 :confirmation-text="confirmationText(true)"
                                 :cancel-click-action="() => cancelManageUserStatusDialog(true)"
                                 :submit-click-action="button => manageUserStatus(button, true)"
-                                :closed="() => userActivationConfirmDialogForUser = null"/>
+                                :closed="submitUserStatus"/>
             <ConfirmationDialog v-if="hasPermissionToManageUserStatus"
                                 :dialog-status="userDeactivationConfirmDialog"
                                 :confirmation-text="confirmationText(false)"
                                 :cancel-click-action="() => cancelManageUserStatusDialog(false)"
                                 :submit-click-action="button => manageUserStatus(button, false)"
-                                :closed="() => userDeactivationConfirmDialogForUser = null"/>
+                                :closed="submitUserStatus"/>
         </template>
     </LoadingContainer>
 </template>
@@ -175,7 +175,7 @@
                 });
             },
             hasPermissionToManageUserStatus(id) {
-                return this.getUserId !== id && this.hasUserPermission(USER_PERMISSION.UPDATE_USER);
+                return this.getUserId !== id && this.hasUserPermission(USER_PERMISSION.UPDATE_USER_PROFILE);
             },
             openManageUserStatusDialog(user, activate) {
                 if (activate) {
@@ -212,17 +212,15 @@
                         this.userActivationConfirmDialog.visible = false;
 
                         this.$notify.info({
-                            title: "User was updated",
+                            title: "Profile was updated",
                             message: `Account ${user.userName} (ID: ${user.id}) was activated`
                         });
-
-                        this.loadUsers();
                     }).catch(error => {
                         button.loading = false;
                         this.userActivationConfirmDialog.visible = false;
 
                         this.$notify.error({
-                            title: "Failed to deactivate user",
+                            title: "Failed to activate user",
                             duration: 10000,
                             message: renderErrorNotificationMessage(this.$createElement, error.response)
                         });
@@ -240,7 +238,7 @@
                         this.userDeactivationConfirmDialog.visible = false;
 
                         this.$notify.info({
-                            title: "User was updated",
+                            title: "Profile was updated",
                             message: `Account ${user.userName} (ID: ${user.id}) was deactivated`
                         });
 
@@ -256,6 +254,10 @@
                         });
                     });
                 }
+            },
+            submitUserStatus() {
+                this.userDeactivationConfirmDialogForUser = null;
+                this.loadUsers();
             }
         },
         mounted() {
@@ -264,6 +266,6 @@
         beforeRouteUpdate(to, from, next) {
             this.loadUsers();
             next();
-        },
+        }
     };
 </script>

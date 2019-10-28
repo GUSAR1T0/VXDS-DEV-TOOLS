@@ -8,6 +8,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
         private const string Lookup = "Lookup";
         private const string User = "User";
         private const string UserRole = "UserRole";
+        private const string AdminPanel = "AdminPanel";
 
         #region Lookup
 
@@ -64,6 +65,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
             return builder.SetName(UserRole, nameof(UserRoleController.GetUserRolesShortInfo));
         }
 
+        internal static OperationContext.OperationContextBuilder GetUserRole(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(UserRole, nameof(UserRoleController.GetUserRole));
+        }
+
         internal static OperationContext.OperationContextBuilder AddUserRole(OperationContext.OperationContextBuilder builder)
         {
             return builder.SetName(UserRole, nameof(UserRoleController.AddUserRole));
@@ -77,6 +83,20 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
         internal static OperationContext.OperationContextBuilder DeleteUserRole(OperationContext.OperationContextBuilder builder)
         {
             return builder.SetName(UserRole, nameof(UserRoleController.DeleteUserRole));
+        }
+
+        internal static OperationContext.OperationContextBuilder GetAffectedUsersCount(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(UserRole, nameof(UserRoleController.GetAffectedUsersCount));
+        }
+
+        #endregion
+
+        #region AdminPanel
+
+        internal static OperationContext.OperationContextBuilder GetAdminPanelData(OperationContext.OperationContextBuilder builder)
+        {
+            return builder.SetName(AdminPanel, nameof(DashboardController.GetAdminPanelData));
         }
 
         #endregion

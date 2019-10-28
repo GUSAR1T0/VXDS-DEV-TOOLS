@@ -43,16 +43,7 @@
                                 name: permission.name
                             };
                         })
-                    },
-                    {
-                        type: "User Role Management",
-                        list: this.getLookupValues("userRolePermissions").map(permission => {
-                            return {
-                                type: getPermissionTagType(this.userRole.userRolePermissions, permission.value),
-                                name: permission.name
-                            };
-                        })
-                    },
+                    }
                 ];
             }
         }

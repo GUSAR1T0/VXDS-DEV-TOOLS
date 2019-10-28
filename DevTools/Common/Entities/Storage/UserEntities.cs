@@ -20,7 +20,6 @@ namespace VXDesign.Store.DevTools.Common.Entities.Storage
     public class UserAuthorizationEntity : UserEntity
     {
         public UserPermission UserPermissions { get; set; } = 0;
-        public UserRolePermission UserRolePermissions { get; set; } = 0;
     }
 
     public class UserRegistrationEntity : UserAuthorizationEntity

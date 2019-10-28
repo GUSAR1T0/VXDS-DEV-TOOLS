@@ -14,6 +14,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
         Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateUserProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
         Task ManageUserStatusById(IOperation operation, int id, bool status);
+        Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId);
     }
 
     public class UserService : IUserService
@@ -84,5 +85,7 @@ namespace VXDesign.Store.DevTools.Common.Services.Storage
 
             await userDataStore.ManageUserStatusById(operation, id, status);
         }
+
+        public async Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId) => await userDataStore.GetAffectedUsersCount(operation, userRoleId);
     }
 }

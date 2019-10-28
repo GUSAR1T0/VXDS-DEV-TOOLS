@@ -47,6 +47,8 @@ namespace VXDesign.Store.DevTools.Common.Entities.Exceptions
 
         public static NotFoundException UserWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"User with ID \"{id}\" was not found");
 
+        public static NotFoundException UserRoleWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"User role with ID \"{id}\" was not found");
+
         public static AuthenticationException AccessDenied(IOperation operation, int statusCode)
         {
             var message = "Access denied";

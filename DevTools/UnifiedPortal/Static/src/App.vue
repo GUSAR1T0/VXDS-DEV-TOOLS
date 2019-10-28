@@ -45,8 +45,7 @@
         computed: {
             ...mapGetters([
                 "isAuthenticated",
-                "getFullName",
-                "getReauthenticationTime"
+                "getFullName"
             ])
         },
         mounted() {

@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using MongoDB.Driver;
 using VXDesign.Store.DevTools.Common.Entities.Storage;
 
 namespace VXDesign.Store.DevTools.Common.Storage.LogStores
@@ -11,6 +12,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStores
         Task Warn<T>(long operationId, string message, dynamic value);
         Task Error<T>(long operationId, string message, dynamic value);
         Task Fatal<T>(long operationId, string message, dynamic value);
+
+        Task<long> CountOfAllCollections();
     }
 
     public class LoggerStore : BaseLogStore<LoggerEntity>, ILoggerStore
@@ -59,6 +62,20 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStores
                 Message = message,
                 Value = value
             });
+        }
+
+        public async Task<long> CountOfAllCollections()
+        {
+            var count = 0L;
+            var collectionNamesCursor = await Database.ListCollectionNamesAsync();
+            var collectionNames = await collectionNamesCursor.ToListAsync();
+            foreach (var collectionName in collectionNames)
+            {
+                var collection = Database.GetCollection<dynamic>(collectionName);
+                count += await collection.CountDocumentsAsync(FilterDefinition<dynamic>.Empty);
+            }
+
+            return count;
         }
     }
 }

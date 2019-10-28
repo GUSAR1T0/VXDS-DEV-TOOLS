@@ -123,7 +123,7 @@
                 return this.getLookupValues("userPermissions") || this.getLookupValues("userRolePermissions");
             },
             hasPermissionToUpdateUserProfile() {
-                return this.isAboutMe(this.getUserId) || this.hasUserPermission(USER_PERMISSION.UPDATE_USER);
+                return this.isAboutMe(this.getUserId) || this.hasUserPermission(USER_PERMISSION.UPDATE_USER_PROFILE);
             }
         },
         methods: {

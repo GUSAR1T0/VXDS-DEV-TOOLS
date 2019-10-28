@@ -35,12 +35,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             // Stores
             services.AddScoped<IUserDataStore, UserDataStore>();
             services.AddScoped<IUserRoleStore, UserRoleStore>();
+            services.AddScoped<IDashboardStore, DashboardStore>();
 
             // Services
             services.AddScoped<ISyrinxCamundaClientService>(factory => new SyrinxCamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
             services.AddScoped<ISyrinxAuthenticationClientService>(factory => new SyrinxAuthenticationClientService(factory.GetService<PortalProperties>().SyrinxProperties));
-            services.AddScoped<IUserService>(factory => new UserService(factory.GetService<IUserDataStore>(), factory.GetService<IUserRoleStore>()));
-            services.AddScoped<IUserRoleService>(factory => new UserRoleService(factory.GetService<IUserRoleStore>()));
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);

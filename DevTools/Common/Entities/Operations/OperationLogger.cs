@@ -12,6 +12,8 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
         Task Warn(string message, dynamic value = null);
         Task Error(string message, dynamic value = null);
         Task Fatal(string message, dynamic value = null);
+
+        Task<long> CountOfAllCollections();
     }
 
     public class OperationLogger<T> : IOperationLogger
@@ -62,5 +64,7 @@ namespace VXDesign.Store.DevTools.Common.Entities.Operations
             logger.Fatal(message);
             await loggerStore.Fatal<T>(operationId, message, value);
         }
+
+        public async Task<long> CountOfAllCollections() => await loggerStore.CountOfAllCollections();
     }
 }

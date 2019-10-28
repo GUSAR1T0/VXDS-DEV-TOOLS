@@ -29,12 +29,11 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="userRole" label="User Status">
-                        <el-radio-group v-model="accountSpecificInfoUpdateForm.isActivated"
-                                        :value="accountSpecificInfoUpdateForm.isActivated"
-                                        style="width: 100%" :disabled="isAboutMe(getUserId)" fill="#F56C6C">
-                            <el-radio-button :label="true">Activated</el-radio-button>
-                            <el-radio-button :label="false">Deactivated</el-radio-button>
-                        </el-radio-group>
+                        <el-select v-model="accountSpecificInfoUpdateForm.isActivated" :value="accountSpecificInfoUpdateForm.isActivated"
+                                   placeholder="Select" style="width: 100%" :disabled="isAboutMe(getUserId)">
+                            <el-option label="Activated" :value="true"></el-option>
+                            <el-option label="Deactivated" :value="false"></el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -60,6 +59,7 @@
         </el-form>
         <el-dialog :visible.sync="userRolesInfoDialogVisible" width="75%" style="text-align: center" append-to-body>
             <span slot="title" class="modal-title">User Roles Description</span>
+            <div style="margin-bottom: -50px"></div>
             <UserRolesPermissionsTables/>
         </el-dialog>
     </el-dialog>

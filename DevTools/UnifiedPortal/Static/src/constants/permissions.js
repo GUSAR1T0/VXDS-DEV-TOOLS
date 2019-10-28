@@ -1,10 +1,5 @@
 export const USER_PERMISSION = {
     ACCESS_TO_ADMIN_PANEL: 1,
-    UPDATE_USER: 2
-};
-
-export const USER_ROLE_PERMISSION = {
-    CREATE_ROLE: 1,
-    UPDATE_ROLE: 2,
-    DELETE_ROLE: 4
+    UPDATE_USER_PROFILE: 2,
+    MANAGE_USER_ROLES: 4
 };

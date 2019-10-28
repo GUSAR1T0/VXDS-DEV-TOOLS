@@ -22,8 +22,7 @@ export default {
         firstName: "",
         lastName: "",
         color: "",
-        userPermissions: 0,
-        userRolePermissions: 0
+        userPermissions: 0
     },
     getters: {
         isAuthenticated: state => {
@@ -43,9 +42,6 @@ export default {
         },
         hasUserPermission: state => permission => {
             return permission === 0 || (state.userPermissions & permission) !== 0;
-        },
-        hasUserRolePermission: state => permission => {
-            return permission === 0 || (state.userRolePermissions & permission) !== 0;
         }
     },
     mutations: {
@@ -56,7 +52,6 @@ export default {
             state.lastName = data.lastName;
             state.color = data.color;
             state.userPermissions = data.userRole ? data.userRole.userPermissions : data.userPermissions;
-            state.userRolePermissions = data.userRole ? data.userRole.userRolePermissions : data.userRolePermissions;
         },
         [LOGOUT_REQUEST]: state => {
             state.isAuthenticated = false;
@@ -65,7 +60,6 @@ export default {
             state.lastName = "";
             state.color = "";
             state.userPermissions = 0;
-            state.userRolePermissions = 0;
         }
     },
     actions: {
