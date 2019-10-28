@@ -14,8 +14,17 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         public async Task<DashboardEntity> GetDashboardDataFromDatabase(IOperation operation)
         {
             return await operation.Connection.QueryFirstAsync<DashboardEntity>(@"
-                SELECT COUNT(*) AS [RolesCount]
+                DECLARE @UsersCount INT, @RolesCount INT
+
+                SELECT @UsersCount = COUNT(*)
+                FROM [authorization].[User]
+
+                SELECT @RolesCount = COUNT(*)
                 FROM [authorization].[UserRole]
+
+                SELECT
+                    @UsersCount AS [UsersCount],
+                    @RolesCount AS [RolesCount]
             ");
         }
     }

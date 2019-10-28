@@ -1,46 +1,28 @@
 <template>
     <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
-            <el-row :gutter="20">
-                <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8">
-                    <UserRolesCard :roles-count="rolesCount"/>
-                </el-col>
-                <el-col :lg="8" :xl="8" class="hidden-md-and-down">
-                    <LogsCard :logs-count="logsCount"/>
-                </el-col>
-                <el-col :lg="8" :xl="8" class="hidden-md-and-down">
-                    <el-card shadow="hover">
-                        <div slot="header">
-                            <h3>OMT</h3>
-                        </div>
-                        ...
-                    </el-card>
-                </el-col>
-            </el-row>
-            <el-row class="small-display-row hidden-lg-and-up">
-                <el-col :xs="24" :sm="24" :md="24">
-                    <LogsCard :logs-count="logsCount"/>
-                </el-col>
-            </el-row>
-            <el-row class="small-display-row hidden-lg-and-up">
-                <el-col :xs="24" :sm="24" :md="24">
-                    <el-card shadow="hover">
-                        <div slot="header">
-                            <h3>OMT</h3>
-                        </div>
-                        ...
-                    </el-card>
-                </el-col>
-            </el-row>
+            <el-collapse v-model="activeCollapseItems">
+                <el-collapse-item title="Users" name="users">
+                    <DashboardBlocks>
+                        <template slot="first">
+                            <UsersCard :users-count="usersCount"/>
+                        </template>
+                        <template slot="second">
+                            <UserRolesCard :roles-count="rolesCount"/>
+                        </template>
+                    </DashboardBlocks>
+                </el-collapse-item>
+                <el-collapse-item title="System" name="system">
+                    <DashboardBlocks>
+                        <template slot="first">
+                            <LogsCard :logs-count="logsCount"/>
+                        </template>
+                    </DashboardBlocks>
+                </el-collapse-item>
+            </el-collapse>
         </template>
     </LoadingContainer>
 </template>
-
-<style scoped>
-    .small-display-row {
-        margin-top: 20px;
-    }
-</style>
 
 <script>
     import { GET_HTTP_REQUEST } from "@/constants/actions";
@@ -48,6 +30,8 @@
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import { GET_DATA_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
 
+    import DashboardBlocks from "@/components/dashboard/DashboardBlocks";
+    import UsersCard from "@/components/dashboard/UsersCard";
     import UserRolesCard from "@/components/dashboard/UserRolesCard";
     import LogsCard from "@/components/dashboard/LogsCard";
     import LoadingContainer from "@/components/page/LoadingContainer";
@@ -55,13 +39,17 @@
     export default {
         name: "Home",
         components: {
+            DashboardBlocks,
             LoadingContainer,
+            UsersCard,
             UserRolesCard,
             LogsCard
         },
         data() {
             return {
                 loadingIsActive: true,
+                activeCollapseItems: [ "users", "system" ],
+                usersCount: 0,
                 rolesCount: 0,
                 logsCount: 0
             };
@@ -75,6 +63,7 @@
                     config: getConfiguration()
                 }).then(response => {
                     this.loadingIsActive = false;
+                    this.usersCount = response.data.usersCount;
                     this.rolesCount = response.data.rolesCount;
                     this.logsCount = response.data.logsCount;
                 }).catch(error => {

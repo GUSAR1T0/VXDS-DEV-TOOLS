@@ -14,12 +14,12 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="userPermissions" label="User Permissions">
-                        <el-checkbox-group v-model="userRoleForm.userPermissions" :value="userRoleForm.userPermissions">
-                            <el-checkbox v-for="item in getLookupValues('userPermissions')" :key="item.value"
-                                         :label="item.value" border>
-                                {{ item.name }}
-                            </el-checkbox>
-                        </el-checkbox-group>
+                        <el-select v-model="userRoleForm.userPermissions" :value="userRoleForm.userPermissions" multiple
+                                   clearable placeholder="Select" style="width: 100%">
+                            <el-option v-for="item in getLookupValues('userPermissions')" :key="item.value"
+                                       :label="item.name" :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
