@@ -18,10 +18,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
     public class UserRoleController : ApiController
     {
         private readonly IUserRoleService userRoleService;
+        private readonly IUserService userService;
 
-        public UserRoleController(IOperationService operationService, IUserRoleService userRoleService) : base(operationService)
+        public UserRoleController(IOperationService operationService, IUserRoleService userRoleService, IUserService userService) : base(operationService)
         {
             this.userRoleService = userRoleService;
+            this.userService = userService;
         }
 
         /// <summary>
@@ -55,6 +57,21 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         });
 
         /// <summary>
+        /// Obtains user role full (with permissions)
+        /// </summary>
+        /// <returns>List of user roles</returns>
+        [ProducesResponseType(typeof(UserRoleFullInfoModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [SyrinxVerifiedAuthentication]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserRoleFullInfoModel>> GetUserRole(int id) => await Execute(OperationContexts.GetUserRole, async operation =>
+        {
+            var userRole = await userRoleService.GetUserRoleById(operation, id);
+            return userRole.ToFullInfoModel();
+        });
+
+        /// <summary>
         /// Creates a new user role
         /// </summary>
         /// <param name="model">Model of user role for creation</param>
@@ -63,7 +80,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
-        [SyrinxVerifiedAuthentication(UserPermission.AccessToAdminPanel)]
+        [SyrinxVerifiedAuthentication(UserPermission.ManageUserRoles)]
         [HttpPost]
         public async Task<ActionResult> AddUserRole([FromBody] UserRoleFullInfoModel model)
         {
@@ -81,7 +98,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [SyrinxVerifiedAuthentication(UserPermission.AccessToAdminPanel)]
+        [SyrinxVerifiedAuthentication(UserPermission.ManageUserRoles)]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUserRole(int id, [FromBody] UserRoleFullInfoModel model)
         {
@@ -98,8 +115,24 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [SyrinxVerifiedAuthentication(UserPermission.AccessToAdminPanel)]
+        [SyrinxVerifiedAuthentication(UserPermission.ManageUserRoles)]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUserRole(int id) => await Execute(OperationContexts.DeleteUserRole, async operation => await userRoleService.DeleteUserRoleById(operation, id));
+
+        /// <summary>
+        /// Obtains a count of affected users before user role deletion
+        /// </summary>
+        /// <param name="id">ID of an user role</param>
+        /// <returns>A count of affected users</returns>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [SyrinxVerifiedAuthentication]
+        [HttpGet("{id}/affectedUsers/count")]
+        public async Task<ActionResult<int>> GetAffectedUsersCount(int id) => await Execute(OperationContexts.GetAffectedUsersCount, async operation =>
+        {
+            var count = await userService.GetAffectedUsersCount(operation, id);
+            return count;
+        });
     }
 }

@@ -27,7 +27,7 @@ export default new Router({
         {
             path: "/user/:id?",
             name: "user",
-            component: () => import(/* webpackChunkName: "user-profile" */ "../views/UserProfile.vue"),
+            component: () => import(/* webpackChunkName: "user-profile" */ "../views/users/UserProfile.vue"),
             meta: {
                 pageName: "User Profile"
             }
@@ -35,15 +35,23 @@ export default new Router({
         {
             path: "/users",
             name: "users",
-            component: () => import(/* webpackChunkName: "users" */ "../views/Users.vue"),
+            component: () => import(/* webpackChunkName: "users" */ "../views/users/Users.vue"),
             meta: {
                 pageName: "Users"
             }
         },
         {
+            path: "/users/roles",
+            name: "roles",
+            component: () => import(/* webpackChunkName: "user-roles" */ "../views/users/UserRoles.vue"),
+            meta: {
+                pageName: "User Roles"
+            }
+        },
+        {
             path: "/admin",
             name: "admin",
-            component: () => import(/* webpackChunkName: "admin" */ "../views/AdminPanel.vue"),
+            component: () => import(/* webpackChunkName: "admin" */ "../views/admin/AdminPanel.vue"),
             meta: {
                 pageName: "Admin Panel"
             }

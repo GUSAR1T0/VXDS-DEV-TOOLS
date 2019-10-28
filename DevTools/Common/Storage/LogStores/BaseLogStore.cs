@@ -4,11 +4,13 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStores
 {
     public abstract class BaseLogStore<TEntity>
     {
+        protected IMongoDatabase Database { get; }
         protected IMongoCollection<TEntity> Collection { get; }
 
         protected BaseLogStore(string logStoreConnectionString, string schema, string collection)
         {
-            Collection = new MongoClient(logStoreConnectionString).GetDatabase(schema).GetCollection<TEntity>(collection);
+            Database = new MongoClient(logStoreConnectionString).GetDatabase(schema);
+            Collection = Database.GetCollection<TEntity>(collection);
         }
     }
 }

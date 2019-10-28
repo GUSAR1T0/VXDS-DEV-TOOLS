@@ -26,6 +26,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
         Task ManageUserStatusById(IOperation operation, int id, bool status);
+        Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId);
 
         #endregion
     }
@@ -224,6 +225,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
                 UPDATE [authorization].[User]
                 SET [IsActivated] = @Status
                 WHERE [Id] = @Id
+            ");
+        }
+
+        public async Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<int>(new { UserRoleId = userRoleId }, @"
+                SELECT COUNT(*)
+                FROM [authorization].[User]
+                WHERE [UserRoleId] = @UserRoleId
             ");
         }
 

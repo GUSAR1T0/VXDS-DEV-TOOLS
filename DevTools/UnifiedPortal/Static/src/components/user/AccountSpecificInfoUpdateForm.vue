@@ -60,6 +60,7 @@
         </el-form>
         <el-dialog :visible.sync="userRolesInfoDialogVisible" width="75%" style="text-align: center" append-to-body>
             <span slot="title" class="modal-title">User Roles Description</span>
+            <div style="margin-bottom: -50px"></div>
             <UserRolesPermissionsTables/>
         </el-dialog>
     </el-dialog>

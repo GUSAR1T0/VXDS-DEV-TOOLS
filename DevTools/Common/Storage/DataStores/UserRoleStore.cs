@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
         Task AddUserRole(IOperation operation, UserRoleEntity entity);
         Task UpdateUserRole(IOperation operation, UserRoleEntity entity);
         Task DeleteUserRoleById(IOperation operation, int id);
+        Task<bool> IsUserRoleExist(IOperation operation, int id);
     }
 
     public class UserRoleStore : BaseDataStore, IUserRoleStore
@@ -83,6 +84,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStores
             await operation.Connection.ExecuteAsync(new { Id = id }, @"
                 DELETE FROM [authorization].[UserRole]
                 WHERE [Id] = @Id
+            ");
+        }
+
+        public async Task<bool> IsUserRoleExist(IOperation operation, int id)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
+                SELECT TOP (1) 1
+                FROM [authorization].[UserRole]
+                WHERE [Id] = @Id;
             ");
         }
     }

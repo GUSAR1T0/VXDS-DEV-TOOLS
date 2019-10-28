@@ -80,10 +80,10 @@
     import { generateColor, getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import { LOCALHOST } from "@/constants/servers";
     import { UPDATE_PROFILE_GENERAL_INFO_ENDPOINT } from "@/constants/endpoints";
+    import { PUT_HTTP_REQUEST } from "@/constants/actions";
     import format from "string-format";
 
     import UserCard from "@/components/user/UserCard.vue";
-    import { PUT_HTTP_REQUEST } from "@/constants/actions";
 
     export default {
         name: "UserGeneralInfoUpdateForm",
