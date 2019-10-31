@@ -25,7 +25,7 @@ matrix:
     - name: "Development Tools"
       language: csharp
       mono: none
-      dotnet: 2.2
+      dotnet: 3.0.100
       dist: xenial
       sudo: required
       global:
