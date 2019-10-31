@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
         <AssemblyName>VXDesign.Store.DevTools.SRS.Authentication</AssemblyName>
         <RootNamespace>VXDesign.Store.DevTools.SRS.Authentication</RootNamespace>
+        <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,7 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="System.IdentityModel.Tokens.Jwt">
-        <Version>5.5.0</Version>
+        <Version>5.6.0</Version>
       </PackageReference>
     </ItemGroup>
 
