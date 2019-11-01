@@ -34,13 +34,13 @@
     "vue-cli-plugin-element": "^1.0.1",
     "vue-template-compiler": "^2.6.10"
   },
-  "bugs": {
-    "url": "https://github.com/VXDS-DEV-TOOLS/Portal/issues"
-  },
-  "homepage": "https://github.com/VXDS-DEV-TOOLS/Portal#vxdesignstore-development-tools---",
-  "license": "MIT",
+  "homepage": "https://github.com/GUSAR1T0/VXDS-DEV-TOOLS",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VXDS-DEV-TOOLS/Portal.git"
-  }
+    "url": "git+https://github.com/GUSAR1T0/VXDS-DEV-TOOLS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GUSAR1T0/VXDS-DEV-TOOLS/issues"
+  },
+  "license": "MIT"
 }
