@@ -5,14 +5,14 @@
                 <el-table-column label="Operations" min-width="200" align="center" fixed>
                     <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" content="Open User Profile" placement="top">
-                            <el-button @click="$router.push(`/user/${scope.row.id}`)" circle type="danger"
+                            <el-button @click="$router.push(`/user/${scope.row.id}`)" circle type="primary"
                                        style="margin-right: 10px">
                                 <span><fa icon="external-link-alt"/></span>
                             </el-button>
                         </el-tooltip>
                         <a :href="`mailto:${scope.row.email}`" style="margin-right: 10px">
                             <el-tooltip class="item" effect="dark" content="Send Email to User" placement="top">
-                                <el-button circle type="danger">
+                                <el-button circle type="primary">
                                     <span><fa icon="envelope"/></span>
                                 </el-button>
                             </el-tooltip>
@@ -22,7 +22,7 @@
                                 class="item" effect="dark" content="Activate User Account" placement="top">
                             <el-button
                                     v-if="hasPermissionToManageUserStatus(scope.row.id) && !scope.row.isActivated"
-                                    @click="openManageUserStatusDialog(scope.row, true)" circle type="danger">
+                                    @click="openManageUserStatusDialog(scope.row, true)" circle type="primary">
                                 <span><fa icon="plus-circle"/></span>
                             </el-button>
                         </el-tooltip>
@@ -31,7 +31,7 @@
                                 class="item" effect="dark" content="Deactivate User Account" placement="top">
                             <el-button
                                     v-if="hasPermissionToManageUserStatus(scope.row.id) && scope.row.isActivated"
-                                    @click="openManageUserStatusDialog(scope.row, false)" circle type="danger">
+                                    @click="openManageUserStatusDialog(scope.row, false)" circle type="primary">
                                 <span><fa icon="minus-circle"/></span>
                             </el-button>
                         </el-tooltip>

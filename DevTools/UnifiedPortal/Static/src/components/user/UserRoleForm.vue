@@ -28,12 +28,12 @@
                     <el-form-item>
                         <el-row type="flex" justify="center" align="middle" :gutter="20">
                             <el-col :span="12">
-                                <el-button type="danger" @click="cancel" plain style="width: 100%">
+                                <el-button type="primary" @click="cancel" plain style="width: 100%">
                                     Cancel
                                 </el-button>
                             </el-col>
                             <el-col :span="12">
-                                <el-button type="danger" ref="userRoleFormButton" native-type="submit"
+                                <el-button type="primary" ref="userRoleFormButton" native-type="submit"
                                            style="width: 100%">
                                     Submit
                                 </el-button>
@@ -112,7 +112,7 @@
                                 this.dialogStatus.visible = false;
                                 this.$refs.userRoleFormButton.loading = false;
 
-                                this.$notify.info({
+                                this.$notify.success({
                                     title: "User role was updated",
                                     message: "Role changes took effect"
                                 });
