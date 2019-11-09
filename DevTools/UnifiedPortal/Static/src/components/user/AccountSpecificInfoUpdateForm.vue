@@ -18,7 +18,7 @@
                                 </el-select>
                             </el-col>
                             <el-col :span="4">
-                                <el-button type="danger" circle @click="userRolesInfoDialogVisible = true">
+                                <el-button type="info" plain circle @click="userRolesInfoDialogVisible = true">
                                     <fa icon="info-circle"/>
                                 </el-button>
                             </el-col>
@@ -42,14 +42,14 @@
                     <el-form-item>
                         <el-row type="flex" justify="center" align="middle" :gutter="20">
                             <el-col :span="12">
-                                <el-button type="danger" @click="cancel" plain style="width: 100%">
-                                    Cancel
+                                <el-button type="primary" plain @click="cancel" style="width: 100%">
+                                    <strong>Cancel</strong>
                                 </el-button>
                             </el-col>
                             <el-col :span="12">
-                                <el-button type="danger" ref="accountSpecificInfoUpdateFormButton" native-type="submit"
+                                <el-button type="danger" plain ref="accountSpecificInfoUpdateFormButton" native-type="submit"
                                            style="width: 100%">
-                                    Submit
+                                    <strong>Submit</strong>
                                 </el-button>
                             </el-col>
                         </el-row>
@@ -156,7 +156,7 @@
                             this.pageStatus.visible = false;
                             this.$refs.accountSpecificInfoUpdateFormButton.loading = false;
 
-                            this.$notify.info({
+                            this.$notify.success({
                                 title: "Profile was updated",
                                 message: "Your profile changes took effect"
                             });
@@ -173,7 +173,7 @@
                         this.pageStatus.visible = false;
                         this.$refs.accountSpecificInfoUpdateFormButton.loading = false;
 
-                        this.$notify.warning({
+                        this.$notify.info({
                             title: "Profile wasn't updated",
                             message: "No change for update of your profile"
                         });

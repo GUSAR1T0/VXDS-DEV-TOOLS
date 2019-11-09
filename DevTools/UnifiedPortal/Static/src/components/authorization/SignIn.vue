@@ -19,7 +19,7 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
-                        <el-button type="danger" ref="signInButton" class="auth-button" native-type="submit">
+                        <el-button type="primary" ref="signInButton" class="auth-button" native-type="submit">
                             Log In
                         </el-button>
                     </el-form-item>
@@ -76,7 +76,7 @@
                         this.$refs.signInButton.loading = false;
                         this.$router.push("/");
                         const h = this.$createElement;
-                        this.$notify.info({
+                        this.$notify.success({
                             title: "You are logged in",
                             message: h("div", null, [
                                 "Welcome back, ",

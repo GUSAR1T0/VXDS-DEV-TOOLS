@@ -4,7 +4,7 @@
             <h3>Users</h3>
         </div>
         <div class="system-row-content">{{ usersCount }}</div>
-        <el-button type="danger" plain class="system-row-button" @click="$router.push('/users')">
+        <el-button type="primary" plain class="system-row-button" @click="$router.push('/users')">
             <span>See Users</span>
         </el-button>
     </el-card>

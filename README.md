@@ -5,6 +5,13 @@
 <div>
 <b>VXDESIGN.STORE: Development Tools</b>
 </div>
+<hr>
+<div>
+<img src="https://img.shields.io/badge/License-MIT-blue.svg">
+<img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/GUSAR1T0/VXDS-DEV-TOOLS?label=Issues&color=blue">
+<img alt="GitHub issues" src="https://img.shields.io/github/issues-pr-raw/GUSAR1T0/VXDS-DEV-TOOLS?label=PRs&color=blue">
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/GUSAR1T0/VXDS-DEV-TOOLS?label=Activity&color=blue">
+</div>
 </div>
 
 ___
@@ -22,6 +29,4 @@ The project is maintained fully by Roman Mashenkin ([GUSAR1T0](https://github.co
 
 ## License
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See the LICENSE file for details.

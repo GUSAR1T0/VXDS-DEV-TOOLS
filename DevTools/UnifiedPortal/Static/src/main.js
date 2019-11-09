@@ -2,7 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./plugins/router";
 import store from "./plugins/store";
-import "./plugins/element";
+import "./plugins/element/element";
 import "./plugins/fontawesome";
 import { SET_PATH_FOR_REDIRECTION } from "@/constants/actions";
 

@@ -5,14 +5,14 @@
         <h3 class="confirmation-dialog-header">{{ additionalText }}</h3>
         <el-row type="flex" justify="center" align="middle" :gutter="20">
             <el-col :span="12">
-                <el-button type="danger" @click="cancelClickAction" plain class="confirmation-button">
-                    Cancel
+                <el-button type="primary" plain @click="cancelClickAction" class="confirmation-button">
+                    <strong>Cancel</strong>
                 </el-button>
             </el-col>
             <el-col :span="12">
-                <el-button type="danger" ref="dialogButton" @click="submitClickAction($refs.dialogButton)"
+                <el-button type="danger" plain ref="dialogButton" @click="submitClickAction($refs.dialogButton)"
                            class="confirmation-button">
-                    Submit
+                    <strong>Submit</strong>
                 </el-button>
             </el-col>
         </el-row>

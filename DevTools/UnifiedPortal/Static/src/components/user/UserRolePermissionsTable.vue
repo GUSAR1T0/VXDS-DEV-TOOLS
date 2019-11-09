@@ -9,8 +9,8 @@
             <template slot-scope="scope">
                 <div v-for="permission in scope.row.list" v-bind:key="permission"
                      style="display: inline-block; padding: 5px">
-                    <el-tag :type="permission.type" effect="plain" hit>
-                        {{ permission.name }}
+                    <el-tag type="primary" :effect="permission.type" hit>
+                        <strong>{{ permission.name }}</strong>
                     </el-tag>
                 </div>
             </template>
@@ -32,7 +32,7 @@
             ]),
             getPermissionsTable() {
                 let getPermissionTagType = (permissionsValue, permissionValue) => {
-                    return (permissionsValue & permissionValue) === 0 ? "info" : "danger";
+                    return (permissionsValue & permissionValue) === 0 ? "plain" : "dark";
                 };
                 return [
                     {

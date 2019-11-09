@@ -4,7 +4,7 @@
             <h3>Logs</h3>
         </div>
         <div class="system-row-content">{{ logsCount }}</div>
-        <el-button type="danger" plain class="system-row-button">
+        <el-button type="primary" plain class="system-row-button">
             <span>See logs</span>
         </el-button>
     </el-card>

@@ -1,7 +1,7 @@
 <template>
     <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
-            <el-button v-if="isEditable && hasPermissionToManageUserRoles" type="danger" plain
+            <el-button v-if="isEditable && hasPermissionToManageUserRoles" type="primary" plain
                        class="user-roles-button" @click="openDialogToCreateOrUpdate">
                 <span><fa icon="plus-circle"/> | Create User Role</span>
             </el-button>
@@ -13,13 +13,13 @@
                 <el-row v-if="isEditable && hasPermissionToManageUserRoles(item.id)" style="margin-top: 25px;"
                         type="flex" justify="center" align="middle" :gutter="20">
                     <el-col :span="12">
-                        <el-button type="danger" plain class="user-roles-button"
+                        <el-button type="primary" plain class="user-roles-button"
                                    @click="openDialogToCreateOrUpdate(item)">
                             <span><fa icon="edit"/> | Edit User Role</span>
                         </el-button>
                     </el-col>
                     <el-col :span="12">
-                        <el-button type="danger" plain class="user-roles-button"
+                        <el-button type="primary" plain class="user-roles-button"
                                    @click="openDeleteUserRoleDialog(item)" ref="deleteUserRoleButton">
                             <span><fa icon="minus-circle"/> | Delete User Role</span>
                         </el-button>
@@ -171,7 +171,7 @@
                     button.loading = false;
                     this.dialogUserRoleDeleteStatus.visible = false;
 
-                    this.$notify.info({
+                    this.$notify.success({
                         title: "User role was deleted",
                         message: `User role "${userRole.name}" was removed`
                     });

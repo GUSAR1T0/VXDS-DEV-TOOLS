@@ -56,13 +56,13 @@
                     <el-form-item>
                         <el-row type="flex" justify="center" align="middle" :gutter="20">
                             <el-col :span="12">
-                                <el-button type="danger" @click="cancel" plain style="width: 100%">
-                                    Cancel
+                                <el-button type="primary" plain @click="cancel" style="width: 100%">
+                                    <strong>Cancel</strong>
                                 </el-button>
                             </el-col>
                             <el-col :span="12">
-                                <el-button type="danger" ref="userGeneralInfoUpdateFormButton" native-type="submit" style="width: 100%">
-                                    Submit
+                                <el-button type="danger" plain ref="userGeneralInfoUpdateFormButton" native-type="submit" style="width: 100%">
+                                    <strong>Submit</strong>
                                 </el-button>
                             </el-col>
                         </el-row>
@@ -159,7 +159,7 @@
                             this.pageStatus.visible = false;
                             this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
-                            this.$notify.info({
+                            this.$notify.success({
                                 title: "Profile was updated",
                                 message: "Your profile changes took effect"
                             });
@@ -176,7 +176,7 @@
                         this.pageStatus.visible = false;
                         this.$refs.userGeneralInfoUpdateFormButton.loading = false;
 
-                        this.$notify.warning({
+                        this.$notify.info({
                             title: "Profile wasn't updated",
                             message: "No change for update of your profile"
                         });

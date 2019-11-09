@@ -68,10 +68,6 @@
         height: 64px !important;
         line-height: 64px !important;
     }
-
-    .el-menu-item.is-active {
-        color: #F56C6C !important;
-    }
 </style>
 
 <style scoped src="@/styles/navigation-bar.css">
@@ -124,7 +120,7 @@
                     this.logoutDialogStatus.visible = false;
                     this.$router.push("/auth").catch(() => {
                     });
-                    this.$notify.info({
+                    this.$notify.success({
                         title: "You are logged out",
                         message: "Waiting for you again"
                     });
