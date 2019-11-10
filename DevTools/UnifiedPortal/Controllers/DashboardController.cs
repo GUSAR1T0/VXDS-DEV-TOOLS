@@ -28,9 +28,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>Model of admin panel data</returns>
         [ProducesResponseType(typeof(DashboardModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
-        [SyrinxVerifiedAuthentication(UserPermission.AccessToAdminPanel)]
+        [SyrinxVerifiedAuthentication]
         [HttpGet("data")]
-        public async Task<ActionResult<DashboardModel>> GetAdminPanelData() => await Execute(OperationContexts.GetAdminPanelData, async operation =>
+        public async Task<ActionResult<DashboardModel>> GetDashboardData() => await Execute(OperationContexts.GetDashboardData, async operation =>
         {
             var entity = await dashboardService.GetDashboardData(operation);
             return entity.ToModel();

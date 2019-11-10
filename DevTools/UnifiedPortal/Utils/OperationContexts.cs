@@ -8,7 +8,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
         private const string Lookup = "Lookup";
         private const string User = "User";
         private const string UserRole = "UserRole";
-        private const string AdminPanel = "AdminPanel";
+        private const string Dashboard = "Dashboard";
 
         #region Lookup
 
@@ -92,11 +92,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Utils
 
         #endregion
 
-        #region AdminPanel
+        #region Dashboard
 
-        internal static OperationContext.OperationContextBuilder GetAdminPanelData(OperationContext.OperationContextBuilder builder)
+        internal static OperationContext.OperationContextBuilder GetDashboardData(OperationContext.OperationContextBuilder builder)
         {
-            return builder.SetName(AdminPanel, nameof(DashboardController.GetAdminPanelData));
+            return builder.SetName(Dashboard, nameof(DashboardController.GetDashboardData));
         }
 
         #endregion

@@ -15,6 +15,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
         Task<UserAuthorizationEntity> GetUserIdentityClaimsById(IOperation operation, int id);
         Task UpdateRefreshTokenById(IOperation operation, int id, string refreshToken);
         Task<UserAuthorizationEntity> CreateUser(IOperation operation, UserRegistrationEntity entity);
+        Task<bool> IsUserActivated(IOperation operation, int id);
 
         #endregion
 
@@ -128,6 +129,15 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
             ");
         }
 
+        public async Task<bool> IsUserActivated(IOperation operation, int id)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
+                SELECT TOP 1 1
+                FROM [authorization].[User]
+                WHERE [Id] = @Id AND [IsActivated] = 1
+            ");
+        }
+
         #endregion
 
         #region Users
@@ -135,7 +145,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
         public async Task<bool> IsUserExist(IOperation operation, int id)
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
-                SELECT 1
+                SELECT TOP 1 1
                 FROM [authorization].[User]
                 WHERE [Id] = @Id
             ");

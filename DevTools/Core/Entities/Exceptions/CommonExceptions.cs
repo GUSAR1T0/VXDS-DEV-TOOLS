@@ -33,6 +33,8 @@ namespace VXDesign.Store.DevTools.Core.Entities.Exceptions
 
         public static BadRequestException RegistrationIsFailed(IOperation operation) => new BadRequestException(operation, "Failed to register user");
 
+        public static BadRequestException UserHasAlreadyAuthenticated(IOperation operation) => new BadRequestException(operation, "User has already authenticated");
+
         public static BadRequestException NoAuthenticationData(IOperation operation) => new BadRequestException(operation, "No data for authentication");
 
         public static BadRequestException RefreshTokensAreDifferent(IOperation operation) => new BadRequestException(operation, "Refresh tokens are different");
@@ -49,14 +51,17 @@ namespace VXDesign.Store.DevTools.Core.Entities.Exceptions
 
         public static NotFoundException UserRoleWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"User role with ID \"{id}\" was not found");
 
-        public static AuthenticationException AccessDenied(IOperation operation, int statusCode)
+        public static AuthenticationException AccessDenied(IOperation operation, int statusCode, bool deactivated = false)
         {
             var message = "Access denied";
 
             switch (statusCode)
             {
-                case StatusCodes.Status401Unauthorized:
+                case StatusCodes.Status401Unauthorized when !deactivated:
                     message += " (the request is unauthorized)";
+                    break;
+                case StatusCodes.Status401Unauthorized:
+                    message += " (user is deactivated)";
                     break;
                 case StatusCodes.Status403Forbidden:
                     message += " (user doesn't have permissions for operation)";

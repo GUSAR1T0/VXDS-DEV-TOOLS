@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using VXDesign.Store.DevTools.Core.Entities.Exceptions;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
@@ -20,6 +21,7 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
         Task<RawJwtToken> RefreshToken(IOperation operation, string accessToken, string refreshToken);
         Task Logout(IOperation operation, IEnumerable<Claim> claims);
         Task<UserAuthorizationEntity> GetUserData(IOperation operation, IEnumerable<Claim> claims);
+        Task<bool> IsUserActivated(IOperation operation, int id);
 
         TokenValidationParameters GetServerTokenValidationParameters(bool validateLifetime = true);
     }
@@ -37,15 +39,15 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
 
         public async Task<RawJwtToken> SignIn(IOperation operation, string email, string password)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-            {
-                throw CommonExceptions.NoAuthenticationData(operation);
-            }
-
             var userIdentityClaims = await userDataStore.GetUserIdentityClaimsByAccessData(operation, email, password);
             if (userIdentityClaims == null)
             {
                 throw CommonExceptions.AuthenticationFailed(operation);
+            }
+
+            if (!await userDataStore.IsUserActivated(operation, userIdentityClaims.Id))
+            {
+                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status401Unauthorized, true);
             }
 
             var identity = GetIdentity(userIdentityClaims);
@@ -63,11 +65,6 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
 
         public async Task<RawJwtToken> SignUp(IOperation operation, UserRegistrationEntity entity)
         {
-            if (string.IsNullOrWhiteSpace(entity.Email) || string.IsNullOrWhiteSpace(entity.Password))
-            {
-                throw CommonExceptions.NoAuthenticationData(operation);
-            }
-
             if (await userDataStore.GetUserIdentityClaimsByAccessData(operation, entity.Email) != null)
             {
                 throw CommonExceptions.UserHasAlreadyExist(operation);
@@ -94,16 +91,20 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
 
         public async Task<RawJwtToken> RefreshToken(IOperation operation, string accessToken, string refreshToken)
         {
-            if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken))
-            {
-                throw CommonExceptions.NoAuthenticationData(operation);
-            }
-
             var principal = GetClaimsPrincipalDataFromToken(operation, accessToken);
             var claims = principal.Claims.ToList();
             var id = AuthenticationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
+
+            if (!await userDataStore.IsUserActivated(operation, id))
+            {
+                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status401Unauthorized, true);
+            }
+
             var storedRefreshToken = await userDataStore.GetRefreshTokenById(operation, id);
-            if (storedRefreshToken?.Equals(refreshToken) != true) throw CommonExceptions.RefreshTokensAreDifferent(operation);
+            if (storedRefreshToken?.Equals(refreshToken) != true)
+            {
+                throw CommonExceptions.RefreshTokensAreDifferent(operation);
+            }
 
             var user = await userDataStore.GetUserIdentityClaimsById(operation, id);
             if (user == null)
@@ -138,6 +139,8 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
             var id = AuthenticationUtils.GetUserId(claims) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
             return await userDataStore.GetAuthorizationById(operation, id);
         }
+
+        public async Task<bool> IsUserActivated(IOperation operation, int id) => await userDataStore.IsUserActivated(operation, id);
 
         private JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims)
         {

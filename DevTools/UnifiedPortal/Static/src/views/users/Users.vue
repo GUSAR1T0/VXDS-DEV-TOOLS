@@ -211,7 +211,7 @@
                         let user = this.userActivationConfirmDialogForUser;
                         this.userActivationConfirmDialog.visible = false;
 
-                        this.$notify.info({
+                        this.$notify.success({
                             title: "Profile was updated",
                             message: `Account ${user.userName} (ID: ${user.id}) was activated`
                         });
@@ -237,7 +237,7 @@
                         let user = this.userDeactivationConfirmDialogForUser;
                         this.userDeactivationConfirmDialog.visible = false;
 
-                        this.$notify.info({
+                        this.$notify.success({
                             title: "Profile was updated",
                             message: `Account ${user.userName} (ID: ${user.id}) was deactivated`
                         });
