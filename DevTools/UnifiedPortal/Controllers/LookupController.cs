@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Core.Entities.Controllers;
@@ -7,7 +6,6 @@ using VXDesign.Store.DevTools.Core.Enums.Operations;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.Lookup;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
-using VXDesign.Store.DevTools.UnifiedPortal.Utils;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
@@ -29,7 +27,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpGet("values")]
         public ActionResult<LookupModel> GetAllValues()
         {
-            return Execute(OperationContexts.GetAllValues, _ => new LookupModel
+            return Execute(_ => new LookupModel
             {
                 EnvironmentVariables = new EnvironmentVariablesModel
                 {

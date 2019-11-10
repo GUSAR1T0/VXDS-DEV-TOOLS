@@ -15,7 +15,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
 
             public OperationContextBuilder SetName(string first, params string[] other)
             {
-                operationContext.Name = string.Join(":", ListUtils.Initialize(first, other));
+                operationContext.Name = string.Join("::", ListUtils.Initialize(first, other));
                 return this;
             }
 

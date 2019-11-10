@@ -11,7 +11,6 @@ using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
-using VXDesign.Store.DevTools.SRS.Syrinx.Utils;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
@@ -54,7 +53,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [HttpPost("request")]
-        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await Execute(OperationContexts.SendRequest, async operation =>
+        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await Execute(async operation =>
         {
             var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode(operation);
             return (await camundaServerService.Send(operation, model.ToEntity(endpoint))).ToModel();

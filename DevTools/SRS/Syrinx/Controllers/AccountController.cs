@@ -9,7 +9,6 @@ using VXDesign.Store.DevTools.Core.Utils.Authentication;
 using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
-using VXDesign.Store.DevTools.SRS.Syrinx.Utils;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
@@ -33,7 +32,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [HttpPost("sign-in")]
-        public async Task<ActionResult<JwtTokenModel>> SignIn([FromBody] SignInModel model) => await Execute(OperationContexts.SignIn, async operation =>
+        public async Task<ActionResult<JwtTokenModel>> SignIn([FromBody] SignInModel model) => await Execute(async operation =>
         {
             if (User.Identity.IsAuthenticated) throw CommonExceptions.UserHasAlreadyAuthenticated(operation);
             if (!ModelState.IsValid) throw CommonExceptions.NoAuthenticationData(operation);
@@ -50,7 +49,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("sign-up")]
-        public async Task<ActionResult<JwtTokenModel>> SignUp([FromBody] SignUpModel model) => await Execute(OperationContexts.SignUp, async operation =>
+        public async Task<ActionResult<JwtTokenModel>> SignUp([FromBody] SignUpModel model) => await Execute(async operation =>
         {
             if (User.Identity.IsAuthenticated) throw CommonExceptions.UserHasAlreadyAuthenticated(operation);
             if (!ModelState.IsValid) throw CommonExceptions.NoAuthenticationData(operation);
@@ -67,7 +66,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await Execute(OperationContexts.RefreshToken, async operation =>
+        public async Task<ActionResult<JwtTokenModel>> RefreshToken([FromBody] JwtTokenModel model) => await Execute(async operation =>
         {
             if (!ModelState.IsValid) throw CommonExceptions.NoAuthenticationData(operation);
             var token = await authenticationService.RefreshToken(operation, model.AccessToken, model.RefreshToken);
@@ -83,7 +82,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpPost("logout")]
-        public async Task<ActionResult> Logout() => await Execute(OperationContexts.Logout, async operation => await authenticationService.Logout(operation, User.Claims));
+        public async Task<ActionResult> Logout() => await Execute(async operation => await authenticationService.Logout(operation, User.Claims));
 
         /// <summary>
         /// Obtains authorization user data by token
@@ -95,7 +94,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserAuthorizationModel>> GetUserData() => await Execute(OperationContexts.GetUserData, async operation =>
+        public async Task<ActionResult<UserAuthorizationModel>> GetUserData() => await Execute(async operation =>
         {
             var userData = await authenticationService.GetUserData(operation, User.Claims);
             return userData.ToModel();
@@ -109,7 +108,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpGet("verify")]
-        public async Task<ActionResult<UserAuthorizationModel>> VerifyAuthentication() => await Execute(OperationContexts.VerifyAuthentication, async operation =>
+        public async Task<ActionResult<UserAuthorizationModel>> VerifyAuthentication() => await Execute(async operation =>
         {
             var userId = AuthenticationUtils.GetUserId(User.Claims);
             if (userId == null)

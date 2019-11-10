@@ -31,7 +31,7 @@ namespace VXDesign.Store.DevTools.Core.Services.Syrinx
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var operationContext = OperationContext.Builder()
-                .SetName(nameof(SyrinxVerifiedAuthenticationService), "OnAuthorization")
+                .SetName(GetType().FullName, "OnAuthorization")
                 .SetUserId(null, true)
                 .Create();
             try

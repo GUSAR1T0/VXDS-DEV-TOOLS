@@ -43,7 +43,9 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 IsSuccessful = isSuccessful
             }, @"
                 UPDATE [base].[Operation]
-                SET [IsSuccessful] = @IsSuccessful
+                SET
+                    [IsSuccessful] = @IsSuccessful,
+                    [StopDate] = SYSDATETIMEOFFSET()
                 WHERE [Id] = @Id;
             ");
         }

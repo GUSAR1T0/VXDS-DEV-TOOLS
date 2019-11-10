@@ -44,56 +44,52 @@ namespace VXDesign.Store.DevTools.Core.Services.Operations
 
         public async Task<T> Make<T>(OperationContext context, Func<IOperation, Task<T>> action)
         {
-            using (var operation = new Operation(scope, context, properties))
+            using var operation = new Operation(scope, context, properties);
+            var isSuccessful = true;
+            var logger = operation.Logger<OperationService>();
+            try
             {
-                var isSuccessful = true;
-                var logger = operation.Logger<OperationService>();
+                await using var transaction = ((OperationConnection) operation.Connection).BeginTransaction();
                 try
                 {
-                    using (var transaction = ((OperationConnection) operation.Connection).BeginTransaction())
+                    var result = await action(operation);
+                    transaction.Commit();
+                    await logger.Debug(SuccessMessage);
+                    return result;
+                }
+                catch (Exception actionException)
+                {
+                    isSuccessful = false;
+
+                    var retries = 5;
+                    while (retries > 0)
                     {
                         try
                         {
-                            var result = await action(operation);
-                            transaction.Commit();
-                            await logger.Debug(SuccessMessage);
-                            return result;
+                            transaction.Rollback();
+                            break;
                         }
-                        catch (Exception actionException)
+                        catch (Exception rollbackException)
                         {
-                            isSuccessful = false;
-
-                            var retries = 5;
-                            while (retries > 0)
-                            {
-                                try
-                                {
-                                    transaction.Rollback();
-                                    break;
-                                }
-                                catch (Exception rollbackException)
-                                {
-                                    retries--;
-                                    await logger.Error($"{TransactionRollbackErrorMessage}, remaining attempts: {retries}", GetExceptionContent(rollbackException));
-                                    await Task.Delay(TimeSpan.FromSeconds(1));
-                                }
-                            }
-
-                            if (retries == 0)
-                            {
-                                await logger.Error($"{TransactionRollbackErrorMessage}, operation couldn't be aborted");
-                            }
-
-                            await logger.Error(OperationErrorMessage, GetExceptionContent(actionException));
-                            throw;
+                            retries--;
+                            await logger.Error($"{TransactionRollbackErrorMessage}, remaining attempts: {retries}", GetExceptionContent(rollbackException));
+                            await Task.Delay(TimeSpan.FromSeconds(1));
                         }
                     }
+
+                    if (retries == 0)
+                    {
+                        await logger.Error($"{TransactionRollbackErrorMessage}, operation couldn't be aborted");
+                    }
+
+                    await logger.Error(OperationErrorMessage, GetExceptionContent(actionException));
+                    throw;
                 }
-                finally
-                {
-                    ((OperationConnection) operation.Connection).EndTransaction();
-                    await operation.Complete(isSuccessful);
-                }
+            }
+            finally
+            {
+                ((OperationConnection) operation.Connection).EndTransaction();
+                await operation.Complete(isSuccessful);
             }
         }
     }

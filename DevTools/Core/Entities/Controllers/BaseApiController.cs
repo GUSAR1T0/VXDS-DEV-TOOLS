@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,36 +29,36 @@ namespace VXDesign.Store.DevTools.Core.Entities.Controllers
             this.operationService = operationService;
         }
 
-        protected ActionResult Execute(Func<OperationContext.OperationContextBuilder, OperationContext.OperationContextBuilder> builder, Action<IOperation> action)
+        protected ActionResult Execute(Action<IOperation> action, [CallerMemberName] string callerName = "")
         {
-            Execute(builder, async operation =>
+            Execute(async operation =>
             {
                 await Task.Run(() => action(operation));
                 return true;
-            }).Wait();
+            }, callerName).Wait();
             return Ok();
         }
 
-        protected ActionResult<T> Execute<T>(Func<OperationContext.OperationContextBuilder, OperationContext.OperationContextBuilder> builder, Func<IOperation, T> action)
+        protected ActionResult<T> Execute<T>(Func<IOperation, T> action, [CallerMemberName] string callerName = "")
         {
-            return Execute(builder, async operation => await Task.Run(() => action(operation))).Result;
+            return Execute(async operation => await Task.Run(() => action(operation)), callerName).Result;
         }
 
-        protected async Task<ActionResult> Execute(Func<OperationContext.OperationContextBuilder, OperationContext.OperationContextBuilder> builder, Func<IOperation, Task> action)
+        protected async Task<ActionResult> Execute(Func<IOperation, Task> action, [CallerMemberName] string callerName = "")
         {
-            await Execute(builder, async operation =>
+            await Execute(async operation =>
             {
                 await action(operation);
                 return true;
-            });
+            }, callerName);
             return Ok();
         }
 
-        protected async Task<ActionResult<T>> Execute<T>(Func<OperationContext.OperationContextBuilder, OperationContext.OperationContextBuilder> builder, Func<IOperation, Task<T>> action)
+        protected async Task<ActionResult<T>> Execute<T>(Func<IOperation, Task<T>> action, [CallerMemberName] string callerName = "")
         {
             try
             {
-                var operationContext = builder(OperationContext.Builder()).SetUserId(UserId).Create();
+                var operationContext = OperationContext.Builder().SetName(GetType().FullName, callerName).SetUserId(UserId).Create();
                 return await operationService.Make(operationContext, action);
             }
             catch (BadRequestException e)

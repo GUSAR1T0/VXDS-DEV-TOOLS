@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Core.Attributes;
 using VXDesign.Store.DevTools.Core.Entities.Controllers;
-using VXDesign.Store.DevTools.Core.Enums.Operations;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.Dashboard;
-using VXDesign.Store.DevTools.UnifiedPortal.Utils;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
@@ -30,7 +28,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("data")]
-        public async Task<ActionResult<DashboardModel>> GetDashboardData() => await Execute(OperationContexts.GetDashboardData, async operation =>
+        public async Task<ActionResult<DashboardModel>> GetDashboardData() => await Execute(async operation =>
         {
             var entity = await dashboardService.GetDashboardData(operation);
             return entity.ToModel();
