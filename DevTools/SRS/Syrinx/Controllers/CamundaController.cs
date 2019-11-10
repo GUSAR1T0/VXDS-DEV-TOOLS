@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
-using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Camunda.Base;
+using VXDesign.Store.DevTools.Core.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Entities.Exceptions;
+using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
@@ -17,7 +17,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CamundaController : ApiController
+    public class CamundaController : BaseApiController
     {
         private readonly ICamundaServerService camundaServerService;
 

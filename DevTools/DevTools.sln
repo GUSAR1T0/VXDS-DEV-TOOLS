@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnifiedPortal", "UnifiedPortal\UnifiedPortal.csproj", "{6C98841A-41C8-49B5-95C0-0E1626EB7528}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{AEA0F6CB-CA4C-49BD-8A9A-4E8C49245AC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AEA0F6CB-CA4C-49BD-8A9A-4E8C49245AC1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SRS", "SRS", "{1C83008B-08D9-4EE2-942C-AE6242C40195}"
 EndProject

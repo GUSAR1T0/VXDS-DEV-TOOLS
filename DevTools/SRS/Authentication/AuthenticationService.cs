@@ -5,11 +5,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
-using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Entities.Operations;
-using VXDesign.Store.DevTools.Common.Entities.Storage;
-using VXDesign.Store.DevTools.Common.Storage.DataStores;
-using VXDesign.Store.DevTools.Common.Utils.Authentication;
+using VXDesign.Store.DevTools.Core.Entities.Exceptions;
+using VXDesign.Store.DevTools.Core.Entities.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Storage.DataStores;
+using VXDesign.Store.DevTools.Core.Utils.Authentication;
 
 namespace VXDesign.Store.DevTools.SRS.Authentication
 {

@@ -2,10 +2,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Services.Operations;
-using VXDesign.Store.DevTools.Common.Utils.Authentication;
+using VXDesign.Store.DevTools.Core.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Entities.Exceptions;
+using VXDesign.Store.DevTools.Core.Services.Operations;
+using VXDesign.Store.DevTools.Core.Utils.Authentication;
 using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
@@ -14,7 +14,7 @@ using VXDesign.Store.DevTools.SRS.Syrinx.Utils;
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
     [Route("api/[controller]")]
-    public class AccountController : ApiController
+    public class AccountController : BaseApiController
     {
         private readonly IAuthenticationService authenticationService;
 
@@ -104,7 +104,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpGet("verify")]
-        public async Task<ActionResult<UserAuthorizationModel>> VerifyAuthentication() => await Execute(OperationContexts.VerifyAuthentication, async operation =>
+        public ActionResult<UserAuthorizationModel> VerifyAuthentication() => Execute(OperationContexts.VerifyAuthentication, operation =>
         {
             var userId = AuthenticationUtils.GetUserId(User.Claims);
             if (userId == null)

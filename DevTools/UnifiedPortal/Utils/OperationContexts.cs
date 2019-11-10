@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Common.Entities.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Operations;
 using VXDesign.Store.DevTools.UnifiedPortal.Controllers;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Utils

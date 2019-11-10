@@ -46,12 +46,7 @@
 
 <style>
     .el-input__inner:focus {
-        border-color: #F56C6C !important;
         outline: none;
-    }
-
-    .el-tabs__item.is-active {
-        color: #F56C6C !important;
     }
 </style>
 

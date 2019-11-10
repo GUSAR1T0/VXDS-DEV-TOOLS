@@ -51,7 +51,7 @@
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
                         <el-button type="primary" ref="signUpButton" class="auth-button" native-type="submit">
-                            Sign Up
+                            <strong>Sign Up</strong>
                         </el-button>
                     </el-form-item>
                 </el-col>

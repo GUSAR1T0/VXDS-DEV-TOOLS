@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Attributes;
-using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Enums.Operations;
-using VXDesign.Store.DevTools.Common.Services.Operations;
-using VXDesign.Store.DevTools.Common.Services.Storage;
+using VXDesign.Store.DevTools.Core.Attributes;
+using VXDesign.Store.DevTools.Core.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Entities.Exceptions;
+using VXDesign.Store.DevTools.Core.Enums.Operations;
+using VXDesign.Store.DevTools.Core.Services.Operations;
+using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.User;
 using VXDesign.Store.DevTools.UnifiedPortal.Utils;
@@ -16,7 +16,7 @@ using VXDesign.Store.DevTools.UnifiedPortal.Utils;
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
     [Route("api/[controller]")]
-    public class UserController : ApiController
+    public class UserController : BaseApiController
     {
         private readonly IUserService userService;
 

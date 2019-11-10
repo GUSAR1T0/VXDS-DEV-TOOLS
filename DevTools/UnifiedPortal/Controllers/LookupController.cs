@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Entities.Properties;
-using VXDesign.Store.DevTools.Common.Enums.Operations;
-using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Entities.Properties;
+using VXDesign.Store.DevTools.Core.Enums.Operations;
+using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.Lookup;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 using VXDesign.Store.DevTools.UnifiedPortal.Utils;
@@ -12,7 +12,7 @@ using VXDesign.Store.DevTools.UnifiedPortal.Utils;
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
     [Route("api/[controller]")]
-    public class LookupController : ApiController
+    public class LookupController : BaseApiController
     {
         private readonly SyrinxProperties syrinxProperties;
 
@@ -27,9 +27,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>Dictionary with values</returns>
         [ProducesResponseType(typeof(LookupModel), StatusCodes.Status200OK)]
         [HttpGet("values")]
-        public async Task<ActionResult<LookupModel>> GetAllValues()
+        public ActionResult<LookupModel> GetAllValues()
         {
-            return await Execute(OperationContexts.GetAllValues, async _ => new LookupModel
+            return Execute(OperationContexts.GetAllValues, _ => new LookupModel
             {
                 EnvironmentVariables = new EnvironmentVariablesModel
                 {
