@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using VXDesign.Store.DevTools.Common.Extensions.Controllers;
+using VXDesign.Store.DevTools.Core.Extensions.Controllers;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx
 {

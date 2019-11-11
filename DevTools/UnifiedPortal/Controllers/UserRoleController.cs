@@ -3,19 +3,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Attributes;
-using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Enums.Operations;
-using VXDesign.Store.DevTools.Common.Services.Operations;
-using VXDesign.Store.DevTools.Common.Services.Storage;
+using VXDesign.Store.DevTools.Core.Attributes;
+using VXDesign.Store.DevTools.Core.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Enums.Operations;
+using VXDesign.Store.DevTools.Core.Services.Operations;
+using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.User;
-using VXDesign.Store.DevTools.UnifiedPortal.Utils;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
     [Route("api/[controller]")]
-    public class UserRoleController : ApiController
+    public class UserRoleController : BaseApiController
     {
         private readonly IUserRoleService userRoleService;
         private readonly IUserService userService;
@@ -35,7 +34,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("full/list")]
-        public async Task<ActionResult<IEnumerable<UserRoleFullInfoModel>>> GetUserRolesFullInfo() => await Execute(OperationContexts.GetUserRolesFullInfo, async operation =>
+        public async Task<ActionResult<IEnumerable<UserRoleFullInfoModel>>> GetUserRolesFullInfo() => await Execute(async operation =>
         {
             var userRoles = await userRoleService.GetUserRoles(operation);
             return userRoles.Select(userRole => userRole.ToFullInfoModel());
@@ -50,7 +49,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("short/list")]
-        public async Task<ActionResult<IEnumerable<UserRoleShortInfoModel>>> GetUserRolesShortInfo() => await Execute(OperationContexts.GetUserRolesShortInfo, async operation =>
+        public async Task<ActionResult<IEnumerable<UserRoleShortInfoModel>>> GetUserRolesShortInfo() => await Execute(async operation =>
         {
             var userRoles = await userRoleService.GetUserRoles(operation, false);
             return userRoles.Select(userRole => userRole.ToShortInfoModel());
@@ -65,7 +64,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserRoleFullInfoModel>> GetUserRole(int id) => await Execute(OperationContexts.GetUserRole, async operation =>
+        public async Task<ActionResult<UserRoleFullInfoModel>> GetUserRole(int id) => await Execute(async operation =>
         {
             var userRole = await userRoleService.GetUserRoleById(operation, id);
             return userRole.ToFullInfoModel();
@@ -84,7 +83,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpPost]
         public async Task<ActionResult> AddUserRole([FromBody] UserRoleFullInfoModel model)
         {
-            return await Execute(OperationContexts.AddUserRole, async operation => await userRoleService.AddUserRole(operation, model.ToEntity()));
+            return await Execute(async operation => await userRoleService.AddUserRole(operation, model.ToEntity()));
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUserRole(int id, [FromBody] UserRoleFullInfoModel model)
         {
-            return await Execute(OperationContexts.UpdateUserRole, async operation => await userRoleService.UpdateUserRole(operation, model.ToEntity(id)));
+            return await Execute(async operation => await userRoleService.UpdateUserRole(operation, model.ToEntity(id)));
         }
 
         /// <summary>
@@ -117,7 +116,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication(UserPermission.ManageUserRoles)]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUserRole(int id) => await Execute(OperationContexts.DeleteUserRole, async operation => await userRoleService.DeleteUserRoleById(operation, id));
+        public async Task<ActionResult> DeleteUserRole(int id) => await Execute(async operation => await userRoleService.DeleteUserRoleById(operation, id));
 
         /// <summary>
         /// Obtains a count of affected users before user role deletion
@@ -129,7 +128,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("{id}/affectedUsers/count")]
-        public async Task<ActionResult<int>> GetAffectedUsersCount(int id) => await Execute(OperationContexts.GetAffectedUsersCount, async operation =>
+        public async Task<ActionResult<int>> GetAffectedUsersCount(int id) => await Execute(async operation =>
         {
             var count = await userService.GetAffectedUsersCount(operation, id);
             return count;

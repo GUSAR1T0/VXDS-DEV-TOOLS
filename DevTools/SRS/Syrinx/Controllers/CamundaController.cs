@@ -4,20 +4,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Entities.Camunda.Base;
-using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Services.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Camunda.Base;
+using VXDesign.Store.DevTools.Core.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Entities.Exceptions;
+using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
-using VXDesign.Store.DevTools.SRS.Syrinx.Utils;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CamundaController : ApiController
+    public class CamundaController : BaseApiController
     {
         private readonly ICamundaServerService camundaServerService;
 
@@ -54,7 +53,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [HttpPost("request")]
-        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await Execute(OperationContexts.SendRequest, async operation =>
+        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await Execute(async operation =>
         {
             var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode(operation);
             return (await camundaServerService.Send(operation, model.ToEntity(endpoint))).ToModel();

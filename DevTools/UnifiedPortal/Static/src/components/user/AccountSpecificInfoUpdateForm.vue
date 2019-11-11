@@ -79,7 +79,7 @@
     import format from "string-format";
     import { GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
 
-    import UserRolesPermissionsTables from "@/components/user/UserRolesPermissionsTables";
+    import UserRolesPermissionsTables from "@/components/userRole/UserRolesPermissionsTables";
 
     export default {
         name: "AccountSpecificInfoUpdateForm",

@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Common.Enums.Operations;
+using VXDesign.Store.DevTools.Core.Enums.Operations;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
 {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using VXDesign.Store.DevTools.Common.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Entities.Controllers;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Lookup
 {

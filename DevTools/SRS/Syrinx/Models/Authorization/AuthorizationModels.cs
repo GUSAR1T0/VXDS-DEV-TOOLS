@@ -1,19 +1,39 @@
-using VXDesign.Store.DevTools.Common.Enums.Operations;
+using System.ComponentModel.DataAnnotations;
+using VXDesign.Store.DevTools.Core.Enums.Operations;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
 {
     public class SignInModel
     {
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string Password { get; set; }
     }
 
     public class SignUpModel
     {
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string Password { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string FirstName { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string LastName { get; set; }
+
+        [Required]
+        [StringLength(32)]
         public string Color { get; set; }
     }
 

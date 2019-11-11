@@ -51,7 +51,7 @@
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
                         <el-button type="primary" ref="signUpButton" class="auth-button" native-type="submit">
-                            Sign Up
+                            <strong>Sign Up</strong>
                         </el-button>
                     </el-form-item>
                 </el-col>
@@ -92,16 +92,16 @@
                 signUpRules: {
                     firstName: [
                         {required: true, message: "Please, input first name", trigger: "change"},
-                        {min: 2, max: 30, message: "Length should be from 2 to 30", trigger: "change"}
+                        {min: 2, max: 50, message: "Length should be from 2 to 50", trigger: "change"}
                     ],
                     lastName: [
                         {required: true, message: "Please, input last name", trigger: "change"},
-                        {min: 2, max: 30, message: "Length should be from 2 to 30", trigger: "change"}
+                        {min: 2, max: 50, message: "Length should be from 2 to 50", trigger: "change"}
                     ],
                     email: [
                         {required: true, message: "Please, input email address", trigger: "change"},
                         {type: "email", message: "Please, input correct email address", trigger: "change"},
-                        {min: 3, max: 254, message: "Length should be from 3 to 254", trigger: "change"}
+                        {min: 3, max: 255, message: "Length should be from 3 to 255", trigger: "change"}
                     ],
                     password: [
                         {required: true, validator: validations.validatePassword, trigger: "change"}

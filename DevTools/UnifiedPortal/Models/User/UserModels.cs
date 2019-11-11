@@ -1,5 +1,3 @@
-using VXDesign.Store.DevTools.Common.Enums.Operations;
-
 namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
 {
     public class UserModel

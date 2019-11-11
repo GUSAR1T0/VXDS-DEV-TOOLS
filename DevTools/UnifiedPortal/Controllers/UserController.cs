@@ -3,20 +3,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Common.Attributes;
-using VXDesign.Store.DevTools.Common.Entities.Controllers;
-using VXDesign.Store.DevTools.Common.Entities.Exceptions;
-using VXDesign.Store.DevTools.Common.Enums.Operations;
-using VXDesign.Store.DevTools.Common.Services.Operations;
-using VXDesign.Store.DevTools.Common.Services.Storage;
+using VXDesign.Store.DevTools.Core.Attributes;
+using VXDesign.Store.DevTools.Core.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Entities.Exceptions;
+using VXDesign.Store.DevTools.Core.Enums.Operations;
+using VXDesign.Store.DevTools.Core.Services.Operations;
+using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.User;
-using VXDesign.Store.DevTools.UnifiedPortal.Utils;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {
     [Route("api/[controller]")]
-    public class UserController : ApiController
+    public class UserController : BaseApiController
     {
         private readonly IUserService userService;
 
@@ -33,7 +32,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers() => await Execute(OperationContexts.GetUsers, async operation =>
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers() => await Execute(async operation =>
         {
             var users = await userService.GetUsers(operation);
             return users.Select(user => user.ToModel());
@@ -50,7 +49,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserProfileGetModel>> GetUserProfile(int id) => await Execute(OperationContexts.GetUserProfile, async operation =>
+        public async Task<ActionResult<UserProfileGetModel>> GetUserProfile(int id) => await Execute(async operation =>
         {
             var entity = await userService.GetUserProfileById(operation, id);
             return entity.ToModel();
@@ -71,7 +70,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpPut("{id}/general")]
         public async Task<ActionResult> UpdateUserProfileGeneralInfo(int id, [FromBody] UserProfileGeneralInfoUpdateModel model)
         {
-            return await Execute(OperationContexts.UpdateUserProfileGeneralInfo, async operation =>
+            return await Execute(async operation =>
             {
                 if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
                 {
@@ -98,7 +97,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpPut("{id}/accountSpecific")]
         public async Task<ActionResult> UpdateUserProfileAccountSpecificInfo(int id, [FromBody] UserProfileAccountSpecificInfoUpdateModel model)
         {
-            return await Execute(OperationContexts.UpdateUserProfileAccountSpecificInfo, async operation =>
+            return await Execute(async operation =>
             {
                 if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
                 {
@@ -122,7 +121,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpPut("{id}/activate")]
-        public async Task<ActionResult> ActivateUser(int id) => await Execute(OperationContexts.ActivateUser, async operation =>
+        public async Task<ActionResult> ActivateUser(int id) => await Execute(async operation =>
         {
             if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
             {
@@ -144,7 +143,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [SyrinxVerifiedAuthentication]
         [HttpPut("{id}/deactivate")]
-        public async Task<ActionResult> DeactivateUser(int id) => await Execute(OperationContexts.DeactivateUser, async operation =>
+        public async Task<ActionResult> DeactivateUser(int id) => await Execute(async operation =>
         {
             if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
             {

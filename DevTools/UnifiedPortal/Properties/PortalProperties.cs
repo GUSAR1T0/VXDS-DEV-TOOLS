@@ -1,5 +1,5 @@
-using VXDesign.Store.DevTools.Common.Attributes;
-using VXDesign.Store.DevTools.Common.Entities.Properties;
+using VXDesign.Store.DevTools.Core.Attributes;
+using VXDesign.Store.DevTools.Core.Entities.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Properties
 {
