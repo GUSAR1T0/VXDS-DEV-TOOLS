@@ -17,10 +17,10 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 DECLARE @UsersCount INT, @RolesCount INT
 
                 SELECT @UsersCount = COUNT(*)
-                FROM [authorization].[User]
+                FROM [authentication].[User]
 
                 SELECT @RolesCount = COUNT(*)
-                FROM [authorization].[UserRole]
+                FROM [authentication].[UserRole]
 
                 SELECT
                     @UsersCount AS [UsersCount],

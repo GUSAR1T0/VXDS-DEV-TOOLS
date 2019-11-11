@@ -6,14 +6,15 @@ namespace VXDesign.Store.DevTools.Core.Storage.LogStores
 {
     public interface ILoggerStore
     {
-        Task Trace<T>(long operationId, string message, dynamic value);
-        Task Debug<T>(long operationId, string message, dynamic value);
-        Task Info<T>(long operationId, string message, dynamic value);
-        Task Warn<T>(long operationId, string message, dynamic value);
-        Task Error<T>(long operationId, string message, dynamic value);
-        Task Fatal<T>(long operationId, string message, dynamic value);
+        Task Trace<T>(long operationId, string message, dynamic value = null);
+        Task Debug<T>(long operationId, string message, dynamic value = null);
+        Task Info<T>(long operationId, string message, dynamic value = null);
+        Task Warn<T>(long operationId, string message, dynamic value = null);
+        Task Error<T>(long operationId, string message, dynamic value = null);
+        Task Fatal<T>(long operationId, string message, dynamic value = null);
 
         Task<long> CountOfAllCollections();
+        Task DropAllLogCollections();
     }
 
     public class LoggerStore : BaseLogStore<LoggerEntity>, ILoggerStore
@@ -22,32 +23,32 @@ namespace VXDesign.Store.DevTools.Core.Storage.LogStores
         {
         }
 
-        public async Task Trace<T>(long operationId, string message, dynamic value)
+        public async Task Trace<T>(long operationId, string message, dynamic value = null)
         {
             await Log<T>("TRACE", operationId, message, value);
         }
 
-        public async Task Debug<T>(long operationId, string message, dynamic value)
+        public async Task Debug<T>(long operationId, string message, dynamic value = null)
         {
             await Log<T>("DEBUG", operationId, message, value);
         }
 
-        public async Task Info<T>(long operationId, string message, dynamic value)
+        public async Task Info<T>(long operationId, string message, dynamic value = null)
         {
             await Log<T>("INFO", operationId, message, value);
         }
 
-        public async Task Warn<T>(long operationId, string message, dynamic value)
+        public async Task Warn<T>(long operationId, string message, dynamic value = null)
         {
             await Log<T>("WARN", operationId, message, value);
         }
 
-        public async Task Error<T>(long operationId, string message, dynamic value)
+        public async Task Error<T>(long operationId, string message, dynamic value = null)
         {
             await Log<T>("ERROR", operationId, message, value);
         }
 
-        public async Task Fatal<T>(long operationId, string message, dynamic value)
+        public async Task Fatal<T>(long operationId, string message, dynamic value = null)
         {
             await Log<T>("FATAL", operationId, message, value);
         }
@@ -76,6 +77,16 @@ namespace VXDesign.Store.DevTools.Core.Storage.LogStores
             }
 
             return count;
+        }
+
+        public async Task DropAllLogCollections()
+        {
+            var collectionNamesCursor = await Database.ListCollectionNamesAsync();
+            var collectionNames = await collectionNamesCursor.ToListAsync();
+            foreach (var collectionName in collectionNames)
+            {
+                await Database.DropCollectionAsync(collectionName);
+            }
         }
     }
 }

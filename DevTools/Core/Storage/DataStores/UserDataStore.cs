@@ -46,8 +46,8 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     au.[Email],
                     au.[Color],
                     aur.[UserPermissions]
-                FROM [authorization].[User] au
-                LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
+                FROM [authentication].[User] au
+                LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE au.[Id] = @Id
             ");
         }
@@ -56,7 +56,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<string>(new { Id = id }, @"
                 SELECT [RefreshToken]
-                FROM [authorization].[User]
+                FROM [authentication].[User]
                 WHERE [Id] = @Id
             ");
         }
@@ -71,8 +71,8 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 SELECT
                     au.[Id],
                     aur.[UserPermissions]
-                FROM [authorization].[User] au
-                LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
+                FROM [authentication].[User] au
+                LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE [Email] = @Email AND (@Password IS NULL OR [Password] = @Password)
             ");
         }
@@ -83,8 +83,8 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 SELECT
                     au.[Id],
                     aur.[UserPermissions]
-                FROM [authorization].[User] au
-                LEFT JOIN [authorization].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
+                FROM [authentication].[User] au
+                LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE au.[Id] = @Id
             ");
         }
@@ -96,7 +96,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 Id = id,
                 RefreshToken = refreshToken
             }, @"
-                UPDATE [authorization].[User]
+                UPDATE [authentication].[User]
                 SET [RefreshToken] = @RefreshToken
                 WHERE [Id] = @Id
             ");
@@ -114,7 +114,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
             }, @"
                 DECLARE @Id TABLE ([Id] INT)
 
-                INSERT INTO [authorization].[User] ([FirstName], [LastName], [Email], [Password], [Color])
+                INSERT INTO [authentication].[User] ([FirstName], [LastName], [Email], [Password], [Color])
                 OUTPUT INSERTED.[Id] INTO @Id
                 VALUES (@FirstName, @LastName, @Email, @Password, @Color)
 
@@ -124,7 +124,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     [LastName],
                     [Email],
                     [Color]
-                FROM [authorization].[User] au
+                FROM [authentication].[User] au
                 INNER JOIN @Id i ON au.[Id] = i.[Id]
             ");
         }
@@ -133,7 +133,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
                 SELECT TOP 1 1
-                FROM [authorization].[User]
+                FROM [authentication].[User]
                 WHERE [Id] = @Id AND [IsActivated] = 1
             ");
         }
@@ -146,7 +146,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
                 SELECT TOP 1 1
-                FROM [authorization].[User]
+                FROM [authentication].[User]
                 WHERE [Id] = @Id
             ");
         }
@@ -162,8 +162,8 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     [Color],
                     aur.[Name] AS [UserRole],
                     [IsActivated]
-                FROM [authorization].[User] au
-                LEFT JOIN [authorization].[UserRole] aur ON au.[UserRoleId] = aur.[Id]
+                FROM [authentication].[User] au
+                LEFT JOIN [authentication].[UserRole] aur ON au.[UserRoleId] = aur.[Id]
             ");
         }
 
@@ -180,7 +180,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     [Bio],
                     [UserRoleId],
                     [IsActivated]
-                FROM [authorization].[User]
+                FROM [authentication].[User]
                 WHERE [Id] = @Id
             ");
         }
@@ -197,7 +197,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 entity.Location,
                 entity.Bio
             }, @"
-                UPDATE [authorization].[User]
+                UPDATE [authentication].[User]
                 SET
                     [FirstName] = @FirstName,
                     [LastName] = @LastName,
@@ -217,7 +217,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 entity.UserRoleId,
                 entity.IsActivated
             }, @"
-                UPDATE [authorization].[User]
+                UPDATE [authentication].[User]
                 SET
                     [UserRoleId] = @UserRoleId,
                     [IsActivated] = @IsActivated
@@ -232,7 +232,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 Id = id,
                 Status = status
             }, @"
-                UPDATE [authorization].[User]
+                UPDATE [authentication].[User]
                 SET [IsActivated] = @Status
                 WHERE [Id] = @Id
             ");
@@ -242,7 +242,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<int>(new { UserRoleId = userRoleId }, @"
                 SELECT COUNT(*)
-                FROM [authorization].[User]
+                FROM [authentication].[User]
                 WHERE [UserRoleId] = @UserRoleId
             ");
         }

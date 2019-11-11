@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import UserRolesPermissionsTables from "@/components/user/UserRolesPermissionsTables";
+    import UserRolesPermissionsTables from "@/components/userRole/UserRolesPermissionsTables";
 
     export default {
         name: "UserRoles",

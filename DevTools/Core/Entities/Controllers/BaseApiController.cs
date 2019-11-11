@@ -31,12 +31,12 @@ namespace VXDesign.Store.DevTools.Core.Entities.Controllers
 
         protected ActionResult Execute(Action<IOperation> action, [CallerMemberName] string callerName = "")
         {
-            Execute(async operation =>
+            var result = Execute(async operation =>
             {
                 await Task.Run(() => action(operation));
                 return true;
-            }, callerName).Wait();
-            return Ok();
+            }, callerName).Result;
+            return result.Value ? Ok() : result.Result;
         }
 
         protected ActionResult<T> Execute<T>(Func<IOperation, T> action, [CallerMemberName] string callerName = "")
@@ -46,12 +46,12 @@ namespace VXDesign.Store.DevTools.Core.Entities.Controllers
 
         protected async Task<ActionResult> Execute(Func<IOperation, Task> action, [CallerMemberName] string callerName = "")
         {
-            await Execute(async operation =>
+            var result = await Execute(async operation =>
             {
                 await action(operation);
                 return true;
             }, callerName);
-            return Ok();
+            return result.Value ? Ok() : result.Result;
         }
 
         protected async Task<ActionResult<T>> Execute<T>(Func<IOperation, Task<T>> action, [CallerMemberName] string callerName = "")

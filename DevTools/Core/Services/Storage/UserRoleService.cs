@@ -29,13 +29,26 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
 
         public async Task<UserRoleEntity> GetUserRoleById(IOperation operation, int id) => await userRoleStore.GetUserRoleById(operation, id);
 
-        public async Task AddUserRole(IOperation operation, UserRoleEntity entity) => await userRoleStore.AddUserRole(operation, entity);
+        public async Task AddUserRole(IOperation operation, UserRoleEntity entity)
+        {
+            if (await userRoleStore.IsUserRoleExist(operation, entity.Name))
+            {
+                throw CommonExceptions.UserRoleHasAlreadyExisted(operation, entity.Name);
+            }
+
+            await userRoleStore.AddUserRole(operation, entity);
+        }
 
         public async Task UpdateUserRole(IOperation operation, UserRoleEntity entity)
         {
             if (!await userRoleStore.IsUserRoleExist(operation, entity.Id))
             {
-                throw CommonExceptions.UserWasNotFound(operation, entity.Id);
+                throw CommonExceptions.UserRoleWasNotFound(operation, entity.Id);
+            }
+
+            if (await userRoleStore.IsUserRoleExist(operation, entity.Name, entity.Id))
+            {
+                throw CommonExceptions.UserRoleHasAlreadyExisted(operation, entity.Name);
             }
 
             await userRoleStore.UpdateUserRole(operation, entity);
@@ -45,7 +58,7 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
         {
             if (!await userRoleStore.IsUserRoleExist(operation, id))
             {
-                throw CommonExceptions.UserWasNotFound(operation, id);
+                throw CommonExceptions.UserRoleWasNotFound(operation, id);
             }
 
             await userRoleStore.DeleteUserRoleById(operation, id);

@@ -70,7 +70,7 @@
                 userRoleRules: {
                     name: [
                         {required: true, message: "Please, input role name", trigger: "change"},
-                        {min: 1, max: 32, message: "Length should be from 1 to 32", trigger: "change"}
+                        {min: 1, max: 50, message: "Length should be from 1 to 50", trigger: "change"}
                     ]
                 }
             };
@@ -138,7 +138,7 @@
                                 this.dialogStatus.visible = false;
                                 this.$refs.userRoleFormButton.loading = false;
 
-                                this.$notify.info({
+                                this.$notify.success({
                                     title: "User role was created",
                                     message: "Role changes took effect"
                                 });

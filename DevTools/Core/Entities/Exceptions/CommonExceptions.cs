@@ -51,6 +51,8 @@ namespace VXDesign.Store.DevTools.Core.Entities.Exceptions
 
         public static NotFoundException UserRoleWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"User role with ID \"{id}\" was not found");
 
+        public static NotFoundException UserRoleHasAlreadyExisted(IOperation operation, string name) => new NotFoundException(operation, $"User role with name \"{name}\" has already existed");
+
         public static AuthenticationException AccessDenied(IOperation operation, int statusCode, bool deactivated = false)
         {
             var message = "Access denied";
