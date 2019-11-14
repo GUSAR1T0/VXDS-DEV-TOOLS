@@ -42,20 +42,17 @@ namespace VXDesign.Store.DevTools.Database
             });
         }
 
-        private static IServiceProvider CreateServices(string dataStoreConnectionString, string logStoreConnectionString)
-        {
-            return new ServiceCollection()
-                .AddFluentMigratorCore()
-                .AddSingleton<ILoggerStore>(factory => new LoggerStore(logStoreConnectionString, "VXDS_DB"))
-                .ConfigureRunner(rb => rb
-                    .AddSqlServer()
-                    .WithGlobalConnectionString(dataStoreConnectionString)
-                    .ScanIn(typeof(Program).Assembly)
-                    .For.EmbeddedResources()
-                    .For.Migrations())
-                .AddLogging(lb => lb.AddNLog())
-                .BuildServiceProvider(false);
-        }
+        private static IServiceProvider CreateServices(string dataStoreConnectionString, string logStoreConnectionString) => new ServiceCollection()
+            .AddFluentMigratorCore()
+            .AddSingleton<ILoggerStore>(factory => new LoggerStore(logStoreConnectionString, "VXDS_DB"))
+            .ConfigureRunner(rb => rb
+                .AddSqlServer()
+                .WithGlobalConnectionString(dataStoreConnectionString)
+                .ScanIn(typeof(Program).Assembly)
+                .For.EmbeddedResources()
+                .For.Migrations())
+            .AddLogging(lb => lb.AddNLog())
+            .BuildServiceProvider(false);
 
         private static void UpgradeDatabase(IMigrationRunner runner, long? version = null)
         {

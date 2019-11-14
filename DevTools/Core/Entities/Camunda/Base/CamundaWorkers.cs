@@ -150,7 +150,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Camunda.Base
             {
                 var camundaWorkerType = typeof(TCamundaWorker);
                 var operationContext = OperationContext.Builder()
-                    .SetName("Worker", GetTopicName(camundaWorkerType))
+                    .SetName(camundaWorkerType.FullName, GetTopicName(camundaWorkerType))
                     .SetUserId(null, true)
                     .Create();
                 RunnableTasks.Add(workers => workers.OperationService.Make(operationContext, workers.Fetch<TCamundaWorker>));
