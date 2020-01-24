@@ -17,7 +17,7 @@ matrix:
     - name: "Camunda Server"
       language: java
       jdk:
-      - openjdk12
+      - openjdk13
       sudo: false
       before_install: cd ExtTools/CamundaServer
       install: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
