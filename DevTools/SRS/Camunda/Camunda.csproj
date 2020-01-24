@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <AssemblyName>VXDesign.Store.DevTools.SRS.Camunda</AssemblyName>
         <RootNamespace>VXDesign.Store.DevTools.SRS.Camunda</RootNamespace>
         <LangVersion>8.0</LangVersion>

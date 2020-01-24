@@ -30,7 +30,7 @@ jobs:
         fetch-depth: 1
     - uses: actions/setup-java@v1
       with:
-        java-version: '12.0.2'
+        java-version: '13.0.2'
         architecture: x64
     - run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -f ExtTools/CamundaServer/pom.xml
     - run: mvn test -B -f ExtTools/CamundaServer/pom.xml
@@ -50,6 +50,6 @@ jobs:
     - run: npm install -C DevTools/UnifiedPortal/Static
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.0.101'
+        dotnet-version: '3.1.101'
     - run: dotnet restore DevTools/DevTools.sln
     - run: dotnet build DevTools/DevTools.sln
