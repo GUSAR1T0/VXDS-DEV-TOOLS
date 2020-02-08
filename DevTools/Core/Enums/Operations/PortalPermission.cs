@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace VXDesign.Store.DevTools.Core.Enums.Operations
 {
     [Flags]
-    public enum UserPermission
+    public enum PortalPermission
     {
         [Description("Access to Admin Panel")]
         AccessToAdminPanel = 1,

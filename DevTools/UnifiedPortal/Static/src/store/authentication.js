@@ -1,4 +1,4 @@
-import { getTokens, setTokens, removeTokens } from "@/extensions/tokens";
+import { getTokens, removeTokens, setTokens } from "@/extensions/tokens";
 import { getConfiguration, getUserFullName, getUserInitials } from "@/extensions/utils";
 import {
     GET_USER_DATA_ENDPOINT,
@@ -8,10 +8,12 @@ import {
     SIGN_UP_ENDPOINT
 } from "@/constants/endpoints";
 import {
+    GET_HTTP_REQUEST,
     LOGOUT_REQUEST,
+    POST_HTTP_REQUEST,
     REFRESH_REQUEST,
     SIGN_IN_REQUEST,
-    SIGN_UP_REQUEST, GET_HTTP_REQUEST, POST_HTTP_REQUEST
+    SIGN_UP_REQUEST
 } from "@/constants/actions";
 import { SYRINX } from "@/constants/servers";
 
@@ -22,7 +24,7 @@ export default {
         firstName: "",
         lastName: "",
         color: "",
-        userPermissions: 0
+        portalPermissions: 0
     },
     getters: {
         isAuthenticated: state => {
@@ -40,8 +42,8 @@ export default {
         getColor: state => {
             return state.color;
         },
-        hasUserPermission: state => permission => {
-            return permission === 0 || (state.userPermissions & permission) !== 0;
+        hasPortalPermission: state => permission => {
+            return permission === 0 || (state.portalPermissions & permission) !== 0;
         }
     },
     mutations: {
@@ -51,7 +53,7 @@ export default {
             state.firstName = data.firstName;
             state.lastName = data.lastName;
             state.color = data.color;
-            state.userPermissions = data.userRole ? data.userRole.userPermissions : data.userPermissions;
+            state.portalPermissions = data.userRole ? data.userRole.portalPermissions : data.portalPermissions;
         },
         [LOGOUT_REQUEST]: state => {
             state.isAuthenticated = false;
@@ -59,7 +61,7 @@ export default {
             state.firstName = "";
             state.lastName = "";
             state.color = "";
-            state.userPermissions = 0;
+            state.portalPermissions = 0;
         }
     },
     actions: {

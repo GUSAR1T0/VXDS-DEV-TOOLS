@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Core.Attributes;
 using VXDesign.Store.DevTools.Core.Entities.Controllers;
+using VXDesign.Store.DevTools.Core.Enums.Operations;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
@@ -26,8 +27,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// <returns>Model of admin panel data</returns>
         [ProducesResponseType(typeof(DashboardModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
-        [SyrinxVerifiedAuthentication]
-        [HttpGet("data")]
+        [SyrinxVerifiedAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet]
         public async Task<ActionResult<DashboardModel>> GetDashboardData() => await Execute(async operation =>
         {
             var entity = await dashboardService.GetDashboardData(operation);

@@ -24,7 +24,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 SELECT
                     [Id],
                     [Name],
-                    [UserPermissions]
+                    [PortalPermissions]
                 FROM [authentication].[UserRole]
                 WHERE [Id] = @Id;
             ");
@@ -34,7 +34,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
         {
             var fieldsOfFullInfoQuery = isFullInfoNeeded
                 ? @",
-                    [UserPermissions]"
+                    [PortalPermissions]"
                 : "";
             return await operation.Connection.QueryAsync<UserRoleEntity>($@"
                 SELECT
@@ -50,15 +50,15 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
             await operation.Connection.ExecuteAsync(new
             {
                 entity.Name,
-                entity.UserPermissions
+                entity.PortalPermissions
             }, @"
                 INSERT INTO [authentication].[UserRole] (
                     [Name],
-                    [UserPermissions]
+                    [PortalPermissions]
                 )
                 VALUES (
                     @Name,
-                    @UserPermissions
+                    @PortalPermissions
                 )
             ");
         }
@@ -69,12 +69,12 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
             {
                 entity.Id,
                 entity.Name,
-                entity.UserPermissions
+                entity.PortalPermissions
             }, @"
                 UPDATE [authentication].[UserRole]
                 SET
                     [Name] = @Name,
-                    [UserPermissions] = @UserPermissions
+                    [PortalPermissions] = @PortalPermissions
                 WHERE [Id] = @Id
             ");
         }

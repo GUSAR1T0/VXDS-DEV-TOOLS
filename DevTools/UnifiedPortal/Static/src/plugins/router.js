@@ -49,11 +49,11 @@ export default new Router({
             }
         },
         {
-            path: "/admin",
-            name: "admin",
-            component: () => import(/* webpackChunkName: "admin" */ "../views/admin/AdminPanel.vue"),
+            path: "/settings",
+            name: "settings",
+            component: () => import(/* webpackChunkName: "settings" */ "../views/settings/Settings.vue"),
             meta: {
-                pageName: "Admin Panel"
+                pageName: "Settings"
             }
         },
         {

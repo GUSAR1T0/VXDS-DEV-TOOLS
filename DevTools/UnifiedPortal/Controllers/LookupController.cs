@@ -39,7 +39,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
                 },
                 LookupValues = new LookupValuesModel
                 {
-                    UserPermissions = EnumModel.GetEnumModelValues<UserPermission>()
+                    PortalPermissions = EnumModel.GetEnumModelValues<PortalPermission>()
                 }
             });
         }

@@ -14,7 +14,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
             FirstName = entity.FirstName,
             LastName = entity.LastName,
             Color = entity.Color,
-            UserPermissions = entity.UserPermissions
+            PortalPermissions = entity.PortalPermissions
         };
 
         internal static UserRegistrationEntity ToEntity(this SignUpModel model) => new UserRegistrationEntity

@@ -64,7 +64,7 @@
     } from "@/constants/endpoints";
     import { LOCALHOST } from "@/constants/servers";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
-    import { USER_PERMISSION } from "@/constants/permissions";
+    import { PORTAL_PERMISSION } from "@/constants/permissions";
     import format from "string-format";
 
     import LoadingContainer from "@/components/page/LoadingContainer.vue";
@@ -99,7 +99,7 @@
         },
         computed: {
             ...mapGetters([
-                "hasUserPermission",
+                "hasPortalPermission",
                 "getUserRole",
                 "getUserRoleForm"
             ])
@@ -124,7 +124,7 @@
                 });
             },
             hasPermissionToManageUserRoles(id) {
-                return (id && id !== 1 || !id) && this.hasUserPermission(USER_PERMISSION.MANAGE_USER_ROLES);
+                return (id && id !== 1 || !id) && this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_USER_ROLES);
             },
             openDialogToCreateOrUpdate(userRole) {
                 this.$store.commit(STORE_USER_ROLE_DATA_REQUEST, userRole);

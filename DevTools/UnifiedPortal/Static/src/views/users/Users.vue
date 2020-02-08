@@ -104,7 +104,7 @@
     import { GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import { ACTIVATE_USER_ENDPOINT, DEACTIVATE_USER_ENDPOINT, GET_USERS_ENDPOINT } from "@/constants/endpoints";
-    import { USER_PERMISSION } from "@/constants/permissions";
+    import { PORTAL_PERMISSION } from "@/constants/permissions";
     import format from "string-format";
 
     import LoadingContainer from "@/components/page/LoadingContainer.vue";
@@ -133,7 +133,7 @@
         computed: {
             ...mapGetters([
                 "getUserId",
-                "hasUserPermission"
+                "hasPortalPermission"
             ])
         },
         methods: {
@@ -175,7 +175,7 @@
                 });
             },
             hasPermissionToManageUserStatus(id) {
-                return this.getUserId !== id && this.hasUserPermission(USER_PERMISSION.UPDATE_USER_PROFILE);
+                return this.getUserId !== id && this.hasPortalPermission(PORTAL_PERMISSION.UPDATE_USER_PROFILE);
             },
             openManageUserStatusDialog(user, activate) {
                 if (activate) {

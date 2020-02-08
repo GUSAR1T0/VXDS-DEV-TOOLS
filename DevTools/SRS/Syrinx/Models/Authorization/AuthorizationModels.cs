@@ -45,6 +45,6 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
         public string LastName { get; set; }
         public string Color { get; set; }
 
-        public UserPermission UserPermissions { get; set; }
+        public PortalPermission PortalPermissions { get; set; }
     }
 }

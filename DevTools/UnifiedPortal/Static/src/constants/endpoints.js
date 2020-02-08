@@ -25,4 +25,4 @@ export const DELETE_USER_ROLE_ENDPOINT = "userRole/{id}";
 export const GET_AFFECTED_USERS_COUNT_BY_USER_ROLE_ENDPOINT = "userRole/{id}/affectedUsers/count";
 
 // Admin panel endpoints
-export const GET_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/data";
+export const GET_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard";

@@ -137,7 +137,9 @@
             let navmenu = document.getElementsByClassName("el-nav-menu-vertical");
             if (navmenu) {
                 window.onscroll = function () {
-                    navmenu[0].style.top = (window.pageYOffset || document.documentElement.scrollTop) + "px";
+                    if (navmenu[0]) {
+                        navmenu[0].style.top = (window.pageYOffset || document.documentElement.scrollTop) + "px";
+                    }
                 };
             }
         },

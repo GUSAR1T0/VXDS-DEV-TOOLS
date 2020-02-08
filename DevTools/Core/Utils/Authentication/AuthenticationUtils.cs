@@ -16,9 +16,9 @@ namespace VXDesign.Store.DevTools.Core.Utils.Authentication
             return int.TryParse(GetClaimValue(claims, AuthenticationClaimName.UserId), out var value) ? value : (int?) null;
         }
 
-        public static UserPermission GetUserPermissions(IEnumerable<Claim> claims)
+        public static PortalPermission GetUserPermissions(IEnumerable<Claim> claims)
         {
-            return Enum.TryParse<UserPermission>(GetClaimValue(claims, AuthenticationClaimName.UserPermissions), out var value) ? value : 0;
+            return Enum.TryParse<PortalPermission>(GetClaimValue(claims, AuthenticationClaimName.UserPermissions), out var value) ? value : 0;
         }
 
         private static string GetClaimValue(IEnumerable<Claim> claims, string key)
@@ -39,7 +39,7 @@ namespace VXDesign.Store.DevTools.Core.Utils.Authentication
         public static ClaimsIdentity GetClaimsIdentity(UserAuthorizationEntity entity) => GetClaimsIdentity(new List<Claim>
         {
             new Claim(AuthenticationClaimName.UserId, entity.Id.ToString()),
-            new Claim(AuthenticationClaimName.UserPermissions, entity.UserPermissions.ToString("D"))
+            new Claim(AuthenticationClaimName.UserPermissions, entity.PortalPermissions.ToString("D"))
         });
 
         public static ClaimsIdentity GetClaimsIdentity(IEnumerable<Claim> claims) => new ClaimsIdentity(claims, "Token");

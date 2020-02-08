@@ -8,8 +8,10 @@
                 <div v-if="value !== undefined" style="font-size: 20px">
                     {{ value }}
                 </div>
-                <el-divider v-if="hasDescription" class="divider-editable-row"/>
-                <slot name="description"></slot>
+                <div style="padding-top: 20px" v-if="hasDescription || !!$slots['description']">
+                    <el-divider v-if="hasDescription" class="divider-editable-row"/>
+                    <slot name="description"/>
+                </div>
             </el-col>
         </el-row>
         <el-divider class="divider-editable-row"/>
