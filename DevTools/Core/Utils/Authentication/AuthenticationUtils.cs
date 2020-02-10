@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using VXDesign.Store.DevTools.Core.Entities.Authentication;
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.Core.Enums.Operations;
 
 namespace VXDesign.Store.DevTools.Core.Utils.Authentication

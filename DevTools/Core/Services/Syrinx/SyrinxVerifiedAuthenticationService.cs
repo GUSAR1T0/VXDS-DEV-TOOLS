@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Core.Entities.Exceptions;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.Core.Entities.Syrinx;
 using VXDesign.Store.DevTools.Core.Extensions.HTTP;
 using VXDesign.Store.DevTools.Core.Services.Operations;

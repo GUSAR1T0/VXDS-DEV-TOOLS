@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Core.Entities.Properties;
 using VXDesign.Store.DevTools.Core.Storage.DataStores;
 using VXDesign.Store.DevTools.Core.Storage.LogStores;
-using IOperationStore = VXDesign.Store.DevTools.Core.Storage.DataStores.IOperationStore;
 
 namespace VXDesign.Store.DevTools.Core.Entities.Operations
 {
@@ -20,7 +19,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
     public class Operation : IOperation
     {
         private readonly ILoggerStore loggerStore;
-        private readonly IOperationStore operationStore;
+        private readonly IOperationManagerStore operationManagerStore;
         private readonly long? operationId;
 
         public OperationContext OperationContext { get; }
@@ -29,21 +28,21 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
 
         public IOperationConnection Connection { get; }
 
-        internal Operation(string scope, OperationContext context, DatabaseConnectionProperties properties)
+        internal Operation(ILoggerStore loggerStore, string dataStoreConnectionString, OperationContext context)
         {
+            this.loggerStore = loggerStore;
             OperationContext = context;
-            loggerStore = new LoggerStore(properties.LogStoreConnectionString, scope);
 
-            Connection = new OperationConnection(this, properties.DataStoreConnectionString);
-            operationStore = new OperationStore(Connection);
-            operationId = operationStore.Start(scope, context).Result;
+            Connection = new OperationConnection(this, dataStoreConnectionString);
+            operationManagerStore = new OperationManagerStore(Connection);
+            operationId = operationManagerStore.Start(context).Result;
         }
 
         public IOperationLogger Logger<T>() => new OperationLogger<T>(loggerStore, OperationId);
 
         public async Task Complete(bool isSuccessful)
         {
-            await operationStore.Stop(OperationId, isSuccessful);
+            await operationManagerStore.Stop(OperationId, isSuccessful);
             IsSuccessful = isSuccessful;
         }
 

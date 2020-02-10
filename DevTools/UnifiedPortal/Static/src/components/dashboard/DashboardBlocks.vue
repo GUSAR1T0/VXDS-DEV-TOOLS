@@ -2,23 +2,23 @@
     <div>
         <el-row :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="getColumnSize" :xl="getColumnSize">
-                <slot name="first"></slot>
+                <slot name="first"/>
             </el-col>
             <el-col v-if="hasSecondSlot" :lg="getColumnSize" :xl="getColumnSize" class="hidden-md-and-down">
-                <slot name="second"></slot>
+                <slot name="second"/>
             </el-col>
             <el-col v-if="hasThirdSlot" :lg="getColumnSize" :xl="getColumnSize" class="hidden-md-and-down">
-                <slot name="third"></slot>
+                <slot name="third"/>
             </el-col>
         </el-row>
         <el-row v-if="hasSecondSlot" class="small-display-row hidden-lg-and-up">
             <el-col :xs="24" :sm="24" :md="24">
-                <slot name="second"></slot>
+                <slot name="second"/>
             </el-col>
         </el-row>
         <el-row v-if="hasThirdSlot" class="small-display-row hidden-lg-and-up">
             <el-col :xs="24" :sm="24" :md="24">
-                <slot name="third"></slot>
+                <slot name="third"/>
             </el-col>
         </el-row>
     </div>

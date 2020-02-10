@@ -17,7 +17,7 @@
     export default {
         name: "UserRolesCard",
         props: {
-            rolesCount: Number
+            rolesCount: [String, Number]
         }
     };
 </script>

@@ -11,6 +11,7 @@ using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.Core.Services.Syrinx;
 using VXDesign.Store.DevTools.Core.Storage.DataStores;
+using VXDesign.Store.DevTools.Core.Storage.LogStores;
 using VXDesign.Store.DevTools.UnifiedPortal.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal
@@ -27,23 +28,35 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            const string scope = "VXDS_UP";
+
             // Portal properties
             services.SetupProperties<PortalProperties>(Configuration);
 
-            // Operations handler
-            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties, "VXDS_UP"));
-
             // Stores
+            services.AddSingleton<ILoggerStore>(factory =>
+            {
+                var logStoreConnectionString = factory.GetService<PortalProperties>().DatabaseConnectionProperties.LogStoreConnectionString;
+                return new LoggerStore(logStoreConnectionString, scope);
+            });
             services.AddScoped<IUserDataStore, UserDataStore>();
             services.AddScoped<IUserRoleStore, UserRoleStore>();
             services.AddScoped<IDashboardStore, DashboardStore>();
+            services.AddScoped<IOperationStore, OperationStore>();
 
             // Services
+            services.AddScoped<IOperationService>(factory =>
+            {
+                var loggerStore = factory.GetService<ILoggerStore>();
+                var dataStoreConnectionString = factory.GetService<PortalProperties>().DatabaseConnectionProperties.DataStoreConnectionString;
+                return new OperationService(loggerStore, dataStoreConnectionString, scope);
+            });
             services.AddScoped<ISyrinxCamundaClientService>(factory => new SyrinxCamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
             services.AddScoped<ISyrinxAuthenticationClientService>(factory => new SyrinxAuthenticationClientService(factory.GetService<PortalProperties>().SyrinxProperties));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IOperationWithLogsService, OperationWithLogsService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddRouting(options => options.LowercaseUrls = true);

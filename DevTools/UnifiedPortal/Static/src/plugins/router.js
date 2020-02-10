@@ -49,22 +49,30 @@ export default new Router({
             }
         },
         {
-            path: "/settings",
+            path: "/pages/about",
+            name: "about",
+            // route level code-splitting
+            // this generates a separate chunk (about.[hash].js) for this route
+            // which is lazy-loaded when the route is visited.
+            component: () => import(/* webpackChunkName: "about" */ "../views/pages/About.vue"),
+            meta: {
+                pageName: "About"
+            }
+        },
+        {
+            path: "/system/settings",
             name: "settings",
-            component: () => import(/* webpackChunkName: "settings" */ "../views/settings/Settings.vue"),
+            component: () => import(/* webpackChunkName: "settings" */ "../views/system/Settings.vue"),
             meta: {
                 pageName: "Settings"
             }
         },
         {
-            path: "/about",
-            name: "about",
-            // route level code-splitting
-            // this generates a separate chunk (about.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
-            component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
+            path: "/system/operations",
+            name: "operations",
+            component: () => import(/* webpackChunkName: "operations" */ "../views/system/Operations.vue"),
             meta: {
-                pageName: "About"
+                pageName: "Operations"
             }
         }
     ]

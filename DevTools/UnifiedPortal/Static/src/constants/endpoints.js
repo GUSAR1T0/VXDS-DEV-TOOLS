@@ -26,3 +26,4 @@ export const GET_AFFECTED_USERS_COUNT_BY_USER_ROLE_ENDPOINT = "userRole/{id}/aff
 
 // Admin panel endpoints
 export const GET_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard";
+export const GET_OPERATION_LIST_ENDPOINT = "operation/list";

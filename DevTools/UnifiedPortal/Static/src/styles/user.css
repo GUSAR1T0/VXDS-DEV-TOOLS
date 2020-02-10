@@ -1,0 +1,4 @@
+.user-avatar-and-name {
+    display: flex;
+    align-items: center;
+}

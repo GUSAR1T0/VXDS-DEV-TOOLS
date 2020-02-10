@@ -28,17 +28,17 @@
                 </el-menu-item-group>
             </el-submenu>
             <!-- E: Account -->
-            <!-- B: More -->
-            <el-submenu class="el-nav-menu-vertical-footer" index="More">
+            <!-- B: System -->
+            <el-submenu class="el-nav-menu-vertical-footer" index="System">
                 <template slot="title">
-                    <fa class="fa-submenu" icon="ellipsis-h"/>
+                    <fa class="fa-submenu" icon="server"/>
                 </template>
                 <el-menu-item-group>
-                    <span slot="title" class="el-nav-menu-vertical-group-title">More</span>
-                    <MoreSubMenu/>
+                    <span slot="title" class="el-nav-menu-vertical-group-title">System</span>
+                    <SystemSubMenu/>
                 </el-menu-item-group>
             </el-submenu>
-            <!-- E: More -->
+            <!-- E: System -->
         </el-menu>
         <ConfirmationDialog :dialog-status="logoutDialogStatus"
                             confirmation-text="Are you sure that you want to sign out?"
@@ -91,7 +91,7 @@
 
     import PagesSubMenu from "@/components/navigation-bar/submenu/PagesSubMenu.vue";
     import AccountSubMenu from "@/components/navigation-bar/submenu/AccountSubMenu.vue";
-    import MoreSubMenu from "@/components/navigation-bar/submenu/MoreSubMenu.vue";
+    import SystemSubMenu from "@/components/navigation-bar/submenu/SystemSubMenu.vue";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
 
     export default {
@@ -99,7 +99,7 @@
         components: {
             PagesSubMenu,
             AccountSubMenu,
-            MoreSubMenu,
+            SystemSubMenu,
             ConfirmationDialog
         },
         data() {

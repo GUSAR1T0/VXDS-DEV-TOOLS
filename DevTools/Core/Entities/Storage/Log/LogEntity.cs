@@ -2,9 +2,9 @@ using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace VXDesign.Store.DevTools.Core.Entities.Storage
+namespace VXDesign.Store.DevTools.Core.Entities.Storage.Log
 {
-    public class LoggerEntity : IDataEntity
+    public class LogEntity : IDataEntity
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

@@ -17,6 +17,7 @@ using VXDesign.Store.DevTools.Core.Extensions.Base;
 using VXDesign.Store.DevTools.Core.Extensions.HTTP;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Services.Syrinx;
+using VXDesign.Store.DevTools.Core.Storage.LogStores;
 using VXDesign.Store.DevTools.Core.Utils.Properties;
 
 namespace VXDesign.Store.DevTools.Core.Entities.Camunda.Base
@@ -183,7 +184,8 @@ namespace VXDesign.Store.DevTools.Core.Entities.Camunda.Base
         internal CamundaWorkers(CamundaWorkersBuilder builder)
         {
             Properties = builder.Properties;
-            OperationService = new OperationService(Properties.DatabaseConnectionProperties, builder.LogScope);
+            var loggerStore = new LoggerStore(Properties.DatabaseConnectionProperties.LogStoreConnectionString, builder.LogScope);
+            OperationService = new OperationService(loggerStore, Properties.DatabaseConnectionProperties.DataStoreConnectionString, builder.LogScope);
             Service = new SyrinxCamundaClientService(Properties.SyrinxProperties);
             RunnableTasks = builder.RunnableTasks;
         }

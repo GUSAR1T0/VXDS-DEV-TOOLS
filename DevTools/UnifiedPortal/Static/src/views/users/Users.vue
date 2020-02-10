@@ -86,11 +86,7 @@
     </LoadingContainer>
 </template>
 
-<style scoped>
-    .user-avatar-and-name {
-        display: flex;
-        align-items: center;
-    }
+<style scoped src="@/styles/user.css">
 </style>
 
 <script>

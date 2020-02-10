@@ -45,7 +45,7 @@ namespace VXDesign.Store.DevTools.Database.Migrations
                 Execute.EmbeddedScript("Base_AddInitialLoadingRecord.sql");
             }
 
-            loggerStore.Info<InitialLoading>(0, "Database is loaded").Wait();
+            loggerStore.Info<InitialLoading>(0, "Database is initialized").Wait();
         }
 
         public override void Down()

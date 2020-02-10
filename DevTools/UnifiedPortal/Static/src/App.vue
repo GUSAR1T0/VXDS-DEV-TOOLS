@@ -12,8 +12,7 @@
                     <div v-else-if="isAuthenticated && !hasPermissionToAdminPanel">
                         <h1>You don't have an access to the portal</h1>
                         <el-button type="danger" @click="logoutDialogStatus.visible = true">
-                            <fa class="fa-submenu-item" icon="sign-out-alt"/>
-                            <strong> Sign Out</strong>
+                            <span><fa class="fa-submenu-item" icon="sign-out-alt"/> | <strong>Sign Out</strong></span>
                         </el-button>
                         <ConfirmationDialog :dialog-status="logoutDialogStatus"
                                             confirmation-text="Are you sure that you want to sign out?"

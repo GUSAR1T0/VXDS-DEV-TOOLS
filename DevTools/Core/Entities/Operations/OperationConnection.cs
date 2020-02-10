@@ -15,6 +15,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
         Task<int> ExecuteAsync(string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<int> ExecuteAsync(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<int> ExecuteAsync(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<int> ExecuteAsync(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
 
         #endregion
 
@@ -23,6 +24,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
         Task<IEnumerable<T>> QueryAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<IEnumerable<T>> QueryAsync<T>(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<IEnumerable<T>> QueryAsync<T>(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<IEnumerable<T>> QueryAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
 
         #endregion
 
@@ -31,6 +33,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
         Task<T> QueryFirstAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<T> QueryFirstAsync<T>(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<T> QueryFirstAsync<T>(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<T> QueryFirstAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
 
         #endregion
 
@@ -39,6 +42,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
         Task<T> QueryFirstOrDefaultAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<T> QueryFirstOrDefaultAsync<T>(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<T> QueryFirstOrDefaultAsync<T>(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<T> QueryFirstOrDefaultAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
 
         #endregion
 
@@ -47,6 +51,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
         Task<T> QuerySingleAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<T> QuerySingleAsync<T>(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<T> QuerySingleAsync<T>(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<T> QuerySingleAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
 
         #endregion
 
@@ -55,6 +60,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
         Task<T> QuerySingleOrDefaultAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<T> QuerySingleOrDefaultAsync<T>(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<T> QuerySingleOrDefaultAsync<T>(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<T> QuerySingleOrDefaultAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
 
         #endregion
 
@@ -63,6 +69,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
         Task<SqlMapper.GridReader> QueryMultipleAsync(string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<SqlMapper.GridReader> QueryMultipleAsync(object parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
         Task<SqlMapper.GridReader> QueryMultipleAsync(Action<DynamicParameters> parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
+        Task<SqlMapper.GridReader> QueryMultipleAsync(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null);
 
         #endregion
     }
@@ -118,11 +125,6 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
 
         #region ExecuteAsync
 
-        private async Task<int> ExecuteAsync(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
-        {
-            return await Execute(connection.ExecuteAsync, parameters, command, commandType, commandTimeout);
-        }
-
         public async Task<int> ExecuteAsync(string command, CommandType? commandType = null, int? commandTimeout = null)
         {
             return await ExecuteAsync(new DynamicParameters(), command, commandType, commandTimeout);
@@ -140,14 +142,14 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
             return await ExecuteAsync(dp, command, commandType, commandTimeout);
         }
 
+        public async Task<int> ExecuteAsync(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await Execute(connection.ExecuteAsync, parameters, command, commandType, commandTimeout);
+        }
+
         #endregion
 
         #region QueryAsync
-
-        private async Task<IEnumerable<T>> QueryAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
-        {
-            return await Execute(connection.QueryAsync<T>, parameters, command, commandType, commandTimeout);
-        }
 
         public async Task<IEnumerable<T>> QueryAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null)
         {
@@ -166,14 +168,14 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
             return await QueryAsync<T>(dp, command, commandType, commandTimeout);
         }
 
+        public async Task<IEnumerable<T>> QueryAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await Execute(connection.QueryAsync<T>, parameters, command, commandType, commandTimeout);
+        }
+
         #endregion
 
         #region QueryFirstAsync
-
-        private async Task<T> QueryFirstAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
-        {
-            return await Execute(connection.QueryFirstAsync<T>, parameters, command, commandType, commandTimeout);
-        }
 
         public async Task<T> QueryFirstAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null)
         {
@@ -192,14 +194,14 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
             return await QueryFirstAsync<T>(dp, command, commandType, commandTimeout);
         }
 
+        public async Task<T> QueryFirstAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await Execute(connection.QueryFirstAsync<T>, parameters, command, commandType, commandTimeout);
+        }
+
         #endregion
 
         #region QueryFirstOrDefaultAsync
-
-        private async Task<T> QueryFirstOrDefaultAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
-        {
-            return await Execute(connection.QueryFirstOrDefaultAsync<T>, parameters, command, commandType, commandTimeout);
-        }
 
         public async Task<T> QueryFirstOrDefaultAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null)
         {
@@ -218,14 +220,14 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
             return await QueryFirstOrDefaultAsync<T>(dp, command, commandType, commandTimeout);
         }
 
+        public async Task<T> QueryFirstOrDefaultAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await Execute(connection.QueryFirstOrDefaultAsync<T>, parameters, command, commandType, commandTimeout);
+        }
+
         #endregion
 
         #region QuerySingleAsync
-
-        private async Task<T> QuerySingleAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
-        {
-            return await Execute(connection.QuerySingleAsync<T>, parameters, command, commandType, commandTimeout);
-        }
 
         public async Task<T> QuerySingleAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null)
         {
@@ -244,14 +246,14 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
             return await QuerySingleAsync<T>(dp, command, commandType, commandTimeout);
         }
 
+        public async Task<T> QuerySingleAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await Execute(connection.QuerySingleAsync<T>, parameters, command, commandType, commandTimeout);
+        }
+
         #endregion
 
         #region QuerySingleOrDefaultAsync
-
-        private async Task<T> QuerySingleOrDefaultAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
-        {
-            return await Execute(connection.QuerySingleOrDefaultAsync<T>, parameters, command, commandType, commandTimeout);
-        }
 
         public async Task<T> QuerySingleOrDefaultAsync<T>(string command, CommandType? commandType = null, int? commandTimeout = null)
         {
@@ -270,14 +272,14 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
             return await QuerySingleOrDefaultAsync<T>(dp, command, commandType, commandTimeout);
         }
 
+        public async Task<T> QuerySingleOrDefaultAsync<T>(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await Execute(connection.QuerySingleOrDefaultAsync<T>, parameters, command, commandType, commandTimeout);
+        }
+
         #endregion
 
         #region QueryMultipleAsync
-
-        private async Task<SqlMapper.GridReader> QueryMultipleAsync(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
-        {
-            return await Execute(connection.QueryMultipleAsync, parameters, command, commandType, commandTimeout);
-        }
 
         public async Task<SqlMapper.GridReader> QueryMultipleAsync(string command, CommandType? commandType = null, int? commandTimeout = null)
         {
@@ -294,6 +296,11 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
             var dp = new DynamicParameters();
             parameters(dp);
             return await QueryMultipleAsync(dp, command, commandType, commandTimeout);
+        }
+
+        public async Task<SqlMapper.GridReader> QueryMultipleAsync(DynamicParameters parameters, string command, CommandType? commandType = null, int? commandTimeout = null)
+        {
+            return await Execute(connection.QueryMultipleAsync, parameters, command, commandType, commandTimeout);
         }
 
         #endregion

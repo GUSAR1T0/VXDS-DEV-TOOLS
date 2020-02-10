@@ -1,6 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.Log;
 
 namespace VXDesign.Store.DevTools.Core.Storage.LogStores
 {
@@ -13,11 +15,13 @@ namespace VXDesign.Store.DevTools.Core.Storage.LogStores
         Task Error<T>(long operationId, string message, dynamic value = null);
         Task Fatal<T>(long operationId, string message, dynamic value = null);
 
-        Task<long> CountOfAllCollections();
+        Task<long> GetCount();
         Task DropAllLogCollections();
+
+        Task<IEnumerable<LogEntity>> GetByOperations(IEnumerable<long> operationIds);
     }
 
-    public class LoggerStore : BaseLogStore<LoggerEntity>, ILoggerStore
+    public class LoggerStore : BaseLogStore<LogEntity>, ILoggerStore
     {
         public LoggerStore(string logStoreConnectionString, string scope) : base(logStoreConnectionString, "logs", scope)
         {
@@ -55,7 +59,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.LogStores
 
         private async Task Log<T>(string level, long operationId, string message, dynamic value)
         {
-            await Collection.InsertOneAsync(new LoggerEntity
+            await Collection.InsertOneAsync(new LogEntity
             {
                 Level = level,
                 Logger = typeof(T).FullName,
@@ -65,12 +69,16 @@ namespace VXDesign.Store.DevTools.Core.Storage.LogStores
             });
         }
 
-        public async Task<long> CountOfAllCollections()
+        private async Task<IEnumerable<string>> GetCollectionNames()
+        {
+            var collectionNamesCursor = await Database.ListCollectionNamesAsync();
+            return await collectionNamesCursor.ToListAsync();
+        }
+
+        public async Task<long> GetCount()
         {
             var count = 0L;
-            var collectionNamesCursor = await Database.ListCollectionNamesAsync();
-            var collectionNames = await collectionNamesCursor.ToListAsync();
-            foreach (var collectionName in collectionNames)
+            foreach (var collectionName in await GetCollectionNames())
             {
                 var collection = Database.GetCollection<dynamic>(collectionName);
                 count += await collection.CountDocumentsAsync(FilterDefinition<dynamic>.Empty);
@@ -81,12 +89,22 @@ namespace VXDesign.Store.DevTools.Core.Storage.LogStores
 
         public async Task DropAllLogCollections()
         {
-            var collectionNamesCursor = await Database.ListCollectionNamesAsync();
-            var collectionNames = await collectionNamesCursor.ToListAsync();
-            foreach (var collectionName in collectionNames)
+            foreach (var collectionName in await GetCollectionNames())
             {
                 await Database.DropCollectionAsync(collectionName);
             }
+        }
+
+        public async Task<IEnumerable<LogEntity>> GetByOperations(IEnumerable<long> operationIds)
+        {
+            var logs = new List<LogEntity>();
+            foreach (var collectionName in await GetCollectionNames())
+            {
+                var collection = Database.GetCollection<LogEntity>(collectionName);
+                logs.AddRange(await collection.Find(document => operationIds.Contains(document.OperationId)).ToListAsync());
+            }
+
+            return logs;
         }
     }
 }

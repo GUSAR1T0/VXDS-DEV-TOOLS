@@ -34,11 +34,13 @@ export function generateColor() {
 }
 
 export function getUserFullName(firstName, lastName) {
-    return `${firstName} ${lastName}`;
+    return `${firstName ? firstName : "—"} ${lastName ? lastName : ""}`;
 }
 
 export function getUserInitials(firstName, lastName) {
-    return (firstName.substr(0, 1) + lastName.substr(0, 1)).toUpperCase();
+    let first = firstName ? firstName.substr(0, 1) : "—";
+    let last = lastName ? lastName.substr(0, 1) : "";
+    return (first + last).toUpperCase();
 }
 
 export function renderErrorNotificationMessage(h, response) {

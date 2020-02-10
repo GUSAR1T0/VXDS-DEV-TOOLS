@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.Core.Enums.Operations;
 
 namespace VXDesign.Store.DevTools.Core.Entities.Operations
