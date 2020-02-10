@@ -32,7 +32,7 @@
 
 <script>
     export default {
-        name: "DashboardBlocks",
+        name: "Blocks",
         computed: {
             hasSecondSlot() {
                 return !!this.$slots["second"];

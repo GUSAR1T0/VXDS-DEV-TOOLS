@@ -23,6 +23,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 
         Task<bool> IsUserExist(IOperation operation, int id);
         Task<IEnumerable<UserListItem>> GetUsers(IOperation operation);
+        Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
         Task<UserProfileEntity> GetProfileById(IOperation operation, int id);
         Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
@@ -164,6 +165,24 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     [IsActivated]
                 FROM [authentication].[User] au
                 LEFT JOIN [authentication].[UserRole] aur ON au.[UserRoleId] = aur.[Id]
+            ");
+        }
+
+        public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern)
+        {
+            return await operation.Connection.QueryAsync<UserShortEntity>(new { Pattern = $"%{pattern}%" }, @"
+                SELECT
+                    u.[Id],
+                    u.[FullName]
+                FROM (
+                    SELECT
+                        [Id],
+                        ([FirstName] + ' ' + [LastName]) [FullName]
+                    FROM [authentication].[User]
+                    UNION ALL
+                    SELECT 0, 'Unauthorized'
+                ) u
+                WHERE u.[FullName] LIKE @Pattern;
             ");
         }
 

@@ -73,8 +73,17 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 
             if (filter.UserIds?.Any() == true)
             {
-                @params.Add("UserIds", filter.UserIds);
-                filters.Add("bo.[UserId] IN @UserIds");
+                var userIds = new List<int>(filter.UserIds);
+                var userIdsFilter = "bo.[UserId] IN @UserIds";
+
+                if (filter.UserIds.Contains(0))
+                {
+                    userIds.Remove(0);
+                    userIdsFilter = $"(bo.[UserId] IS NULL AND bo.[IsSystemAction] = 0 OR {userIdsFilter})";
+                }
+
+                @params.Add("UserIds", userIds);
+                filters.Add(userIdsFilter);
             }
 
             if (filter.IsSystemAction != null)

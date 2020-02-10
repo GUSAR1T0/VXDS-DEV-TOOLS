@@ -16,6 +16,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
             IsActivated = entity.IsActivated
         };
 
+        internal static UserShortModel ToModel(this UserShortEntity entity) => new UserShortModel
+        {
+            Id = entity.Id,
+            FullName = entity.FullName
+        };
+
         internal static UserProfileGetModel ToModel(this UserProfileEntity entity) => new UserProfileGetModel
         {
             Id = entity.Id,

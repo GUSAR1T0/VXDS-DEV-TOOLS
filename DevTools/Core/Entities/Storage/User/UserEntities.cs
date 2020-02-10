@@ -17,6 +17,12 @@ namespace VXDesign.Store.DevTools.Core.Entities.Storage.User
         public bool IsActivated { get; set; }
     }
 
+    public class UserShortEntity : IDataEntity
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; }
+    }
+
     public class UserAuthorizationEntity : UserEntity
     {
         public PortalPermission PortalPermissions { get; set; } = 0;

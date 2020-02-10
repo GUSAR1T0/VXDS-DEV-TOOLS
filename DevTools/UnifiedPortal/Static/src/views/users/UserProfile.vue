@@ -74,7 +74,7 @@
     import UserCard from "@/components/user/UserCard.vue";
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import UserInfoRow from "@/components/user/UserInfoRow.vue";
-    import UserRolePermissionsTable from "@/components/userRole/UserRolePermissionsTable.vue";
+    import UserRolePermissionsTable from "@/components/user-role/UserRolePermissionsTable.vue";
     import UserGeneralInfoUpdateForm from "@/components/user/UserGeneralInfoUpdateForm.vue";
     import AccountSpecificInfoUpdateForm from "@/components/user/AccountSpecificInfoUpdateForm.vue";
 

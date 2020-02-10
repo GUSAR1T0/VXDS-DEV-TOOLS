@@ -3,37 +3,37 @@
         <template slot="content">
             <el-collapse v-model="activeCollapseItems">
                 <el-collapse-item title="Users" name="users">
-                    <DashboardBlocks>
+                    <Blocks>
                         <template slot="first">
                             <UsersCard :users-count="usersCount"/>
                         </template>
                         <template slot="second">
                             <UserRolesCard :roles-count="rolesCount"/>
                         </template>
-                    </DashboardBlocks>
+                    </Blocks>
                 </el-collapse-item>
                 <el-collapse-item title="System" name="system">
-                    <DashboardBlocks>
+                    <Blocks>
                         <template slot="first">
                             <el-card shadow="hover">
                                 <div slot="header">
                                     <h3>System Statistics</h3>
                                 </div>
-                                <DashboardBlocks>
+                                <Blocks>
                                     <template slot="first">
                                         <OperationsCard :operations-count="operationsCount"/>
                                     </template>
                                     <template slot="second">
                                         <LogsCard :logs-count="logsCount"/>
                                     </template>
-                                </DashboardBlocks>
+                                </Blocks>
                                 <el-button type="primary" plain class="system-row-button"
                                            @click="$router.push('/system/operations')">
                                     <span>See Operations</span>
                                 </el-button>
                             </el-card>
                         </template>
-                    </DashboardBlocks>
+                    </Blocks>
                 </el-collapse-item>
             </el-collapse>
         </template>
@@ -49,7 +49,7 @@
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import { GET_DATA_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
 
-    import DashboardBlocks from "@/components/dashboard/DashboardBlocks";
+    import Blocks from "@/components/page/Blocks";
     import UsersCard from "@/components/dashboard/UsersCard";
     import UserRolesCard from "@/components/dashboard/UserRolesCard";
     import LogsCard from "@/components/dashboard/LogsCard";
@@ -59,7 +59,7 @@
     export default {
         name: "Home",
         components: {
-            DashboardBlocks,
+            Blocks,
             LoadingContainer,
             UsersCard,
             UserRolesCard,

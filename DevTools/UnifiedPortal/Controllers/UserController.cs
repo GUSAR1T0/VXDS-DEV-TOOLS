@@ -39,6 +39,20 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         });
 
         /// <summary>
+        /// Searches users by pattern
+        /// </summary>
+        /// <returns>List of users shortly</returns>
+        [ProducesResponseType(typeof(IEnumerable<UserShortModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [SyrinxVerifiedAuthentication]
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<UserShortModel>>> SearchUsersByPattern([FromQuery(Name = "p")] string pattern) => await Execute(async operation =>
+        {
+            var users = await userService.SearchUsersByPattern(operation, pattern);
+            return users.Select(user => user.ToModel());
+        });
+
+        /// <summary>
         /// Obtains user profile data by ID
         /// </summary>
         /// <param name="id">Unique user ID</param>

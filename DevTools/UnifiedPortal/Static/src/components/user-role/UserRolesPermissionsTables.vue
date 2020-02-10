@@ -68,8 +68,8 @@
     import format from "string-format";
 
     import LoadingContainer from "@/components/page/LoadingContainer.vue";
-    import UserRolePermissionsTable from "@/components/userRole/UserRolePermissionsTable";
-    import UserRoleForm from "@/components/userRole/UserRoleForm";
+    import UserRolePermissionsTable from "@/components/user-role/UserRolePermissionsTable";
+    import UserRoleForm from "@/components/user-role/UserRoleForm";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
 
     export default {
