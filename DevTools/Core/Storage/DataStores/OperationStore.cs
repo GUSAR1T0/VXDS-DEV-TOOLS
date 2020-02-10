@@ -1,53 +1,116 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Storage.Log;
 
 namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 {
     public interface IOperationStore
     {
-        Task<long> Start(string scope, OperationContext context);
-        Task Stop(long operationId, bool isSuccessful);
+        Task<(long total, IEnumerable<OperationEntity> operations)> Get(IOperation operation, OperationPagingRequest request);
     }
 
-    public sealed class OperationStore : BaseDataStore, IOperationStore
+    public class OperationStore : BaseDataStore, IOperationStore
     {
-        private readonly IOperationConnection connection;
-
-        public OperationStore(IOperationConnection connection)
+        public async Task<(long total, IEnumerable<OperationEntity> operations)> Get(IOperation operation, OperationPagingRequest request)
         {
-            this.connection = connection;
+            var selectBase = $@"
+                SELECT {{0}} FROM [base].[Operation] bo
+                LEFT JOIN [authentication].[User] au ON au.[Id] = bo.[UserId]
+                {{1}}
+            ";
+            const string selectEntity = @"
+                    bo.[Id],
+                    bo.[Scope],
+                    bo.[ContextName],
+                    bo.[UserId],
+                    au.[Color],
+                    au.[FirstName],
+                    au.[LastName],
+                    bo.[IsSystemAction],
+                    bo.[IsSuccessful],
+                    bo.[StartTime],
+                    bo.[StopTime]
+            ";
+            const string selectTotal = "COUNT_BIG(1)";
+            var (@params, filters) = HandleGetRequest(request.Filter);
+            var query = $@"
+                {string.Format(selectBase, selectTotal, filters)};
+                {string.Format(selectBase, selectEntity, filters)}
+                ORDER BY bo.[Id]
+                OFFSET {request.PageNo * request.PageSize} ROWS FETCH NEXT {request.PageSize} ROWS ONLY;
+            ";
+            using var reader = await operation.Connection.QueryMultipleAsync(@params, query);
+            var total = await reader.ReadSingleAsync<long>();
+            var operations = await reader.ReadAsync<OperationEntity>();
+            return (total, operations);
         }
 
-        public async Task<long> Start(string scope, OperationContext context)
+        private static (DynamicParameters, string) HandleGetRequest(OperationPagingFilter filter)
         {
-            return await connection.QueryFirstAsync<long>(new
-            {
-                Scope = scope,
-                ContextName = context.Name,
-                context.UserId,
-                context.IsSystemAction
-            }, @"
-                DECLARE @Id TABLE ([Id] INT);
-                INSERT INTO [base].[Operation] ([Scope], [ContextName], [UserId], [IsSystemAction])
-                OUTPUT INSERTED.[Id] INTO @Id
-                VALUES (@Scope, @ContextName, @UserId, @IsSystemAction);
-                SELECT i.[Id] FROM @Id i;
-            ");
-        }
+            var @params = new DynamicParameters();
+            var filters = new List<string>();
 
-        public async Task Stop(long operationId, bool isSuccessful)
-        {
-            await connection.ExecuteAsync(new
+            if (filter.Ids?.Any() == true)
             {
-                Id = operationId,
-                IsSuccessful = isSuccessful
-            }, @"
-                UPDATE [base].[Operation]
-                SET
-                    [IsSuccessful] = @IsSuccessful,
-                    [StopDate] = SYSDATETIMEOFFSET()
-                WHERE [Id] = @Id;
-            ");
+                @params.Add("Ids", filter.Ids);
+                filters.Add("bo.[Id] IN @Ids");
+            }
+
+            if (filter.Scopes?.Any() == true)
+            {
+                @params.Add("Scopes", filter.Scopes);
+                filters.Add("bo.[Scope] IN @Scopes");
+            }
+
+            if (filter.ContextNames?.Any() == true)
+            {
+                @params.Add("ContextNames", filter.ContextNames);
+                filters.Add("bo.[ContextName] IN @ContextNames");
+            }
+
+            if (filter.UserIds?.Any() == true)
+            {
+                var userIds = new List<int>(filter.UserIds);
+                var userIdsFilter = "bo.[UserId] IN @UserIds";
+
+                if (filter.UserIds.Contains(0))
+                {
+                    userIds.Remove(0);
+                    userIdsFilter = $"(bo.[UserId] IS NULL AND bo.[IsSystemAction] = 0 OR {userIdsFilter})";
+                }
+
+                @params.Add("UserIds", userIds);
+                filters.Add(userIdsFilter);
+            }
+
+            if (filter.IsSystemAction != null)
+            {
+                filters.Add($"bo.[IsSystemAction] = {(filter.IsSystemAction == true ? 1 : 0)}");
+            }
+
+            if (filter.IsSuccessful != null)
+            {
+                filters.Add($"bo.[IsSuccessful] = {(filter.IsSuccessful == true ? 1 : 0)}");
+            }
+
+            if (filter.StartTimeRange?.HasRange == true)
+            {
+                @params.Add("StartTimeMin", filter.StartTimeRange.Min);
+                @params.Add("StartTimeMax", filter.StartTimeRange.Max);
+                filters.Add("bo.[StartTime] BETWEEN @StartTimeMin AND @StartTimeMax");
+            }
+
+            if (filter.StopTimeRange?.HasRange == true)
+            {
+                @params.Add("StopTimeMin", filter.StopTimeRange.Min);
+                @params.Add("StopTimeMax", filter.StopTimeRange.Max);
+                filters.Add("bo.[StopTime] BETWEEN @StopTimeMin AND @StopTimeMax");
+            }
+
+            return (@params, filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
         }
     }
 }

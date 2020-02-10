@@ -65,15 +65,16 @@
         },
         methods: {
             submitForm(formName) {
-                this.$refs.signInButton.loading = true;
+                let button = this.$refs.signInButton;
+                if (button) button.loading = true;
                 this.$refs[formName].validate(valid => {
                     if (!valid) {
-                        this.$refs.signInButton.loading = false;
+                        if (button) button.loading = false;
                         return false;
                     }
 
                     this.$store.dispatch(SIGN_IN_REQUEST, this.signInForm).then(() => {
-                        this.$refs.signInButton.loading = false;
+                        if (button) button.loading = false;
                         this.$router.push("/");
                         const h = this.$createElement;
                         this.$notify.success({
@@ -84,7 +85,7 @@
                             ])
                         });
                     }).catch(error => {
-                        this.$refs.signInButton.loading = false;
+                        if (button) button.loading = false;
                         this.$notify.error({
                             title: "Failed to sign in",
                             duration: 10000,

@@ -36,10 +36,10 @@
                 };
                 return [
                     {
-                        type: "User Management",
-                        list: this.getLookupValues("userPermissions").map(permission => {
+                        type: "Portal Access & Management",
+                        list: this.getLookupValues("portalPermissions").map(permission => {
                             return {
-                                type: getPermissionTagType(this.userRole.userPermissions, permission.value),
+                                type: getPermissionTagType(this.userRole.portalPermissions, permission.value),
                                 name: permission.name
                             };
                         })

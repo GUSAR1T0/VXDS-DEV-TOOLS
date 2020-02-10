@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.Dashboard;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.Dashboard;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
@@ -9,6 +9,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
         {
             UsersCount = entity.UsersCount,
             RolesCount = entity.RolesCount,
+            OperationsCount = entity.OperationsCount,
             LogsCount = entity.LogsCount
         };
     }

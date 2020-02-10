@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using VXDesign.Store.DevTools.Core.Extensions.Controllers;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Storage.DataStores;
+using VXDesign.Store.DevTools.Core.Storage.LogStores;
 using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;
@@ -26,16 +27,26 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            const string scope = "VXDS_SRS";
+
             // Portal properties
             services.SetupProperties<PortalProperties>(Configuration);
 
-            // Operations handler
-            services.AddScoped<IOperationService>(factory => new OperationService(factory.GetService<PortalProperties>().DatabaseConnectionProperties, "VXDS_SRS"));
-
             // Stores
+            services.AddSingleton<ILoggerStore>(factory =>
+            {
+                var logStoreConnectionString = factory.GetService<PortalProperties>().DatabaseConnectionProperties.LogStoreConnectionString;
+                return new LoggerStore(logStoreConnectionString, scope);
+            });
             services.AddScoped<IUserDataStore, UserDataStore>();
 
             // Services
+            services.AddScoped<IOperationService>(factory =>
+            {
+                var loggerStore = factory.GetService<ILoggerStore>();
+                var dataStoreConnectionString = factory.GetService<PortalProperties>().DatabaseConnectionProperties.DataStoreConnectionString;
+                return new OperationService(loggerStore, dataStoreConnectionString, scope);
+            });
             services.AddScoped<ICamundaServerService>(factory => new CamundaServerService(factory.GetService<PortalProperties>().CamundaProperties));
             services.AddScoped<IAuthenticationService>(factory =>
             {

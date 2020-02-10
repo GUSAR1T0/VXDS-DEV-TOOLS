@@ -67,14 +67,14 @@
         STORE_USER_PROFILE_DATA_REQUEST,
         STORE_USER_PROFILE_ID_REQUEST
     } from "@/constants/actions";
-    import { USER_PERMISSION } from "@/constants/permissions";
+    import { PORTAL_PERMISSION } from "@/constants/permissions";
     import format from "string-format";
 
     import LoadingContainer from "@/components/page/LoadingContainer.vue";
     import UserCard from "@/components/user/UserCard.vue";
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import UserInfoRow from "@/components/user/UserInfoRow.vue";
-    import UserRolePermissionsTable from "@/components/userRole/UserRolePermissionsTable.vue";
+    import UserRolePermissionsTable from "@/components/user-role/UserRolePermissionsTable.vue";
     import UserGeneralInfoUpdateForm from "@/components/user/UserGeneralInfoUpdateForm.vue";
     import AccountSpecificInfoUpdateForm from "@/components/user/AccountSpecificInfoUpdateForm.vue";
 
@@ -108,7 +108,7 @@
             ...mapGetters([
                 "isAboutMe",
                 "getUserId",
-                "hasUserPermission",
+                "hasPortalPermission",
                 "getUserProfileId",
                 "getUserProfile",
                 "getLookupValues",
@@ -123,7 +123,7 @@
                 return this.getLookupValues("userPermissions") || this.getLookupValues("userRolePermissions");
             },
             hasPermissionToUpdateUserProfile() {
-                return this.isAboutMe(this.getUserId) || this.hasUserPermission(USER_PERMISSION.UPDATE_USER_PROFILE);
+                return this.isAboutMe(this.getUserId) || this.hasPortalPermission(PORTAL_PERMISSION.UPDATE_USER_PROFILE);
             }
         },
         methods: {

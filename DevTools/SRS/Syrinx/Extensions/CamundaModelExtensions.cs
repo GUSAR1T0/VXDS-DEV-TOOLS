@@ -1,7 +1,6 @@
 using VXDesign.Store.DevTools.Core.Entities.Camunda.Base;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda;
-using CamundaRequestModel = VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda.CamundaRequestModel;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
 {

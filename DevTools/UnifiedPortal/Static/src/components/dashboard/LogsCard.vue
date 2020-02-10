@@ -1,12 +1,9 @@
 <template>
-    <el-card shadow="hover">
+    <el-card shadow="never">
         <div slot="header">
             <h3>Logs</h3>
         </div>
         <div class="system-row-content">{{ logsCount }}</div>
-        <el-button type="primary" plain class="system-row-button">
-            <span>See logs</span>
-        </el-button>
     </el-card>
 </template>
 
@@ -17,7 +14,7 @@
     export default {
         name: "LogsCard",
         props: {
-            logsCount: Number
+            logsCount: [ String, Number ]
         }
     };
 </script>

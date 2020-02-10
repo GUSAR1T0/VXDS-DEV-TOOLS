@@ -20,7 +20,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Controllers
 
         // null => GUEST / UNAUTHORIZED USER
         protected int? UserId => AuthenticationUtils.GetUserId(User.Claims);
-        protected UserPermission UserPermissions => AuthenticationUtils.GetUserPermissions(User.Claims);
+        protected PortalPermission PortalPermissions => AuthenticationUtils.GetUserPermissions(User.Claims);
 
         #endregion
 

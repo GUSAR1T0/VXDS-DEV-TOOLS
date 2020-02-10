@@ -2,21 +2,21 @@
     <el-dialog :visible.sync="dialogStatus.visible" width="75%" @closed="closed">
         <span slot="title" class="modal-title">{{ userRoleForm.id ? "Update" : "Create" }} User Role</span>
         <el-form :model="userRoleForm" :rules="userRoleRules" ref="userRoleForm"
-                 label-width="120px"
+                 label-width="200px"
                  @submit.native.prevent="submitForm('userRoleForm')">
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="name" label="Role Name">
-                        <el-input v-model="userRoleForm.name" clearable></el-input>
+                        <el-input v-model="userRoleForm.name" clearable/>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
-                    <el-form-item prop="userPermissions" label="User Permissions">
-                        <el-select v-model="userRoleForm.userPermissions" :value="userRoleForm.userPermissions" multiple
+                    <el-form-item prop="portalPermissions" label="Portal Permissions">
+                        <el-select v-model="userRoleForm.portalPermissions" :value="userRoleForm.portalPermissions" multiple
                                    clearable placeholder="Select" style="width: 100%">
-                            <el-option v-for="item in getLookupValues('userPermissions')" :key="item.value"
+                            <el-option v-for="item in getLookupValues('portalPermissions')" :key="item.value"
                                        :label="item.name" :value="item.value">
                             </el-option>
                         </el-select>
@@ -81,7 +81,7 @@
             ]),
             isNotChanged() {
                 return this.userRole.name === this.userRoleForm.name &&
-                    this.userRole.userPermissions === this.userRoleForm.userPermissions.map(Number).reduce((a, b) => a + b, 0);
+                    this.userRole.portalPermissions === this.userRoleForm.portalPermissions.map(Number).reduce((a, b) => a + b, 0);
             }
         },
         methods: {
@@ -105,7 +105,7 @@
                                 }),
                                 data: {
                                     name: this.userRoleForm.name,
-                                    userPermissions: this.userRoleForm.userPermissions.map(Number).reduce((a, b) => a + b, 0)
+                                    portalPermissions: this.userRoleForm.portalPermissions.map(Number).reduce((a, b) => a + b, 0)
                                 },
                                 config: getConfiguration()
                             }).then(() => {
@@ -131,7 +131,7 @@
                                 endpoint: ADD_USER_ROLE_ENDPOINT,
                                 data: {
                                     name: this.userRoleForm.name,
-                                    userPermissions: this.userRoleForm.userPermissions.map(Number).reduce((a, b) => a + b, 0)
+                                    portalPermissions: this.userRoleForm.portalPermissions.map(Number).reduce((a, b) => a + b, 0)
                                 },
                                 config: getConfiguration()
                             }).then(() => {

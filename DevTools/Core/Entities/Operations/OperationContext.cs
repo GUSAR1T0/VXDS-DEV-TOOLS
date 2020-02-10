@@ -36,6 +36,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Operations
         public string Name { get; private set; }
         public int? UserId { get; private set; }
         public bool IsSystemAction { get; private set; }
+        internal string Scope { get; set; }
 
         public static OperationContextBuilder Builder() => new OperationContextBuilder();
     }

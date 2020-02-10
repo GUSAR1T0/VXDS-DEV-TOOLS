@@ -11,6 +11,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.User
         public bool IsActivated { get; set; }
     }
 
+    public class UserShortModel
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; }
+    }
+
     public class UserProfileGetModel
     {
         #region General Info

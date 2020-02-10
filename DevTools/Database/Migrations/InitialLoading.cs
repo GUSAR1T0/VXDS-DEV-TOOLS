@@ -42,9 +42,10 @@ namespace VXDesign.Store.DevTools.Database.Migrations
             if (!authorizationSchema.Table(Table.Operation).Exists())
             {
                 Execute.EmbeddedScript("Base_CreateOperationTable.sql");
+                Execute.EmbeddedScript("Base_AddInitialLoadingRecord.sql");
             }
 
-            loggerStore.Info<InitialLoading>(0, "Database is loaded").Wait();
+            loggerStore.Info<InitialLoading>(0, "Database is initialized").Wait();
         }
 
         public override void Down()

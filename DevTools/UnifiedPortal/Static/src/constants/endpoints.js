@@ -15,6 +15,7 @@ export const ACTIVATE_USER_ENDPOINT = "user/{id}/activate";
 export const DEACTIVATE_USER_ENDPOINT = "user/{id}/deactivate";
 export const UPDATE_PROFILE_GENERAL_INFO_ENDPOINT = "user/{id}/general";
 export const UPDATE_PROFILE_ACCOUNT_SPECIFIC_INFO_ENDPOINT = "user/{id}/accountSpecific";
+export const SEARCH_USERS_ENDPOINT = "user/search?p={pattern}";
 
 // User roles endpoints
 export const GET_USER_ROLES_SHORT_INFO_ENDPOINT = "userRole/short/list";
@@ -25,4 +26,5 @@ export const DELETE_USER_ROLE_ENDPOINT = "userRole/{id}";
 export const GET_AFFECTED_USERS_COUNT_BY_USER_ROLE_ENDPOINT = "userRole/{id}/affectedUsers/count";
 
 // Admin panel endpoints
-export const GET_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/data";
+export const GET_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard";
+export const GET_OPERATION_LIST_ENDPOINT = "operation/list";

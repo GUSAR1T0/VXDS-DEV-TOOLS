@@ -5,6 +5,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Lookup
 {
     public class LookupValuesModel
     {
-        public IEnumerable<EnumModel> UserPermissions { get; set; }
+        public IEnumerable<EnumModel> PortalPermissions { get; set; }
     }
 }

@@ -39,6 +39,20 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         });
 
         /// <summary>
+        /// Searches users by pattern
+        /// </summary>
+        /// <returns>List of users shortly</returns>
+        [ProducesResponseType(typeof(IEnumerable<UserShortModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [SyrinxVerifiedAuthentication]
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<UserShortModel>>> SearchUsersByPattern([FromQuery(Name = "p")] string pattern) => await Execute(async operation =>
+        {
+            var users = await userService.SearchUsersByPattern(operation, pattern);
+            return users.Select(user => user.ToModel());
+        });
+
+        /// <summary>
         /// Obtains user profile data by ID
         /// </summary>
         /// <param name="id">Unique user ID</param>
@@ -72,7 +86,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         {
             return await Execute(async operation =>
             {
-                if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
+                if (UserId != id && (PortalPermissions & PortalPermission.UpdateUserProfile) == 0)
                 {
                     throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
                 }
@@ -99,7 +113,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         {
             return await Execute(async operation =>
             {
-                if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
+                if (UserId != id && (PortalPermissions & PortalPermission.UpdateUserProfile) == 0)
                 {
                     throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
                 }
@@ -123,7 +137,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpPut("{id}/activate")]
         public async Task<ActionResult> ActivateUser(int id) => await Execute(async operation =>
         {
-            if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
+            if (UserId != id && (PortalPermissions & PortalPermission.UpdateUserProfile) == 0)
             {
                 throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
             }
@@ -145,7 +159,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpPut("{id}/deactivate")]
         public async Task<ActionResult> DeactivateUser(int id) => await Execute(async operation =>
         {
-            if (UserId != id && (UserPermissions & UserPermission.UpdateUserProfile) == 0)
+            if (UserId != id && (PortalPermissions & PortalPermission.UpdateUserProfile) == 0)
             {
                 throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
             }

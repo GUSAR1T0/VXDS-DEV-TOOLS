@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using VXDesign.Store.DevTools.Core.Entities.Exceptions;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.Core.Storage.DataStores;
 using VXDesign.Store.DevTools.Core.Utils.Authentication;
 

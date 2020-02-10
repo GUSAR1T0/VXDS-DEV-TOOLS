@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using VXDesign.Store.DevTools.Core.Entities.Exceptions;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
-using VXDesign.Store.DevTools.Core.Entities.Properties;
+using VXDesign.Store.DevTools.Core.Storage.LogStores;
 
 namespace VXDesign.Store.DevTools.Core.Services.Operations
 {
@@ -18,12 +19,14 @@ namespace VXDesign.Store.DevTools.Core.Services.Operations
         private const string TransactionRollbackErrorMessage = "Failed to rollback transaction";
         private const string SuccessMessage = "Action was performed correctly";
 
-        private readonly DatabaseConnectionProperties properties;
+        private readonly ILoggerStore loggerStore;
+        private readonly string dataStoreConnectionString;
         private readonly string scope;
 
-        public OperationService(DatabaseConnectionProperties properties, string scope)
+        public OperationService(ILoggerStore loggerStore, string dataStoreConnectionString, string scope)
         {
-            this.properties = properties;
+            this.loggerStore = loggerStore;
+            this.dataStoreConnectionString = dataStoreConnectionString;
             this.scope = scope;
         }
 
@@ -44,7 +47,8 @@ namespace VXDesign.Store.DevTools.Core.Services.Operations
 
         public async Task<T> Make<T>(OperationContext context, Func<IOperation, Task<T>> action)
         {
-            using var operation = new Operation(scope, context, properties);
+            context.Scope = scope;
+            using var operation = new Operation(loggerStore, dataStoreConnectionString, context);
             var isSuccessful = true;
             var logger = operation.Logger<OperationService>();
             try
@@ -83,7 +87,17 @@ namespace VXDesign.Store.DevTools.Core.Services.Operations
                     }
 
                     await logger.Error(OperationErrorMessage, GetExceptionContent(actionException));
-                    throw;
+
+                    switch (actionException)
+                    {
+                        case AuthenticationException _:
+                        case BadRequestException _:
+                        case NotFoundException _:
+                        case OperationException _:
+                            throw;
+                        default:
+                            throw new OperationException(operation, OperationErrorMessage, actionException);
+                    }
                 }
             }
             finally

@@ -1,6 +1,6 @@
 using VXDesign.Store.DevTools.Core.Enums.Operations;
 
-namespace VXDesign.Store.DevTools.Core.Entities.Storage
+namespace VXDesign.Store.DevTools.Core.Entities.Storage.User
 {
     public class UserEntity : IDataEntity
     {
@@ -17,9 +17,15 @@ namespace VXDesign.Store.DevTools.Core.Entities.Storage
         public bool IsActivated { get; set; }
     }
 
+    public class UserShortEntity : IDataEntity
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; }
+    }
+
     public class UserAuthorizationEntity : UserEntity
     {
-        public UserPermission UserPermissions { get; set; } = 0;
+        public PortalPermission PortalPermissions { get; set; } = 0;
     }
 
     public class UserRegistrationEntity : UserAuthorizationEntity

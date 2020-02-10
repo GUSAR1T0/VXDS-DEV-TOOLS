@@ -1,6 +1,6 @@
 <template>
     <div class="pages">
-        <el-menu-item index="/about">
+        <el-menu-item index="/pages/about">
             <fa class="fa-submenu-item" icon="info-circle"/>
             <span slot="title" class="el-nav-menu-vertical-item">About</span>
         </el-menu-item>

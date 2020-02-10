@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Core.Entities.Exceptions;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.Core.Storage.DataStores;
 
 namespace VXDesign.Store.DevTools.Core.Services.Storage
@@ -10,6 +10,7 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
     public interface IUserService
     {
         Task<IEnumerable<UserListItem>> GetUsers(IOperation operation);
+        Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
         Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id);
         Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateUserProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
@@ -29,6 +30,8 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
         }
 
         public async Task<IEnumerable<UserListItem>> GetUsers(IOperation operation) => await userDataStore.GetUsers(operation);
+
+        public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern) => await userDataStore.SearchUsersByPattern(operation, pattern);
 
         public async Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id)
         {

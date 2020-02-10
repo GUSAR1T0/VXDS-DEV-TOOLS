@@ -1,15 +1,15 @@
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.Core.Enums.Operations;
 
 namespace VXDesign.Store.DevTools.Core.Entities.Operations
 {
     public class Permissions
     {
-        public UserPermission UserPermissions { get; set; }
+        public PortalPermission PortalPermissions { get; set; }
 
         public bool HasPermissions(UserAuthorizationEntity entity)
         {
-            return (UserPermissions == 0 || (entity.UserPermissions & UserPermissions) != 0);
+            return (PortalPermissions == 0 || (entity.PortalPermissions & PortalPermissions) != 0);
         }
     }
 }

@@ -17,7 +17,7 @@
     export default {
         name: "UsersCard",
         props: {
-            usersCount: Number
+            usersCount: [String, Number]
         }
     };
 </script>

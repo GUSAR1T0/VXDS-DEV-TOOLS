@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.User;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
@@ -9,7 +9,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
         {
             Id = entity.Id,
             Name = entity.Name,
-            UserPermissions = entity.UserPermissions
+            PortalPermissions = entity.PortalPermissions
         };
 
         internal static UserRoleShortInfoModel ToShortInfoModel(this UserRoleEntity entity) => new UserRoleShortInfoModel
@@ -22,7 +22,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
         {
             Id = id ?? model.Id,
             Name = model.Name,
-            UserPermissions = model.UserPermissions
+            PortalPermissions = model.PortalPermissions
         };
     }
 }

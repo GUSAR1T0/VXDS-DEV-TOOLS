@@ -124,7 +124,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
             return new UserAuthorizationModel
             {
                 Id = userId.Value,
-                UserPermissions = AuthenticationUtils.GetUserPermissions(User.Claims)
+                PortalPermissions = AuthenticationUtils.GetUserPermissions(User.Claims)
             };
         });
     }

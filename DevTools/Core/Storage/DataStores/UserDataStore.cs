@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
-using VXDesign.Store.DevTools.Core.Entities.Storage;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 
 namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 {
@@ -23,6 +23,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 
         Task<bool> IsUserExist(IOperation operation, int id);
         Task<IEnumerable<UserListItem>> GetUsers(IOperation operation);
+        Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
         Task<UserProfileEntity> GetProfileById(IOperation operation, int id);
         Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
         Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
@@ -45,7 +46,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     au.[LastName],
                     au.[Email],
                     au.[Color],
-                    aur.[UserPermissions]
+                    aur.[PortalPermissions]
                 FROM [authentication].[User] au
                 LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE au.[Id] = @Id
@@ -70,7 +71,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
             }, @"
                 SELECT
                     au.[Id],
-                    aur.[UserPermissions]
+                    aur.[PortalPermissions]
                 FROM [authentication].[User] au
                 LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE [Email] = @Email AND (@Password IS NULL OR [Password] = @Password)
@@ -82,7 +83,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
             return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new { Id = id }, @"
                 SELECT
                     au.[Id],
-                    aur.[UserPermissions]
+                    aur.[PortalPermissions]
                 FROM [authentication].[User] au
                 LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
                 WHERE au.[Id] = @Id
@@ -164,6 +165,24 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     [IsActivated]
                 FROM [authentication].[User] au
                 LEFT JOIN [authentication].[UserRole] aur ON au.[UserRoleId] = aur.[Id]
+            ");
+        }
+
+        public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern)
+        {
+            return await operation.Connection.QueryAsync<UserShortEntity>(new { Pattern = $"%{pattern}%" }, @"
+                SELECT
+                    u.[Id],
+                    u.[FullName]
+                FROM (
+                    SELECT
+                        [Id],
+                        ([FirstName] + ' ' + [LastName]) [FullName]
+                    FROM [authentication].[User]
+                    UNION ALL
+                    SELECT 0, 'Unauthorized'
+                ) u
+                WHERE u.[FullName] LIKE @Pattern;
             ");
         }
 
