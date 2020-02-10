@@ -143,8 +143,11 @@
                             </el-table>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Scope / Context" min-width="900">
+                    <el-table-column label="ID / Scope / Context" min-width="900">
                         <template slot-scope="scope">
+                            <div style="font-size: 22px; padding-bottom: 5px">
+                                <strong>{{ scope.row.id }}</strong>
+                            </div>
                             <div style="font-size: 18px">
                                 <strong>{{ scope.row.scope }}</strong>
                             </div>
