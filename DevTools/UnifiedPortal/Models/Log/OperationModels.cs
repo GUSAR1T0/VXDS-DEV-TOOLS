@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VXDesign.Store.DevTools.Core.Entities.Common;
 using VXDesign.Store.DevTools.Core.Entities.Storage.Log;
+using VXDesign.Store.DevTools.Core.Extensions.Controllers;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.Common;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.SSP;
@@ -10,8 +12,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Log
 {
     public class OperationWithLogsModel : PagingResponseItemModel, IPagingResponseItemModel<OperationWithLogsModel, OperationWithLogs>
     {
-        private const string DateFormat = "dddd, dd MMMM yyyy, HH:mm:ss.fff";
-
         public long Id { get; set; }
         public string Scope { get; set; }
         public string ContextName { get; set; }
@@ -34,8 +34,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Log
             FirstName = !entity.Operation.IsSystemAction ? entity.Operation.FirstName ?? "Unauthorized" : "System",
             LastName = entity.Operation.LastName,
             IsSuccessful = entity.Operation.IsSuccessful,
-            StartTime = entity.Operation.StartTime.ToString(DateFormat),
-            StopTime = entity.Operation.StopTime?.ToString(DateFormat),
+            StartTime = entity.Operation.StartTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek),
+            StopTime = entity.Operation.StopTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek),
             Logs = entity.Logs.Select(log => log.ToModel())
         };
     }

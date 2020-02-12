@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dapper;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
 using VXDesign.Store.DevTools.Core.Entities.Storage.Log;
+using VXDesign.Store.DevTools.Core.Extensions.Storage;
 
 namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 {
@@ -20,6 +21,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 SELECT {{0}} FROM [base].[Operation] bo
                 LEFT JOIN [authentication].[User] au ON au.[Id] = bo.[UserId]
                 {{1}}
+                {{2}}
             ";
             const string selectEntity = @"
                     bo.[Id],
@@ -35,10 +37,10 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     bo.[StopTime]
             ";
             const string selectTotal = "COUNT_BIG(1)";
-            var (@params, filters) = HandleGetRequest(request.Filter);
+            var (@params, joins, filters) = HandleGetRequest(request.Filter);
             var query = $@"
-                {string.Format(selectBase, selectTotal, filters)};
-                {string.Format(selectBase, selectEntity, filters)}
+                {string.Format(selectBase, selectTotal, joins, filters)};
+                {string.Format(selectBase, selectEntity, joins, filters)}
                 ORDER BY bo.[Id]
                 OFFSET {request.PageNo * request.PageSize} ROWS FETCH NEXT {request.PageSize} ROWS ONLY;
             ";
@@ -48,9 +50,10 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
             return (total, operations);
         }
 
-        private static (DynamicParameters, string) HandleGetRequest(OperationPagingFilter filter)
+        private static (DynamicParameters, string, string) HandleGetRequest(OperationPagingFilter filter)
         {
             var @params = new DynamicParameters();
+            var joins = new List<string>();
             var filters = new List<string>();
 
             if (filter.Ids?.Any() == true)
@@ -61,14 +64,14 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 
             if (filter.Scopes?.Any() == true)
             {
-                @params.Add("Scopes", filter.Scopes);
-                filters.Add("bo.[Scope] IN @Scopes");
+                @params.Add("Scopes", filter.Scopes.Select(item => $"%{item}%").ToStringTable());
+                joins.Add("INNER JOIN @Scopes sc ON bo.[Scope] LIKE sc.[Value]");
             }
 
             if (filter.ContextNames?.Any() == true)
             {
-                @params.Add("ContextNames", filter.ContextNames);
-                filters.Add("bo.[ContextName] IN @ContextNames");
+                @params.Add("ContextNames", filter.ContextNames.Select(item => $"%{item}%").ToStringTable());
+                joins.Add("INNER JOIN @ContextNames cn ON bo.[ContextName] LIKE cn.[Value]");
             }
 
             if (filter.UserIds?.Any() == true)
@@ -110,7 +113,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                 filters.Add("bo.[StopTime] BETWEEN @StopTimeMin AND @StopTimeMax");
             }
 
-            return (@params, filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
+            return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
         }
     }
 }
