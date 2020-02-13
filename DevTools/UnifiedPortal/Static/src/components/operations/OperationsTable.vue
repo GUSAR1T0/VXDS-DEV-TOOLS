@@ -48,28 +48,18 @@
             <template slot-scope="scope">
                 <el-link :href="`/user/${scope.row.userId}`" type="primary" :underline="false"
                          v-if="scope.row.userId">
-                    <div class="user-avatar-and-name">
-                        <el-avatar :size="32" :style="getAvatarStyle(scope.row)">
-                            <div style="font-size: 16px">
-                                {{ getInitials(scope.row) }}
-                            </div>
-                        </el-avatar>
-                        <strong style="font-size: 16px">
-                            {{ getFullName(scope.row) }}
-                        </strong>
-                    </div>
+                    <UserAvatarAndFullName
+                            :first-name="scope.row.firstName"
+                            :last-name="scope.row.lastName"
+                            :color="scope.row.color"
+                    />
                 </el-link>
                 <div v-else>
-                    <div class="user-avatar-and-name">
-                        <el-avatar :size="32" :style="getAvatarStyle(scope.row)">
-                            <div style="font-size: 16px">
-                                {{ getInitials(scope.row) }}
-                            </div>
-                        </el-avatar>
-                        <strong style="font-size: 16px">
-                            {{ getFullName(scope.row) }}
-                        </strong>
-                    </div>
+                    <UserAvatarAndFullName
+                            :first-name="scope.row.firstName"
+                            :last-name="scope.row.lastName"
+                            :color="scope.row.color"
+                    />
                 </div>
             </template>
         </el-table-column>
@@ -86,9 +76,6 @@
     </el-table>
 </template>
 
-<style scoped src="@/styles/user.css">
-</style>
-
 <style>
     .el-table .is-successful {
         background: rgba(12, 124, 89, 0.1);
@@ -100,12 +87,15 @@
 </style>
 
 <script>
-    import { getUserFullName, getUserInitials } from "@/extensions/utils";
+    import UserAvatarAndFullName from "@/components/user/UserAvatarAndFullName";
 
     export default {
         name: "OperationsTable",
         props: {
             items: Array
+        },
+        components: {
+            UserAvatarAndFullName
         },
         methods: {
             defineRowStyle({row}) {
@@ -116,18 +106,6 @@
                 } else {
                     return "";
                 }
-            },
-            getInitials(row) {
-                return getUserInitials(row.firstName, row.lastName);
-            },
-            getFullName(row) {
-                return getUserFullName(row.firstName, row.lastName);
-            },
-            getAvatarStyle(row) {
-                return {
-                    backgroundColor: row.color ? row.color : "#909399",
-                    marginRight: "10px"
-                };
             }
         }
     };

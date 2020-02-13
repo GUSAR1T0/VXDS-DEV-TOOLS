@@ -9,7 +9,7 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserListItem>> GetUsers(IOperation operation);
+        Task<UserPagingResponse> GetUsers(IOperation operation, UserPagingRequest request);
         Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
         Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id);
         Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
@@ -29,7 +29,15 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
             this.userRoleStore = userRoleStore;
         }
 
-        public async Task<IEnumerable<UserListItem>> GetUsers(IOperation operation) => await userDataStore.GetUsers(operation);
+        public async Task<UserPagingResponse> GetUsers(IOperation operation, UserPagingRequest request)
+        {
+            var (total, users) = await userDataStore.GetUsers(operation, request);
+            return new UserPagingResponse
+            {
+                Total = total,
+                Items = users
+            };
+        }
 
         public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern) => await userDataStore.SearchUsersByPattern(operation, pattern);
 

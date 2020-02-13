@@ -1,22 +1,20 @@
 <template>
-    <div class="operations">
-        <LoadingContainer :loading-state="loadingIsActive">
-            <template slot="content">
-                <FilterableTableView
-                        :reset-filters="resetFilters"
-                        :reload="loadOperations"
-                        :settings="settings"
-                >
-                    <template slot="filters">
-                        <OperationsTableFilters :filter="filter"/>
-                    </template>
-                    <template slot="table">
-                        <OperationsTable :items="items"/>
-                    </template>
-                </FilterableTableView>
-            </template>
-        </LoadingContainer>
-    </div>
+    <LoadingContainer :loading-state="loadingIsActive">
+        <template slot="content">
+            <FilterableTableView
+                    :reset-filters="resetFilters"
+                    :reload="loadOperations"
+                    :settings="settings"
+            >
+                <template slot="filters">
+                    <OperationsTableFilters :filter="filter"/>
+                </template>
+                <template slot="table">
+                    <OperationsTable :items="items"/>
+                </template>
+            </FilterableTableView>
+        </template>
+    </LoadingContainer>
 </template>
 
 <script>

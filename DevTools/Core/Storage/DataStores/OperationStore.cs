@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
-using VXDesign.Store.DevTools.Core.Entities.Storage.Log;
+using VXDesign.Store.DevTools.Core.Entities.Storage.Operation;
 using VXDesign.Store.DevTools.Core.Extensions.Storage;
 
 namespace VXDesign.Store.DevTools.Core.Storage.DataStores
@@ -91,12 +91,14 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 
             if (filter.IsSystemAction != null)
             {
-                filters.Add($"bo.[IsSystemAction] = {(filter.IsSystemAction == true ? 1 : 0)}");
+                @params.Add("IsSystemAction", filter.IsSystemAction);
+                filters.Add("bo.[IsSystemAction] = @IsSystemAction");
             }
 
             if (filter.IsSuccessful != null)
             {
-                filters.Add($"bo.[IsSuccessful] = {(filter.IsSuccessful == true ? 1 : 0)}");
+                @params.Add("IsSuccessful", filter.IsSuccessful);
+                filters.Add("bo.[IsSuccessful] = @IsSuccessful");
             }
 
             if (filter.StartTimeRange?.HasRange == true)

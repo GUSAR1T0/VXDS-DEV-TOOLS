@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using VXDesign.Store.DevTools.Core.Entities.Storage.SSP;
 
-namespace VXDesign.Store.DevTools.Core.Entities.Storage.Log
+namespace VXDesign.Store.DevTools.Core.Entities.Storage.Operation
 {
     public class OperationEntity : IDataEntity
     {

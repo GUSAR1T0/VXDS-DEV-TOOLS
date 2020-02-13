@@ -6,7 +6,7 @@ using VXDesign.Store.DevTools.Core.Entities.Controllers;
 using VXDesign.Store.DevTools.Core.Enums.Operations;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Services.Storage;
-using VXDesign.Store.DevTools.UnifiedPortal.Models.Log;
+using VXDesign.Store.DevTools.UnifiedPortal.Models.Operation;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
 {

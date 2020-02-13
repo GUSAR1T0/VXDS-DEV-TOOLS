@@ -28,14 +28,15 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         /// Obtains all users info
         /// </summary>
         /// <returns>List of users with their info</returns>
-        [ProducesResponseType(typeof(IEnumerable<UserModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserPagingResponseModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [SyrinxVerifiedAuthentication]
-        [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers() => await Execute(async operation =>
+        [HttpPost("list")]
+        public async Task<ActionResult<UserPagingResponseModel>> GetUsers([FromBody] UserPagingRequestModel model) => await Execute(async operation =>
         {
-            var users = await userService.GetUsers(operation);
-            return users.Select(user => user.ToModel());
+            var users = await userService.GetUsers(operation, model.ToEntity());
+            var response = new UserPagingResponseModel().ToModel(users);
+            return response;
         });
 
         /// <summary>

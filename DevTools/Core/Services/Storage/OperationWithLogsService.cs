@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
-using VXDesign.Store.DevTools.Core.Entities.Storage.Log;
+using VXDesign.Store.DevTools.Core.Entities.Storage.Operation;
 using VXDesign.Store.DevTools.Core.Storage.DataStores;
 using VXDesign.Store.DevTools.Core.Storage.LogStores;
 

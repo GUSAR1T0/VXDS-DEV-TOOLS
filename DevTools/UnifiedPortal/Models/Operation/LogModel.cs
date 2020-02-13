@@ -1,4 +1,4 @@
-namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Log
+namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Operation
 {
     public class LogModel
     {

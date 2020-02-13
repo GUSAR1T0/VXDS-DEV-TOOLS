@@ -9,6 +9,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
     {
         Task<UserRoleEntity> GetUserRoleById(IOperation operation, int id);
         Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation, bool isFullInfoNeeded);
+        Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern);
         Task AddUserRole(IOperation operation, UserRoleEntity entity);
         Task UpdateUserRole(IOperation operation, UserRoleEntity entity);
         Task DeleteUserRoleById(IOperation operation, int id);
@@ -42,6 +43,17 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     [Name]
                     {fieldsOfFullInfoQuery}
                 FROM [authentication].[UserRole]
+            ");
+        }
+
+        public async Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern)
+        {
+            return await operation.Connection.QueryAsync<UserRoleEntity>(new { Pattern = $"%{pattern}%" }, @"
+                SELECT
+                    [Id],
+                    [Name]
+                FROM [authentication].[UserRole]
+                WHERE [Name] LIKE @Pattern;
             ");
         }
 

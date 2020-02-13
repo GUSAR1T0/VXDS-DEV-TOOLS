@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VXDesign.Store.DevTools.Core.Entities.Common;
-using VXDesign.Store.DevTools.Core.Entities.Storage.Log;
+using VXDesign.Store.DevTools.Core.Entities.Storage.Operation;
 using VXDesign.Store.DevTools.Core.Extensions.Controllers;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.Common;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.SSP;
 
-namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Log
+namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Operation
 {
     public class OperationWithLogsModel : PagingResponseItemModel, IPagingResponseItemModel<OperationWithLogsModel, OperationWithLogs>
     {
@@ -24,20 +24,21 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Models.Log
         public string StopTime { get; set; }
         public IEnumerable<LogModel> Logs { get; set; }
 
-        public OperationWithLogsModel ToModel(OperationWithLogs entity) => new OperationWithLogsModel
+        public OperationWithLogsModel ToModel(OperationWithLogs entity)
         {
-            Id = entity.Operation.Id,
-            Scope = entity.Operation.Scope,
-            ContextName = entity.Operation.ContextName,
-            UserId = entity.Operation.UserId,
-            Color = entity.Operation.Color,
-            FirstName = !entity.Operation.IsSystemAction ? entity.Operation.FirstName ?? "Unauthorized" : "System",
-            LastName = entity.Operation.LastName,
-            IsSuccessful = entity.Operation.IsSuccessful,
-            StartTime = entity.Operation.StartTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek),
-            StopTime = entity.Operation.StopTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek),
-            Logs = entity.Logs.Select(log => log.ToModel())
-        };
+            Id = entity.Operation.Id;
+            Scope = entity.Operation.Scope;
+            ContextName = entity.Operation.ContextName;
+            UserId = entity.Operation.UserId;
+            Color = entity.Operation.Color;
+            FirstName = !entity.Operation.IsSystemAction ? entity.Operation.FirstName ?? "Unauthorized" : "System";
+            LastName = entity.Operation.LastName;
+            IsSuccessful = entity.Operation.IsSuccessful;
+            StartTime = entity.Operation.StartTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
+            StopTime = entity.Operation.StopTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
+            Logs = entity.Logs.Select(log => log.ToModel());
+            return this;
+        }
     }
 
     public class OperationPagingFilterModel : PagingFilterModel, IPagingFilterModel<OperationPagingFilter>
