@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
 using VXDesign.Store.DevTools.Core.Entities.Storage.User;
+using VXDesign.Store.DevTools.Core.Extensions.Storage;
 
 namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 {
@@ -22,7 +25,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
         #region Users
 
         Task<bool> IsUserExist(IOperation operation, int id);
-        Task<IEnumerable<UserListItem>> GetUsers(IOperation operation);
+        Task<(long total, IEnumerable<UserListItem> users)> GetUsers(IOperation operation, UserPagingRequest request);
         Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
         Task<UserProfileEntity> GetProfileById(IOperation operation, int id);
         Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
@@ -152,20 +155,74 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
             ");
         }
 
-        public async Task<IEnumerable<UserListItem>> GetUsers(IOperation operation)
+        public async Task<(long total, IEnumerable<UserListItem> users)> GetUsers(IOperation operation, UserPagingRequest request)
         {
-            return await operation.Connection.QueryAsync<UserListItem>(@"
-                SELECT
-                    au.[Id],
-                    [FirstName],
-                    [LastName],
-                    [Email],
-                    [Color],
-                    aur.[Name] AS [UserRole],
-                    [IsActivated]
-                FROM [authentication].[User] au
+            var selectBase = $@"
+                SELECT {{0}} FROM [authentication].[User] au
                 LEFT JOIN [authentication].[UserRole] aur ON au.[UserRoleId] = aur.[Id]
-            ");
+                {{1}}
+                {{2}}
+            ";
+            const string selectEntity = @"
+                    au.[Id],
+                    au.[FirstName],
+                    au.[LastName],
+                    au.[Email],
+                    au.[Color],
+                    aur.[Name] AS [UserRole],
+                    au.[IsActivated]
+            ";
+            const string selectTotal = "COUNT_BIG(1)";
+            var (@params, joins, filters) = HandleGetRequest(request.Filter);
+            var query = $@"
+                {string.Format(selectBase, selectTotal, joins, filters)};
+                {string.Format(selectBase, selectEntity, joins, filters)}
+                ORDER BY au.[Id]
+                OFFSET {request.PageNo * request.PageSize} ROWS FETCH NEXT {request.PageSize} ROWS ONLY;
+            ";
+            using var reader = await operation.Connection.QueryMultipleAsync(@params, query);
+            var total = await reader.ReadSingleAsync<long>();
+            var users = await reader.ReadAsync<UserListItem>();
+            return (total, users);
+        }
+
+        private static (DynamicParameters, string, string) HandleGetRequest(UserPagingFilter filter)
+        {
+            var @params = new DynamicParameters();
+            var joins = new List<string>();
+            var filters = new List<string>();
+
+            if (filter.Ids?.Any() == true)
+            {
+                @params.Add("Ids", filter.Ids);
+                filters.Add("au.[Id] IN @Ids");
+            }
+
+            if (filter.UserNames?.Any() == true)
+            {
+                @params.Add("UserNames", filter.UserNames.Select(item => $"%{item}%").ToStringTable());
+                joins.Add("INNER JOIN @UserNames un ON (au.[FirstName] + ' ' + au.[LastName]) LIKE un.[Value]");
+            }
+
+            if (filter.Emails?.Any() == true)
+            {
+                @params.Add("Emails", filter.Emails.Select(item => $"%{item}%").ToStringTable());
+                joins.Add("INNER JOIN @Emails e ON au.[Email] LIKE e.[Value]");
+            }
+
+            if (filter.UserRoleIds?.Any() == true)
+            {
+                @params.Add("UserRoleIds", filter.UserRoleIds);
+                filters.Add("au.[UserRoleId] IN @UserRoleIds");
+            }
+
+            if (filter.IsActivated != null)
+            {
+                @params.Add("IsActivated", filter.IsActivated);
+                filters.Add("au.[IsActivated] = @IsActivated");
+            }
+
+            return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
         }
 
         public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern)

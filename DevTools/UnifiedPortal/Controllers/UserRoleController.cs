@@ -56,6 +56,20 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         });
 
         /// <summary>
+        /// Searches user roles by pattern
+        /// </summary>
+        /// <returns>List of user roles shortly (without permissions)</returns>
+        [ProducesResponseType(typeof(IEnumerable<UserRoleShortInfoModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [SyrinxVerifiedAuthentication]
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<UserRoleShortInfoModel>>> SearchUserRolesByPattern([FromQuery(Name = "p")] string pattern) => await Execute(async operation =>
+        {
+            var userRoles = await userRoleService.SearchUserRolesByPattern(operation, pattern);
+            return userRoles.Select(userRole => userRole.ToShortInfoModel());
+        });
+
+        /// <summary>
         /// Obtains user role full (with permissions)
         /// </summary>
         /// <returns>List of user roles</returns>

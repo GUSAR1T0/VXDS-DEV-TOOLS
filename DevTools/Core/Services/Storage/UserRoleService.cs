@@ -10,6 +10,7 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
     public interface IUserRoleService
     {
         Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation, bool isFullInfoNeeded = true);
+        Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern);
         Task<UserRoleEntity> GetUserRoleById(IOperation operation, int id);
         Task AddUserRole(IOperation operation, UserRoleEntity entity);
         Task UpdateUserRole(IOperation operation, UserRoleEntity entity);
@@ -26,6 +27,8 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
         }
 
         public async Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation, bool isFullInfoNeeded = true) => await userRoleStore.GetUserRoles(operation, isFullInfoNeeded);
+
+        public async Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern) => await userRoleStore.SearchUserRolesByPattern(operation, pattern);
 
         public async Task<UserRoleEntity> GetUserRoleById(IOperation operation, int id) => await userRoleStore.GetUserRoleById(operation, id);
 

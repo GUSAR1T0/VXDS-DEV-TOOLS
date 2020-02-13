@@ -1,5 +1,7 @@
-using VXDesign.Store.DevTools.Core.Entities.Storage.Log;
-using VXDesign.Store.DevTools.UnifiedPortal.Models.Log;
+using VXDesign.Store.DevTools.Core.Entities.Common;
+using VXDesign.Store.DevTools.Core.Entities.Storage.Operation;
+using VXDesign.Store.DevTools.Core.Extensions.Controllers;
+using VXDesign.Store.DevTools.UnifiedPortal.Models.Operation;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
 {
@@ -9,7 +11,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
         {
             Id = entity.Id,
             Level = entity.Level,
-            DateTime = entity.DateTime,
+            DateTime = entity.DateTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek),
             Logger = entity.Logger,
             Message = entity.Message,
             Value = entity.Value

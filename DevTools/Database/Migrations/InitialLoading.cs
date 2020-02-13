@@ -37,6 +37,7 @@ namespace VXDesign.Store.DevTools.Database.Migrations
             if (!baseSchema.Exists())
             {
                 Execute.EmbeddedScript("Base_CreateBaseSchema.sql");
+                Execute.EmbeddedScript("Base_CreateListTableTypes.sql");
             }
 
             if (!authorizationSchema.Table(Table.Operation).Exists())
