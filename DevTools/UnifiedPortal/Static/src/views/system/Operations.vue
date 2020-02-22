@@ -138,14 +138,20 @@
                 this.filter.contextNameGenerator = 0;
                 this.filter.userIdOptions = [];
                 this.filter.userIdsSearchLoading = false;
+            },
+            searchById(id) {
+                if (id && !isNaN(id)) {
+                    id = parseInt(id);
+                    this.filter.ids = [id];
+                }
             }
         },
         mounted() {
-            // this.filters <= [this.$route.query.id];
+            this.searchById(this.$route.query.id);
             this.loadOperations();
         },
         beforeRouteUpdate(to, from, next) {
-            // this.filters <= [to.query.id];
+            this.searchById(to.query.id);
             this.loadOperations();
             next();
         }

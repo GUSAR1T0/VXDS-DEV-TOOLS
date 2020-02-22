@@ -43,6 +43,26 @@ export function getUserInitials(firstName, lastName) {
     return (first + last).toUpperCase();
 }
 
+function showOperationBlock(h, operationId) {
+    if (!isNaN(operationId)) {
+        return [
+            h("el-link", {
+                props: {
+                    href: `/system/operations?id=${operationId}`,
+                    type: "primary"
+                }
+            }, [
+                h("strong", null, [
+                    operationId,
+                    h("i", {
+                        class: [ "el-icon-top-right" ]
+                    }, null)
+                ])
+            ])
+        ];
+    } else h("strong", null, operationId);
+}
+
 export function renderErrorNotificationMessage(h, response) {
     if (response && response.data) {
         return h("div", null, [
@@ -52,7 +72,7 @@ export function renderErrorNotificationMessage(h, response) {
             ]),
             h("div", {style: "margin-top: 5px"}, "Code of incident:"),
             h("div", {style: "margin-top: 5px; margin-left: 5px"}, [
-                h("strong", null, response.data.operationId)
+                showOperationBlock(h, response.data.operationId)
             ])
         ]);
     } else {

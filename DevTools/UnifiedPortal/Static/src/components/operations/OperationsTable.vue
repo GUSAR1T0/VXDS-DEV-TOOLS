@@ -3,7 +3,7 @@
         <el-table-column type="expand">
             <template slot-scope="scope">
                 <el-table :data="scope.row.logs" style="width: 100%" border>
-                    <el-table-column label="Date / Time" min-width="300">
+                    <el-table-column label="Date / Time" min-width="350">
                         <template slot-scope="logScope">
                             <div style="font-size: 16px">{{ logScope.row.dateTime }}</div>
                         </template>
