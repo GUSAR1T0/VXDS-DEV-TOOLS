@@ -74,6 +74,22 @@ export default new Router({
             meta: {
                 pageName: "Operations"
             }
+        },
+        {
+            path: "/404",
+            name: "not-found",
+            component: () => import(/* webpackChunkName: "not-found" */ "../views/errors/NotFoundErrorPage.vue")
+        },
+        {
+            path: "/500",
+            name: "internal-error",
+            component: () => import(/* webpackChunkName: "internal-error" */ "../views/errors/InternalErrorPage.vue")
+        },
+        {
+            path: "*",
+            beforeEnter: (to, from, next) => {
+                next(`/404?from=${to.path}`);
+            }
         }
     ]
 });
