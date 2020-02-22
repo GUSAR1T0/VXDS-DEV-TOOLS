@@ -119,6 +119,7 @@
                     button.loading = false;
                     this.logoutDialogStatus.visible = false;
                     this.$router.push("/auth").catch(() => {
+                        this.$router.push("/500");
                     });
                     this.$notify.success({
                         title: "You are logged out",
@@ -127,8 +128,8 @@
                 }).catch(() => {
                     button.loading = false;
                     this.logoutDialogStatus.visible = false;
-                    // TODO: Error case handling -> bug #39
                     this.$router.push("/auth").catch(() => {
+                        this.$router.push("/500");
                     });
                 });
             }

@@ -82,6 +82,7 @@
                     button.loading = false;
                     this.logoutDialogStatus.visible = false;
                     this.$router.push("/auth").then(() => this.isReadyToLoadContent = true).catch(() => {
+                        this.$router.push("/500");
                     });
                     this.$notify.success({
                         title: "You are logged out",
@@ -90,8 +91,8 @@
                 }).catch(() => {
                     button.loading = false;
                     this.logoutDialogStatus.visible = false;
-                    // TODO: Error case handling -> bug #39
                     this.$router.push("/auth").catch(() => {
+                        this.$router.push("/500");
                     });
                 });
             }
@@ -119,18 +120,18 @@
                     }
 
                     this.$router.push(redirectTo).then(() => completeLoading()).catch(() => {
-                        // TODO: Error case handling -> bug #39
                         completeLoading();
+                        this.$router.push("/500");
                     });
                 }).catch(() => {
                     this.$router.push("/auth").then(() => completeLoading()).catch(() => {
-                        // TODO: Error case handling -> bug #39
                         completeLoading();
+                        this.$router.push("/500");
                     });
                 });
                 this.$store.dispatch(RESET_PATH_FOR_REDIRECTION);
             }).catch(() => {
-                // TODO: Error case handling -> bug #39
+                this.$router.push("/500");
             });
         }
     };
