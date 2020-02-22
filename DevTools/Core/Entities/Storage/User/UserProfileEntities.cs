@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Storage.User
 
     public class UserAuthorizationEntity : UserEntity
     {
+        public int UserRoleId { get; set; }
         public PortalPermission PortalPermissions { get; set; } = 0;
     }
 

@@ -31,6 +31,7 @@
         <EmbeddedResource Include="Scripts\Base_CreateOperationTable.sql" />
         <EmbeddedResource Include="Scripts\Base_CreateListTableTypes.sql" />
         <EmbeddedResource Include="Scripts\Base_DropBaseSchema.sql" />
+        <EmbeddedResource Include="Scripts\Base_DropListTableTypes.sql" />
         <EmbeddedResource Include="Scripts\Base_DropOperationTable.sql" />
     </ItemGroup>
 

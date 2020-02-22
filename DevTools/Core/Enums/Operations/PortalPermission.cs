@@ -13,6 +13,9 @@ namespace VXDesign.Store.DevTools.Core.Enums.Operations
         UpdateUserProfile = 2,
 
         [Description("Manage User Roles")]
-        ManageUserRoles = 4
+        ManageUserRoles = 4,
+
+        [Description("Update Settings")]
+        UpdateSettings = 8
     }
 }

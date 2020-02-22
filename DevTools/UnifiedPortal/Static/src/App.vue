@@ -119,15 +119,9 @@
                         redirectTo = "/";
                     }
 
-                    this.$router.push(redirectTo).then(() => completeLoading()).catch(() => {
-                        completeLoading();
-                        this.$router.push("/500");
-                    });
+                    this.$router.push(redirectTo).then(() => completeLoading()).catch(() => completeLoading());
                 }).catch(() => {
-                    this.$router.push("/auth").then(() => completeLoading()).catch(() => {
-                        completeLoading();
-                        this.$router.push("/500");
-                    });
+                    this.$router.push("/auth").then(() => completeLoading()).catch(() => completeLoading());
                 });
                 this.$store.dispatch(RESET_PATH_FOR_REDIRECTION);
             }).catch(() => {

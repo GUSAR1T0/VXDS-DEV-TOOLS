@@ -14,11 +14,10 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="portalPermissions" label="Portal Permissions">
-                        <el-select v-model="userRoleForm.portalPermissions" :value="userRoleForm.portalPermissions" multiple
+                        <el-select v-model="userRoleForm.portalPermissions" multiple
                                    clearable placeholder="Select" style="width: 100%">
                             <el-option v-for="item in getLookupValues('portalPermissions')" :key="item.value"
-                                       :label="item.name" :value="item.value">
-                            </el-option>
+                                       :label="item.name" :value="item.value"/>
                         </el-select>
                     </el-form-item>
                 </el-col>

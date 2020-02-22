@@ -14,6 +14,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
             FirstName = entity.FirstName,
             LastName = entity.LastName,
             Color = entity.Color,
+            UserRoleId = entity.UserRoleId,
             PortalPermissions = entity.PortalPermissions
         };
 

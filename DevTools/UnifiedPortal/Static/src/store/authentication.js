@@ -24,6 +24,7 @@ export default {
         firstName: "",
         lastName: "",
         color: "",
+        userRoleId: 0,
         portalPermissions: 0
     },
     getters: {
@@ -42,6 +43,9 @@ export default {
         getColor: state => {
             return state.color;
         },
+        getUserRoleId: state => {
+            return state.userRoleId;
+        },
         hasPortalPermission: state => permission => {
             return permission === 0 || (state.portalPermissions & permission) !== 0;
         }
@@ -53,6 +57,7 @@ export default {
             state.firstName = data.firstName;
             state.lastName = data.lastName;
             state.color = data.color;
+            state.userRoleId = data.userRoleId;
             state.portalPermissions = data.userRole ? data.userRole.portalPermissions : data.portalPermissions;
         },
         [LOGOUT_REQUEST]: state => {
@@ -61,6 +66,7 @@ export default {
             state.firstName = "";
             state.lastName = "";
             state.color = "";
+            state.userRoleId = 0;
             state.portalPermissions = 0;
         }
     },

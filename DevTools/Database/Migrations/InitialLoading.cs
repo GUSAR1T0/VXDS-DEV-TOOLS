@@ -59,6 +59,7 @@ namespace VXDesign.Store.DevTools.Database.Migrations
                     Execute.EmbeddedScript("Base_DropOperationTable.sql");
                 }
 
+                Execute.EmbeddedScript("Base_DropListTableTypes.sql");
                 Execute.EmbeddedScript("Base_DropBaseSchema.sql");
             }
 

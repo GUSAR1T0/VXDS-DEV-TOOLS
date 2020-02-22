@@ -13,6 +13,6 @@ new Vue({
     store,
     render: h => h(App),
     beforeCreate() {
-        this.$store.dispatch(SET_PATH_FOR_REDIRECTION, window.location.pathname);
+        this.$store.dispatch(SET_PATH_FOR_REDIRECTION, window.location.pathname + window.location.search);
     }
 }).$mount("#app");

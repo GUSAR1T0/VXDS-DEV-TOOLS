@@ -49,6 +49,7 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
                     au.[LastName],
                     au.[Email],
                     au.[Color],
+                    au.[UserRoleId],
                     aur.[PortalPermissions]
                 FROM [authentication].[User] au
                 LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]

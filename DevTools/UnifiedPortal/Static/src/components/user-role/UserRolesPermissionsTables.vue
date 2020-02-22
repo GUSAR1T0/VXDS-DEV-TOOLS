@@ -1,7 +1,7 @@
 <template>
     <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
-            <el-button v-if="isEditable && hasPermissionToManageUserRoles" type="primary" plain
+            <el-button v-if="isEditable && hasPermissionToManageUserRoles(null)" type="primary" plain
                        class="user-roles-button" @click="openDialogToCreateOrUpdate">
                 <span><fa icon="plus-circle"/> | Create User Role</span>
             </el-button>
@@ -100,6 +100,7 @@
         computed: {
             ...mapGetters([
                 "hasPortalPermission",
+                "getUserRoleId",
                 "getUserRole",
                 "getUserRoleForm"
             ])
@@ -124,7 +125,10 @@
                 });
             },
             hasPermissionToManageUserRoles(id) {
-                return (id && id !== 1 || !id) && this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_USER_ROLES);
+                if (this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_USER_ROLES)) {
+                    return id ? id !== 1 && id !== this.getUserRoleId : true;
+                }
+                return false;
             },
             openDialogToCreateOrUpdate(userRole) {
                 this.$store.commit(STORE_USER_ROLE_DATA_REQUEST, userRole);
