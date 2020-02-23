@@ -127,7 +127,7 @@
         },
         methods: {
             hasPermissionToManageUserStatus(id) {
-                return this.getUserId !== id && this.hasPortalPermission(PORTAL_PERMISSION.UPDATE_USER_PROFILE);
+                return this.getUserId !== id && this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_USER_PROFILES);
             },
             openManageUserStatusDialog(user, activate) {
                 if (activate) {

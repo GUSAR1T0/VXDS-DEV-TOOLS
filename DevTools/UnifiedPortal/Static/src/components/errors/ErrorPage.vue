@@ -15,9 +15,10 @@
                         {{ description }}
                     </el-col>
                 </el-row>
-                <el-button type="primary" @click="$router.push('/')">
+                <el-button v-if="!$slots.button" type="primary" @click="$router.push('/')">
                     Go to Home Page
                 </el-button>
+                <slot name="button"/>
             </div>
         </el-main>
     </el-container>

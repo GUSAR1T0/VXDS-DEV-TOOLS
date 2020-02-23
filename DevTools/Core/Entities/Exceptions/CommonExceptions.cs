@@ -16,7 +16,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Exceptions
 
         #region Camunda / SRS
 
-        public static NotFoundException CamundaEndpointIsNotFoundByActionCode(IOperation operation) => new NotFoundException(operation, "Failed to find a endpoint by action code");
+        public static NotFoundException CamundaEndpointIsNotFoundByActionCode(IOperation operation) => new NotFoundException(operation, "Failed to find a Camunda endpoint by action code");
 
         public static BadRequestException SyrinxHasSentErrorResponse<TModel>(IOperation operation, TModel model) where TModel : ICamundaResponse
         {
@@ -26,6 +26,14 @@ namespace VXDesign.Store.DevTools.Core.Entities.Exceptions
         public static CamundaWorkersBuilderException PropertiesAreEmpty() => new CamundaWorkersBuilderException("Couldn't launch workers because properties are empty");
 
         public static CamundaWorkersBuilderException LogScopeIsNotStated() => new CamundaWorkersBuilderException("Couldn't launch workers because log scope is not stated");
+
+        #endregion
+
+        #region GitHub
+
+        public static NotFoundException GitHubTokenIsNotStated(IOperation operation) => new NotFoundException(operation, "Failed to connect to GitHub due to missing token in the system");
+
+        public static NotFoundException GitHubEndpointIsNotFoundByEndpointCode(IOperation operation) => new NotFoundException(operation, "Failed to find a GitHub endpoint by endpoint code");
 
         #endregion
 

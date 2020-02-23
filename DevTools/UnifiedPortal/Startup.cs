@@ -43,6 +43,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             services.AddScoped<IUserRoleStore, UserRoleStore>();
             services.AddScoped<IDashboardStore, DashboardStore>();
             services.AddScoped<IOperationStore, OperationStore>();
+            services.AddScoped<IPortalSettingsStore, PortalSettingsStore>();
 
             // Services
             services.AddScoped<IOperationService>(factory =>
@@ -57,6 +58,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IOperationWithLogsService, OperationWithLogsService>();
+            services.AddScoped<IPortalSettingsService, PortalSettingsService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddRouting(options => options.LowercaseUrls = true);

@@ -18,32 +18,43 @@ namespace VXDesign.Store.DevTools.Database.Migrations
             var authorizationSchema = Schema.Schema(Database.Schema.Authentication);
             if (!authorizationSchema.Exists())
             {
-                Execute.EmbeddedScript("Authentication_CreateAuthenticationSchema.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication_CreateAuthenticationSchema.sql");
             }
 
             if (!authorizationSchema.Table(Table.UserRole).Exists())
             {
-                Execute.EmbeddedScript("Authentication_CreateUserRoleTable.sql");
-                Execute.EmbeddedScript("Authentication_AddUserRoles.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication_CreateUserRoleTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication_AddUserRoles.sql");
             }
 
             if (!authorizationSchema.Table(Table.User).Exists())
             {
-                Execute.EmbeddedScript("Authentication_CreateUserTable.sql");
-                Execute.EmbeddedScript("Authentication_AddUsers.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication_CreateUserTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication_AddUsers.sql");
             }
 
             var baseSchema = Schema.Schema(Database.Schema.Base);
             if (!baseSchema.Exists())
             {
-                Execute.EmbeddedScript("Base_CreateBaseSchema.sql");
-                Execute.EmbeddedScript("Base_CreateListTableTypes.sql");
+                Execute.EmbeddedScript("InitialLoading.Base_CreateBaseSchema.sql");
+                Execute.EmbeddedScript("InitialLoading.Base_CreateListTableTypes.sql");
             }
 
-            if (!authorizationSchema.Table(Table.Operation).Exists())
+            if (!baseSchema.Table(Table.Operation).Exists())
             {
-                Execute.EmbeddedScript("Base_CreateOperationTable.sql");
-                Execute.EmbeddedScript("Base_AddInitialLoadingRecord.sql");
+                Execute.EmbeddedScript("InitialLoading.Base_CreateOperationTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Base_AddInitialLoadingRecord.sql");
+            }
+
+            var portalSchema = Schema.Schema(Database.Schema.Portal);
+            if (!portalSchema.Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal_CreatePortalSchema.sql");
+            }
+
+            if (!portalSchema.Table(Table.PortalSettings).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal_CreateSettingsTable.sql");
             }
 
             loggerStore.Info<InitialLoading>(0, "Database is initialized").Wait();
@@ -51,16 +62,27 @@ namespace VXDesign.Store.DevTools.Database.Migrations
 
         public override void Down()
         {
+            var portalSchema = Schema.Schema(Database.Schema.Portal);
+            if (portalSchema.Exists())
+            {
+                if (portalSchema.Table(Table.PortalSettings).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal_DropSettingsTable.sql");
+                }
+
+                Execute.EmbeddedScript("InitialLoading.Portal_DropPortalSchema.sql");
+            }
+
             var baseSchema = Schema.Schema(Database.Schema.Base);
             if (baseSchema.Exists())
             {
                 if (baseSchema.Table(Table.Operation).Exists())
                 {
-                    Execute.EmbeddedScript("Base_DropOperationTable.sql");
+                    Execute.EmbeddedScript("InitialLoading.Base_DropOperationTable.sql");
                 }
 
-                Execute.EmbeddedScript("Base_DropListTableTypes.sql");
-                Execute.EmbeddedScript("Base_DropBaseSchema.sql");
+                Execute.EmbeddedScript("InitialLoading.Base_DropListTableTypes.sql");
+                Execute.EmbeddedScript("InitialLoading.Base_DropBaseSchema.sql");
             }
 
             var authorizationSchema = Schema.Schema(Database.Schema.Authentication);
@@ -68,15 +90,15 @@ namespace VXDesign.Store.DevTools.Database.Migrations
             {
                 if (authorizationSchema.Table(Table.User).Exists())
                 {
-                    Execute.EmbeddedScript("Authentication_DropUserTable.sql");
+                    Execute.EmbeddedScript("InitialLoading.Authentication_DropUserTable.sql");
                 }
 
                 if (authorizationSchema.Table(Table.UserRole).Exists())
                 {
-                    Execute.EmbeddedScript("Authentication_DropUserRoleTable.sql");
+                    Execute.EmbeddedScript("InitialLoading.Authentication_DropUserRoleTable.sql");
                 }
 
-                Execute.EmbeddedScript("Authentication_DropAuthenticationSchema.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication_DropAuthenticationSchema.sql");
             }
 
             loggerStore.DropAllLogCollections().Wait();

@@ -76,6 +76,11 @@ export default new Router({
             }
         },
         {
+            path: "/403",
+            name: "forbidden",
+            component: () => import(/* webpackChunkName: "forbidden" */ "../views/errors/ForbiddenErrorPage.vue")
+        },
+        {
             path: "/404",
             name: "not-found",
             component: () => import(/* webpackChunkName: "not-found" */ "../views/errors/NotFoundErrorPage.vue")

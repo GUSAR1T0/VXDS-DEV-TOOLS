@@ -87,7 +87,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         {
             return await Execute(async operation =>
             {
-                if (UserId != id && (PortalPermissions & PortalPermission.UpdateUserProfile) == 0)
+                if (UserId != id && (PortalPermissions & PortalPermission.ManageUserProfiles) == 0)
                 {
                     throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
                 }
@@ -114,7 +114,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         {
             return await Execute(async operation =>
             {
-                if (UserId != id && (PortalPermissions & PortalPermission.UpdateUserProfile) == 0)
+                if (UserId != id && (PortalPermissions & PortalPermission.ManageUserProfiles) == 0)
                 {
                     throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
                 }
@@ -138,7 +138,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpPut("{id}/activate")]
         public async Task<ActionResult> ActivateUser(int id) => await Execute(async operation =>
         {
-            if (UserId != id && (PortalPermissions & PortalPermission.UpdateUserProfile) == 0)
+            if (UserId != id && (PortalPermissions & PortalPermission.ManageUserProfiles) == 0)
             {
                 throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
             }
@@ -160,7 +160,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers
         [HttpPut("{id}/deactivate")]
         public async Task<ActionResult> DeactivateUser(int id) => await Execute(async operation =>
         {
-            if (UserId != id && (PortalPermissions & PortalPermission.UpdateUserProfile) == 0)
+            if (UserId != id && (PortalPermissions & PortalPermission.ManageUserProfiles) == 0)
             {
                 throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
             }

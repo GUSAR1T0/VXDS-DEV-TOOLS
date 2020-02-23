@@ -48,13 +48,11 @@ namespace VXDesign.Store.DevTools.Core.Entities.Camunda.Base
                         .Select(property =>
                         {
                             var value = property.GetValue(this);
-                            switch (value)
+                            return value switch
                             {
-                                case IEnumerable<object> enumerable:
-                                    return new { name = property.Name, value = string.Join(",", enumerable) };
-                                default:
-                                    return new { name = property.Name, value = value.ToString() };
-                            }
+                                IEnumerable<object> enumerable => new { name = property.Name, value = string.Join(",", enumerable) },
+                                _ => new { name = property.Name, value = value.ToString() }
+                            };
                         }).ToDictionary(property => property.name, property => property.value),
                     Body = JsonConvert.SerializeObject(this, settings)
                 }, settings);

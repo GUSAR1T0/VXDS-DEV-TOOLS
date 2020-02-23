@@ -18,21 +18,25 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Scripts\Authentication_AddUserRoles.sql" />
-        <EmbeddedResource Include="Scripts\Authentication_AddUsers.sql" />
-        <EmbeddedResource Include="Scripts\Authentication_CreateAuthenticationSchema.sql" />
-        <EmbeddedResource Include="Scripts\Authentication_CreateUserRoleTable.sql" />
-        <EmbeddedResource Include="Scripts\Authentication_CreateUserTable.sql" />
-        <EmbeddedResource Include="Scripts\Authentication_DropAuthenticationSchema.sql" />
-        <EmbeddedResource Include="Scripts\Authentication_DropUserRoleTable.sql" />
-        <EmbeddedResource Include="Scripts\Authentication_DropUserTable.sql" />
-        <EmbeddedResource Include="Scripts\Base_AddInitialLoadingRecord.sql" />
-        <EmbeddedResource Include="Scripts\Base_CreateBaseSchema.sql" />
-        <EmbeddedResource Include="Scripts\Base_CreateOperationTable.sql" />
-        <EmbeddedResource Include="Scripts\Base_CreateListTableTypes.sql" />
-        <EmbeddedResource Include="Scripts\Base_DropBaseSchema.sql" />
-        <EmbeddedResource Include="Scripts\Base_DropListTableTypes.sql" />
-        <EmbeddedResource Include="Scripts\Base_DropOperationTable.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Authentication_AddUserRoles.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Authentication_AddUsers.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Authentication_CreateAuthenticationSchema.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Authentication_CreateUserRoleTable.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Authentication_CreateUserTable.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Authentication_DropAuthenticationSchema.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Authentication_DropUserRoleTable.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Authentication_DropUserTable.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Base_AddInitialLoadingRecord.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Base_CreateBaseSchema.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Base_CreateListTableTypes.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Base_CreateOperationTable.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Base_DropBaseSchema.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Base_DropListTableTypes.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Base_DropOperationTable.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Portal_CreatePortalSchema.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Portal_CreateSettingsTable.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Portal_DropPortalSchema.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Portal_DropSettingsTable.sql" />
     </ItemGroup>
 
     <ItemGroup>

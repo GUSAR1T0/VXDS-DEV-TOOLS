@@ -22,7 +22,7 @@ namespace VXDesign.Store.DevTools.Core.Services.HTTP
 
         private HttpClient httpClient;
 
-        protected HttpClient HttpClient => httpClient ?? (httpClient = Initialize());
+        protected HttpClient HttpClient => httpClient ??= Initialize();
 
         protected abstract HttpClient Initialize();
 
@@ -68,7 +68,7 @@ namespace VXDesign.Store.DevTools.Core.Services.HTTP
             path = path.Trim('/');
             FormatRequestPathWithParameters(ref path, parameters);
             FormatRequestPathWithQuery(ref path, query);
-            return '/' + api + '/' + path;
+            return (!string.IsNullOrWhiteSpace(api) ? '/' + api : string.Empty) + '/' + path;
         }
 
         private static void FormatRequestPathWithParameters(ref string path, Dictionary<string, string> parameters)

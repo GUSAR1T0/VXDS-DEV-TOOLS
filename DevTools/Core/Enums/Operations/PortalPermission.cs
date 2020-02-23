@@ -9,13 +9,13 @@ namespace VXDesign.Store.DevTools.Core.Enums.Operations
         [Description("Access to Admin Panel")]
         AccessToAdminPanel = 1,
 
-        [Description("Update User Profile")]
-        UpdateUserProfile = 2,
+        [Description("Manage User Profiles")]
+        ManageUserProfiles = 2,
 
         [Description("Manage User Roles")]
         ManageUserRoles = 4,
 
-        [Description("Update Settings")]
-        UpdateSettings = 8
+        [Description("Manage Settings")]
+        ManageSettings = 8
     }
 }

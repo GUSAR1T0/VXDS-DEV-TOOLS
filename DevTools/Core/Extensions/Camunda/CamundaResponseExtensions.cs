@@ -12,16 +12,15 @@ namespace VXDesign.Store.DevTools.Core.Extensions.Camunda
     {
         internal static TResponse PostHandle<TResponse>(this TResponse response, IOperation operation) where TResponse : ICamundaResponse
         {
+            if (!response.IsWithoutErrors()) throw CommonExceptions.SyrinxHasSentErrorResponse(operation, response);
+
             var settings = new JsonSerializerSettings
             {
                 ContractResolver = new ResponseJsonResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            if (!response.IsWithoutErrors()) throw CommonExceptions.SyrinxHasSentErrorResponse(operation, response);
-
             var intermediateResponse = JsonConvert.DeserializeObject<IntermediateCamundaResponse<object>>(response.Output, settings);
-
             if (intermediateResponse.IsWithoutErrors())
             {
                 var property = response.GetType().GetProperty(nameof(IntermediateCamundaResponse<object>.Response));

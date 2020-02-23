@@ -10,10 +10,17 @@
                 <el-main class="app-main">
                     <router-view v-if="isReadyToLoadContent && (!isAuthenticated || hasPermissionToAdminPanel)"/>
                     <div v-else-if="isAuthenticated && !hasPermissionToAdminPanel">
-                        <h1>You don't have an access to the portal</h1>
-                        <el-button type="danger" @click="logoutDialogStatus.visible = true">
-                            <span><fa class="fa-submenu-item" icon="sign-out-alt"/> | <strong>Sign Out</strong></span>
-                        </el-button>
+                        <ErrorPage
+                                :error-number="403"
+                                problem-title="We couldn't give you access to the portal"
+                                description="If you have a problem, please, inform your administrator about that."
+                        >
+                            <template slot="button">
+                                <el-button type="danger" @click="logoutDialogStatus.visible = true">
+                                    <span><fa class="fa-submenu-item" icon="sign-out-alt"/> | <strong>Sign Out</strong></span>
+                                </el-button>
+                            </template>
+                        </ErrorPage>
                         <ConfirmationDialog :dialog-status="logoutDialogStatus"
                                             confirmation-text="Are you sure that you want to sign out?"
                                             :cancel-click-action="() => logoutDialogStatus.visible = false"
@@ -46,6 +53,7 @@
     import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
     import Footer from "@/components/page/Footer.vue";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog.vue";
+    import ErrorPage from "@/components/errors/ErrorPage";
 
     export default {
         components: {
@@ -53,7 +61,8 @@
             Header,
             HorizontalDivider,
             Footer,
-            ConfirmationDialog
+            ConfirmationDialog,
+            ErrorPage
         },
         data() {
             return {
@@ -125,6 +134,7 @@
                 });
                 this.$store.dispatch(RESET_PATH_FOR_REDIRECTION);
             }).catch(() => {
+                completeLoading();
                 this.$router.push("/500");
             });
         }
