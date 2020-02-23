@@ -9,11 +9,11 @@
                     <el-input clearable show-password v-model="token"/>
                     <el-button type="primary" :disabled="!token" class="inline-field-element"
                                @click="setGitHubToken" ref="setupGitHubTokenButton">
-                        Save
+                        <strong>Save</strong>
                     </el-button>
-                    <el-button type="primary" :disabled="!codeServicesSettings.gitHubUser"
-                               class="inline-field-element" @click="resetGitHubToken" ref="resetGitHubTokenButton">
-                        Reset
+                    <el-button :disabled="!codeServicesSettings.gitHubUser" class="inline-field-element"
+                               @click="resetGitHubToken" ref="resetGitHubTokenButton">
+                        <strong>Reset</strong>
                     </el-button>
                 </div>
                 <div v-if="codeServicesSettings.gitHubUser">

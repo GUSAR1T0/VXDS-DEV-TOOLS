@@ -3,10 +3,10 @@
         <template slot="content">
             <div class="settings">
                 <el-tabs :stretch="true">
-                    <!--            <el-tab-pane>-->
-                    <!--                <span slot="label"><fa icon="cogs"/> | General</span>-->
-                    <!--                <h1>1</h1>-->
-                    <!--            </el-tab-pane>-->
+                    <el-tab-pane>
+                        <span slot="label"><fa icon="cogs"/> | General</span>
+                        <h1>TBD...</h1>
+                    </el-tab-pane>
                     <el-tab-pane>
                         <span slot="label"><fa icon="code-branch"/> | Code Services</span>
                         <CodeServices :code-services-settings="codeServicesSettings"/>

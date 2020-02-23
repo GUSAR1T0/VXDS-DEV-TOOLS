@@ -9,7 +9,7 @@
             <template slot-scope="scope">
                 <div v-for="permission in scope.row.list" v-bind:key="permission"
                      style="display: inline-block; padding: 5px">
-                    <el-tag type="primary" :effect="permission.type" hit>
+                    <el-tag type="info" :effect="permission.type" hit>
                         <strong>{{ permission.name }}</strong>
                     </el-tag>
                 </div>

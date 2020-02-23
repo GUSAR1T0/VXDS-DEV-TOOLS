@@ -42,12 +42,12 @@
                     <el-form-item>
                         <el-row type="flex" justify="center" align="middle" :gutter="20">
                             <el-col :span="12">
-                                <el-button type="primary" plain @click="cancel" style="width: 100%">
+                                <el-button @click="cancel" style="width: 100%">
                                     <strong>Cancel</strong>
                                 </el-button>
                             </el-col>
                             <el-col :span="12">
-                                <el-button type="danger" plain ref="accountSpecificInfoUpdateFormButton" native-type="submit"
+                                <el-button type="primary" ref="accountSpecificInfoUpdateFormButton" native-type="submit"
                                            style="width: 100%">
                                     <strong>Submit</strong>
                                 </el-button>

@@ -17,7 +17,7 @@
                         >
                             <template slot="button">
                                 <el-button type="danger" @click="logoutDialogStatus.visible = true">
-                                    <span><fa class="fa-submenu-item" icon="sign-out-alt"/> | <strong>Sign Out</strong></span>
+                                    <span><fa class="fa-submenu-item" icon="sign-out-alt"/><strong> | Sign Out</strong></span>
                                 </el-button>
                             </template>
                         </ErrorPage>

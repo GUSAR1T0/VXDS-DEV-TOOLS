@@ -29,7 +29,7 @@
                                 </Blocks>
                                 <el-button type="primary" plain class="system-row-button"
                                            @click="$router.push('/system/operations')">
-                                    <span>See Operations</span>
+                                    <fa icon="file-alt"/><strong> | See Operations</strong>
                                 </el-button>
                             </el-card>
                         </template>

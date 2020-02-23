@@ -5,7 +5,7 @@
         <h3 class="confirmation-dialog-header">{{ additionalText }}</h3>
         <el-row type="flex" justify="center" align="middle" :gutter="20">
             <el-col :span="12">
-                <el-button type="primary" plain @click="cancelClickAction" class="confirmation-button">
+                <el-button @click="cancelClickAction" class="confirmation-button">
                     <strong>Cancel</strong>
                 </el-button>
             </el-col>

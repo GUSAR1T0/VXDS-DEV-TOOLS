@@ -11,9 +11,9 @@
                      style="margin-top: 20px"></div>
                 <UserInfoRow v-if="getUserProfile.location" name="Location" :value="getUserProfile.location"/>
                 <UserInfoRow v-if="getUserProfile.bio" name="Bio" :value="getUserProfile.bio"/>
-                <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="primary"
-                           plain @click="openUserGeneralInfoUpdateForm">
-                    <span><fa icon="edit"/> | Edit General Info</span>
+                <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="primary" plain
+                           @click="openUserGeneralInfoUpdateForm">
+                    <span><fa icon="edit"/><strong> | Edit General Info</strong></span>
                 </el-button>
                 <UserGeneralInfoUpdateForm v-if="hasPermissionToUpdateUserProfile"
                                            :user="getUserProfile"
@@ -31,10 +31,11 @@
                         <UserRolePermissionsTable :user-role="getUserProfile.userRole"/>
                     </template>
                 </UserInfoRow>
-                <UserInfoRow v-if="getUserProfile.isActivated !== undefined" name="User Status" :value="getUserProfile.isActivated ? 'Activated' : 'Deactivated'"/>
-                <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="primary"
-                           plain @click="openAccountSpecificInfoUpdateForm">
-                    <span><fa icon="edit"/> | Edit Account Specific Info</span>
+                <UserInfoRow v-if="getUserProfile.isActivated !== undefined" name="User Status"
+                             :value="getUserProfile.isActivated ? 'Activated' : 'Deactivated'"/>
+                <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="primary" plain
+                           @click="openAccountSpecificInfoUpdateForm">
+                    <span><fa icon="edit"/><strong> | Edit Account Specific Info</strong></span>
                 </el-button>
                 <AccountSpecificInfoUpdateForm v-if="hasPermissionToUpdateUserProfile"
                                                :user="getUserProfile"

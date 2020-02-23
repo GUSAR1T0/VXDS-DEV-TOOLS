@@ -1,9 +1,9 @@
 <template>
     <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
-            <el-button v-if="isEditable && hasPermissionToManageUserRoles(null)" type="primary" plain
+            <el-button v-if="isEditable && hasPermissionToManageUserRoles(null)" type="primary"
                        class="user-roles-button" @click="openDialogToCreateOrUpdate">
-                <span><fa icon="plus-circle"/> | Create User Role</span>
+                <span><fa icon="plus-circle"/><strong> | Create User Role</strong></span>
             </el-button>
             <el-card shadow="hover" style="margin-top: 25px;" v-for="item in userRoles" :key="item.id">
                 <div slot="header" style="text-align: center">
@@ -15,13 +15,13 @@
                     <el-col :span="12">
                         <el-button type="primary" plain class="user-roles-button"
                                    @click="openDialogToCreateOrUpdate(item)">
-                            <span><fa icon="edit"/> | Edit User Role</span>
+                            <span><fa icon="edit"/><strong> | Edit User Role</strong></span>
                         </el-button>
                     </el-col>
                     <el-col :span="12">
-                        <el-button type="primary" plain class="user-roles-button"
+                        <el-button type="danger" plain class="user-roles-button"
                                    @click="openDeleteUserRoleDialog(item)" ref="deleteUserRoleButton">
-                            <span><fa icon="minus-circle"/> | Delete User Role</span>
+                            <span><fa icon="minus-circle"/><strong> | Delete User Role</strong></span>
                         </el-button>
                     </el-col>
                 </el-row>

@@ -16,7 +16,7 @@
                     </el-col>
                 </el-row>
                 <el-button v-if="!$slots.button" type="primary" @click="$router.push('/')">
-                    Go to Home Page
+                    <strong>Go to Home Page</strong>
                 </el-button>
                 <slot name="button"/>
             </div>

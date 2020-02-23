@@ -5,7 +5,7 @@
         </div>
         <div class="system-row-content">{{ rolesCount }}</div>
         <el-button type="primary" plain class="system-row-button" @click="$router.push('/users/roles')">
-            <span>See User Roles</span>
+            <fa icon="users-cog"/><strong> | See User Roles</strong>
         </el-button>
     </el-card>
 </template>

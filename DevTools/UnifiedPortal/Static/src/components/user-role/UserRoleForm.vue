@@ -27,14 +27,14 @@
                     <el-form-item>
                         <el-row type="flex" justify="center" align="middle" :gutter="20">
                             <el-col :span="12">
-                                <el-button type="primary" @click="cancel" plain style="width: 100%">
-                                    Cancel
+                                <el-button @click="cancel" style="width: 100%">
+                                    <strong>Cancel</strong>
                                 </el-button>
                             </el-col>
                             <el-col :span="12">
                                 <el-button type="primary" ref="userRoleFormButton" native-type="submit"
                                            style="width: 100%">
-                                    Submit
+                                    <strong>Submit</strong>
                                 </el-button>
                             </el-col>
                         </el-row>

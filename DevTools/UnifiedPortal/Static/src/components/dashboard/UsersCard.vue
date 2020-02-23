@@ -5,7 +5,7 @@
         </div>
         <div class="system-row-content">{{ usersCount }}</div>
         <el-button type="primary" plain class="system-row-button" @click="$router.push('/users')">
-            <span>See Users</span>
+            <fa icon="users"/><strong> | See Users</strong>
         </el-button>
     </el-card>
 </template>

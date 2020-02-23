@@ -41,8 +41,8 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="avatar" label="Color">
-                        <el-button ref="colorButton" style="width: 100%" @click="generateColor">
-                            Generate new color
+                        <el-button type="info" plain ref="colorButton" style="width: 100%" @click="generateColor">
+                            <strong>Generate new color</strong>
                         </el-button>
                     </el-form-item>
                 </el-col>
