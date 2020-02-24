@@ -1,3 +1,5 @@
+using VXDesign.Store.DevTools.Core.Entities.Storage.GitHub;
+
 namespace VXDesign.Store.DevTools.Core.Entities.Storage.Settings
 {
     public class SettingsParametersItemEntity : IDataEntity
@@ -14,14 +16,5 @@ namespace VXDesign.Store.DevTools.Core.Entities.Storage.Settings
     public class CodeServiceSettingsEntity
     {
         public GitHubUserEntity GitHubUser { get; set; }
-    }
-
-    public class GitHubUserEntity
-    {
-        public bool IsValid { get; set; }
-        public string Name { get; set; }
-        public string Login { get; set; }
-        public string AvatarUrl { get; set; }
-        public string ProfileUrl { get; set; }
     }
 }

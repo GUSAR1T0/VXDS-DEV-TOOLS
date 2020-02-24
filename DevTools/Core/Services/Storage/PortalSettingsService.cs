@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Core.Entities.Common;
+using VXDesign.Store.DevTools.Core.Entities.Exceptions;
 using VXDesign.Store.DevTools.Core.Entities.GitHub.Users.Models;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Storage.GitHub;
 using VXDesign.Store.DevTools.Core.Entities.Storage.Settings;
 using VXDesign.Store.DevTools.Core.Extensions.HTTP;
 using VXDesign.Store.DevTools.Core.Services.GitHub;
@@ -19,6 +21,8 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
         Task<GitHubUserEntity> SetupGitHubToken(IOperation operation, string token);
 
         #endregion
+
+        Task<IGitHubClientService> GetGitHubClient(IOperation operation);
     }
 
     public class PortalSettingsService : IPortalSettingsService
@@ -78,5 +82,11 @@ namespace VXDesign.Store.DevTools.Core.Services.Storage
         }
 
         #endregion
+
+        public async Task<IGitHubClientService> GetGitHubClient(IOperation operation)
+        {
+            var token = await portalSettingsStore.GetSettingsParameter(operation, PortalSettingsKey.GitHubToken);
+            return !string.IsNullOrWhiteSpace(token) ? new GitHubClientService(token) : throw CommonExceptions.GitHubTokenIsNotStated(operation);
+        }
     }
 }

@@ -57,6 +57,11 @@ namespace VXDesign.Store.DevTools.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Portal_CreateSettingsTable.sql");
             }
 
+            if (!portalSchema.Table(Table.Project).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal_CreateProjectTable.sql");
+            }
+
             loggerStore.Info<InitialLoading>(0, "Database is initialized").Wait();
         }
 
@@ -68,6 +73,11 @@ namespace VXDesign.Store.DevTools.Database.Migrations
                 if (portalSchema.Table(Table.PortalSettings).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Portal_DropSettingsTable.sql");
+                }
+
+                if (portalSchema.Table(Table.Project).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal_DropProjectTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Portal_DropPortalSchema.sql");

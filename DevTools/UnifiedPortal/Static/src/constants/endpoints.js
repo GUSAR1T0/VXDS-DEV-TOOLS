@@ -33,3 +33,7 @@ export const GET_OPERATION_LIST_ENDPOINT = "operation/list";
 // Settings endpoints
 export const LOAD_SETTINGS_ENDPOINT = "settings";
 export const SETUP_GITHUB_TOKEN_ENDPOINT = "settings/codeService/github?t={token}";
+
+// Projects endpoints
+export const GET_PROJECTS_ENDPOINT = "project/list";
+export const SEARCH_GITHUB_REPOSITORIES_ENDPOINT = "project/github/search?p={pattern}";

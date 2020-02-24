@@ -36,20 +36,22 @@
                     </el-tooltip>
                 </template>
             </el-table-column>
-            <el-table-column label="User ID" min-width="75" align="center">
+            <el-table-column label="User ID" min-width="100" align="center">
                 <template slot-scope="scope">
                     <strong style="font-size: 16px">{{ scope.row.id }}</strong>
                 </template>
             </el-table-column>
-            <el-table-column prop="type" label="User Name" min-width="300" align="left">
+            <el-table-column prop="type" label="User Name" min-width="300" align="center">
                 <template slot-scope="scope">
-                    <el-link :href="`/user/${scope.row.id}`" type="primary" :underline="false">
-                        <UserAvatarAndFullName
-                                :first-name="scope.row.firstName"
-                                :last-name="scope.row.lastName"
-                                :color="scope.row.color"
-                        />
-                    </el-link>
+                    <div style="text-align: left">
+                        <el-link :href="`/user/${scope.row.id}`" type="primary" :underline="false">
+                            <UserAvatarAndFullName
+                                    :first-name="scope.row.firstName"
+                                    :last-name="scope.row.lastName"
+                                    :color="scope.row.color"
+                            />
+                        </el-link>
+                    </div>
                 </template>
             </el-table-column>
             <el-table-column label="Email Address" min-width="300" align="center">

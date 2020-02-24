@@ -1,5 +1,5 @@
 INSERT INTO [authentication].[UserRole] ([Name], [PortalPermissions])
-SELECT N'Administrator', 15
+SELECT N'Administrator', 31
 UNION ALL
 SELECT N'Manager', 1
 UNION ALL

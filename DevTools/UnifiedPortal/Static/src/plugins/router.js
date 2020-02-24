@@ -60,6 +60,14 @@ export default new Router({
             }
         },
         {
+            path: "/pages/projects",
+            name: "projects",
+            component: () => import(/* webpackChunkName: "projects" */ "../views/pages/Projects.vue"),
+            meta: {
+                pageName: "Projects"
+            }
+        },
+        {
             path: "/system/settings",
             name: "settings",
             component: () => import(/* webpackChunkName: "settings" */ "../views/system/Settings.vue"),

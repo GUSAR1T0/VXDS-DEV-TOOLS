@@ -16,6 +16,9 @@ namespace VXDesign.Store.DevTools.Core.Enums.Operations
         ManageUserRoles = 4,
 
         [Description("Manage Settings")]
-        ManageSettings = 8
+        ManageSettings = 8,
+
+        [Description("Manage Projects")]
+        ManageProjects = 16
     }
 }

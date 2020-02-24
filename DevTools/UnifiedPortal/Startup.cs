@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VXDesign.Store.DevTools.Core.Extensions.Controllers;
+using VXDesign.Store.DevTools.Core.Services.Cache;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.Core.Services.Syrinx;
@@ -44,8 +45,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             services.AddScoped<IDashboardStore, DashboardStore>();
             services.AddScoped<IOperationStore, OperationStore>();
             services.AddScoped<IPortalSettingsStore, PortalSettingsStore>();
+            services.AddScoped<IProjectStore, ProjectStore>();
 
             // Services
+            services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
             services.AddScoped<IOperationService>(factory =>
             {
                 var loggerStore = factory.GetService<ILoggerStore>();
@@ -59,6 +62,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IOperationWithLogsService, OperationWithLogsService>();
             services.AddScoped<IPortalSettingsService, PortalSettingsService>();
+            services.AddScoped<IProjectService, ProjectService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddRouting(options => options.LowercaseUrls = true);

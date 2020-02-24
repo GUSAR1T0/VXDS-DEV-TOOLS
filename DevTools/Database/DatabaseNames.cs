@@ -13,5 +13,6 @@ namespace VXDesign.Store.DevTools.Database
         internal const string User = "User";
         internal const string Operation = "Operation";
         internal const string PortalSettings = "Settings";
+        internal const string Project = "Project";
     }
 }

@@ -2,7 +2,7 @@ using VXDesign.Store.DevTools.Core.Entities.GitHub.Base;
 
 namespace VXDesign.Store.DevTools.Core.Entities.GitHub.Users.Containers
 {
-    public class GetUserResult : IGitHubEntity
+    public class UserItem : IGitHubEntity
     {
         public string Login { get; set; }
         public string AvatarUrl { get; set; }

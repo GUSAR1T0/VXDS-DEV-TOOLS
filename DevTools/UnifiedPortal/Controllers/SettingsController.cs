@@ -7,6 +7,7 @@ using VXDesign.Store.DevTools.Core.Enums.Operations;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
+using VXDesign.Store.DevTools.UnifiedPortal.Models.GitHub;
 using VXDesign.Store.DevTools.UnifiedPortal.Models.Settings;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Controllers

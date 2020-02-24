@@ -4,7 +4,7 @@
             <h2 class="block-header"><span><fa :icon="['fab', 'github']"/> GitHub</span></h2>
             <el-divider class="block-divider"/>
             <div>
-                <strong class="field-header">Personal Access Token:</strong>
+                <strong class="field-header">Personal Access Token</strong>
                 <div class="field-input">
                     <el-input clearable show-password v-model="token"/>
                     <el-button type="primary" :disabled="!token" class="inline-field-element"

@@ -35,6 +35,8 @@ namespace VXDesign.Store.DevTools.Core.Entities.Exceptions
 
         public static NotFoundException GitHubEndpointIsNotFoundByEndpointCode(IOperation operation) => new NotFoundException(operation, "Failed to find a GitHub endpoint by endpoint code");
 
+        public static BadRequestException UserRepositoriesCouldNotBeLoaded(IOperation operation, string message) => new BadRequestException(operation, $"Failed to retrieve all user repositories: {message}");
+
         #endregion
 
         #region Authentication / Users

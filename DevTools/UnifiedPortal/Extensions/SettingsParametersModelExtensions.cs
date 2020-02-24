@@ -14,14 +14,5 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
         {
             GitHubUser = entity.GitHubUser.ToModel()
         };
-
-        internal static GitHubUserModel ToModel(this GitHubUserEntity entity) => entity != null ? new GitHubUserModel
-        {
-            IsValid = entity.IsValid,
-            Login = entity.Login,
-            Name = entity.Name,
-            AvatarUrl = entity.AvatarUrl,
-            ProfileUrl = entity.ProfileUrl
-        } : null;
     }
 }

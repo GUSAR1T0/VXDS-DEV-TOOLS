@@ -11,7 +11,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.GitHub.Users.Models
             public override GitHubEndpoint Endpoint => GitHubEndpoint.GetUser;
         }
 
-        public class GetUserResponse : GitHubSingleResponse<GetUserResult>
+        public class GetUserResponse : GitHubSingleResponse<UserItem>
         {
         }
     }

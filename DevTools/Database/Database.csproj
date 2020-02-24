@@ -34,8 +34,10 @@
         <EmbeddedResource Include="Scripts\InitialLoading\Base_DropListTableTypes.sql" />
         <EmbeddedResource Include="Scripts\InitialLoading\Base_DropOperationTable.sql" />
         <EmbeddedResource Include="Scripts\InitialLoading\Portal_CreatePortalSchema.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Portal_CreateProjectTable.sql" />
         <EmbeddedResource Include="Scripts\InitialLoading\Portal_CreateSettingsTable.sql" />
         <EmbeddedResource Include="Scripts\InitialLoading\Portal_DropPortalSchema.sql" />
+        <EmbeddedResource Include="Scripts\InitialLoading\Portal_DropProjectTable.sql" />
         <EmbeddedResource Include="Scripts\InitialLoading\Portal_DropSettingsTable.sql" />
     </ItemGroup>
 
