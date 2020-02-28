@@ -5,7 +5,7 @@ using Microsoft.SqlServer.Server;
 
 namespace VXDesign.Store.DevTools.Core.Entities.Storage
 {
-    public abstract class SingleColumnTableEntity<TEntity> : List<TEntity>, IEnumerable<SqlDataRecord>
+    internal abstract class SingleColumnTableEntity<TEntity> : List<TEntity>, IEnumerable<SqlDataRecord>
     {
         protected const string ColumnName = "Value";
 
@@ -31,7 +31,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Storage
         internal SqlMapper.ICustomQueryParameter ToTable() => this.AsTableValuedParameter<SqlDataRecord>(TableTypeName);
     }
 
-    public class IntSingleColumnTableEntity : SingleColumnTableEntity<int>
+    internal class IntSingleColumnTableEntity : SingleColumnTableEntity<int>
     {
         protected override string TableTypeName => "[base].[IntValue]";
         protected override SqlMetaData MetaData => new SqlMetaData(ColumnName, SqlDbType.Int);
@@ -43,7 +43,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Storage
         protected override void Apply(SqlDataRecord record, int value) => record.SetInt32(0, value);
     }
     
-    public class StringSingleColumnTableEntity : SingleColumnTableEntity<string>
+    internal class StringSingleColumnTableEntity : SingleColumnTableEntity<string>
     {
         protected override string TableTypeName => "[base].[StringValue]";
         protected override SqlMetaData MetaData => new SqlMetaData(ColumnName, SqlDbType.NVarChar, -1);

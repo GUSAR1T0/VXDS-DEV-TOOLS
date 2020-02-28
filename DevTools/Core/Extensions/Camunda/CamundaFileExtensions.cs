@@ -19,11 +19,9 @@ namespace VXDesign.Store.DevTools.Core.Extensions.Camunda
 
         internal static string GetEncoding(this FileInfo file)
         {
-            using (var reader = new StreamReader(file.FullName, Encoding.Default, true))
-            {
-                if (reader.Peek() >= 0) reader.Read();
-                return reader.CurrentEncoding.BodyName;
-            }
+            using var reader = new StreamReader(file.FullName, Encoding.Default, true);
+            if (reader.Peek() >= 0) reader.Read();
+            return reader.CurrentEncoding.BodyName;
         }
 
         private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>

@@ -42,19 +42,36 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 
         public async Task<UserAuthorizationEntity> GetAuthorizationById(IOperation operation, int id)
         {
-            return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new { Id = id }, @"
+            var reader = await operation.Connection.QueryMultipleAsync(new { Id = id }, @"
                 SELECT
                     au.[Id],
                     au.[FirstName],
                     au.[LastName],
                     au.[Email],
                     au.[Color],
-                    au.[UserRoleId],
-                    aur.[PortalPermissions]
+                    au.[UserRoleId]
                 FROM [authentication].[User] au
-                LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
-                WHERE au.[Id] = @Id
+                WHERE au.[Id] = @Id;
+
+                SELECT
+                    aurp.[PermissionGroupId],
+                    aurp.[Permissions]
+                FROM [authentication].[UserRolePermission] aurp
+                INNER JOIN [authentication].[User] au ON aurp.[UserRoleId] = au.[UserRoleId]
+                WHERE au.[Id] = @Id;
             ");
+            var user = await reader.ReadSingleOrDefaultAsync<UserAuthorizationShortEntity>();
+            return user != null
+                ? new UserAuthorizationEntity
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Color = user.Color,
+                    Permissions = await reader.ReadAsync<UserRolePermissionEntity>()
+                }
+                : null;
         }
 
         public async Task<string> GetRefreshTokenById(IOperation operation, int id)
@@ -68,30 +85,54 @@ namespace VXDesign.Store.DevTools.Core.Storage.DataStores
 
         public async Task<UserAuthorizationEntity> GetUserIdentityClaimsByAccessData(IOperation operation, string email, string password = null)
         {
-            return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new
+            var reader = await operation.Connection.QueryMultipleAsync(new
             {
                 Email = email,
                 Password = password
             }, @"
-                SELECT
-                    au.[Id],
-                    aur.[PortalPermissions]
+                DECLARE @Ids TABLE ([Id] INT);
+                INSERT INTO @Ids ([Id])
+                SELECT au.[Id]
                 FROM [authentication].[User] au
-                LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
-                WHERE [Email] = @Email AND (@Password IS NULL OR [Password] = @Password)
+                WHERE [Email] = @Email AND (@Password IS NULL OR [Password] = @Password);
+
+                DECLARE @Id INT;
+                SELECT @Id = [Id] FROM @Ids;
+
+                SELECT @Id;
+
+                SELECT
+                    aurp.[PermissionGroupId],
+                    aurp.[Permissions]
+                FROM [authentication].[UserRolePermission] aurp
+                INNER JOIN [authentication].[User] au ON aurp.[UserRoleId] = au.[UserRoleId]
+                WHERE au.[Id] = @Id;
             ");
+            var id = await reader.ReadSingleOrDefaultAsync<int?>();
+            return id != null
+                ? new UserAuthorizationEntity
+                {
+                    Id = id.Value,
+                    Permissions = await reader.ReadAsync<UserRolePermissionEntity>()
+                }
+                : null;
         }
 
         public async Task<UserAuthorizationEntity> GetUserIdentityClaimsById(IOperation operation, int id)
         {
-            return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new { Id = id }, @"
+            var permissions = await operation.Connection.QueryAsync<UserRolePermissionEntity>(new { Id = id }, @"
                 SELECT
-                    au.[Id],
-                    aur.[PortalPermissions]
-                FROM [authentication].[User] au
-                LEFT JOIN [authentication].[UserRole] aur ON aur.[Id] = au.[UserRoleId]
-                WHERE au.[Id] = @Id
+                    aurp.[PermissionGroupId],
+                    aurp.[Permissions]
+                FROM [authentication].[UserRolePermission] aurp
+                INNER JOIN [authentication].[User] au ON aurp.[UserRoleId] = au.[UserRoleId]
+                WHERE au.[Id] = @Id;
             ");
+            return new UserAuthorizationEntity
+            {
+                Id = id,
+                Permissions = permissions
+            };
         }
 
         public async Task UpdateRefreshTokenById(IOperation operation, int id, string refreshToken)

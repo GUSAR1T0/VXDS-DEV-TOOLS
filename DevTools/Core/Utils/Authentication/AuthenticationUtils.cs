@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Core.Entities.Authentication;
 using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.Core.Enums.Operations;
@@ -16,9 +17,9 @@ namespace VXDesign.Store.DevTools.Core.Utils.Authentication
             return int.TryParse(GetClaimValue(claims, AuthenticationClaimName.UserId), out var value) ? value : (int?) null;
         }
 
-        public static PortalPermission GetUserPermissions(IEnumerable<Claim> claims)
+        public static IEnumerable<UserRolePermissionEntity> GetUserPermissions(IEnumerable<Claim> claims)
         {
-            return Enum.TryParse<PortalPermission>(GetClaimValue(claims, AuthenticationClaimName.UserPermissions), out var value) ? value : 0;
+            return JsonConvert.DeserializeObject<IEnumerable<UserRolePermissionEntity>>(GetClaimValue(claims, AuthenticationClaimName.UserPermissions));
         }
 
         private static string GetClaimValue(IEnumerable<Claim> claims, string key)
@@ -29,17 +30,15 @@ namespace VXDesign.Store.DevTools.Core.Utils.Authentication
         public static string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
-            using (var random = RandomNumberGenerator.Create())
-            {
-                random.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
+            using var random = RandomNumberGenerator.Create();
+            random.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
 
         public static ClaimsIdentity GetClaimsIdentity(UserAuthorizationEntity entity) => GetClaimsIdentity(new List<Claim>
         {
             new Claim(AuthenticationClaimName.UserId, entity.Id.ToString()),
-            new Claim(AuthenticationClaimName.UserPermissions, entity.PortalPermissions.ToString("D"))
+            new Claim(AuthenticationClaimName.UserPermissions, JsonConvert.SerializeObject(entity.Permissions))
         });
 
         public static ClaimsIdentity GetClaimsIdentity(IEnumerable<Claim> claims) => new ClaimsIdentity(claims, "Token");

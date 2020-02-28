@@ -36,7 +36,7 @@ matrix:
         - nvm use 12
         - cd DevTools
       install:
-        - npm install -C UnifiedPortal/Static
+        - npm install -C UnifiedPortal/Server/Static
         - dotnet restore
       script:
         - dotnet build

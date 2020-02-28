@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Core.Entities.Exceptions;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 using VXDesign.Store.DevTools.Core.Enums.Operations;
 using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Utils.Authentication;
@@ -20,7 +22,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Controllers
 
         // null => GUEST / UNAUTHORIZED USER
         protected int? UserId => AuthenticationUtils.GetUserId(User.Claims);
-        protected PortalPermission PortalPermissions => AuthenticationUtils.GetUserPermissions(User.Claims);
+        protected IEnumerable<UserRolePermissionEntity> UserPermissions => AuthenticationUtils.GetUserPermissions(User.Claims);
 
         #endregion
 

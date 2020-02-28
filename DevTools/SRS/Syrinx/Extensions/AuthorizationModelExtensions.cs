@@ -1,5 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using VXDesign.Store.DevTools.Core.Entities.Storage.User;
+using VXDesign.Store.DevTools.Core.Enums.Operations;
 using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
 
@@ -15,7 +17,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Extensions
             LastName = entity.LastName,
             Color = entity.Color,
             UserRoleId = entity.UserRoleId,
-            PortalPermissions = entity.PortalPermissions
+            Permissions = entity.Permissions
         };
 
         internal static UserRegistrationEntity ToEntity(this SignUpModel model) => new UserRegistrationEntity

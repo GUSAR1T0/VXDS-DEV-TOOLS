@@ -9,7 +9,7 @@ namespace VXDesign.Store.DevTools.Core.Extensions.Base
     {
         public static void SetPropertyValue<T>(this PropertyInfo property, T target, object value)
         {
-            object GetSafeValue(object possible, Type objectType)
+            static object GetSafeValue(object possible, Type objectType)
             {
                 try
                 {

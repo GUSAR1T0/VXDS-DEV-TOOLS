@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnifiedPortal", "UnifiedPortal\UnifiedPortal.csproj", "{6C98841A-41C8-49B5-95C0-0E1626EB7528}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnifiedPortal", "UnifiedPortal", "{00469BAE-AAE8-42F2-86A8-B6FDC6FA6A2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "UnifiedPortal\Database\Database.csproj", "{943C13D0-2C16-4A55-BE1F-04370452885D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "UnifiedPortal\Server\Server.csproj", "{6C98841A-41C8-49B5-95C0-0E1626EB7528}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AEA0F6CB-CA4C-49BD-8A9A-4E8C49245AC1}"
 EndProject
@@ -12,14 +16,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camunda", "SRS\Camunda\Camu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "SRS\Authentication\Authentication.csproj", "{19FCFE72-48EE-409D-8560-83B84698AF82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{AFF8E906-62FB-48AC-B452-34C694D7DCF9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{943C13D0-2C16-4A55-BE1F-04370452885D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{943C13D0-2C16-4A55-BE1F-04370452885D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{943C13D0-2C16-4A55-BE1F-04370452885D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{943C13D0-2C16-4A55-BE1F-04370452885D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6C98841A-41C8-49B5-95C0-0E1626EB7528}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6C98841A-41C8-49B5-95C0-0E1626EB7528}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C98841A-41C8-49B5-95C0-0E1626EB7528}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,12 +46,10 @@ Global
 		{19FCFE72-48EE-409D-8560-83B84698AF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19FCFE72-48EE-409D-8560-83B84698AF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19FCFE72-48EE-409D-8560-83B84698AF82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AFF8E906-62FB-48AC-B452-34C694D7DCF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFF8E906-62FB-48AC-B452-34C694D7DCF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFF8E906-62FB-48AC-B452-34C694D7DCF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFF8E906-62FB-48AC-B452-34C694D7DCF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{6C98841A-41C8-49B5-95C0-0E1626EB7528} = {00469BAE-AAE8-42F2-86A8-B6FDC6FA6A2C}
+		{943C13D0-2C16-4A55-BE1F-04370452885D} = {00469BAE-AAE8-42F2-86A8-B6FDC6FA6A2C}
 		{4894EF11-C5C0-44D8-8FCF-F5E8E7E5DDB5} = {1C83008B-08D9-4EE2-942C-AE6242C40195}
 		{66A3850F-1FD7-4143-B8CD-EB4DEF72E3F9} = {1C83008B-08D9-4EE2-942C-AE6242C40195}
 		{19FCFE72-48EE-409D-8560-83B84698AF82} = {1C83008B-08D9-4EE2-942C-AE6242C40195}

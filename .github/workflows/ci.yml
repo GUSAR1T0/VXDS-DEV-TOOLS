@@ -47,7 +47,7 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '12'
-    - run: npm install -C DevTools/UnifiedPortal/Static
+    - run: npm install -C DevTools/UnifiedPortal/Server/Static
     - uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.101'

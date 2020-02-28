@@ -4,6 +4,5 @@ namespace VXDesign.Store.DevTools.Core.Entities.Authentication
     {
         public const string UserId = "UserId";
         public const string UserPermissions = "UserPermissions";
-        public const string UserRolePermissions = "UserRolePermissions";
     }
 }

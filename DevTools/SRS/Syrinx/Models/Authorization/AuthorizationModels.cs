@@ -1,5 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using VXDesign.Store.DevTools.Core.Enums.Operations;
+using VXDesign.Store.DevTools.Core.Entities.Storage.User;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
 {
@@ -46,6 +47,6 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
         public string Color { get; set; }
 
         public int UserRoleId { get; set; }
-        public PortalPermission PortalPermissions { get; set; }
+        public IEnumerable<UserRolePermissionEntity> Permissions { get; set; }
     }
 }

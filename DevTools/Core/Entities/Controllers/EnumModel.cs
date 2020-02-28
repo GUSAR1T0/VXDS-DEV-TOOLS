@@ -9,7 +9,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Controllers
     {
         public string Value { get; set; }
         public string Name { get; set; }
-        
+
         public static IEnumerable<EnumModel> GetEnumModelValues<T>() where T : Enum => EnumExtensions.GetValues<T>().Select(@enum => new EnumModel
         {
             Value = @enum.ToString("D"),

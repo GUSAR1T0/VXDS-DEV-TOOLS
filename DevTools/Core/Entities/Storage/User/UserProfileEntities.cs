@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Core.Enums.Operations;
+using System.Collections.Generic;
 
 namespace VXDesign.Store.DevTools.Core.Entities.Storage.User
 {
@@ -11,13 +11,17 @@ namespace VXDesign.Store.DevTools.Core.Entities.Storage.User
         public string Color { get; set; }
     }
 
-    public class UserAuthorizationEntity : UserEntity
+    public class UserAuthorizationShortEntity : UserEntity
     {
         public int UserRoleId { get; set; }
-        public PortalPermission PortalPermissions { get; set; } = 0;
     }
 
-    public class UserRegistrationEntity : UserAuthorizationEntity
+    public class UserAuthorizationEntity : UserAuthorizationShortEntity
+    {
+        public IEnumerable<UserRolePermissionEntity> Permissions { get; set; }
+    }
+
+    public class UserRegistrationEntity : UserEntity
     {
         public string Password { get; set; }
     }
@@ -27,7 +31,7 @@ namespace VXDesign.Store.DevTools.Core.Entities.Storage.User
         public string Location { get; set; }
         public string Bio { get; set; }
         public int? UserRoleId { get; set; }
-        public UserRoleEntity UserRole { get; set; }
+        public UserRoleWithPermissionsEntity UserRole { get; set; }
         public bool IsActivated { get; set; }
     }
 }
