@@ -122,7 +122,7 @@
 
             this.$store.dispatch(ON_LOAD_LOOKUP_REQUEST).then(() => {
                 this.$store.dispatch(REFRESH_REQUEST, this.$store.getters.getPathForRedirection).then(redirectTo => {
-                    if (!this.isAuthenticated && redirectTo !== "/auth") {
+                    if (!this.isAuthenticated && !(redirectTo === "/auth" || redirectTo === "/500")) {
                         redirectTo = "/auth";
                     } else if (this.isAuthenticated && redirectTo === "/auth") {
                         redirectTo = "/";

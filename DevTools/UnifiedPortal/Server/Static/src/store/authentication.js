@@ -151,14 +151,7 @@ export default {
                             removeTokens();
                             reject(error);
                         });
-                    }).catch(error => {
-                        if (error.status !== 500) {
-                            removeTokens();
-                            reject(error);
-                        } else {
-                            resolve("/");
-                        }
-                    });
+                    }).catch(() => resolve("/500"));
                 } else {
                     removeTokens();
                     reject();
