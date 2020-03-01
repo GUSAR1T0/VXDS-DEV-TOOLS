@@ -1,8 +1,9 @@
-using VXDesign.Store.DevTools.Core.Entities.Common;
-using VXDesign.Store.DevTools.Core.Extensions.Controllers;
+using VXDesign.Store.DevTools.Common.Core.Constants;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation;
 
-namespace VXDesign.Store.DevTools.UnifiedPortal.Extensions
+namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
 {
     internal static class LogModelsExtensions
     {

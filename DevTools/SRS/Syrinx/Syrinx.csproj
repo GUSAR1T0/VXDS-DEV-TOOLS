@@ -13,14 +13,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Core\Core.csproj" />
-        <ProjectReference Include="..\Authentication\Authentication.csproj" />
-        <ProjectReference Include="..\Camunda\Camunda.csproj" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.1" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.1" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
+        <ProjectReference Include="..\..\Common\Core\Core.csproj" />
+        <ProjectReference Include="..\Authentication\Authentication.csproj" />
+        <ProjectReference Include="..\Camunda\Camunda.csproj" />
     </ItemGroup>
 
 </Project>

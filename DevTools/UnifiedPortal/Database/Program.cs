@@ -2,8 +2,8 @@
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
-using VXDesign.Store.DevTools.Core.Storage.LogStores;
-using VXDesign.Store.DevTools.Database;
+using VXDesign.Store.DevTools.Common.Core.Utils;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Database
 {
@@ -12,7 +12,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         public static void Main(string[] args)
         {
             var configuration = ConfigurationUtils.GetEnvironmentConfiguration();
-            ConsoleApplicationLauncher.Launch(() =>
+            ConsoleApplicationUtils.Launch(() =>
             {
                 var serviceProvider = CreateServices(configuration["Database:DataStoreConnectionString"], configuration["Database:LogStoreConnectionString"]);
                 using var scope = serviceProvider.CreateScope();

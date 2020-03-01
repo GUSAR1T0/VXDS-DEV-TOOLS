@@ -1,4 +1,4 @@
-namespace VXDesign.Store.DevTools.Database
+namespace VXDesign.Store.DevTools.UnifiedPortal.Database
 {
     internal enum DatabaseMigrationsAction
     {

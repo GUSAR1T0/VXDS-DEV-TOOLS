@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Operation;
-using VXDesign.Store.DevTools.Core.Entities.Common;
-using VXDesign.Store.DevTools.Core.Extensions.Controllers;
-using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Common;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.SSP;
@@ -37,7 +37,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation
             IsSuccessful = entity.Operation.IsSuccessful;
             StartTime = entity.Operation.StartTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
             StopTime = entity.Operation.StopTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
-            Logs = entity.Logs.Select(log => log.ToModel());
+            Logs = entity.Logs.Select<LogEntity, LogModel>(log => log.ToModel());
             return this;
         }
     }

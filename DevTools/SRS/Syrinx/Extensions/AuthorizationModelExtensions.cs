@@ -1,7 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Entities.User;
-using VXDesign.Store.DevTools.Core.Enums.Operations;
 using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
 

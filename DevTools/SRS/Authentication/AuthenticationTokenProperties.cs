@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using VXDesign.Store.DevTools.Common.Core.Properties;
-using VXDesign.Store.DevTools.Core.Attributes;
 
 namespace VXDesign.Store.DevTools.SRS.Authentication
 {

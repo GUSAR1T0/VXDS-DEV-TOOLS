@@ -1,5 +1,5 @@
+using VXDesign.Store.DevTools.Common.Clients.Syrinx.Base;
 using VXDesign.Store.DevTools.Common.Core.Entities.User;
-using VXDesign.Store.DevTools.Core.Attributes;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication
 {

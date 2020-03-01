@@ -1,5 +1,5 @@
 using FluentMigrator;
-using VXDesign.Store.DevTools.Core.Storage.LogStores;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
 {

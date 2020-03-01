@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VXDesign.Store.DevTools.Common.Clients.Camunda;
+using VXDesign.Store.DevTools.Common.Clients.Syrinx;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
-using VXDesign.Store.DevTools.Core.Extensions.Controllers;
-using VXDesign.Store.DevTools.Core.Services.Cache;
-using VXDesign.Store.DevTools.Core.Services.Storage;
-using VXDesign.Store.DevTools.Core.Services.Syrinx;
-using VXDesign.Store.DevTools.Core.Storage.LogStores;
+using VXDesign.Store.DevTools.Common.Services;
+using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server

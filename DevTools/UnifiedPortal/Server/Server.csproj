@@ -22,7 +22,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Core.csproj" />
+      <ProjectReference Include="..\..\Common\Clients\Camunda\Camunda.csproj" />
+      <ProjectReference Include="..\..\Common\Clients\Syrinx\Syrinx.csproj" />
+      <ProjectReference Include="..\..\Common\Services\Services.csproj" />
+      <ProjectReference Include="..\..\Common\Core\Core.csproj" />
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
