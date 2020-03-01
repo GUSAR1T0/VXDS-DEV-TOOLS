@@ -13,152 +13,194 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             this.loggerStore = loggerStore;
         }
 
+        #region Upgrade
+
         public override void Up()
         {
-            var enumSchema = Schema.Schema(Database.Schema.Enum);
-            if (!enumSchema.Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Enum_CreateEnumSchema.sql");
-            }
-
-            if (!enumSchema.Table(Table.PermissionGroup).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Enum_CreatePermissionGroupTable.sql");
-                Execute.EmbeddedScript("InitialLoading.Enum_AddPermissionGroups.sql");
-            }
-
-            if (!enumSchema.Table(Table.Permission).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Enum_CreatePermissionTable.sql");
-                Execute.EmbeddedScript("InitialLoading.Enum_AddPermissions.sql");
-            }
-
-            var authorizationSchema = Schema.Schema(Database.Schema.Authentication);
-            if (!authorizationSchema.Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Authentication_CreateAuthenticationSchema.sql");
-                Execute.EmbeddedScript("InitialLoading.Authentication_CreateUserRolePermissionTableType.sql");
-            }
-
-            if (!authorizationSchema.Table(Table.UserRole).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Authentication_CreateUserRoleTable.sql");
-                Execute.EmbeddedScript("InitialLoading.Authentication_AddUserRoles.sql");
-            }
-
-            if (!authorizationSchema.Table(Table.UserRolePermission).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Authentication_CreateUserRolePermissionTable.sql");
-                Execute.EmbeddedScript("InitialLoading.Authentication_AddUserRolePermissions.sql");
-            }
-
-            if (!authorizationSchema.Table(Table.User).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Authentication_CreateUserTable.sql");
-                Execute.EmbeddedScript("InitialLoading.Authentication_AddUsers.sql");
-            }
-
-            var baseSchema = Schema.Schema(Database.Schema.Base);
-            if (!baseSchema.Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Base_CreateBaseSchema.sql");
-                Execute.EmbeddedScript("InitialLoading.Base_CreateListTableTypes.sql");
-            }
-
-            if (!baseSchema.Table(Table.Operation).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Base_CreateOperationTable.sql");
-                Execute.EmbeddedScript("InitialLoading.Base_AddInitialLoadingRecord.sql");
-            }
-
-            var portalSchema = Schema.Schema(Database.Schema.Portal);
-            if (!portalSchema.Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Portal_CreatePortalSchema.sql");
-            }
-
-            if (!portalSchema.Table(Table.PortalSettings).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Portal_CreateSettingsTable.sql");
-            }
-
-            if (!portalSchema.Table(Table.Project).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Portal_CreateProjectTable.sql");
-            }
+            UpgradeEnumSchema();
+            UpgradeAuthenticationSchema();
+            UpgradeBaseSchema();
+            UpgradePortalSchema();
 
             loggerStore.Info<InitialLoading>(0, "Database is initialized").Wait();
         }
 
+        private void UpgradeEnumSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Enum);
+            if (!schema.Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.Schema.sql");
+            }
+
+            if (!schema.Table(Table.PermissionGroup).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.PermissionGroupTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.PermissionGroups.sql");
+            }
+
+            if (!schema.Table(Table.Permission).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.PermissionTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.Permissions.sql");
+            }
+        }
+
+        private void UpgradeAuthenticationSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Authentication);
+            if (!schema.Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Authentication.Create.Schema.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication.Create.UserRolePermissionTableType.sql");
+            }
+
+            if (!schema.Table(Table.UserRole).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Authentication.Create.UserRoleTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication.Insert.UserRoles.sql");
+            }
+
+            if (!schema.Table(Table.UserRolePermission).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Authentication.Create.UserRolePermissionTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication.Insert.UserRolePermissions.sql");
+            }
+
+            if (!schema.Table(Table.User).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Authentication.Create.UserTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication.Insert.Users.sql");
+            }
+        }
+
+        private void UpgradeBaseSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Base);
+            if (!schema.Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Base.Create.Schema.sql");
+                Execute.EmbeddedScript("InitialLoading.Base.Create.ListTableTypes.sql");
+            }
+
+            if (!schema.Table(Table.Operation).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Base.Create.OperationTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Base.Insert.InitialLoadingRecord.sql");
+            }
+        }
+
+        private void UpgradePortalSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Portal);
+            if (!schema.Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.Schema.sql");
+            }
+
+            if (!schema.Table(Table.PortalSettings).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.SettingsTable.sql");
+            }
+
+            if (!schema.Table(Table.Project).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.ProjectTable.sql");
+            }
+        }
+
+        #endregion
+
+        #region Downgrade
+
         public override void Down()
         {
-            var portalSchema = Schema.Schema(Database.Schema.Portal);
-            if (portalSchema.Exists())
-            {
-                if (portalSchema.Table(Table.PortalSettings).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Portal_DropSettingsTable.sql");
-                }
+            DowngradePortalSchema();
+            DowngradeBaseSchema();
+            DowngradeAuthenticationSchema();
+            DowngradeEnumSchema();
 
-                if (portalSchema.Table(Table.Project).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Portal_DropProjectTable.sql");
-                }
-
-                Execute.EmbeddedScript("InitialLoading.Portal_DropPortalSchema.sql");
-            }
-
-            var baseSchema = Schema.Schema(Database.Schema.Base);
-            if (baseSchema.Exists())
-            {
-                if (baseSchema.Table(Table.Operation).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Base_DropOperationTable.sql");
-                }
-
-                Execute.EmbeddedScript("InitialLoading.Base_DropListTableTypes.sql");
-                Execute.EmbeddedScript("InitialLoading.Base_DropBaseSchema.sql");
-            }
-
-            var authorizationSchema = Schema.Schema(Database.Schema.Authentication);
-            if (authorizationSchema.Exists())
-            {
-                if (authorizationSchema.Table(Table.User).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Authentication_DropUserTable.sql");
-                }
-
-                if (authorizationSchema.Table(Table.UserRolePermission).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Authentication_DropUserRolePermissionTable.sql");
-                }
-
-                if (authorizationSchema.Table(Table.UserRole).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Authentication_DropUserRoleTable.sql");
-                }
-
-                Execute.EmbeddedScript("InitialLoading.Authentication_DropUserRolePermissionTableType.sql");
-                Execute.EmbeddedScript("InitialLoading.Authentication_DropAuthenticationSchema.sql");
-            }
-
-            var enumSchema = Schema.Schema(Database.Schema.Enum);
-            if (enumSchema.Exists())
-            {
-                if (enumSchema.Table(Table.Permission).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Enum_DropPermissionTable.sql");
-                }
-
-                if (enumSchema.Table(Table.PermissionGroup).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Enum_DropPermissionGroupTable.sql");
-                }
-
-                Execute.EmbeddedScript("InitialLoading.Enum_DropEnumSchema.sql");
-            }
- 
             loggerStore.DropAllLogCollections().Wait();
         }
+
+        private void DowngradePortalSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Portal);
+            if (schema.Exists())
+            {
+                if (schema.Table(Table.PortalSettings).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.SettingsTable.sql");
+                }
+
+                if (schema.Table(Table.Project).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.ProjectTable.sql");
+                }
+
+                Execute.EmbeddedScript("InitialLoading.Portal.Drop.Schema.sql");
+            }
+        }
+
+        private void DowngradeBaseSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Base);
+            if (schema.Exists())
+            {
+                if (schema.Table(Table.Operation).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Base.Drop.OperationTable.sql");
+                }
+
+                Execute.EmbeddedScript("InitialLoading.Base.Drop.ListTableTypes.sql");
+                Execute.EmbeddedScript("InitialLoading.Base.Drop.Schema.sql");
+            }
+        }
+
+        private void DowngradeAuthenticationSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Authentication);
+            if (schema.Exists())
+            {
+                if (schema.Table(Table.User).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Authentication.Drop.UserTable.sql");
+                }
+
+                if (schema.Table(Table.UserRolePermission).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Authentication.Drop.UserRolePermissionTable.sql");
+                }
+
+                if (schema.Table(Table.UserRole).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Authentication.Drop.UserRoleTable.sql");
+                }
+
+                Execute.EmbeddedScript("InitialLoading.Authentication.Drop.UserRolePermissionTableType.sql");
+                Execute.EmbeddedScript("InitialLoading.Authentication.Drop.Schema.sql");
+            }
+        }
+
+        private void DowngradeEnumSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Enum);
+            if (schema.Exists())
+            {
+                if (schema.Table(Table.Permission).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.PermissionTable.sql");
+                }
+
+                if (schema.Table(Table.PermissionGroup).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.PermissionGroupTable.sql");
+                }
+
+                Execute.EmbeddedScript("InitialLoading.Enum.Drop.Schema.sql");
+            }
+        }
+
+        #endregion
     }
 }

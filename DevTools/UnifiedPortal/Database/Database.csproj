@@ -9,45 +9,40 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentMigrator" Version="3.2.1" />
-        <PackageReference Include="FluentMigrator.Runner" Version="3.2.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_AddUserRolePermissions.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_AddUserRoles.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_AddUsers.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_CreateAuthenticationSchema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_CreateUserRolePermissionTableType.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_CreateUserRoleTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_CreateUserRolePermissionTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_CreateUserTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_DropAuthenticationSchema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_DropUserRolePermissionTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_DropUserRolePermissionTableType.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_DropUserRoleTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Authentication_DropUserTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Base_AddInitialLoadingRecord.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Base_CreateBaseSchema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Base_CreateListTableTypes.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Base_CreateOperationTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Base_DropBaseSchema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Base_DropListTableTypes.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Base_DropOperationTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Enum_AddPermissionGroups.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Enum_AddPermissions.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Enum_CreateEnumSchema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Enum_CreatePermissionGroupTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Enum_CreatePermissionTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Enum_DropEnumSchema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Enum_DropPermissionGroupTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Enum_DropPermissionTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Portal_CreatePortalSchema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Portal_CreateProjectTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Portal_CreateSettingsTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Portal_DropPortalSchema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Portal_DropProjectTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Portal_DropSettingsTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRolePermissionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRolePermissionTableType.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRoleTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRolePermissionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRolePermissionTableType.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRoleTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Insert\UserRolePermissions.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Insert\UserRoles.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Insert\Users.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Create\ListTableTypes.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Create\OperationTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Drop\ListTableTypes.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Drop\OperationTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Insert\InitialLoadingRecord.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\PermissionGroupTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\PermissionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\PermissionGroupTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\PermissionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\PermissionGroups.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\Permissions.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\ProjectTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\SettingsTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\ProjectTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\SettingsTable.sql" />
     </ItemGroup>
 
     <ItemGroup>

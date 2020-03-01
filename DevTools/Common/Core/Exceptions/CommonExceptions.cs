@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Http;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
@@ -6,6 +7,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
     public static class CommonExceptions
     {
         #region System
+
+        public static ArgumentException DatabaseCouldNotBeMigrated() => new ArgumentException("Database couldn't be migrated due to failed program arguments");
 
         public static OperationException TransactionHasAlreadyBegun(IOperation operation) => new OperationException(operation, "Transaction has already begun");
 
