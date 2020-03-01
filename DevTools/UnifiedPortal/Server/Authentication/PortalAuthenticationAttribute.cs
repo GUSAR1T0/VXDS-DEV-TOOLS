@@ -1,6 +1,5 @@
+using VXDesign.Store.DevTools.Common.Core.Entities.User;
 using VXDesign.Store.DevTools.Core.Attributes;
-using VXDesign.Store.DevTools.Core.Entities.Storage.User;
-using VXDesign.Store.DevTools.Core.Enums.Operations;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication
 {

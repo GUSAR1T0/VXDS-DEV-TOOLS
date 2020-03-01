@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Core.Entities.HTTP;
+using VXDesign.Store.DevTools.Common.Core.HTTP;
 
 namespace VXDesign.Store.DevTools.SRS.Camunda
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using VXDesign.Store.DevTools.Core.Entities.Camunda.Base;
-using VXDesign.Store.DevTools.Core.Entities.HTTP;
+using VXDesign.Store.DevTools.Common.Core.HTTP;
+using VXDesign.Store.DevTools.Common.Entities.HTTP.Camunda.Base;
 
 namespace VXDesign.Store.DevTools.SRS.Camunda
 {

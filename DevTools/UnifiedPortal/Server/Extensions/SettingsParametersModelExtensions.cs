@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Core.Entities.Storage.Settings;
+using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Settings;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions

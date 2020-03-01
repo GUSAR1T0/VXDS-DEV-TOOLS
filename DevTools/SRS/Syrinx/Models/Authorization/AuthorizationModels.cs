@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using VXDesign.Store.DevTools.Core.Entities.Storage.User;
+using VXDesign.Store.DevTools.Common.Core.Entities.User;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
 {

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VXDesign.Store.DevTools.Common.Core.Operations;
+using VXDesign.Store.DevTools.Common.Core.Properties;
 using VXDesign.Store.DevTools.Core.Entities.Controllers;
-using VXDesign.Store.DevTools.Core.Entities.Properties;
-using VXDesign.Store.DevTools.Core.Enums.Operations;
-using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Lookup;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Properties;
+using PortalPermission = VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication.PortalPermission;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
 {

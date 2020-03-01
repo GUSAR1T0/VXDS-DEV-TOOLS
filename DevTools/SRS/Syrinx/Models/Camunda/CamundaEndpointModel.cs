@@ -1,5 +1,4 @@
-using VXDesign.Store.DevTools.Core.Entities.Camunda.Base;
-using VXDesign.Store.DevTools.Core.Extensions.Base;
+using VXDesign.Store.DevTools.Common.Entities.HTTP.Camunda.Base;
 
 namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Camunda
 {

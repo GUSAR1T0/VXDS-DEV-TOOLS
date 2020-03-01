@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Core.Entities.Storage.SSP;
+using VXDesign.Store.DevTools.Common.Core.Entities.SSP;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.SSP
 {

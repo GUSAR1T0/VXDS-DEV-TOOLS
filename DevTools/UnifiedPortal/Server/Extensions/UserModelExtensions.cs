@@ -1,4 +1,4 @@
-using VXDesign.Store.DevTools.Core.Entities.Storage.User;
+using VXDesign.Store.DevTools.Common.Core.Entities.User;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.User;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions

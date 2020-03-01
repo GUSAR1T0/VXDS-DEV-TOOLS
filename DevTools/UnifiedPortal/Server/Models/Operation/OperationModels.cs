@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VXDesign.Store.DevTools.Common.Core.Entities.Operation;
 using VXDesign.Store.DevTools.Core.Entities.Common;
-using VXDesign.Store.DevTools.Core.Entities.Storage.Operation;
 using VXDesign.Store.DevTools.Core.Extensions.Controllers;
 using VXDesign.Store.DevTools.UnifiedPortal.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions;

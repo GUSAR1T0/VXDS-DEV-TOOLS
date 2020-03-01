@@ -3,14 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Core.Entities.Controllers;
 using VXDesign.Store.DevTools.Core.Enums.Operations;
-using VXDesign.Store.DevTools.Core.Services.Operations;
 using VXDesign.Store.DevTools.Core.Services.Storage;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Permission;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.User;
+using PortalPermission = VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication.PortalPermission;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
 {

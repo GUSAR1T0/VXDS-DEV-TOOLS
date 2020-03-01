@@ -6,11 +6,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using VXDesign.Store.DevTools.Core.Entities.Exceptions;
+using VXDesign.Store.DevTools.Common.Core.Entities.User;
+using VXDesign.Store.DevTools.Common.Core.Exceptions;
+using VXDesign.Store.DevTools.Common.Core.Utils;
 using VXDesign.Store.DevTools.Core.Entities.Operations;
-using VXDesign.Store.DevTools.Core.Entities.Storage.User;
-using VXDesign.Store.DevTools.Core.Storage.DataStores;
-using VXDesign.Store.DevTools.Core.Utils.Authentication;
 
 namespace VXDesign.Store.DevTools.SRS.Authentication
 {

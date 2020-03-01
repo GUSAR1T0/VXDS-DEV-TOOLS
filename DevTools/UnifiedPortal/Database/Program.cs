@@ -3,7 +3,6 @@ using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
 using VXDesign.Store.DevTools.Core.Storage.LogStores;
-using VXDesign.Store.DevTools.Core.Utils.Base;
 using VXDesign.Store.DevTools.Database;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Database

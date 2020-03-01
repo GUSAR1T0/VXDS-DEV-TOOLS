@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using VXDesign.Store.DevTools.Core.Entities.Storage.Permission;
+using VXDesign.Store.DevTools.Common.Core.Entities.Permission;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Permission;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
