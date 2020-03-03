@@ -2,6 +2,7 @@
     <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
             <FilterableTableView
+                    table="Operations"
                     :reset-filters="resetFilters"
                     :reload="loadOperations"
                     :settings="settings"
@@ -21,7 +22,7 @@
     import { POST_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import { GET_OPERATION_LIST_ENDPOINT } from "@/constants/endpoints";
-    import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
+    import { getConfiguration, renderErrorNotificationMessage, getOnlyNumbers } from "@/extensions/utils";
 
     import LoadingContainer from "@/components/page/LoadingContainer";
     import FilterableTableView from "@/components/table-filter/FilterableTableView";
@@ -54,12 +55,6 @@
                     startTimeRange: [],
                     stopTimeRange: [],
 
-                    idOptions: [],
-                    idGenerator: 0,
-                    scopeOptions: [],
-                    scopeGenerator: 0,
-                    contextNameOptions: [],
-                    contextNameGenerator: 0,
                     userIdOptions: [],
                     userIdsSearchLoading: false
                 },
@@ -84,7 +79,7 @@
             loadOperations() {
                 this.loadingIsActive = true;
                 let request = {
-                    ids: this.filter.ids,
+                    ids: getOnlyNumbers(this.filter.ids),
                     scopes: this.filter.scopes,
                     contextNames: this.filter.contextNames,
                     userIds: this.filter.userIds,
@@ -130,12 +125,6 @@
                 this.filter.startTimeRange = [];
                 this.filter.stopTimeRange = [];
 
-                this.filter.idOptions = [];
-                this.filter.idGenerator = 0;
-                this.filter.scopeOptions = [];
-                this.filter.scopeGenerator = 0;
-                this.filter.contextNameOptions = [];
-                this.filter.contextNameGenerator = 0;
                 this.filter.userIdOptions = [];
                 this.filter.userIdsSearchLoading = false;
             },

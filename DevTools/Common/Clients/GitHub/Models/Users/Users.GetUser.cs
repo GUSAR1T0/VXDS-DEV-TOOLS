@@ -11,7 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.GitHub.Models.Users
             public override GitHubAction Action => GitHubAction.GetUser;
         }
 
-        public class GetUserResponse : GitHubSingleResponse<UserItem>
+        public class GetUserResponse : GitHubSingleResponse<UserProfileEntity>
         {
         }
     }

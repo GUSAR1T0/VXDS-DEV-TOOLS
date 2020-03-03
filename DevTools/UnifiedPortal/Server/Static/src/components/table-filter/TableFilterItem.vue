@@ -3,7 +3,9 @@
         <div style="width: 100%; text-align: left; padding-bottom: 10px">
             <strong style="text-align: left; margin-bottom: 10px">{{ name }}</strong>
         </div>
-        <slot name="field"/>
+        <div style="text-align: center">
+            <slot name="field"/>
+        </div>
     </div>
 </template>
 

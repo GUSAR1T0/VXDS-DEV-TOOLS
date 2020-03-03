@@ -1,62 +1,62 @@
 <template>
-    <LoadingContainer class="user-container" :loading-state="loadingIsActive">
+    <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
-            <el-card shadow="hover">
-                <div slot="header">
-                    <h3>General Info</h3>
-                </div>
-                <UserCard :user="getUserProfile"/>
-                <HorizontalDivider v-if="noUserGeneralInfoDetails" name="Details"/>
-                <div v-if="!noUserGeneralInfoDetails && hasPermissionToUpdateUserProfile"
-                     style="margin-top: 20px"></div>
-                <UserInfoRow v-if="getUserProfile.location" name="Location" :value="getUserProfile.location"/>
-                <UserInfoRow v-if="getUserProfile.bio" name="Bio" :value="getUserProfile.bio"/>
-                <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="primary"
-                           plain @click="openUserGeneralInfoUpdateForm">
-                    <span><fa icon="edit"/><strong> | Edit General Info</strong></span>
-                </el-button>
-                <UserGeneralInfoUpdateForm v-if="hasPermissionToUpdateUserProfile"
-                                           :user="getUserProfile"
-                                           :user-general-info-update-form="getUserGeneralInfoUpdateForm"
-                                           :page-status="dialogStatuses.userGeneralInfoUpdateFormDialog"
-                                           :closed="submitUserGeneralInfoUpdateForm"/>
-            </el-card>
-            <el-card shadow="hover" style="margin-top: 25px">
-                <div slot="header">
-                    <h3>Account Specific Info</h3>
-                </div>
-                <UserInfoRow v-if="getUserProfile.userRole.id" name="User Role" :value="getUserProfile.userRole.name">
-                    <template slot="description">
-                        <UserRolePermissionsTable
-                                :user-role-permissions="userRolePermissions"
-                                :user-role="getUserProfile.userRole"
-                        />
-                    </template>
-                </UserInfoRow>
-                <UserInfoRow v-if="getUserProfile.isActivated !== undefined" name="User Status"
-                             :value="getUserProfile.isActivated ? 'Activated' : 'Deactivated'"/>
-                <el-button v-if="hasPermissionToUpdateUserProfile" class="user-container-card-button" type="primary"
-                           plain @click="openAccountSpecificInfoUpdateForm">
-                    <span><fa icon="edit"/><strong> | Edit Account Specific Info</strong></span>
-                </el-button>
-                <AccountSpecificInfoUpdateForm v-if="hasPermissionToUpdateUserProfile"
-                                               :user="getUserProfile"
-                                               :account-specific-info-update-form="getAccountSpecificInfoUpdateForm"
-                                               :page-status="dialogStatuses.accountSpecificInfoUpdateFormDialog"
-                                               :closed="submitAccountSpecificInfoUpdateForm"/>
-            </el-card>
+            <Profile>
+                <template slot="header">
+                    <UserAvatarAndFullName
+                            :first-name="getUserProfile.firstName"
+                            :last-name="getUserProfile.lastName"
+                            :color="getUserProfile.color"
+                            big
+                    />
+                </template>
+                <template slot="profile-buttons">
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
+                            Edit This User Profile
+                        </div>
+                        <el-button v-if="hasPermissionToUpdateUserProfile" type="primary" plain circle
+                                   @click="openUserUpdateForm" class="rounded-button">
+                            <span><fa icon="edit"/></span>
+                        </el-button>
+                    </el-tooltip>
+                </template>
+                <template slot="profile-content">
+                    <ProfileBlock icon="user-alt" header="General Info"
+                                  v-if="getUserProfile.location || getUserProfile.bio">
+                        <template slot="profile-block-content">
+                            <Row v-if="getUserProfile.location" name="Location" :value="getUserProfile.location"/>
+                            <Row v-if="getUserProfile.bio" name="Bio" :value="getUserProfile.bio"/>
+                        </template>
+                    </ProfileBlock>
+                    <ProfileBlock icon="address-card" header="Account Specific Info">
+                        <template slot="profile-block-content">
+                            <Row v-if="getUserProfile.isActivated !== null || getUserProfile.isActivated !== undefined"
+                                 name="User Status" :value="getUserProfile.isActivated ? 'Activated' : 'Deactivated'"/>
+                            <Row v-if="getUserProfile.userRole.id" name="User Role"
+                                 :value="getUserProfile.userRole.name">
+                                <template slot="description">
+                                    <UserRolePermissionsTable
+                                            :user-role-permissions="userRolePermissions"
+                                            :user-role="getUserProfile.userRole"
+                                    />
+                                </template>
+                            </Row>
+                        </template>
+                    </ProfileBlock>
+                </template>
+            </Profile>
+
+            <UserUpdateForm v-if="hasPermissionToUpdateUserProfile"
+                            :user="getUserProfile"
+                            :user-update-form="getUserUpdateForm"
+                            :page-status="dialogStatuses.userUpdateFormDialog"
+                            :closed="submitUserUpdateForm"/>
         </template>
     </LoadingContainer>
 </template>
 
-<style scoped>
-    .user-container {
-        margin-top: -17px;
-    }
-
-    .user-container-card-button {
-        width: 100%;
-    }
+<style scoped src="@/styles/button.css">
 </style>
 
 <script>
@@ -65,8 +65,7 @@
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import {
         GET_HTTP_REQUEST,
-        PREPARE_ACCOUNT_SPECIFIC_INFO_UPDATE_FORM,
-        PREPARE_USER_GENERAL_INFO_UPDATE_FORM,
+        PREPARE_USER_UPDATE_FORM,
         RESET_USER_PROFILE_STORE_STATE,
         SIGN_IN_REQUEST,
         STORE_USER_PROFILE_DATA_REQUEST,
@@ -77,18 +76,15 @@
     import format from "string-format";
 
     import LoadingContainer from "@/components/page/LoadingContainer.vue";
-    import UserCard from "@/components/user/UserCard.vue";
-    import HorizontalDivider from "@/components/page/HorizontalDivider.vue";
-    import UserInfoRow from "@/components/user/UserInfoRow.vue";
+    import UserAvatarAndFullName from "@/components/user/UserAvatarAndFullName";
+    import Profile from "@/components/page/Profile";
+    import ProfileBlock from "@/components/page/ProfileBlock";
+    import Row from "@/components/page/Row";
     import UserRolePermissionsTable from "@/components/user-role/UserRolePermissionsTable.vue";
-    import UserGeneralInfoUpdateForm from "@/components/user/UserGeneralInfoUpdateForm.vue";
-    import AccountSpecificInfoUpdateForm from "@/components/user/AccountSpecificInfoUpdateForm.vue";
+    import UserUpdateForm from "@/components/user/UserUpdateForm.vue";
 
     let dialogStatuses = {
-        userGeneralInfoUpdateFormDialog: {
-            visible: false
-        },
-        accountSpecificInfoUpdateFormDialog: {
+        userUpdateFormDialog: {
             visible: false
         }
     };
@@ -97,12 +93,12 @@
         name: "UserProfile",
         components: {
             LoadingContainer,
-            UserCard,
-            HorizontalDivider,
-            UserInfoRow,
+            UserAvatarAndFullName,
+            Profile,
+            ProfileBlock,
+            Row,
             UserRolePermissionsTable,
-            UserGeneralInfoUpdateForm,
-            AccountSpecificInfoUpdateForm
+            UserUpdateForm
         },
         data() {
             return {
@@ -119,8 +115,7 @@
                 "getUserProfileId",
                 "getUserProfile",
                 "getLookupValues",
-                "getUserGeneralInfoUpdateForm",
-                "getAccountSpecificInfoUpdateForm"
+                "getUserUpdateForm"
             ]),
             noUserGeneralInfoDetails() {
                 let userProfile = this.getUserProfile;
@@ -164,18 +159,11 @@
                     });
                 });
             },
-            openUserGeneralInfoUpdateForm() {
-                this.$store.commit(PREPARE_USER_GENERAL_INFO_UPDATE_FORM);
-                this.dialogStatuses.userGeneralInfoUpdateFormDialog.visible = true;
+            openUserUpdateForm() {
+                this.$store.commit(PREPARE_USER_UPDATE_FORM);
+                this.dialogStatuses.userUpdateFormDialog.visible = true;
             },
-            submitUserGeneralInfoUpdateForm() {
-                this.fillForms(this.isAboutMe(this.getUserId));
-            },
-            openAccountSpecificInfoUpdateForm() {
-                this.$store.commit(PREPARE_ACCOUNT_SPECIFIC_INFO_UPDATE_FORM);
-                this.dialogStatuses.accountSpecificInfoUpdateFormDialog.visible = true;
-            },
-            submitAccountSpecificInfoUpdateForm() {
+            submitUserUpdateForm() {
                 this.fillForms(this.isAboutMe(this.getUserId));
             }
         },

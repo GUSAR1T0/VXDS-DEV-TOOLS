@@ -25,6 +25,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             Permissions = entity.Permissions.Select(item => item.ToModel())
         };
 
+        internal static UserRoleListItemModel ToModel(this UserRoleListItem entity) => new UserRoleListItemModel
+        {
+            Id = entity.UserRole.Id,
+            Name = entity.UserRole.Name,
+            UserCount = entity.UserRole.UserCount,
+            Permissions = entity.Permissions.Select(item => item.ToModel()),
+        };
+
         internal static UserRoleShortInfoModel ToShortInfoModel(this UserRoleEntity entity) => new UserRoleShortInfoModel
         {
             Id = entity.Id,

@@ -28,9 +28,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task<(long total, IEnumerable<UserListItem> users)> GetUsers(IOperation operation, UserPagingRequest request);
         Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
         Task<UserProfileEntity> GetProfileById(IOperation operation, int id);
-        Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
-        Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
-        Task ManageUserStatusById(IOperation operation, int id, bool status);
+        Task UpdateProfile(IOperation operation, UserProfileEntity entity);
         Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId);
 
         #endregion
@@ -211,6 +209,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     au.[LastName],
                     au.[Email],
                     au.[Color],
+                    au.[UserRoleId],
                     aur.[Name] AS [UserRole],
                     au.[IsActivated]
             ";
@@ -303,7 +302,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ");
         }
 
-        public async Task UpdateProfileGeneralInfo(IOperation operation, UserProfileEntity entity)
+        public async Task UpdateProfile(IOperation operation, UserProfileEntity entity)
         {
             await operation.Connection.ExecuteAsync(new
             {
@@ -313,7 +312,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 entity.Email,
                 entity.Color,
                 entity.Location,
-                entity.Bio
+                entity.Bio,
+                entity.UserRoleId,
+                entity.IsActivated
             }, @"
                 UPDATE [authentication].[User]
                 SET
@@ -322,36 +323,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     [Email] = @Email,
                     [Color] = @Color,
                     [Location] = @Location,
-                    [Bio] = @Bio
-                WHERE [Id] = @Id
-            ");
-        }
-
-        public async Task UpdateProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity)
-        {
-            await operation.Connection.ExecuteAsync(new
-            {
-                entity.Id,
-                entity.UserRoleId,
-                entity.IsActivated
-            }, @"
-                UPDATE [authentication].[User]
-                SET
+                    [Bio] = @Bio,
                     [UserRoleId] = @UserRoleId,
                     [IsActivated] = @IsActivated
-                WHERE [Id] = @Id
-            ");
-        }
-
-        public async Task ManageUserStatusById(IOperation operation, int id, bool status)
-        {
-            await operation.Connection.ExecuteAsync(new
-            {
-                Id = id,
-                Status = status
-            }, @"
-                UPDATE [authentication].[User]
-                SET [IsActivated] = @Status
                 WHERE [Id] = @Id
             ");
         }

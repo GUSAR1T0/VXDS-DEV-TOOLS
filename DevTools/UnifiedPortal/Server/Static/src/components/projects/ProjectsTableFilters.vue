@@ -4,10 +4,9 @@
             <template slot="first">
                 <TableFilterItem name="Project IDs">
                     <template slot="field">
-                        <el-select v-model="filter.ids" multiple filterable remote reserve-keyword
-                                   @change="filter.idGenerator += 1" :remote-method="filterByIds"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.idOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.ids" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -16,10 +15,9 @@
             <template slot="second">
                 <TableFilterItem name="Project Names">
                     <template slot="field">
-                        <el-select v-model="filter.names" multiple filterable remote reserve-keyword
-                                   @change="filter.nameGenerator += 1" :remote-method="filterByProjectNames"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.nameOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.names" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -28,10 +26,9 @@
             <template slot="third">
                 <TableFilterItem name="Project Aliases">
                     <template slot="field">
-                        <el-select v-model="filter.aliases" multiple filterable remote reserve-keyword
-                                   @change="filter.aliasGenerator += 1" :remote-method="filterByProjectAliases"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.aliasOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.aliases" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -85,24 +82,6 @@
             TableFilterItem
         },
         methods: {
-            filterByIds(query) {
-                this.filter.idOptions = query !== "" ? [ {
-                    id: this.filter.idGenerator,
-                    query: parseInt(query.replace(/\D/g, ""))
-                } ] : [];
-            },
-            filterByProjectNames(query) {
-                this.filter.nameOptions = query !== "" ? [ {
-                    id: this.filter.nameGenerator,
-                    query: query
-                } ] : [];
-            },
-            filterByProjectAliases(query) {
-                this.filter.aliasOptions = query !== "" ? [ {
-                    id: this.filter.aliasGenerator,
-                    query: query
-                } ] : [];
-            },
             filterByGitHubRepoIds(query) {
                 if (query !== "") {
                     this.filter.gitHubRepoIdsSearchLoading = true;

@@ -12,6 +12,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.User
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Color { get; set; }
+        public int? UserRoleId { get; set; }
         public string UserRole { get; set; }
         public bool IsActivated { get; set; }
 
@@ -22,6 +23,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.User
             FirstName = entity.FirstName;
             LastName = entity.LastName;
             Color = entity.Color;
+            UserRoleId = entity.UserRoleId;
             UserRole = entity.UserRole;
             IsActivated = entity.IsActivated;
             return this;

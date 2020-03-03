@@ -29,15 +29,16 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         /// Obtains all user roles fully (with permissions)
         /// </summary>
         /// <returns>List of user roles</returns>
-        [ProducesResponseType(typeof(IEnumerable<UserRoleFullInfoModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserRolePagingResponseModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [PortalAuthentication]
-        [HttpGet("full/list")]
-        public async Task<ActionResult<IEnumerable<UserRoleFullInfoModel>>> GetUserRolesFullInfo() => await Execute(async operation =>
+        [HttpPost("full/list")]
+        public async Task<ActionResult<UserRolePagingResponseModel>> GetUserRolesFullInfo([FromBody] UserRolePagingRequestModel model) => await Execute(async operation =>
         {
-            var userRoles = await userRoleService.GetUserRolesWithPermissions(operation);
-            return userRoles.Select(userRole => userRole.ToFullInfoModel());
+            var userRoles = await userRoleService.GetUserRolesWithPermissions(operation, model.ToEntity());
+            var response = new UserRolePagingResponseModel().ToModel(userRoles);
+            return response;
         });
 
         /// <summary>

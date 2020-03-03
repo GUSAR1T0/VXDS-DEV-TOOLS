@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VXDesign.Store.DevTools.Common.Clients.GitHub;
 using VXDesign.Store.DevTools.Common.Clients.GitHub.Entities;
 using VXDesign.Store.DevTools.Common.Clients.GitHub.Models.Repositories;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.GitHub;
 using VXDesign.Store.DevTools.Common.Core.Entities.Project;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
@@ -25,8 +27,6 @@ namespace VXDesign.Store.DevTools.Common.Services
         private readonly IPortalSettingsService portalSettingsService;
         private readonly IMemoryCacheService memoryCacheService;
 
-        private const string GitHubUserRepositoriesKey = "GitHubUserRepositories";
-
         public ProjectService(IProjectStore projectStore, IPortalSettingsService portalSettingsService, IMemoryCacheService memoryCacheService)
         {
             this.projectStore = projectStore;
@@ -37,7 +37,7 @@ namespace VXDesign.Store.DevTools.Common.Services
         public async Task<ProjectPagingResponse> GetItems(IOperation operation, ProjectPagingRequest request)
         {
             var (total, projects) = await projectStore.Get(operation, request);
-            var repositories = total == 0 ? new List<RepositoryEntity>() : await GetGitHubUserRepositoriesFromCache(operation);
+            var repositories = total == 0 ? new List<RepositoryListItemEntity>() : await GetGitHubUserRepositoriesFromCache(operation);
             return new ProjectPagingResponse
             {
                 Total = total,
@@ -45,17 +45,26 @@ namespace VXDesign.Store.DevTools.Common.Services
             };
         }
 
-        private async Task<List<RepositoryEntity>> GetGitHubUserRepositoriesFromCache(IOperation operation)
+        private async Task<List<RepositoryListItemEntity>> GetGitHubUserRepositoriesFromCache(IOperation operation)
         {
-            return await memoryCacheService.Get(GitHubUserRepositoriesKey, async () =>
+            return await memoryCacheService.Get(MemoryCacheKey.GitHubUserRepositories, async () =>
             {
-                var gitHubClient = await portalSettingsService.GetGitHubClient(operation);
+                IGitHubClientService gitHubClient;
+                try
+                {
+                    gitHubClient = await portalSettingsService.GetGitHubClient(operation);
+                }
+                catch (NotFoundException)
+                {
+                    return new List<RepositoryListItemEntity>();
+                }
+
                 var response = await new Repositories.GetUserRepositoriesRequest().SendRequest(operation, gitHubClient);
                 return response.IsWithoutErrors() ? response.Response : throw CommonExceptions.UserRepositoriesCouldNotBeLoaded(operation, response.Output);
-            });
+            }, TimeSpan.FromMinutes(5));
         }
 
-        private static IEnumerable<ProjectWithRepositoryInfo> PreparePagingItems(IEnumerable<ProjectEntity> projects, IReadOnlyCollection<RepositoryEntity> repositories)
+        private static IEnumerable<ProjectWithRepositoryInfo> PreparePagingItems(IEnumerable<ProjectEntity> projects, IReadOnlyCollection<RepositoryListItemEntity> repositories)
         {
             return projects.Select(project =>
             {
@@ -71,9 +80,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                             Private = gitHubRepository.Private,
                             Owner = new GitHubUserEntity
                             {
-                                IsValid = true,
                                 Login = gitHubRepository.Owner.Login,
-                                Name = gitHubRepository.Owner.Name,
                                 AvatarUrl = gitHubRepository.Owner.AvatarUrl,
                                 ProfileUrl = gitHubRepository.Owner.HtmlUrl
                             },

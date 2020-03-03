@@ -4,6 +4,14 @@ import Home from "@/views/Home.vue";
 
 Vue.use(Router);
 
+let sections = {
+    HOME: "Home Page",
+    AUTHORIZATION: "Authorization",
+    ACCOUNT: "Account",
+    PAGES: "Pages",
+    SYSTEM: "System"
+};
+
 export default new Router({
     mode: "history",
     base: process.env.BASE_URL,
@@ -13,7 +21,7 @@ export default new Router({
             name: "home",
             component: Home,
             meta: {
-                pageName: "Home Page"
+                sectionName: sections.HOME
             }
         },
         {
@@ -21,7 +29,7 @@ export default new Router({
             name: "authorization",
             component: () => import(/* webpackChunkName: "authorization" */ "../views/Authorization.vue"),
             meta: {
-                pageName: "Authorization"
+                sectionName: sections.AUTHORIZATION
             }
         },
         {
@@ -29,7 +37,7 @@ export default new Router({
             name: "user",
             component: () => import(/* webpackChunkName: "user-profile" */ "../views/users/UserProfile.vue"),
             meta: {
-                pageName: "User Profile"
+                sectionName: sections.ACCOUNT
             }
         },
         {
@@ -37,7 +45,7 @@ export default new Router({
             name: "users",
             component: () => import(/* webpackChunkName: "users" */ "../views/users/Users.vue"),
             meta: {
-                pageName: "Users"
+                sectionName: sections.ACCOUNT
             }
         },
         {
@@ -45,7 +53,7 @@ export default new Router({
             name: "roles",
             component: () => import(/* webpackChunkName: "user-roles" */ "../views/users/UserRoles.vue"),
             meta: {
-                pageName: "User Roles"
+                sectionName: sections.ACCOUNT
             }
         },
         {
@@ -56,7 +64,15 @@ export default new Router({
             // which is lazy-loaded when the route is visited.
             component: () => import(/* webpackChunkName: "about" */ "../views/pages/About.vue"),
             meta: {
-                pageName: "About"
+                sectionName: sections.PAGES
+            }
+        },
+        {
+            path: "/pages/project/:id",
+            name: "project",
+            component: () => import(/* webpackChunkName: "project" */ "../views/pages/Project.vue"),
+            meta: {
+                sectionName: sections.PAGES
             }
         },
         {
@@ -64,7 +80,7 @@ export default new Router({
             name: "projects",
             component: () => import(/* webpackChunkName: "projects" */ "../views/pages/Projects.vue"),
             meta: {
-                pageName: "Projects"
+                sectionName: sections.PAGES
             }
         },
         {
@@ -72,7 +88,7 @@ export default new Router({
             name: "settings",
             component: () => import(/* webpackChunkName: "settings" */ "../views/system/Settings.vue"),
             meta: {
-                pageName: "Settings"
+                sectionName: sections.SYSTEM
             }
         },
         {
@@ -80,7 +96,7 @@ export default new Router({
             name: "operations",
             component: () => import(/* webpackChunkName: "operations" */ "../views/system/Operations.vue"),
             meta: {
-                pageName: "Operations"
+                sectionName: sections.SYSTEM
             }
         },
         {

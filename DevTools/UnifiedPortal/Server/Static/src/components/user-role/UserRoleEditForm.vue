@@ -1,9 +1,8 @@
 <template>
-    <el-dialog :visible.sync="dialogStatus.visible" width="75%" @closed="closed">
+    <el-dialog :visible.sync="dialogStatus.visible" width="75%" style="text-align: center" @closed="closed">
         <span slot="title" class="modal-title">{{ userRoleForm.id ? "Update" : "Create" }} User Role</span>
         <el-form :model="userRoleForm" :rules="userRoleRules" ref="userRoleForm"
-                 label-width="200px"
-                 @submit.native.prevent="submitForm('userRoleForm')">
+                 label-width="200px" @submit.native.prevent="submitForm('userRoleForm')">
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="name" label="Role Name">
@@ -57,7 +56,7 @@
     import format from "string-format";
 
     export default {
-        name: "UserRoleForm",
+        name: "UserRoleEditForm",
         props: {
             userRolePermissions: Array,
             permissionsForUserRole: Object,

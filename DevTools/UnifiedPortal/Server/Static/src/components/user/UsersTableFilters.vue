@@ -4,10 +4,9 @@
             <template slot="first">
                 <TableFilterItem name="User IDs">
                     <template slot="field">
-                        <el-select v-model="filter.ids" multiple filterable remote reserve-keyword
-                                   @change="filter.idGenerator += 1" :remote-method="filterByIds"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.idOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.ids" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -16,10 +15,9 @@
             <template slot="second">
                 <TableFilterItem name="User Names">
                     <template slot="field">
-                        <el-select v-model="filter.userNames" multiple filterable remote reserve-keyword
-                                   @change="filter.userNameGenerator += 1" :remote-method="filterByUserNames"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.userNameOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.userNames" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -28,10 +26,9 @@
             <template slot="third">
                 <TableFilterItem name="Emails">
                     <template slot="field">
-                        <el-select v-model="filter.emails" multiple filterable remote reserve-keyword
-                                   @change="filter.emailGenerator += 1" :remote-method="filterByEmails"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.emailOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.emails" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -85,24 +82,6 @@
             TableFilterItem
         },
         methods: {
-            filterByIds(query) {
-                this.filter.idOptions = query !== "" ? [ {
-                    id: this.filter.idGenerator,
-                    query: parseInt(query.replace(/\D/g, ""))
-                } ] : [];
-            },
-            filterByUserNames(query) {
-                this.filter.userNameOptions = query !== "" ? [ {
-                    id: this.filter.userNameGenerator,
-                    query: query
-                } ] : [];
-            },
-            filterByEmails(query) {
-                this.filter.emailOptions = query !== "" ? [ {
-                    id: this.filter.emailGenerator,
-                    query: query
-                } ] : [];
-            },
             filterByUserRoleIds(query) {
                 if (query !== "") {
                     this.filter.userRoleIdsSearchLoading = true;

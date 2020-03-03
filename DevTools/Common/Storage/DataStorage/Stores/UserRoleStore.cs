@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using VXDesign.Store.DevTools.Common.Core.Entities.Permission;
 using VXDesign.Store.DevTools.Common.Core.Entities.User;
 using VXDesign.Store.DevTools.Common.Core.Operations;
+using VXDesign.Store.DevTools.Common.Storage.DataStorage.Extensions;
 
 namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 {
@@ -11,7 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
     {
         Task<UserRoleWithPermissionsEntity> GetUserRoleById(IOperation operation, int id);
         Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation);
-        Task<IEnumerable<UserRoleWithPermissionsEntity>> GetUserRolesWithPermissions(IOperation operation);
+        Task<(long total, IEnumerable<UserRoleListItem> userRolesItems)> GetUserRolesWithPermissions(IOperation operation, UserRolePagingRequest request);
         Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern);
         Task AddUserRole(IOperation operation, UserRoleWithPermissionsEntity entity);
         Task UpdateUserRole(IOperation operation, UserRoleWithPermissionsEntity entity);
@@ -57,25 +59,74 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             return await operation.Connection.QueryAsync<UserRoleEntity>(BaseSelect);
         }
 
-        public async Task<IEnumerable<UserRoleWithPermissionsEntity>> GetUserRolesWithPermissions(IOperation operation)
+        public async Task<(long total, IEnumerable<UserRoleListItem> userRolesItems)> GetUserRolesWithPermissions(IOperation operation, UserRolePagingRequest request)
         {
-            var reader = await operation.Connection.QueryMultipleAsync($@"
-                {BaseSelect};
-
+            var selectBase = $@"
+                SELECT {{0}} FROM [authentication].[UserRole] aur
+                {{1}}
+                {{2}}
+            ";
+            const string selectEntity = @"
+                    aur.[Id],
+                    aur.[Name]
+            ";
+            const string selectTotal = "COUNT_BIG(1)";
+            var (@params, joins, filters) = HandleGetRequest(request.Filter);
+            var query = $@"
+                {string.Format(selectBase, selectTotal, joins, filters)};
+                WITH UserCounts ([UserRoleId], [Count]) AS (
+                    SELECT
+                        au.[UserRoleId],
+                        COUNT(1)
+                    FROM [authentication].[User] au
+                    GROUP BY au.[UserRoleId]
+                )
+                {string.Format(selectBase, $@"
+                    {selectEntity},
+                    ISNULL(uc.[Count], 0) [UserCount]
+                ", $@"
+                    {joins}
+                    LEFT JOIN UserCounts uc ON uc.[UserRoleId] = aur.[Id]
+                ", filters)}
+                ORDER BY aur.[Id]
+                OFFSET {request.PageNo * request.PageSize} ROWS FETCH NEXT {request.PageSize} ROWS ONLY;
                 SELECT
                     [UserRoleId],
                     [PermissionGroupId],
                     [Permissions]
                 FROM [authentication].[UserRolePermission];
-            ");
-            var userRoles = await reader.ReadAsync<UserRoleEntity>();
+            ";
+            using var reader = await operation.Connection.QueryMultipleAsync(@params, query);
+            var total = await reader.ReadSingleAsync<long>();
+            var userRoles = (await reader.ReadAsync<UserRoleExtendedEntity>()).ToList();
             var userRolePermissions = await reader.ReadAsync<UserRolePermissionExtendedEntity>();
-            return userRoles.Select(userRole => new UserRoleWithPermissionsEntity
+            var userRoleItems = userRoles.Select(userRole => new UserRoleListItem
             {
-                Id = userRole.Id,
-                Name = userRole.Name,
+                UserRole = userRole,
                 Permissions = userRolePermissions.Where(item => item.UserRoleId == userRole.Id)
             });
+            return (total, userRoleItems);
+        }
+
+        private static (DynamicParameters, string, string) HandleGetRequest(UserRolePagingFilter filter)
+        {
+            var @params = new DynamicParameters();
+            var joins = new List<string>();
+            var filters = new List<string>();
+
+            if (filter.Ids?.Any() == true)
+            {
+                @params.Add("Ids", filter.Ids);
+                filters.Add("aur.[Id] IN @Ids");
+            }
+
+            if (filter.UserRoleNames?.Any() == true)
+            {
+                @params.Add("UserRoleNames", filter.UserRoleNames.Select(item => $"%{item}%").ToStringTable());
+                joins.Add("INNER JOIN @UserRoleNames urn ON aur.[Name] LIKE urn.[Value]");
+            }
+
+            return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
         }
 
         public async Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern)

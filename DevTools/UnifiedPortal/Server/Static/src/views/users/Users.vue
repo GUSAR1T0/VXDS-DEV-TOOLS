@@ -2,6 +2,7 @@
     <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
             <FilterableTableView
+                    table="Users"
                     :reset-filters="resetFilters"
                     :reload="loadUsers"
                     :settings="settings"
@@ -18,15 +19,15 @@
 </template>
 
 <script>
-    import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
+    import { getConfiguration, renderErrorNotificationMessage, getOnlyNumbers } from "@/extensions/utils";
     import { POST_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import { GET_USERS_ENDPOINT } from "@/constants/endpoints";
 
     import LoadingContainer from "@/components/page/LoadingContainer";
     import FilterableTableView from "@/components/table-filter/FilterableTableView";
-    import UsersTable from "@/components/users/UsersTable";
-    import UsersTableFilters from "@/components/users/UsersTableFilters";
+    import UsersTable from "@/components/user/UsersTable";
+    import UsersTableFilters from "@/components/user/UsersTableFilters";
 
     export default {
         name: "Users",
@@ -51,12 +52,6 @@
                     userRoleIds: [],
                     isActivated: null,
 
-                    idOptions: [],
-                    idGenerator: 0,
-                    userNameOptions: [],
-                    userNameGenerator: 0,
-                    emailOptions: [],
-                    emailGenerator: 0,
                     userRoleIdOptions: [],
                     userRoleIdsSearchLoading: false
                 },
@@ -67,7 +62,7 @@
             loadUsers() {
                 this.loadingIsActive = true;
                 let request = {
-                    ids: this.filter.ids,
+                    ids: getOnlyNumbers(this.filter.ids),
                     userNames: this.filter.userNames,
                     emails: this.filter.emails,
                     userRoleIds: this.filter.userRoleIds,
@@ -102,20 +97,29 @@
                 this.filter.userRoleIds = [];
                 this.filter.isActivated = null;
 
-                this.filter.idOptions = [];
-                this.filter.idGenerator = 0;
-                this.filter.userNameOptions = [];
-                this.filter.userNameGenerator = 0;
-                this.filter.emailOptions = [];
-                this.filter.emailGenerator = 0;
                 this.filter.userRoleIdOptions = [];
                 this.filter.userRoleIdsSearchLoading = false;
+            },
+            searchByUserRole(userRole) {
+                if (userRole) {
+                    let userRoleIdAndName = userRole.split(":");
+                    if (userRoleIdAndName && userRoleIdAndName.length === 2 && !isNaN(userRoleIdAndName[0]) && userRoleIdAndName[1]) {
+                        let userRoleId = parseInt(userRoleIdAndName[0]);
+                        this.filter.userRoleIdOptions = [ {
+                            id: userRoleId,
+                            name: userRoleIdAndName[1]
+                        } ];
+                        this.filter.userRoleIds = [ userRoleId ];
+                    }
+                }
             }
         },
         mounted() {
+            this.searchByUserRole(this.$route.query.userRole);
             this.loadUsers();
         },
         beforeRouteUpdate(to, from, next) {
+            this.searchByUserRole(to.query.userRole);
             this.loadUsers();
             next();
         }

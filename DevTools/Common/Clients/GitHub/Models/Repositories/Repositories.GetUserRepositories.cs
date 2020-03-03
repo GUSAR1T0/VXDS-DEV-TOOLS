@@ -11,7 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.GitHub.Models.Repositories
             public override GitHubAction Action => GitHubAction.GetUserRepositories;
         }
 
-        public class GetUserRepositoriesResponse : GitHubMultipleResponse<RepositoryEntity>
+        public class GetUserRepositoriesResponse : GitHubMultipleResponse<RepositoryListItemEntity>
         {
         }
     }

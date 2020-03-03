@@ -15,6 +15,6 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Settings
 
     public class CodeServiceSettingsEntity
     {
-        public GitHubUserEntity GitHubUser { get; set; }
+        public GitHubUserProfileEntity GitHubUser { get; set; }
     }
 }

@@ -12,9 +12,7 @@ namespace VXDesign.Store.DevTools.Common.Services
         Task<UserPagingResponse> GetUsers(IOperation operation, UserPagingRequest request);
         Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
         Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id);
-        Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity);
-        Task UpdateUserProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity);
-        Task ManageUserStatusById(IOperation operation, int id, bool status);
+        Task UpdateUserProfile(IOperation operation, UserProfileEntity entity);
         Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId);
     }
 
@@ -57,44 +55,14 @@ namespace VXDesign.Store.DevTools.Common.Services
             return entity;
         }
 
-        public async Task UpdateUserProfileGeneralInfo(IOperation operation, UserProfileEntity entity)
+        public async Task UpdateUserProfile(IOperation operation, UserProfileEntity entity)
         {
             if (!await userDataStore.IsUserExist(operation, entity.Id))
             {
                 throw CommonExceptions.UserWasNotFound(operation, entity.Id);
             }
 
-            await userDataStore.UpdateProfileGeneralInfo(operation, entity);
-        }
-
-        public async Task UpdateUserProfileAccountSpecificInfo(IOperation operation, UserProfileEntity entity)
-        {
-            if (!await userDataStore.IsUserExist(operation, entity.Id))
-            {
-                throw CommonExceptions.UserWasNotFound(operation, entity.Id);
-            }
-
-            if (operation.OperationContext.UserId == entity.Id)
-            {
-                throw CommonExceptions.CouldNotChangeOwnAccountSpecificInfo(operation);
-            }
-
-            await userDataStore.UpdateProfileAccountSpecificInfo(operation, entity);
-        }
-
-        public async Task ManageUserStatusById(IOperation operation, int id, bool status)
-        {
-            if (!await userDataStore.IsUserExist(operation, id))
-            {
-                throw CommonExceptions.UserWasNotFound(operation, id);
-            }
-
-            if (operation.OperationContext.UserId == id)
-            {
-                throw CommonExceptions.CouldNotChangeOwnAccountSpecificInfo(operation);
-            }
-
-            await userDataStore.ManageUserStatusById(operation, id, status);
+            await userDataStore.UpdateProfile(operation, entity);
         }
 
         public async Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId) => await userDataStore.GetAffectedUsersCount(operation, userRoleId);

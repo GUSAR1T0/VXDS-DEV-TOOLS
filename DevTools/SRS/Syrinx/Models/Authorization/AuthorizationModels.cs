@@ -46,7 +46,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization
         public string LastName { get; set; }
         public string Color { get; set; }
 
-        public int UserRoleId { get; set; }
+        public int? UserRoleId { get; set; }
         public IEnumerable<UserRolePermissionEntity> Permissions { get; set; }
     }
 }

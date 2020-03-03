@@ -5,7 +5,7 @@
                 {{ getInitials }}
             </div>
         </el-avatar>
-        <strong style="font-size: 16px">
+        <strong :style="`font-size: ${big ? 36 : 16}px`">
             {{ getFullName }}
         </strong>
     </div>
@@ -22,7 +22,8 @@
         props: {
             firstName: String,
             lastName: String,
-            color: String
+            color: String,
+            big: Boolean
         },
         computed: {
             getInitials() {

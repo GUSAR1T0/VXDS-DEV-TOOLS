@@ -1,11 +1,9 @@
 <template>
-    <div class="settings-tab code-services">
-        <div class="github">
-            <h2 class="block-header"><span><fa :icon="['fab', 'github']"/> GitHub</span></h2>
-            <el-divider class="block-divider"/>
-            <div>
-                <strong class="field-header">Personal Access Token</strong>
-                <div class="field-input">
+    <div class="code-services">
+        <ProfileBlock :icon="['fab', 'github']" header="GitHub">
+            <template slot="profile-block-content">
+                <h3 class="field-header">Personal Access Token</h3>
+                <div class="field-content">
                     <el-input clearable show-password v-model="token"/>
                     <el-button type="primary" :disabled="!token" class="inline-field-element"
                                @click="setGitHubToken" ref="setupGitHubTokenButton">
@@ -17,7 +15,7 @@
                     </el-button>
                 </div>
                 <div v-if="codeServicesSettings.gitHubUser">
-                    <div v-if="codeServicesSettings.gitHubUser.isValid" class="field-input validation">
+                    <div v-if="codeServicesSettings.gitHubUser.isValid" class="field-content validation">
                         <div>The stored token is valid for</div>
                         <el-link type="success" :href="codeServicesSettings.gitHubUser.profileUrl"
                                  target="_blank" class="inline-field-element" :underline="false">
@@ -42,12 +40,12 @@
                         <div>No saved token is in the system</div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </template>
+        </ProfileBlock>
     </div>
 </template>
 
-<style scoped src="@/styles/settings.css">
+<style scoped src="@/styles/profile.css">
 </style>
 
 <style scoped src="@/styles/user.css">
@@ -72,10 +70,15 @@
     import { mapGetters } from "vuex";
     import { PORTAL_PERMISSION } from "@/constants/permissions";
 
+    import ProfileBlock from "@/components/page/ProfileBlock";
+
     export default {
         name: "CodeServices",
         props: {
             codeServicesSettings: Object
+        },
+        components: {
+            ProfileBlock
         },
         data() {
             return {

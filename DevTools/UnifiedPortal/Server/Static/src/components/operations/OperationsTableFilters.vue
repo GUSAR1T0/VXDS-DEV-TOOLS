@@ -4,10 +4,9 @@
             <template slot="first">
                 <TableFilterItem name="Operation IDs">
                     <template slot="field">
-                        <el-select v-model="filter.ids" multiple filterable remote reserve-keyword
-                                   @change="filter.idGenerator += 1" :remote-method="filterByIds"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.idOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.ids" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -16,10 +15,9 @@
             <template slot="second">
                 <TableFilterItem name="Scopes">
                     <template slot="field">
-                        <el-select v-model="filter.scopes" multiple filterable remote reserve-keyword
-                                   @change="filter.scopeGenerator += 1" :remote-method="filterByScopes"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.scopeOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.scopes" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -28,10 +26,9 @@
             <template slot="third">
                 <TableFilterItem name="Contexts">
                     <template slot="field">
-                        <el-select v-model="filter.contextNames" multiple filterable remote reserve-keyword
-                                   @change="filter.contextNameGenerator += 1" :remote-method="filterByContextNames"
-                                   style="width: 100%">
-                            <el-option v-for="item in filter.contextNameOptions" :key="item.id" :label="item.query"
+                        <el-select v-model="filter.contextNames" multiple filterable reserve-keyword allow-create
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
                     </template>
@@ -120,24 +117,6 @@
             TableFilterItem
         },
         methods: {
-            filterByIds(query) {
-                this.filter.idOptions = query !== "" ? [ {
-                    id: this.filter.idGenerator,
-                    query: parseInt(query.replace(/\D/g, ""))
-                } ] : [];
-            },
-            filterByScopes(query) {
-                this.filter.scopeOptions = query !== "" ? [ {
-                    id: this.filter.scopeGenerator,
-                    query: query
-                } ] : [];
-            },
-            filterByContextNames(query) {
-                this.filter.contextNameOptions = query !== "" ? [ {
-                    id: this.filter.contextNameGenerator,
-                    query: query
-                } ] : [];
-            },
             filterByUserIds(query) {
                 if (query !== "") {
                     this.filter.userIdsSearchLoading = true;

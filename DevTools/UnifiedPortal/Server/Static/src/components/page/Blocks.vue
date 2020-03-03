@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-row :gutter="20">
+        <el-row type="flex" justify="center" align="middle" :gutter="20">
             <el-col :xs="24" :sm="24" :md="24" :lg="getColumnSize" :xl="getColumnSize">
                 <slot name="first"/>
             </el-col>
@@ -11,12 +11,14 @@
                 <slot name="third"/>
             </el-col>
         </el-row>
-        <el-row v-if="hasSecondSlot" class="small-display-row hidden-lg-and-up">
+        <el-row v-if="hasSecondSlot" type="flex" justify="center" align="middle"
+                class="small-display-row hidden-lg-and-up">
             <el-col :xs="24" :sm="24" :md="24">
                 <slot name="second"/>
             </el-col>
         </el-row>
-        <el-row v-if="hasThirdSlot" class="small-display-row hidden-lg-and-up">
+        <el-row v-if="hasThirdSlot" type="flex" justify="center" align="middle"
+                class="small-display-row hidden-lg-and-up">
             <el-col :xs="24" :sm="24" :md="24">
                 <slot name="third"/>
             </el-col>

@@ -8,7 +8,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 {
     public interface IMemoryCacheService
     {
-        Task<T> Get<T>(string key, Func<Task<T>> initializer);
+        Task<T> Get<T>(string key, Func<Task<T>> initializer, TimeSpan? expirationTime = null);
     }
 
     public class MemoryCacheService : IMemoryCacheService
@@ -16,7 +16,7 @@ namespace VXDesign.Store.DevTools.Common.Services
         private readonly MemoryCache cache;
         private readonly ConcurrentDictionary<object, SemaphoreSlim> locks;
 
-        private MemoryCacheEntryOptions Options => new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
+        private static MemoryCacheEntryOptions Options(TimeSpan? expirationTime) => new MemoryCacheEntryOptions().SetAbsoluteExpiration(expirationTime ?? TimeSpan.FromSeconds(30));
 
         public MemoryCacheService()
         {
@@ -24,7 +24,7 @@ namespace VXDesign.Store.DevTools.Common.Services
             locks = new ConcurrentDictionary<object, SemaphoreSlim>();
         }
 
-        public async Task<T> Get<T>(string key, Func<Task<T>> initializer)
+        public async Task<T> Get<T>(string key, Func<Task<T>> initializer, TimeSpan? expirationTime = null)
         {
             if (!cache.TryGetValue(key, out T entry))
             {
@@ -36,7 +36,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                     if (!cache.TryGetValue(key, out entry))
                     {
                         entry = await initializer();
-                        cache.Set(key, entry, Options);
+                        cache.Set(key, entry, Options(expirationTime));
                     }
                 }
                 finally

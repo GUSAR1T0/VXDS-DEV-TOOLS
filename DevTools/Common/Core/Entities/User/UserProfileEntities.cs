@@ -13,7 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.User
 
     public class UserAuthorizationShortEntity : UserEntity
     {
-        public int UserRoleId { get; set; }
+        public int? UserRoleId { get; set; }
     }
 
     public class UserAuthorizationEntity : UserAuthorizationShortEntity

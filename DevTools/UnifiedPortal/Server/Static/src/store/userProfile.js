@@ -1,7 +1,7 @@
 import {
     GET_HTTP_REQUEST,
-    PREPARE_ACCOUNT_SPECIFIC_INFO_UPDATE_FORM,
-    PREPARE_USER_GENERAL_INFO_UPDATE_FORM, RESET_USER_PROFILE_STORE_STATE,
+    PREPARE_USER_UPDATE_FORM,
+    RESET_USER_PROFILE_STORE_STATE,
     STORE_USER_PROFILE_DATA_REQUEST,
     STORE_USER_PROFILE_ID_REQUEST
 } from "@/constants/actions";
@@ -24,8 +24,7 @@ export default {
             },
             isActivated: false
         },
-        userGeneralInfoUpdateForm: {},
-        accountSpecificInfoUpdateForm: {
+        userUpdateForm: {
             userRole: {
                 id: null
             }
@@ -38,11 +37,8 @@ export default {
         getUserProfile: state => {
             return state.user;
         },
-        getUserGeneralInfoUpdateForm: state => {
-            return state.userGeneralInfoUpdateForm;
-        },
-        getAccountSpecificInfoUpdateForm: state => {
-            return state.accountSpecificInfoUpdateForm;
+        getUserUpdateForm: state => {
+            return state.userUpdateForm;
         },
         isAboutMe: state => currentUserId => {
             let userProfileId = state.user.id;
@@ -70,18 +66,14 @@ export default {
             };
             state.user.isActivated = data.isActivated;
         },
-        [PREPARE_USER_GENERAL_INFO_UPDATE_FORM]: state => {
-            state.userGeneralInfoUpdateForm = JSON.parse(JSON.stringify({
+        [PREPARE_USER_UPDATE_FORM]: state => {
+            state.userUpdateForm = JSON.parse(JSON.stringify({
                 firstName: state.user.firstName,
                 lastName: state.user.lastName,
                 email: state.user.email,
                 color: state.user.color,
                 location: state.user.location,
-                bio: state.user.bio
-            }));
-        },
-        [PREPARE_ACCOUNT_SPECIFIC_INFO_UPDATE_FORM]: state => {
-            state.accountSpecificInfoUpdateForm = JSON.parse(JSON.stringify({
+                bio: state.user.bio,
                 userRole: {
                     id: state.user.userRole.id
                 },
@@ -101,8 +93,7 @@ export default {
                 permissions: []
             };
             state.user.isActivated = false;
-            state.userGeneralInfoUpdateForm = {};
-            state.accountSpecificInfoUpdateForm = {
+            state.userUpdateForm = {
                 userRole: {
                     id: null
                 }

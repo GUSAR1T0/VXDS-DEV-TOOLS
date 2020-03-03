@@ -1,18 +1,20 @@
 <template>
     <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
-            <div class="settings">
-                <el-tabs :stretch="true">
-                    <el-tab-pane>
-                        <span slot="label"><fa icon="cogs"/> | General</span>
-                        <h1>TBD...</h1>
-                    </el-tab-pane>
-                    <el-tab-pane>
-                        <span slot="label"><fa icon="code-branch"/> | Code Services</span>
-                        <CodeServices :code-services-settings="codeServicesSettings"/>
-                    </el-tab-pane>
-                </el-tabs>
-            </div>
+            <Profile header="Settings">
+                <template slot="profile-content">
+                    <el-tabs :stretch="true" style="margin-top: -20px">
+                        <el-tab-pane>
+                            <span slot="label"><fa icon="cogs"/> | General</span>
+                            <h1>TBD...</h1>
+                        </el-tab-pane>
+                        <el-tab-pane>
+                            <span slot="label"><fa icon="code-branch"/> | Code Services</span>
+                            <CodeServices :code-services-settings="codeServicesSettings"/>
+                        </el-tab-pane>
+                    </el-tabs>
+                </template>
+            </Profile>
         </template>
     </LoadingContainer>
 </template>
@@ -23,12 +25,14 @@
     import { renderErrorNotificationMessage } from "@/extensions/utils";
 
     import LoadingContainer from "@/components/page/LoadingContainer";
+    import Profile from "@/components/page/Profile";
     import CodeServices from "@/components/settings/CodeServices";
 
     export default {
         name: "Settings",
         components: {
             LoadingContainer,
+            Profile,
             CodeServices
         },
         data() {

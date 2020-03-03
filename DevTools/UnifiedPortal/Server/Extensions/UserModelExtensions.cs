@@ -24,7 +24,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             IsActivated = entity.IsActivated
         };
 
-        internal static UserProfileEntity ToEntity(this UserProfileGeneralInfoUpdateModel model, int id) => new UserProfileEntity
+        internal static UserProfileEntity ToEntity(this UserProfileUpdateModel model, int id) => new UserProfileEntity
         {
             Id = id,
             Email = model.Email,
@@ -32,12 +32,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             LastName = model.LastName,
             Color = model.Color,
             Location = model.Location,
-            Bio = model.Bio
-        };
-
-        internal static UserProfileEntity ToEntity(this UserProfileAccountSpecificInfoUpdateModel model, int id) => new UserProfileEntity
-        {
-            Id = id,
+            Bio = model.Bio,
             UserRoleId = model.UserRoleId,
             IsActivated = model.IsActivated
         };

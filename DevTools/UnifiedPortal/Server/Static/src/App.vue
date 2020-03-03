@@ -5,7 +5,7 @@
             <el-container>
                 <el-header class="app-header" height="auto">
                     <Header/>
-                    <HorizontalDivider :name="$route.meta.pageName"/>
+                    <HorizontalDivider :name="$route.meta.sectionName"/>
                 </el-header>
                 <el-main class="app-main">
                     <router-view v-if="isReadyToLoadContent && (!isAuthenticated || hasPermissionToAdminPanel)"/>

@@ -72,10 +72,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
-        /// Updates user profile general info data
+        /// Updates user profile data
         /// </summary>
         /// <param name="id">Unique user ID for update</param>
-        /// <param name="model">Model of user profile general info for update</param>
+        /// <param name="model">Model of user profile for update</param>
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
@@ -83,8 +83,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [PortalAuthentication]
-        [HttpPut("{id}/general")]
-        public async Task<ActionResult> UpdateUserProfileGeneralInfo(int id, [FromBody] UserProfileGeneralInfoUpdateModel model)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateUserInfo(int id, [FromBody] UserProfileUpdateModel model)
         {
             return await Execute(async operation =>
             {
@@ -95,82 +95,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
                 }
 
                 var entity = model.ToEntity(id);
-                await userService.UpdateUserProfileGeneralInfo(operation, entity);
+                await userService.UpdateUserProfile(operation, entity);
             });
         }
-
-        /// <summary>
-        /// Updates user profile account specific info data
-        /// </summary>
-        /// <param name="id">Unique user ID for update</param>
-        /// <param name="model">Model of user profile account specific info for update</param>
-        /// <returns>Nothing to return</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication]
-        [HttpPut("{id}/accountSpecific")]
-        public async Task<ActionResult> UpdateUserProfileAccountSpecificInfo(int id, [FromBody] UserProfileAccountSpecificInfoUpdateModel model)
-        {
-            return await Execute(async operation =>
-            {
-                var portalPermissions = (PortalPermission) (UserPermissions.FirstOrDefault(item => item.PermissionGroupId == 1)?.Permissions ?? 0);
-                if (UserId != id && (portalPermissions & PortalPermission.ManageUserProfiles) == 0)
-                {
-                    throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
-                }
-
-                var entity = model.ToEntity(id);
-                await userService.UpdateUserProfileAccountSpecificInfo(operation, entity);
-            });
-        }
-
-        /// <summary>
-        /// Activates user account
-        /// </summary>
-        /// <param name="id">Unique user ID</param>
-        /// <returns>Nothing to return</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication]
-        [HttpPut("{id}/activate")]
-        public async Task<ActionResult> ActivateUser(int id) => await Execute(async operation =>
-        {
-            var portalPermissions = (PortalPermission) (UserPermissions.FirstOrDefault(item => item.PermissionGroupId == 1)?.Permissions ?? 0);
-            if (UserId != id && (portalPermissions & PortalPermission.ManageUserProfiles) == 0)
-            {
-                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
-            }
-
-            await userService.ManageUserStatusById(operation, id, true);
-        });
-
-        /// <summary>
-        /// Deactivates user account
-        /// </summary>
-        /// <param name="id">Unique user ID</param>
-        /// <returns>Nothing to return</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication]
-        [HttpPut("{id}/deactivate")]
-        public async Task<ActionResult> DeactivateUser(int id) => await Execute(async operation =>
-        {
-            var portalPermissions = (PortalPermission) (UserPermissions.FirstOrDefault(item => item.PermissionGroupId == 1)?.Permissions ?? 0);
-            if (UserId != id && (portalPermissions & PortalPermission.ManageUserProfiles) == 0)
-            {
-                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
-            }
-
-            await userService.ManageUserStatusById(operation, id, false);
-        });
     }
 }

@@ -11,7 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Services
     public interface IUserRoleService
     {
         Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation);
-        Task<IEnumerable<UserRoleWithPermissionsEntity>> GetUserRolesWithPermissions(IOperation operation);
+        Task<UserRolePagingResponse> GetUserRolesWithPermissions(IOperation operation, UserRolePagingRequest request);
         Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern);
         Task<UserRoleWithPermissionsEntity> GetUserRoleById(IOperation operation, int id);
         Task AddUserRole(IOperation operation, UserRoleWithPermissionsEntity entity);
@@ -31,7 +31,15 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         public async Task<IEnumerable<UserRoleEntity>> GetUserRoles(IOperation operation) => await userRoleStore.GetUserRoles(operation);
 
-        public async Task<IEnumerable<UserRoleWithPermissionsEntity>> GetUserRolesWithPermissions(IOperation operation) => await userRoleStore.GetUserRolesWithPermissions(operation);
+        public async Task<UserRolePagingResponse> GetUserRolesWithPermissions(IOperation operation, UserRolePagingRequest request)
+        {
+            var (total, userRolesItems) = await userRoleStore.GetUserRolesWithPermissions(operation, request);
+            return new UserRolePagingResponse
+            {
+                Total = total,
+                Items = userRolesItems
+            };
+        }
 
         public async Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern) => await userRoleStore.SearchUserRolesByPattern(operation, pattern);
 

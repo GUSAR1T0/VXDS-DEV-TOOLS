@@ -1,11 +1,11 @@
 <template>
     <el-table :data="getPermissionsTable" style="width: 100%" border>
-        <el-table-column prop="type" label="Permissions types">
+        <el-table-column label="Permissions types" align="center">
             <template slot-scope="scope">
-                <strong style="font-size: 16px">{{ scope.row.type }}</strong>
+                <strong class="permissions-type">{{ scope.row.type }}</strong>
             </template>
         </el-table-column>
-        <el-table-column label="Lists of permissions">
+        <el-table-column label="Lists of permissions" align="center">
             <template slot-scope="scope">
                 <div v-if="scope.row.list && scope.row.list.length > 0">
                     <div v-for="permission in scope.row.list" v-bind:key="permission"
@@ -20,6 +20,13 @@
         </el-table-column>
     </el-table>
 </template>
+
+<style scoped>
+    .permissions-type {
+        font-size: 16px;
+        word-break: break-word;
+    }
+</style>
 
 <script>
     import { mapGetters } from "vuex";

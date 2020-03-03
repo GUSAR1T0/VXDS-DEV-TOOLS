@@ -18,7 +18,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         #region GitHub
 
-        Task<GitHubUserEntity> SetupGitHubToken(IOperation operation, string token);
+        Task<GitHubUserProfileEntity> SetupGitHubToken(IOperation operation, string token);
 
         #endregion
 
@@ -50,14 +50,14 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         #region GitHub
 
-        private static async Task<GitHubUserEntity> GetGitHubUser(IOperation operation, string token)
+        private static async Task<GitHubUserProfileEntity> GetGitHubUser(IOperation operation, string token)
         {
             if (!string.IsNullOrWhiteSpace(token))
             {
                 var gitHubClient = new GitHubClientService(token);
                 var user = await new Users.GetUserRequest().SendRequest(operation, gitHubClient);
                 return user.IsWithoutErrors()
-                    ? new GitHubUserEntity
+                    ? new GitHubUserProfileEntity
                     {
                         IsValid = true,
                         Login = user.Response.Login,
@@ -65,7 +65,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                         AvatarUrl = user.Response.AvatarUrl,
                         ProfileUrl = user.Response.HtmlUrl
                     }
-                    : new GitHubUserEntity
+                    : new GitHubUserProfileEntity
                     {
                         IsValid = false
                     };
@@ -74,7 +74,7 @@ namespace VXDesign.Store.DevTools.Common.Services
             return null;
         }
 
-        public async Task<GitHubUserEntity> SetupGitHubToken(IOperation operation, string token)
+        public async Task<GitHubUserProfileEntity> SetupGitHubToken(IOperation operation, string token)
         {
             await portalSettingsStore.ModifySettings(operation, PortalSettingsKey.GitHubToken, token);
             var settingsParameter = await portalSettingsStore.GetSettingsParameter(operation, PortalSettingsKey.GitHubToken);

@@ -42,11 +42,13 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         /// <summary>
         /// Setup Personal Access Token of GitHub user
         /// </summary>
-        [ProducesResponseType(typeof(GitHubUserModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GitHubUserProfileModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [PortalAuthentication(PortalPermission.ManageSettings)]
         [HttpPut("codeService/github")]
-        public async Task<ActionResult<GitHubUserModel>> SetupGitHubToken([FromQuery(Name = "t")] string token) => await Execute(async operation =>
+        public async Task<ActionResult<GitHubUserProfileModel>> SetupGitHubToken([FromQuery(Name = "t")] string token) => await Execute(async operation =>
         {
             var gitHubUser = await portalSettingsService.SetupGitHubToken(operation, token);
             return gitHubUser.ToModel();

@@ -5,6 +5,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.User
 {
     public class UserListItem : UserEntity, IPagingResponseItemEntity
     {
+        public int? UserRoleId { get; set; }
         public string UserRole { get; set; }
         public bool IsActivated { get; set; }
     }

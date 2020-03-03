@@ -22,7 +22,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.User
         #endregion
     }
 
-    public class UserProfileGeneralInfoUpdateModel
+    public class UserProfileUpdateModel
     {
         public string Email { get; set; }
         public string FirstName { get; set; }
@@ -30,10 +30,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.User
         public string Color { get; set; }
         public string Location { get; set; }
         public string Bio { get; set; }
-    }
-
-    public class UserProfileAccountSpecificInfoUpdateModel
-    {
         public int? UserRoleId { get; set; }
         public bool IsActivated { get; set; }
     }

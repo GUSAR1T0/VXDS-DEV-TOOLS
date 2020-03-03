@@ -9,6 +9,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Settings
 
     public class CodeServicesSettingsModel
     {
-        public GitHubUserModel GitHubUser { get; set; }
+        public GitHubUserProfileModel GitHubUser { get; set; }
     }
 }

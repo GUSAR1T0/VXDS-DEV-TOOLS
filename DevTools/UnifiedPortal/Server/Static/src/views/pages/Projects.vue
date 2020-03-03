@@ -2,10 +2,22 @@
     <LoadingContainer :loading-state="loadingIsActive">
         <template slot="content">
             <FilterableTableView
+                    table="Projects"
                     :reset-filters="resetFilters"
                     :reload="loadProjects"
                     :settings="settings"
             >
+                <template slot="buttons">
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
+                            Create New Project
+                        </div>
+                        <el-button type="primary" circle
+                                   class="rounded-button">
+                            <span><fa icon="plus-circle"/></span>
+                        </el-button>
+                    </el-tooltip>
+                </template>
                 <template slot="filters">
                     <ProjectsTableFilters :filter="filter"/>
                 </template>
@@ -17,11 +29,14 @@
     </LoadingContainer>
 </template>
 
+<style scoped src="@/styles/button.css">
+</style>
+
 <script>
     import { POST_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import { GET_PROJECTS_ENDPOINT } from "@/constants/endpoints";
-    import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
+    import { getConfiguration, renderErrorNotificationMessage, getOnlyNumbers } from "@/extensions/utils";
 
     import LoadingContainer from "@/components/page/LoadingContainer";
     import FilterableTableView from "@/components/table-filter/FilterableTableView";
@@ -51,12 +66,6 @@
                     gitHubRepoIds: [],
                     isActive: null,
 
-                    idOptions: [],
-                    idGenerator: 0,
-                    nameOptions: [],
-                    nameGenerator: 0,
-                    aliasOptions: [],
-                    aliasGenerator: 0,
                     gitHubRepoIdOptions: [],
                     gitHubRepoIdsSearchLoading: false
                 },
@@ -67,7 +76,7 @@
             loadProjects() {
                 this.loadingIsActive = true;
                 let request = {
-                    ids: this.filter.ids,
+                    ids: getOnlyNumbers(this.filter.ids),
                     names: this.filter.names,
                     aliases: this.filter.aliases,
                     gitHubRepoIds: this.filter.gitHubRepoIds,
@@ -102,12 +111,6 @@
                 this.filter.gitHubRepoIds = [];
                 this.filter.isActive = null;
 
-                this.filter.idOptions = [];
-                this.filter.idGenerator = 0;
-                this.filter.nameOptions = [];
-                this.filter.nameGenerator = 0;
-                this.filter.aliasOptions = [];
-                this.filter.aliasGenerator = 0;
                 this.filter.gitHubRepoIdOptions = [];
                 this.filter.gitHubRepoIdsSearchLoading = false;
             }

@@ -79,3 +79,7 @@ export function renderErrorNotificationMessage(h, response) {
         return "Unhandled exception";
     }
 }
+
+export function getOnlyNumbers(array) {
+    return array.map(String).filter(value => !isNaN(value)).map(value => parseInt(value.replace(/\D/g, ""))).map(Number);
+}
