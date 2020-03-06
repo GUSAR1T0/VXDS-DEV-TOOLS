@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
@@ -22,6 +23,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         #endregion
 
+        #region Projects
+
         #region GitHub
 
         public static NotFoundException GitHubTokenIsNotStated(IOperation operation) => new NotFoundException(operation, "Failed to connect to GitHub due to missing token in the system");
@@ -29,6 +32,31 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         public static NotFoundException GitHubEndpointIsNotFoundByEndpointCode(IOperation operation) => new NotFoundException(operation, "Failed to find a GitHub endpoint by endpoint code");
 
         public static BadRequestException UserRepositoriesCouldNotBeLoaded(IOperation operation, string message) => new BadRequestException(operation, $"Failed to retrieve all user repositories: {message}");
+
+        #endregion
+        
+        public static BadRequestException ProjectHasAlreadyExisted(IOperation operation, IEnumerable<byte> errorCodes, string name, string alias, long? gitHubRepoId)
+        {
+            var errors = new List<string>();
+            foreach (var errorCode in errorCodes)
+            {
+                switch (errorCode)
+                {
+                    case 1:
+                        errors.Add($"name \"{name}\"");
+                        break;
+                    case 2:
+                        errors.Add($"alias \"{alias}\"");
+                        break;
+                    case 3:
+                        errors.Add($"GitHub Repository ID \"{gitHubRepoId}\"");
+                        break;
+                }
+            }
+            return new BadRequestException(operation, $"Project with {string.Join(", ", errors)} has already existed");
+        }
+
+        public static NotFoundException ProjectWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Project with ID \"{id}\" was not found");
 
         #endregion
 
@@ -54,7 +82,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static NotFoundException UserRoleWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"User role with ID \"{id}\" was not found");
 
-        public static NotFoundException UserRoleHasAlreadyExisted(IOperation operation, string name) => new NotFoundException(operation, $"User role with name \"{name}\" has already existed");
+        public static BadRequestException UserRoleHasAlreadyExisted(IOperation operation, string name) => new BadRequestException(operation, $"User role with name \"{name}\" has already existed");
 
         public static AuthenticationException AccessDenied(IOperation operation, int statusCode, bool deactivated = false)
         {
@@ -77,8 +105,6 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
             return new AuthenticationException(operation, message, statusCode);
         }
-
-        public static BadRequestException CouldNotChangeOwnAccountSpecificInfo(IOperation operation) => new BadRequestException(operation, "Failed to change account specific info for yourself");
 
         #endregion
     }

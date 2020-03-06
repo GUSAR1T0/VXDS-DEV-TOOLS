@@ -4,7 +4,7 @@ using VXDesign.Store.DevTools.Common.Core.Entities.SSP;
 
 namespace VXDesign.Store.DevTools.Common.Core.Entities.Project
 {
-    public class ProjectEntity
+    public class ProjectListItemEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -16,7 +16,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Project
 
     public class ProjectWithRepositoryInfo : IPagingResponseItemEntity
     {
-        public ProjectEntity Project { get; set; }
+        public ProjectListItemEntity Project { get; set; }
         public GitHubRepositoryEntity GitHubRepository { get; set; }
     }
 

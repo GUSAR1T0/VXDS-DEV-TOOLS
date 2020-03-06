@@ -12,4 +12,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.GitHub
         public GitHubUserModel Owner { get; set; }
         public string RepositoryUrl { get; set; }
     }
+
+    public class GitHubRepositoryFullModel : GitHubRepositoryModel
+    {
+        public string Description { get; set; }
+        public int StargazersCount { get; set; }
+        public int WatchersCount { get; set; }
+        public int SubscribersCount { get; set; }
+        public int OpenIssuesCount { get; set; }
+        public GitHubLicenseModel License { get; set; }
+    }
 }

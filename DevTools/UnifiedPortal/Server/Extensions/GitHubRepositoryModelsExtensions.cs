@@ -5,6 +5,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
 {
     internal static class GitHubRepositoryModelExtensions
     {
+        internal static GitHubRepositoryShortModel ToModel(this GitHubRepositoryShortEntity entity) => new GitHubRepositoryShortModel
+        {
+            Id = entity.Id,
+            FullName = entity.FullName
+        };
+
         internal static GitHubRepositoryModel ToModel(this GitHubRepositoryEntity entity) => entity != null
             ? new GitHubRepositoryModel
             {
@@ -16,10 +22,21 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             }
             : null;
 
-        internal static GitHubRepositoryShortModel ToModel(this GitHubRepositoryShortEntity entity) => new GitHubRepositoryShortModel
-        {
-            Id = entity.Id,
-            FullName = entity.FullName
-        };
+        internal static GitHubRepositoryFullModel ToModel(this GitHubRepositoryFullEntity entity) => entity != null
+            ? new GitHubRepositoryFullModel
+            {
+                Id = entity.Id,
+                FullName = entity.FullName,
+                Private = entity.Private,
+                Owner = entity.Owner.ToModel(),
+                Description = entity.Description,
+                RepositoryUrl = entity.RepositoryUrl,
+                StargazersCount = entity.StargazersCount,
+                WatchersCount = entity.WatchersCount,
+                SubscribersCount = entity.SubscribersCount,
+                OpenIssuesCount = entity.OpenIssuesCount,
+                License = entity.License.ToModel()
+            }
+            : null;
     }
 }

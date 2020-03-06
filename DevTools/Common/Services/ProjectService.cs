@@ -19,6 +19,10 @@ namespace VXDesign.Store.DevTools.Common.Services
     {
         Task<ProjectPagingResponse> GetItems(IOperation operation, ProjectPagingRequest request);
         Task<IEnumerable<GitHubRepositoryShortEntity>> SearchGitHubRepositoriesByPattern(IOperation operation, string pattern);
+        Task<ProjectProfileGetEntity> GetProjectProfileById(IOperation operation, int id);
+        Task<int> CreateProjectProfile(IOperation operation, ProjectProfileEntity entity);
+        Task UpdateProjectProfile(IOperation operation, ProjectProfileEntity entity);
+        Task DeleteProjectProfile(IOperation operation, int id);
     }
 
     public class ProjectService : IProjectService
@@ -36,7 +40,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         public async Task<ProjectPagingResponse> GetItems(IOperation operation, ProjectPagingRequest request)
         {
-            var (total, projects) = await projectStore.Get(operation, request);
+            var (total, projects) = await projectStore.GetProjects(operation, request);
             var repositories = total == 0 ? new List<RepositoryListItemEntity>() : await GetGitHubUserRepositoriesFromCache(operation);
             return new ProjectPagingResponse
             {
@@ -64,7 +68,7 @@ namespace VXDesign.Store.DevTools.Common.Services
             }, TimeSpan.FromMinutes(5));
         }
 
-        private static IEnumerable<ProjectWithRepositoryInfo> PreparePagingItems(IEnumerable<ProjectEntity> projects, IReadOnlyCollection<RepositoryListItemEntity> repositories)
+        private static IEnumerable<ProjectWithRepositoryInfo> PreparePagingItems(IEnumerable<ProjectListItemEntity> projects, IReadOnlyCollection<RepositoryListItemEntity> repositories)
         {
             return projects.Select(project =>
             {
@@ -99,6 +103,85 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Id = repository.Id,
                 FullName = repository.FullName
             });
+        }
+
+        public async Task<ProjectProfileGetEntity> GetProjectProfileById(IOperation operation, int id)
+        {
+            var project = await projectStore.Get(operation, id);
+            var gitHubRepository = (await GetGitHubUserRepositoriesFromCache(operation)).FirstOrDefault(entity => entity.Id == project.GitHubRepoId);
+            return new ProjectProfileGetEntity
+            {
+                Id = project.Id,
+                Name = project.Name,
+                Alias = project.Alias,
+                Description = project.Description,
+                GitHubRepoId = project.GitHubRepoId,
+                GitHubRepository = gitHubRepository != null
+                    ? new GitHubRepositoryFullEntity
+                    {
+                        Id = gitHubRepository.Id,
+                        FullName = gitHubRepository.FullName,
+                        Private = gitHubRepository.Private,
+                        Owner = new GitHubUserEntity
+                        {
+                            Login = gitHubRepository.Owner.Login,
+                            AvatarUrl = gitHubRepository.Owner.AvatarUrl,
+                            ProfileUrl = gitHubRepository.Owner.HtmlUrl
+                        },
+                        Description = gitHubRepository.Description,
+                        RepositoryUrl = gitHubRepository.HtmlUrl,
+                        StargazersCount = gitHubRepository.StargazersCount,
+                        WatchersCount = gitHubRepository.WatchersCount,
+                        SubscribersCount = gitHubRepository.SubscribersCount,
+                        OpenIssuesCount = gitHubRepository.OpenIssuesCount,
+                        License = gitHubRepository.License != null
+                            ? new GitHubLicenseEntity
+                            {
+                                Name = gitHubRepository.License.Name,
+                                Url = gitHubRepository.License.Url
+                            }
+                            : null
+                    }
+                    : null,
+                IsActive = project.IsActive
+            };
+        }
+
+        public async Task<int> CreateProjectProfile(IOperation operation, ProjectProfileEntity entity)
+        {
+            var errorCodes = (await projectStore.CheckFieldsForProjectCreation(operation, entity.Name, entity.Alias, entity.GitHubRepoId)).ToList();
+            if (errorCodes.Any())
+            {
+                throw CommonExceptions.ProjectHasAlreadyExisted(operation, errorCodes, entity.Name, entity.Alias, entity.GitHubRepoId);
+            }
+
+            return await projectStore.AddProject(operation, entity);
+        }
+
+        public async Task UpdateProjectProfile(IOperation operation, ProjectProfileEntity entity)
+        {
+            if (!await projectStore.IsProjectExist(operation, entity.Id))
+            {
+                throw CommonExceptions.ProjectWasNotFound(operation, entity.Id);
+            }
+
+            var errorCodes = (await projectStore.CheckFieldsForProjectCreation(operation, entity.Name, entity.Alias, entity.GitHubRepoId, entity.Id)).ToList();
+            if (errorCodes.Any())
+            {
+                throw CommonExceptions.ProjectHasAlreadyExisted(operation, errorCodes, entity.Name, entity.Alias, entity.GitHubRepoId);
+            }
+
+            await projectStore.UpdateProject(operation, entity);
+        }
+
+        public async Task DeleteProjectProfile(IOperation operation, int id)
+        {
+            if (!await projectStore.IsProjectExist(operation, id))
+            {
+                throw CommonExceptions.ProjectWasNotFound(operation, id);
+            }
+
+            await projectStore.DeleteProject(operation, id);
         }
     }
 }

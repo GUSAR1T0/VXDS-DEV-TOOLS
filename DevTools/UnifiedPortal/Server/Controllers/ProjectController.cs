@@ -32,7 +32,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [PortalAuthentication]
         [HttpPost("list")]
-        public async Task<ActionResult<ProjectPagingResponseModel>> Get([FromBody] ProjectPagingRequestModel model) => await Execute(async operation =>
+        public async Task<ActionResult<ProjectPagingResponseModel>> GetProjects([FromBody] ProjectPagingRequestModel model) => await Execute(async operation =>
         {
             var items = await projectService.GetItems(operation, model.ToEntity());
             var response = new ProjectPagingResponseModel().ToModel(items);
@@ -53,5 +53,65 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
             var repositories = await projectService.SearchGitHubRepositoriesByPattern(operation, pattern);
             return repositories.Select(repository => repository.ToModel());
         });
+
+        /// <summary>
+        /// Obtains information about the project
+        /// </summary>
+        /// <returns>Full information about the project</returns>
+        [ProducesResponseType(typeof(ProjectProfileGetModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProjectProfileGetModel>> GetProjectProfile(int id) => await Execute(async operation =>
+        {
+            var entity = await projectService.GetProjectProfileById(operation, id);
+            return entity.ToModel();
+        });
+
+        /// <summary>
+        /// Creates new project
+        /// </summary>
+        /// <returns>ID of new project</returns>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [PortalAuthentication]
+        [HttpPost]
+        public async Task<ActionResult<int>> CreateProjectProfile([FromBody] ProjectProfileModel model) => await Execute(async operation =>
+        {
+            var id = await projectService.CreateProjectProfile(operation, model.ToEntity());
+            return id;
+        });
+
+        /// <summary>
+        /// Updates some project
+        /// </summary>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication]
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateProjectProfile(int id, [FromBody] ProjectProfileModel model) => await Execute(async operation =>
+        {
+            var entity = model.ToEntity();
+            entity.Id = id;
+            await projectService.UpdateProjectProfile(operation, entity);
+        });
+
+        /// <summary>
+        /// Removes some project
+        /// </summary>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProjectProfile(int id) => await Execute(async operation => await projectService.DeleteProjectProfile(operation, id));
     }
 }

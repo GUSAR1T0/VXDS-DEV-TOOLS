@@ -10,12 +10,18 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 {
     public interface IProjectStore
     {
-        Task<(long total, IEnumerable<ProjectEntity> projects)> Get(IOperation operation, ProjectPagingRequest request);
+        Task<(long total, IEnumerable<ProjectListItemEntity> projects)> GetProjects(IOperation operation, ProjectPagingRequest request);
+        Task<ProjectProfileEntity> Get(IOperation operation, int id);
+        Task<IEnumerable<byte>> CheckFieldsForProjectCreation(IOperation operation, string name, string alias, long? gitHubRepoId, int? id = null);
+        Task<bool> IsProjectExist(IOperation operation, int id);
+        Task<int> AddProject(IOperation operation, ProjectProfileEntity entity);
+        Task UpdateProject(IOperation operation, ProjectProfileEntity entity);
+        Task DeleteProject(IOperation operation, int id);
     }
 
     public class ProjectStore : BaseDataStore, IProjectStore
     {
-        public async Task<(long total, IEnumerable<ProjectEntity> projects)> Get(IOperation operation, ProjectPagingRequest request)
+        public async Task<(long total, IEnumerable<ProjectListItemEntity> projects)> GetProjects(IOperation operation, ProjectPagingRequest request)
         {
             var selectBase = $@"
                 SELECT {{0}} FROM [portal].[Project] pp
@@ -40,7 +46,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ";
             using var reader = await operation.Connection.QueryMultipleAsync(@params, query);
             var total = await reader.ReadSingleAsync<long>();
-            var projects = await reader.ReadAsync<ProjectEntity>();
+            var projects = await reader.ReadAsync<ProjectListItemEntity>();
             return (total, projects);
         }
 
@@ -81,6 +87,91 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             }
 
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
+        }
+
+        public async Task<ProjectProfileEntity> Get(IOperation operation, int id)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<ProjectProfileEntity>(new { Id = id }, @"
+                SELECT
+                    [Id],
+                    [Name],
+                    [Alias],
+                    [Description],
+                    [GitHubRepoId],
+                    [IsActive]
+                FROM [portal].[Project]
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task<IEnumerable<byte>> CheckFieldsForProjectCreation(IOperation operation, string name, string alias, long? gitHubRepoId, int? id = null)
+        {
+            return await operation.Connection.QueryAsync<byte>(new
+            {
+                Name = name,
+                Alias = alias,
+                GitHubRepoId = gitHubRepoId,
+                Id = id
+            }, @"
+                DECLARE @Errors ([Code] TINYINT);
+
+                INSERT INTO @Errors
+                SELECT TOP (1) 1
+                FROM [portal].[Project]
+                WHERE [Name] = @Name AND (@Id IS NULL OR [Id] <> @Id);
+
+                INSERT INTO @Errors
+                SELECT TOP (1) 2
+                FROM [portal].[Project]
+                WHERE [Alias] = @Alias AND (@Id IS NULL OR [Id] <> @Id);
+
+                INSERT INTO @Errors
+                SELECT TOP (1) 3
+                FROM [portal].[Project]
+                WHERE [GitHubRepoId] = @GitHubRepoId AND (@Id IS NULL OR [Id] <> @Id);
+
+                SELECT [Code] FROM @Errors;
+            ");
+        }
+
+        public async Task<bool> IsProjectExist(IOperation operation, int id)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
+                SELECT TOP (1) 1
+                FROM [portal].[Project]
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task<int> AddProject(IOperation operation, ProjectProfileEntity entity)
+        {
+            return await operation.Connection.QueryFirstOrDefaultAsync<int>(entity, @"
+                INSERT INTO [portal].[Project] ([Name], [Alias], [Description], [GitHubRepoId], [IsActive])
+                OUTPUT INSERTED.[Id]
+                VALUES (@Name, @Alias, @Description, @GitHubRepoId, @IsActive);
+            ");
+        }
+
+        public async Task UpdateProject(IOperation operation, ProjectProfileEntity entity)
+        {
+            await operation.Connection.ExecuteAsync(entity, @"
+                UPDATE [portal].[Project]
+                SET
+                    [Name] = @Name,
+                    [Alias] = @Alias,
+                    [Description] = @Description,
+                    [GitHubRepoId] = @GitHubRepoId,
+                    [IsActive] = @IsActive
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task DeleteProject(IOperation operation, int id)
+        {
+            await operation.Connection.ExecuteAsync(new { Id = id }, @"
+                DELETE FROM [portal].[Project]
+                WHERE [Id] = @Id;
+            ");
         }
     }
 }
