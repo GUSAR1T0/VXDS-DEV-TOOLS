@@ -11,7 +11,7 @@
                 <div v-if="value !== undefined" style="font-size: 20px">
                     {{ value }}
                 </div>
-                <div style="padding-top: 20px" v-if="hasDescription || !!$slots['description']">
+                <div :style="value ? 'padding-top: 20px' : ''" v-if="hasDescription || !!$slots['description']">
                     <el-divider v-if="hasDescription" class="divider-editable-row"/>
                     <slot name="description"/>
                 </div>
@@ -20,7 +20,7 @@
                 <div v-if="value !== undefined" style="font-size: 20px">
                     {{ value }}
                 </div>
-                <div style="padding-top: 20px" v-if="hasDescription || !!$slots['description']">
+                <div :style="value ? 'padding-top: 20px' : ''" v-if="hasDescription || !!$slots['description']">
                     <el-divider v-if="hasDescription" class="divider-editable-row"/>
                     <slot name="description"/>
                 </div>

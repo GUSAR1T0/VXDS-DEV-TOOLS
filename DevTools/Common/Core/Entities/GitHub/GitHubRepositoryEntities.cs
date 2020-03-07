@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace VXDesign.Store.DevTools.Common.Core.Entities.GitHub
 {
     public class GitHubRepositoryShortEntity
@@ -20,6 +22,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.GitHub
         public int WatchersCount { get; set; }
         public int SubscribersCount { get; set; }
         public int OpenIssuesCount { get; set; }
-        public GitHubLicenseEntity License { get; set; }
+        public string License { get; set; }
+        public IReadOnlyDictionary<string, string> Languages { get; set; }
     }
 }

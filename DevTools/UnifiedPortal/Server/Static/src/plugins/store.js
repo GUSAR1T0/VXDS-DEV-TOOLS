@@ -7,10 +7,11 @@ import userProfile from "@/store/userProfile";
 import userRole from "@/store/userRole";
 import lookup from "@/store/lookup";
 import settings from "@/store/settings";
+import project from "@/store/project";
 
 Vue.use(Vuex);
 
-let modules = {initialization, httpClient, authentication, userProfile, userRole, lookup, settings};
+let modules = {initialization, httpClient, authentication, userProfile, userRole, lookup, settings, project};
 export default new Vuex.Store({
     modules
 });

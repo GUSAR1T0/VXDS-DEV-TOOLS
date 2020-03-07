@@ -13,6 +13,16 @@
                 <template slot="profile-buttons">
                     <el-tooltip effect="dark" placement="top">
                         <div slot="content">
+                            To Users Page
+                        </div>
+                        <el-button type="info" plain circle @click="$router.push('/users')"
+                                   class="rounded-button">
+                            <span><fa icon="users"/></span>
+                        </el-button>
+                    </el-tooltip>
+
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
                             Edit This User Profile
                         </div>
                         <el-button v-if="hasPermissionToUpdateUserProfile" type="primary" plain circle

@@ -33,6 +33,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static BadRequestException UserRepositoriesCouldNotBeLoaded(IOperation operation, string message) => new BadRequestException(operation, $"Failed to retrieve all user repositories: {message}");
 
+        public static BadRequestException RepositoryLanguagesCouldNotBeLoaded(IOperation operation, string message) => new BadRequestException(operation, $"Failed to retrieve all repository languages: {message}");
+
         #endregion
         
         public static BadRequestException ProjectHasAlreadyExisted(IOperation operation, IEnumerable<byte> errorCodes, string name, string alias, long? gitHubRepoId)

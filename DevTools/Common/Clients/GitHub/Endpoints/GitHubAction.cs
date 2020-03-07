@@ -10,7 +10,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.GitHub.Endpoints
         [GitHubEndpoint("List your repositories", HttpMethod.Get, "user/repos")]
         GetUserRepositories = 2,
 
-        [GitHubEndpoint("Get your repository", HttpMethod.Get, "repos/{repoFullName}")]
-        GetUserRepository = 3
+        [GitHubEndpoint("List languages", HttpMethod.Get, "repos/{owner}/{repository}/languages")]
+        GetRepositoryLanguages = 3
     }
 }

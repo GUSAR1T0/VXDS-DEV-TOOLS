@@ -1,3 +1,4 @@
+using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Entities.GitHub;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.GitHub;
 
@@ -35,7 +36,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
                 WatchersCount = entity.WatchersCount,
                 SubscribersCount = entity.SubscribersCount,
                 OpenIssuesCount = entity.OpenIssuesCount,
-                License = entity.License.ToModel()
+                License = entity.License,
+                Languages = entity.Languages
             }
             : null;
     }

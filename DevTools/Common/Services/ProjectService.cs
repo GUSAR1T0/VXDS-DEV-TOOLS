@@ -68,6 +68,25 @@ namespace VXDesign.Store.DevTools.Common.Services
             }, TimeSpan.FromMinutes(5));
         }
 
+        private async Task<IReadOnlyDictionary<string, int>> GetGitHubRepositoryLanguagesFromCache(IOperation operation, string owner, string repository)
+        {
+            return await memoryCacheService.Get(MemoryCacheKey.GitHubRepositoryLanguages, async () =>
+            {
+                IGitHubClientService gitHubClient;
+                try
+                {
+                    gitHubClient = await portalSettingsService.GetGitHubClient(operation);
+                }
+                catch (NotFoundException)
+                {
+                    return new Dictionary<string, int>();
+                }
+
+                var response = await new Repositories.GetRepositoryLanguagesRequest(owner, repository).SendRequest(operation, gitHubClient);
+                return response.IsWithoutErrors() ? response.ToDictionary<int>() : throw CommonExceptions.RepositoryLanguagesCouldNotBeLoaded(operation, response.Output);
+            }, TimeSpan.FromMinutes(5));
+        }
+
         private static IEnumerable<ProjectWithRepositoryInfo> PreparePagingItems(IEnumerable<ProjectListItemEntity> projects, IReadOnlyCollection<RepositoryListItemEntity> repositories)
         {
             return projects.Select(project =>
@@ -109,6 +128,14 @@ namespace VXDesign.Store.DevTools.Common.Services
         {
             var project = await projectStore.Get(operation, id);
             var gitHubRepository = (await GetGitHubUserRepositoriesFromCache(operation)).FirstOrDefault(entity => entity.Id == project.GitHubRepoId);
+            var repositoryLanguages = gitHubRepository != null ? await GetGitHubRepositoryLanguagesFromCache(operation, gitHubRepository.Owner.Login, gitHubRepository.Name) : null;
+            var repositoryLanguagesSum = repositoryLanguages?.Values.Sum();
+            var repositoryLanguagesPercentage = repositoryLanguages?.Select(pair => new
+            {
+                Name = pair.Key,
+                Value = $"{(double) pair.Value * 100 / repositoryLanguagesSum.Value:N2}"
+            }).ToDictionary(arg => arg.Name, arg => arg.Value);
+
             return new ProjectProfileGetEntity
             {
                 Id = project.Id,
@@ -134,13 +161,8 @@ namespace VXDesign.Store.DevTools.Common.Services
                         WatchersCount = gitHubRepository.WatchersCount,
                         SubscribersCount = gitHubRepository.SubscribersCount,
                         OpenIssuesCount = gitHubRepository.OpenIssuesCount,
-                        License = gitHubRepository.License != null
-                            ? new GitHubLicenseEntity
-                            {
-                                Name = gitHubRepository.License.Name,
-                                Url = gitHubRepository.License.Url
-                            }
-                            : null
+                        License = gitHubRepository.License?.Name,
+                        Languages = repositoryLanguagesPercentage
                     }
                     : null,
                 IsActive = project.IsActive

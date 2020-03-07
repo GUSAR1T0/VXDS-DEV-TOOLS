@@ -113,7 +113,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 GitHubRepoId = gitHubRepoId,
                 Id = id
             }, @"
-                DECLARE @Errors ([Code] TINYINT);
+                DECLARE @Errors TABLE ([Code] TINYINT);
 
                 INSERT INTO @Errors
                 SELECT TOP (1) 1

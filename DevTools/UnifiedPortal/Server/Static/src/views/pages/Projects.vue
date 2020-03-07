@@ -12,11 +12,18 @@
                         <div slot="content">
                             Create New Project
                         </div>
-                        <el-button type="primary" circle
-                                   class="rounded-button">
+                        <el-button type="primary" circle v-if="hasPermissionToManageProjects"
+                                   @click="openDialogToCreate" class="rounded-button">
                             <span><fa icon="plus-circle"/></span>
                         </el-button>
                     </el-tooltip>
+
+                    <ProjectEditForm v-if="hasPermissionToManageProjects"
+                                     :dialog-status="dialogProjectFormStatus"
+                                     :project="getProject"
+                                     :project-form="getProjectForm"
+                                     :closed="submitProjectAction"
+                                     :git-hub-repo-id-options="[]"/>
                 </template>
                 <template slot="filters">
                     <ProjectsTableFilters :filter="filter"/>
@@ -33,8 +40,10 @@
 </style>
 
 <script>
-    import { POST_HTTP_REQUEST } from "@/constants/actions";
+    import { mapGetters } from "vuex";
+    import { POST_HTTP_REQUEST, RESET_PROJECT_STORE_STATE, PREPARE_PROJECT_FORM } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
+    import { PORTAL_PERMISSION } from "@/constants/permissions";
     import { GET_PROJECTS_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage, getOnlyNumbers } from "@/extensions/utils";
 
@@ -42,6 +51,7 @@
     import FilterableTableView from "@/components/table-filter/FilterableTableView";
     import ProjectsTableFilters from "@/components/projects/ProjectsTableFilters";
     import ProjectsTable from "@/components/projects/ProjectsTable";
+    import ProjectEditForm from "@/components/projects/ProjectEditForm";
 
     export default {
         name: "Projects",
@@ -49,7 +59,8 @@
             LoadingContainer,
             FilterableTableView,
             ProjectsTableFilters,
-            ProjectsTable
+            ProjectsTable,
+            ProjectEditForm
         },
         data() {
             return {
@@ -69,8 +80,21 @@
                     gitHubRepoIdOptions: [],
                     gitHubRepoIdsSearchLoading: false
                 },
-                items: []
+                items: [],
+                dialogProjectFormStatus: {
+                    visible: false
+                }
             };
+        },
+        computed: {
+            ...mapGetters([
+                "hasPortalPermission",
+                "getProject",
+                "getProjectForm"
+            ]),
+            hasPermissionToManageProjects() {
+                return this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_PROJECTS);
+            }
         },
         methods: {
             loadProjects() {
@@ -113,6 +137,14 @@
 
                 this.filter.gitHubRepoIdOptions = [];
                 this.filter.gitHubRepoIdsSearchLoading = false;
+            },
+            openDialogToCreate() {
+                this.$store.commit(PREPARE_PROJECT_FORM);
+                this.dialogProjectFormStatus.visible = true;
+            },
+            submitProjectAction() {
+                this.loadProjects();
+                this.$store.commit(RESET_PROJECT_STORE_STATE);
             }
         },
         mounted() {

@@ -37,3 +37,7 @@ export const SETUP_GITHUB_TOKEN_ENDPOINT = "settings/codeService/github?t={token
 // Projects endpoints
 export const GET_PROJECTS_ENDPOINT = "project/list";
 export const SEARCH_GITHUB_REPOSITORIES_ENDPOINT = "project/github/search?p={pattern}";
+export const GET_PROJECT_PROFILE_ENDPOINT = "project/{id}";
+export const CREATE_PROJECT_PROFILE_ENDPOINT = "project";
+export const UPDATE_PROJECT_PROFILE_ENDPOINT = "project/{id}";
+export const DELETE_PROJECT_PROFILE_ENDPOINT = "project/{id}";

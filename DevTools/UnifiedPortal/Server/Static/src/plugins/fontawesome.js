@@ -28,7 +28,10 @@ import {
     faTrashAlt,
     faAddressCard,
     faFilter,
-    faTable
+    faTable,
+    faStar,
+    faEye,
+    faTasks
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -37,7 +40,7 @@ library.add(
     faUserCircle, faUserAlt, faEllipsisH, faInfoCircle, faSignOutAlt, faSignInAlt, faUserPlus, faQuestionCircle,
     faAlignJustify, faEdit, faTools, faUsers, faExternalLinkAlt, faEnvelope, faMinusCircle, faPlusCircle, faCogs,
     faUsersCog, faFileAlt, faServer, faGithub, faCodeBranch, faCode, faLock, faLockOpen, faTrashAlt, faAddressCard,
-    faFilter, faTable
+    faFilter, faTable, faStar, faEye, faTasks
 );
 
 Vue.component("fa", FontAwesomeIcon);
