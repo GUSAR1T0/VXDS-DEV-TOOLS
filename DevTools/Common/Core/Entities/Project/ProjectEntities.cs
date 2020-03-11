@@ -35,5 +35,6 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Project
 
     public class ProjectPagingResponse : ServerSidePagingResponse<ProjectWithRepositoryInfo>
     {
+        public bool GitHubTokenSetup { get; set; }
     }
 }

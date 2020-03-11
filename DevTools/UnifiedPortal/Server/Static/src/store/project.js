@@ -7,7 +7,7 @@ export default {
             name: "",
             alias: "",
             description: "",
-            isActive: false,
+            isActive: null,
             gitHubRepoId: null,
             gitHubRepository: {
                 id: 0,
@@ -44,7 +44,7 @@ export default {
             state.project.name = project ? project.name : "";
             state.project.alias = project ? project.alias : "";
             state.project.description = project ? project.description : "";
-            state.project.isActive = project ? project.isActive : false;
+            state.project.isActive = project ? project.isActive : null;
             state.project.gitHubRepoId = project ? project.gitHubRepoId : null;
             state.project.gitHubRepository.id = project && project.gitHubRepository ? project.gitHubRepository.id : 0;
             state.project.gitHubRepository.fullName = project && project.gitHubRepository ? project.gitHubRepository.fullName : "";
@@ -77,7 +77,7 @@ export default {
                 name: "",
                 alias: "",
                 description: "",
-                isActive: false,
+                isActive: null,
                 gitHubRepoId: null,
                 gitHubRepository: {
                     id: 0,

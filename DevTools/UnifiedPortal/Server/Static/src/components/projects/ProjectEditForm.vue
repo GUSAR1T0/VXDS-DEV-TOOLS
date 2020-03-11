@@ -26,7 +26,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row class="auth-field-element" type="flex" justify="center">
+            <el-row class="auth-field-element" type="flex" justify="center" v-if="gitHubTokenSetup">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="gitHubRepo" label="GitHub Repository">
                         <el-select v-model="projectForm.gitHubRepoId" filterable clearable remote reserve-keyword
@@ -92,7 +92,8 @@
             projectForm: Object,
             dialogStatus: Object,
             closed: Function,
-            gitHubRepoIdOptions: Array
+            gitHubRepoIdOptions: Array,
+            gitHubTokenSetup: Boolean
         },
         data() {
             return {

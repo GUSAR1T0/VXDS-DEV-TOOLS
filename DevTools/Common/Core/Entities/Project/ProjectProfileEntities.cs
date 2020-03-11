@@ -14,6 +14,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Project
 
     public class ProjectProfileGetEntity : ProjectProfileEntity
     {
+        public bool GitHubTokenSetup { get; set; }
         public GitHubRepositoryFullEntity GitHubRepository { get; set; }
     }
 }

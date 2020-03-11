@@ -38,7 +38,8 @@
                                      :project="getProject"
                                      :project-form="getProjectForm"
                                      :closed="submitProjectAction"
-                                     :git-hub-repo-id-options="getOptions"/>
+                                     :git-hub-repo-id-options="getOptions"
+                                     :git-hub-token-setup="gitHubTokenSetup"/>
 
                     <ConfirmationDialog v-if="hasPermissionToManageProjects"
                                         :dialog-status="dialogProjectDeleteStatus"
@@ -55,7 +56,7 @@
                         </template>
                     </ProfileBlock>
                     <ProfileBlock :icon="['fab', 'github']" header="GitHub Repository"
-                                  v-if="getProject.gitHubRepository">
+                                  v-if="gitHubTokenSetup && getProject.gitHubRepoId > 0">
                         <template slot="profile-block-content">
                             <Blocks>
                                 <template slot="first">
@@ -95,6 +96,8 @@
                                             </div>
                                         </template>
                                     </Row>
+                                    <Row name="Repository Description" :value="getProject.gitHubRepository.description"
+                                         half/>
                                     <Row name="Counts" half>
                                         <template slot="description">
                                             <el-table :data="[getProject.gitHubRepository]" style="width: 100%" border>
@@ -137,6 +140,9 @@
                                          :value="getProject.gitHubRepository.license" half/>
                                 </template>
                                 <template slot="second">
+                                    <div class="languages">
+                                        <strong>Language Usage, %</strong>
+                                    </div>
                                     <ProjectChart :chart="chart" :options="options" v-if="!loadingIsActive"/>
                                     <div v-else/>
                                 </template>
@@ -172,6 +178,12 @@
     .is-public {
         color: #0C7C59;
     }
+
+    .languages {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 30px;
+    }
 </style>
 
 <script>
@@ -188,6 +200,7 @@
     import { PORTAL_PERMISSION } from "@/constants/permissions";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import format from "string-format";
+    import randomColor from "randomcolor";
 
     import LoadingContainer from "@/components/page/LoadingContainer";
     import Row from "@/components/page/Row";
@@ -214,6 +227,7 @@
             return {
                 loadingIsActive: true,
                 projectId: null,
+                gitHubTokenSetup: null,
                 dialogProjectFormStatus: {
                     visible: false
                 },
@@ -223,15 +237,23 @@
                 chart: {
                     labels: null,
                     datasets: [ {
-                        label: "Repository Languages",
-                        backgroundColor: "rgba(8, 92, 170, 0.50)",
-                        borderWidth: 0.75,
+                        borderWidth: 1,
+                        borderColor: "#fff",
+                        hoverBorderColor: "#fff",
+                        hoverBorderWidth: 5,
+                        weight: 5,
                         data: null
                     } ]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    legend: {
+                        labels: {
+                            fontFamily: "'Didact Gothic', 'Avenir', Helvetica, Arial, sans-serif",
+                            fontSize: 16
+                        }
+                    }
                 }
             };
         },
@@ -266,16 +288,24 @@
                     config: getConfiguration()
                 }).then(response => {
                     this.chart.labels = [];
+                    this.chart.datasets[0].backgroundColor = [];
                     this.chart.datasets[0].data = [];
                     if (response.data.gitHubRepository && response.data.gitHubRepository.languages) {
                         for (let key in response.data.gitHubRepository.languages) {
                             this.chart.labels.push(key);
+                            this.chart.datasets[0].backgroundColor.push(randomColor({
+                                luminosity: "dark",
+                                hue: "random",
+                                format: "rgba",
+                                alpha: 0.75
+                            }));
                             this.chart.datasets[0].data.push(response.data.gitHubRepository.languages[key]);
                         }
                     }
 
                     this.loadingIsActive = false;
                     this.$store.commit(STORE_PROJECT_DATA_REQUEST, response.data);
+                    this.gitHubTokenSetup = response.data.gitHubTokenSetup;
                 }).catch(error => {
                     this.loadingIsActive = false;
                     this.$notify.error({
