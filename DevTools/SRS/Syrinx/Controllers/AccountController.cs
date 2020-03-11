@@ -2,10 +2,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VXDesign.Store.DevTools.Core.Entities.Controllers;
-using VXDesign.Store.DevTools.Core.Entities.Exceptions;
-using VXDesign.Store.DevTools.Core.Services.Operations;
-using VXDesign.Store.DevTools.Core.Utils.Authentication;
+using VXDesign.Store.DevTools.Common.Core.Controllers;
+using VXDesign.Store.DevTools.Common.Core.Exceptions;
+using VXDesign.Store.DevTools.Common.Core.Operations;
+using VXDesign.Store.DevTools.Common.Core.Utils;
 using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
 using VXDesign.Store.DevTools.SRS.Syrinx.Models.Authorization;
@@ -124,7 +124,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
             return new UserAuthorizationModel
             {
                 Id = userId.Value,
-                PortalPermissions = AuthenticationUtils.GetUserPermissions(User.Claims)
+                Permissions = AuthenticationUtils.GetUserPermissions(User.Claims)
             };
         });
     }

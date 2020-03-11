@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AssemblyName>VXDesign.Store.DevTools.UnifiedPortal.Database</AssemblyName>
+        <RootNamespace>VXDesign.Store.DevTools.UnifiedPortal.Database</RootNamespace>
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRolePermissionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRolePermissionTableType.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRoleTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRolePermissionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRolePermissionTableType.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRoleTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Insert\UserRolePermissions.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Insert\UserRoles.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Insert\Users.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Create\ListTableTypes.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Create\OperationTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Drop\ListTableTypes.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Drop\OperationTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Base\Insert\InitialLoadingRecord.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\PermissionGroupTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\PermissionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\PermissionGroupTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\PermissionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\PermissionGroups.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\Permissions.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\ProjectTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\SettingsTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\ProjectTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\SettingsTable.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Common\Storage\LogStorage\LogStorage.csproj" />
+      <ProjectReference Include="..\..\Common\Core\Core.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -8,11 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Core.csproj" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
+      <ProjectReference Include="..\..\Common\Clients\Camunda\Camunda.csproj" />
+      <ProjectReference Include="..\..\Common\Core\Core.csproj" />
     </ItemGroup>
 
 </Project>
