@@ -7,7 +7,7 @@
                         <div slot="content">
                             To Projects Page
                         </div>
-                        <el-button type="info" plain circle @click="$router.push('/pages/projects')"
+                        <el-button type="info" plain circle @click="$router.push('/components/projects')"
                                    class="rounded-button">
                             <span><fa icon="code"/></span>
                         </el-button>
@@ -340,7 +340,7 @@
                         message: `Project "${this.getProject.name}" was removed`
                     });
 
-                    this.$router.push("/pages/projects");
+                    this.$router.push("/components/projects");
                 }).catch(error => {
                     button.loading = false;
                     this.dialogProjectDeleteStatus.visible = false;

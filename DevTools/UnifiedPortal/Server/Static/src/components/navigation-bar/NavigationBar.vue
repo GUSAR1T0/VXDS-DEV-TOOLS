@@ -6,17 +6,6 @@
                 <img alt="VXDESIGN.STORE: DEVELOPMENT TOOLS logo" src="@/assets/logo.png" width="40px"
                      height="40px" class="el-nav-menu-logo">
             </el-menu-item>
-            <!-- B: Pages -->
-            <el-submenu class="el-nav-menu-vertical-pages" index="Pages">
-                <template slot="title">
-                    <fa class="fa-submenu" icon="align-justify"/>
-                </template>
-                <el-menu-item-group>
-                    <span slot="title" class="el-nav-menu-vertical-group-title">Pages</span>
-                    <PagesSubMenu/>
-                </el-menu-item-group>
-            </el-submenu>
-            <!-- E: Pages -->
             <!-- B: Account -->
             <el-submenu class="el-nav-menu-vertical-user" index="Account">
                 <template slot="title">
@@ -28,6 +17,28 @@
                 </el-menu-item-group>
             </el-submenu>
             <!-- E: Account -->
+            <!-- B: Components -->
+            <el-submenu class="el-nav-menu-vertical-components" index="Components">
+                <template slot="title">
+                    <fa class="fa-submenu" icon="align-justify"/>
+                </template>
+                <el-menu-item-group>
+                    <span slot="title" class="el-nav-menu-vertical-group-title">Components</span>
+                    <ComponentsSubMenu/>
+                </el-menu-item-group>
+            </el-submenu>
+            <!-- E: Components -->
+            <!-- B: Pages -->
+            <el-submenu class="el-nav-menu-vertical-pages" index="Pages">
+                <template slot="title">
+                    <fa class="fa-submenu" icon="copy"/>
+                </template>
+                <el-menu-item-group>
+                    <span slot="title" class="el-nav-menu-vertical-group-title">Pages</span>
+                    <PagesSubMenu/>
+                </el-menu-item-group>
+            </el-submenu>
+            <!-- E: Pages -->
             <!-- B: System -->
             <el-submenu class="el-nav-menu-vertical-footer" index="System">
                 <template slot="title">
@@ -48,13 +59,12 @@
 </template>
 
 <style>
-    div.nav > ul > li.el-nav-menu-vertical-pages.el-submenu > div.el-submenu__title {
-        padding: 0 29px !important;
-    }
-
     div.nav > ul > li.el-nav-menu-vertical-footer.el-submenu > div.el-submenu__title,
-    div.nav > ul > li.el-nav-menu-vertical-user.el-submenu > div.el-submenu__title {
+    div.nav > ul > li.el-nav-menu-vertical-user.el-submenu > div.el-submenu__title,
+    div.nav > ul > li.el-nav-menu-vertical-components.el-submenu > div.el-submenu__title,
+    div.nav > ul > li.el-nav-menu-vertical-pages.el-submenu > div.el-submenu__title {
         padding: 0 28px !important;
+        text-align: center;
     }
 
     div.nav > ul > li.el-nav-menu-vertical-header.el-menu-item {
@@ -62,6 +72,7 @@
     }
 
     div.nav > ul > li.el-nav-menu-vertical-pages.el-submenu > div.el-submenu__title,
+    div.nav > ul > li.el-nav-menu-vertical-components.el-submenu > div.el-submenu__title,
     div.nav > ul > li.el-nav-menu-vertical-footer.el-submenu > div.el-submenu__title,
     div.nav > ul > li.el-nav-menu-vertical-user.el-submenu > div.el-submenu__title,
     div.nav > ul > li.el-nav-menu-vertical-header.el-menu-item {
@@ -93,6 +104,7 @@
     import AccountSubMenu from "@/components/navigation-bar/submenu/AccountSubMenu.vue";
     import SystemSubMenu from "@/components/navigation-bar/submenu/SystemSubMenu.vue";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
+    import ComponentsSubMenu from "@/components/navigation-bar/submenu/ComponentsSubMenu.vue";
 
     export default {
         name: "NavigationBar",
@@ -100,7 +112,8 @@
             PagesSubMenu,
             AccountSubMenu,
             SystemSubMenu,
-            ConfirmationDialog
+            ConfirmationDialog,
+            ComponentsSubMenu
         },
         data() {
             return {
