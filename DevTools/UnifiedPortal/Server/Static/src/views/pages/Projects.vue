@@ -23,7 +23,8 @@
                                      :project="getProject"
                                      :project-form="getProjectForm"
                                      :closed="submitProjectAction"
-                                     :git-hub-repo-id-options="[]"/>
+                                     :git-hub-repo-id-options="[]"
+                                     :git-hub-token-setup="gitHubTokenSetup"/>
                 </template>
                 <template slot="filters">
                     <ProjectsTableFilters :filter="filter"/>
@@ -41,7 +42,7 @@
 
 <script>
     import { mapGetters } from "vuex";
-    import { POST_HTTP_REQUEST, RESET_PROJECT_STORE_STATE, PREPARE_PROJECT_FORM } from "@/constants/actions";
+    import { POST_HTTP_REQUEST, RESET_PROJECT_STORE_STATE } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import { PORTAL_PERMISSION } from "@/constants/permissions";
     import { GET_PROJECTS_ENDPOINT } from "@/constants/endpoints";
@@ -80,6 +81,7 @@
                     gitHubRepoIdOptions: [],
                     gitHubRepoIdsSearchLoading: false
                 },
+                gitHubTokenSetup: null,
                 items: [],
                 dialogProjectFormStatus: {
                     visible: false
@@ -118,6 +120,7 @@
                 }).then(response => {
                     this.loadingIsActive = false;
                     this.settings.total = response.data.total;
+                    this.gitHubTokenSetup = response.data.gitHubTokenSetup;
                     this.items = response.data.items;
                 }).catch(error => {
                     this.loadingIsActive = false;
@@ -139,7 +142,7 @@
                 this.filter.gitHubRepoIdsSearchLoading = false;
             },
             openDialogToCreate() {
-                this.$store.commit(PREPARE_PROJECT_FORM);
+                this.$store.commit(RESET_PROJECT_STORE_STATE);
                 this.dialogProjectFormStatus.visible = true;
             },
             submitProjectAction() {

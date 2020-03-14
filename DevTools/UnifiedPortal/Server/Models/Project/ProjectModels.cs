@@ -58,9 +58,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Project
 
     public class ProjectPagingResponseModel : ServerSidePagingResponseModel<ProjectModel, ProjectPagingResponseModel, ProjectPagingResponse>
     {
+        public bool GitHubTokenSetup { get; set; }
+
         public override ProjectPagingResponseModel ToModel(ProjectPagingResponse entity)
         {
             Total = entity.Total;
+            GitHubTokenSetup = entity.GitHubTokenSetup;
             Items = entity.Items.Select(item => new ProjectModel().ToModel(item));
             return this;
         }

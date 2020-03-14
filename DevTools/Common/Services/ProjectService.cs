@@ -41,15 +41,16 @@ namespace VXDesign.Store.DevTools.Common.Services
         public async Task<ProjectPagingResponse> GetItems(IOperation operation, ProjectPagingRequest request)
         {
             var (total, projects) = await projectStore.GetProjects(operation, request);
-            var repositories = total == 0 ? new List<RepositoryListItemEntity>() : await GetGitHubUserRepositoriesFromCache(operation);
+            var (flag, repositories) = await GetGitHubUserRepositoriesFromCache(operation);
             return new ProjectPagingResponse
             {
                 Total = total,
+                GitHubTokenSetup = flag,
                 Items = PreparePagingItems(projects, repositories)
             };
         }
 
-        private async Task<List<RepositoryListItemEntity>> GetGitHubUserRepositoriesFromCache(IOperation operation)
+        private async Task<(bool flag, List<RepositoryListItemEntity> repositories)> GetGitHubUserRepositoriesFromCache(IOperation operation)
         {
             return await memoryCacheService.Get(MemoryCacheKey.GitHubUserRepositories, async () =>
             {
@@ -60,11 +61,11 @@ namespace VXDesign.Store.DevTools.Common.Services
                 }
                 catch (NotFoundException)
                 {
-                    return new List<RepositoryListItemEntity>();
+                    return (false, new List<RepositoryListItemEntity>());
                 }
 
                 var response = await new Repositories.GetUserRepositoriesRequest().SendRequest(operation, gitHubClient);
-                return response.IsWithoutErrors() ? response.Response : throw CommonExceptions.UserRepositoriesCouldNotBeLoaded(operation, response.Output);
+                return response.IsWithoutErrors() ? (true, response.Response) : throw CommonExceptions.UserRepositoriesCouldNotBeLoaded(operation, response.Output);
             }, TimeSpan.FromMinutes(5));
         }
 
@@ -116,7 +117,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         public async Task<IEnumerable<GitHubRepositoryShortEntity>> SearchGitHubRepositoriesByPattern(IOperation operation, string pattern)
         {
-            var repositories = await GetGitHubUserRepositoriesFromCache(operation);
+            var (_, repositories) = await GetGitHubUserRepositoriesFromCache(operation);
             return repositories.Where(repository => repository.FullName.Contains(pattern, StringComparison.InvariantCultureIgnoreCase)).Select(repository => new GitHubRepositoryShortEntity
             {
                 Id = repository.Id,
@@ -127,7 +128,8 @@ namespace VXDesign.Store.DevTools.Common.Services
         public async Task<ProjectProfileGetEntity> GetProjectProfileById(IOperation operation, int id)
         {
             var project = await projectStore.Get(operation, id);
-            var gitHubRepository = (await GetGitHubUserRepositoriesFromCache(operation)).FirstOrDefault(entity => entity.Id == project.GitHubRepoId);
+            var (flag, repositories) = await GetGitHubUserRepositoriesFromCache(operation);
+            var gitHubRepository = repositories.FirstOrDefault(entity => entity.Id == project.GitHubRepoId);
             var repositoryLanguages = gitHubRepository != null ? await GetGitHubRepositoryLanguagesFromCache(operation, gitHubRepository.Owner.Login, gitHubRepository.Name) : null;
             var repositoryLanguagesSum = repositoryLanguages?.Values.Sum();
             var repositoryLanguagesPercentage = repositoryLanguages?.Select(pair => new
@@ -142,6 +144,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Name = project.Name,
                 Alias = project.Alias,
                 Description = project.Description,
+                GitHubTokenSetup = flag,
                 GitHubRepoId = project.GitHubRepoId,
                 GitHubRepository = gitHubRepository != null
                     ? new GitHubRepositoryFullEntity

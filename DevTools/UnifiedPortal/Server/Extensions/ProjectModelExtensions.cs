@@ -11,6 +11,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             Name = entity.Name,
             Alias = entity.Alias,
             Description = entity.Description,
+            GitHubTokenSetup = entity.GitHubTokenSetup,
             GitHubRepoId = entity.GitHubRepoId,
             GitHubRepository = entity.GitHubRepository.ToModel(),
             IsActive = entity.IsActive

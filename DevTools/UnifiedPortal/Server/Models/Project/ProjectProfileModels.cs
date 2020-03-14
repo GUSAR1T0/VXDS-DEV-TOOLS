@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Project
     }
     public class ProjectProfileGetModel : ProjectProfileModel
     {
+        public bool GitHubTokenSetup { get; set; }
         public GitHubRepositoryFullModel GitHubRepository { get; set; }
     }
 }
