@@ -111,18 +111,10 @@
                                                 </el-table-column>
                                                 <el-table-column align="center">
                                                     <template slot="header">
-                                                        <fa icon="eye"/>
+                                                        <fa icon="code-branch"/>
                                                     </template>
                                                     <template slot-scope="scope">
-                                                        <strong>{{ scope.row.watchersCount }}</strong>
-                                                    </template>
-                                                </el-table-column>
-                                                <el-table-column align="center">
-                                                    <template slot="header">
-                                                        <fa icon="users"/>
-                                                    </template>
-                                                    <template slot-scope="scope">
-                                                        <strong>{{ scope.row.subscribersCount }}</strong>
+                                                        <strong>{{ scope.row.forksCount }}</strong>
                                                     </template>
                                                 </el-table-column>
                                                 <el-table-column align="center">
@@ -139,12 +131,21 @@
                                     <Row name="License" v-if="getProject.gitHubRepository.license"
                                          :value="getProject.gitHubRepository.license" half/>
                                 </template>
-                                <template slot="second">
+                                <template slot="second" v-if="languages.length > 0">
                                     <div class="languages">
-                                        <strong>Language Usage, %</strong>
+                                        <strong>Repository Languages</strong>
+                                        <!--                                        <ProjectChart :chart="chart" :options="options" v-if="!loadingIsActive"/>-->
+                                        <!--                                        <div v-else/>-->
                                     </div>
-                                    <ProjectChart :chart="chart" :options="options" v-if="!loadingIsActive"/>
-                                    <div v-else/>
+                                    <div style="text-align: center">
+                                        <div v-for="language in languages" :key="language.name" class="language">
+                                            <el-badge :value="`${language.percent}%`" type="info">
+                                                <el-tag type="primary" effect="plain" hit>
+                                                    <strong style="font-size: 16px">{{ language.name }}</strong>
+                                                </el-tag>
+                                            </el-badge>
+                                        </div>
+                                    </div>
                                 </template>
                             </Blocks>
                         </template>
@@ -184,6 +185,12 @@
         font-size: 18px;
         margin-bottom: 30px;
     }
+
+    .language {
+        display: inline-block;
+        padding: 15px 5px 15px 5px;
+        margin-right: 40px;
+    }
 </style>
 
 <script>
@@ -200,7 +207,7 @@
     import { PORTAL_PERMISSION } from "@/constants/permissions";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import format from "string-format";
-    import randomColor from "randomcolor";
+    // import randomColor from "randomcolor";
 
     import LoadingContainer from "@/components/page/LoadingContainer";
     import Row from "@/components/page/Row";
@@ -209,7 +216,7 @@
     import ProfileBlock from "@/components/page/ProfileBlock";
     import ProjectEditForm from "@/components/projects/ProjectEditForm";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
-    import ProjectChart from "@/extensions/projectChart";
+    // import ProjectChart from "@/extensions/projectChart";
 
     export default {
         name: "Project",
@@ -221,7 +228,7 @@
             ProfileBlock,
             ProjectEditForm,
             ConfirmationDialog,
-            ProjectChart
+            // ProjectChart
         },
         data() {
             return {
@@ -234,27 +241,30 @@
                 dialogProjectDeleteStatus: {
                     visible: false
                 },
-                chart: {
-                    labels: null,
-                    datasets: [ {
-                        borderWidth: 1,
-                        borderColor: "#fff",
-                        hoverBorderColor: "#fff",
-                        hoverBorderWidth: 5,
-                        weight: 5,
-                        data: null
-                    } ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    legend: {
-                        labels: {
-                            fontFamily: "'Didact Gothic', 'Avenir', Helvetica, Arial, sans-serif",
-                            fontSize: 16
-                        }
-                    }
-                }
+                // chart: {
+                //     labels: null,
+                //     datasets: [ {
+                //         borderWidth: 1,
+                //         borderColor: "#fff",
+                //         hoverBorderColor: "#fff",
+                //         hoverBorderWidth: 5,
+                //         weight: 5,
+                //         data: null
+                //     } ]
+                // },
+                // options: {
+                //     responsive: true,
+                //     maintainAspectRatio: false,
+                //     rotation: Math.PI,
+                //     circumference: Math.PI,
+                //     legend: {
+                //         labels: {
+                //             fontFamily: "'Didact Gothic', 'Avenir', Helvetica, Arial, sans-serif",
+                //             fontSize: 16
+                //         }
+                //     }
+                // },
+                languages: []
             };
         },
         computed: {
@@ -287,19 +297,24 @@
                     }),
                     config: getConfiguration()
                 }).then(response => {
-                    this.chart.labels = [];
-                    this.chart.datasets[0].backgroundColor = [];
-                    this.chart.datasets[0].data = [];
+                    // this.chart.labels = [];
+                    // this.chart.datasets[0].backgroundColor = [];
+                    // this.chart.datasets[0].data = [];
+                    this.languages = [];
                     if (response.data.gitHubRepository && response.data.gitHubRepository.languages) {
                         for (let key in response.data.gitHubRepository.languages) {
-                            this.chart.labels.push(key);
-                            this.chart.datasets[0].backgroundColor.push(randomColor({
-                                luminosity: "dark",
-                                hue: "random",
-                                format: "rgba",
-                                alpha: 0.75
-                            }));
-                            this.chart.datasets[0].data.push(response.data.gitHubRepository.languages[key]);
+                            // this.chart.labels.push(key);
+                            // this.chart.datasets[0].backgroundColor.push(randomColor({
+                            //     luminosity: "dark",
+                            //     hue: "random",
+                            //     format: "rgba",
+                            //     alpha: 0.75
+                            // }));
+                            // this.chart.datasets[0].data.push(response.data.gitHubRepository.languages[key]);
+                            this.languages.push({
+                                name: key,
+                                percent: response.data.gitHubRepository.languages[key]
+                            });
                         }
                     }
 

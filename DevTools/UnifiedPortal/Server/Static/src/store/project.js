@@ -21,8 +21,7 @@ export default {
                 repositoryUrl: "",
                 description: "",
                 stargazersCount: 0,
-                watchersCount: 0,
-                subscribersCount: 0,
+                forksCount: 0,
                 openIssuesCount: 0,
                 license: "",
                 languages: {}
@@ -55,8 +54,7 @@ export default {
             state.project.gitHubRepository.repositoryUrl = project && project.gitHubRepository ? project.gitHubRepository.repositoryUrl : "";
             state.project.gitHubRepository.description = project && project.gitHubRepository ? project.gitHubRepository.description : "";
             state.project.gitHubRepository.stargazersCount = project && project.gitHubRepository ? project.gitHubRepository.stargazersCount : 0;
-            state.project.gitHubRepository.watchersCount = project && project.gitHubRepository ? project.gitHubRepository.watchersCount : 0;
-            state.project.gitHubRepository.subscribersCount = project && project.gitHubRepository ? project.gitHubRepository.subscribersCount : 0;
+            state.project.gitHubRepository.forksCount = project && project.gitHubRepository ? project.gitHubRepository.forksCount : 0;
             state.project.gitHubRepository.openIssuesCount = project && project.gitHubRepository ? project.gitHubRepository.openIssuesCount : 0;
             state.project.gitHubRepository.license = project && project.gitHubRepository ? project.gitHubRepository.license : "";
             state.project.gitHubRepository.languages = project && project.gitHubRepository ? project.gitHubRepository.languages : {};
@@ -91,8 +89,7 @@ export default {
                     repositoryUrl: "",
                     description: "",
                     stargazersCount: 0,
-                    watchersCount: 0,
-                    subscribersCount: 0,
+                    forksCount: 0,
                     openIssuesCount: 0,
                     license: "",
                     languages: {}

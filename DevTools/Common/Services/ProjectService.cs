@@ -71,7 +71,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         private async Task<IReadOnlyDictionary<string, int>> GetGitHubRepositoryLanguagesFromCache(IOperation operation, string owner, string repository)
         {
-            return await memoryCacheService.Get(MemoryCacheKey.GitHubRepositoryLanguages, async () =>
+            return await memoryCacheService.Get($"{MemoryCacheKey.GitHubRepositoryLanguages}-{owner}-{repository}", async () =>
             {
                 IGitHubClientService gitHubClient;
                 try
@@ -161,8 +161,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                         Description = gitHubRepository.Description,
                         RepositoryUrl = gitHubRepository.HtmlUrl,
                         StargazersCount = gitHubRepository.StargazersCount,
-                        WatchersCount = gitHubRepository.WatchersCount,
-                        SubscribersCount = gitHubRepository.SubscribersCount,
+                        ForksCount = gitHubRepository.ForksCount,
                         OpenIssuesCount = gitHubRepository.OpenIssuesCount,
                         License = gitHubRepository.License?.Name,
                         Languages = repositoryLanguagesPercentage
