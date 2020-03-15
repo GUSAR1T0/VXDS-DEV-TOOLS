@@ -2,7 +2,7 @@ using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace VXDesign.Store.DevTools.Common.Storage.LogStorage
+namespace VXDesign.Store.DevTools.Common.Storage.LogStorage.Entities
 {
     public class LogEntity
     {

@@ -1,8 +1,12 @@
-.system-row-content {
-    font-size: 72px;
+.dashboard-total-key {
+    font-size: 18px;
 }
 
-.system-row-button {
+.dashboard-total-value {
+    font-size: 36px;
+}
+
+.dashboard-button {
     margin-top: 20px;
     width: 100%;
 }

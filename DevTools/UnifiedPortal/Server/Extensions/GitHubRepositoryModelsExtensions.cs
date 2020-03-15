@@ -1,4 +1,3 @@
-using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Entities.GitHub;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.GitHub;
 

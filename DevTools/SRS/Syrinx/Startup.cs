@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 using VXDesign.Store.DevTools.SRS.Authentication;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Properties;

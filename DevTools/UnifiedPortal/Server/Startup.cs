@@ -12,7 +12,7 @@ using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Services;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Properties;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server

@@ -21,18 +21,66 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         }
 
         /// <summary>
-        /// Obtains data for admin panel
+        /// Obtains users data for admin panel
         /// </summary>
         /// <returns>Model of admin panel data</returns>
-        [ProducesResponseType(typeof(DashboardModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UsersDataModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
-        [HttpGet]
-        public async Task<ActionResult<DashboardModel>> GetDashboardData() => await Execute(async operation =>
+        [HttpGet("users")]
+        public async Task<ActionResult<UsersDataModel>> GetUsersData() => await Execute(async operation =>
         {
-            var entity = await dashboardService.GetDashboardData(operation);
+            var entity = await dashboardService.GetUsersData(operation);
+            return entity.ToModel();
+        });
+
+        /// <summary>
+        /// Obtains user roles data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(UserRolesDataModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("userRoles")]
+        public async Task<ActionResult<UserRolesDataModel>> GetUserRolesData() => await Execute(async operation =>
+        {
+            var entity = await dashboardService.GetUserRolesData(operation);
+            return entity.ToModel();
+        });
+
+        /// <summary>
+        /// Obtains projects data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(ProjectsDataModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("projects")]
+        public async Task<ActionResult<ProjectsDataModel>> GetProjectsData() => await Execute(async operation =>
+        {
+            var entity = await dashboardService.GetProjectsData(operation);
+            return entity.ToModel();
+        });
+
+        /// <summary>
+        /// Obtains system statistics data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(SystemStatisticsDataModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("system")]
+        public async Task<ActionResult<SystemStatisticsDataModel>> GetSystemStatisticsData() => await Execute(async operation =>
+        {
+            var entity = await dashboardService.GetSystemStatisticsData(operation);
             return entity.ToModel();
         });
     }

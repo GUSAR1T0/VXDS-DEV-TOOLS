@@ -1,45 +1,45 @@
 <template>
     <DashboardCardWithTotal
-            :total="usersTotal"
-            entityName="Users"
-            entityIcon="users"
-            linkToEntity="/users"
+            :total="projectsTotal"
+            entityName="Projects"
+            entityIcon="code"
+            linkToEntity="/components/projects"
             :load="load"
     >
         <template v-slot="{ state }">
-            <UsersChart v-if="!state.loadingIsActive"
-                        :activated-count="activatedCount"
-                        :deactivated-count="deactivatedCount"
-                        style="height: 150px"
+            <ProjectsChart v-if="!state.loadingIsActive"
+                           :active-count="activeCount"
+                           :inactive-count="inactiveCount"
+                           style="height: 150px"
             />
         </template>
     </DashboardCardWithTotal>
 </template>
 
 <script>
-    import { GET_USERS_DATA_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
+    import { GET_PROJECTS_DATA_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
     import { GET_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
 
     import DashboardCardWithTotal from "@/components/dashboard/DashboardCardWithTotal";
-    import UsersChart from "@/components/charts/UsersChart";
+    import ProjectsChart from "@/components/charts/ProjectsChart";
 
     export default {
-        name: "UsersCard",
+        name: "ProjectsCard",
         components: {
             DashboardCardWithTotal,
-            UsersChart
+            ProjectsChart
         },
         data() {
             return {
-                activatedCount: 0,
-                deactivatedCount: 0
+                activeCount: 0,
+                inactiveCount: 0
             };
         },
         computed: {
-            usersTotal() {
-                return this.activatedCount + this.deactivatedCount;
+            projectsTotal() {
+                return this.activeCount + this.inactiveCount;
             }
         },
         methods: {
@@ -48,16 +48,16 @@
 
                 this.$store.dispatch(GET_HTTP_REQUEST, {
                     server: LOCALHOST,
-                    endpoint: GET_USERS_DATA_FOR_DASHBOARD_ENDPOINT,
+                    endpoint: GET_PROJECTS_DATA_FOR_DASHBOARD_ENDPOINT,
                     config: getConfiguration()
                 }).then(response => {
-                    this.activatedCount = response.data.activatedCount;
-                    this.deactivatedCount = response.data.deactivatedCount;
+                    this.activeCount = response.data.activeCount;
+                    this.inactiveCount = response.data.inactiveCount;
                     state.loadingIsActive = false;
                 }).catch(error => {
                     // state.loadingIsActive = false;
                     this.$notify.error({
-                        title: "Failed to load users data",
+                        title: "Failed to load projects data",
                         duration: 10000,
                         message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });

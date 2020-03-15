@@ -14,7 +14,7 @@ using VXDesign.Store.DevTools.Common.Clients.Camunda.Models.ExternalTask;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Core.Utils;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 
 namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
 {
