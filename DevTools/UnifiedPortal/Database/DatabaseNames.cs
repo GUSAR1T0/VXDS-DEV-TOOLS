@@ -18,5 +18,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string Project = "Project";
         internal const string PermissionGroup = "PermissionGroup";
         internal const string Permission = "Permission";
+        internal const string Incident = "Incident";
+        internal const string IncidentStatus = "IncidentStatus";
+        internal const string IncidentHistory = "IncidentHistory";
     }
 }
