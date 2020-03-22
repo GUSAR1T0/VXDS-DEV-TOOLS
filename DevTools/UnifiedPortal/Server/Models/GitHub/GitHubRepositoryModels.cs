@@ -19,8 +19,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.GitHub
     {
         public string Description { get; set; }
         public int StargazersCount { get; set; }
-        public int WatchersCount { get; set; }
-        public int SubscribersCount { get; set; }
+        public int ForksCount { get; set; }
         public int OpenIssuesCount { get; set; }
         public string License { get; set; }
         public IReadOnlyDictionary<string, string> Languages { get; set; }

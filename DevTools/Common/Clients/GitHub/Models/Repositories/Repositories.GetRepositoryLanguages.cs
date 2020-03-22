@@ -1,6 +1,5 @@
 using VXDesign.Store.DevTools.Common.Clients.GitHub.Base;
 using VXDesign.Store.DevTools.Common.Clients.GitHub.Endpoints;
-using VXDesign.Store.DevTools.Common.Clients.GitHub.Entities;
 
 namespace VXDesign.Store.DevTools.Common.Clients.GitHub.Models.Repositories
 {

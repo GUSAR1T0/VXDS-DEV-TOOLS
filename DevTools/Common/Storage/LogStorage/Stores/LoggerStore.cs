@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Entities;
 
-namespace VXDesign.Store.DevTools.Common.Storage.LogStorage
+namespace VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores
 {
     public interface ILoggerStore
     {
@@ -14,9 +16,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStorage
         Task Error<T>(long operationId, string message, dynamic value = null);
         Task Fatal<T>(long operationId, string message, dynamic value = null);
 
-        Task<long> GetCount();
+        Task<(IEnumerable<LogsDataByDateEntity> logs, long total)> GetLogsData(DateTime sevenDaysAgo, DateTime today);
         Task DropAllLogCollections();
-
         Task<IEnumerable<LogEntity>> GetByOperations(IEnumerable<long> operationIds);
     }
 
@@ -74,16 +75,36 @@ namespace VXDesign.Store.DevTools.Common.Storage.LogStorage
             return await collectionNamesCursor.ToListAsync();
         }
 
-        public async Task<long> GetCount()
+        public async Task<(IEnumerable<LogsDataByDateEntity> logs, long total)> GetLogsData(DateTime sevenDaysAgo, DateTime today)
         {
-            var count = 0L;
-            foreach (var collectionName in await GetCollectionNames())
+            var total = 0L;
+
+            var dates = new List<DateTime>();
+            var filterBuilder = Builders<LogEntity>.Filter;
+            var filters = new Dictionary<DateTime, FilterDefinition<LogEntity>>();
+            for (var date = sevenDaysAgo; date <= today; date = date.AddDays(1))
             {
-                var collection = Database.GetCollection<dynamic>(collectionName);
-                count += await collection.CountDocumentsAsync(FilterDefinition<dynamic>.Empty);
+                dates.Add(date);
+                filters.Add(date, filterBuilder.Gte(x => x.DateTime, date) & filterBuilder.Lt(x => x.DateTime, date.AddDays(1)));
             }
 
-            return count;
+            var dictionary = dates.ToDictionary(date => date, date => 0L);
+
+            foreach (var collectionName in await GetCollectionNames())
+            {
+                var collection = Database.GetCollection<LogEntity>(collectionName);
+                total += await collection.CountDocumentsAsync(FilterDefinition<LogEntity>.Empty);
+                foreach (var (date, filter) in filters)
+                {
+                    dictionary[date] += await collection.CountDocumentsAsync(filter);
+                }
+            }
+
+            return (dictionary.Select(item => new LogsDataByDateEntity
+            {
+                Date = item.Key,
+                Count = item.Value
+            }), total);
         }
 
         public async Task DropAllLogCollections()

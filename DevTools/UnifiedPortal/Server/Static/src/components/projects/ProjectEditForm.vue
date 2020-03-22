@@ -109,6 +109,9 @@
                     description: [
                         {min: 1, max: 1024, message: "Length should be from 1 to 1024", trigger: "change"}
                     ],
+                    isActive: [
+                        {required: true, message: "Please, choose project status", trigger: "change"}
+                    ]
                 },
                 gitHubRepoIdsSearchLoading: false
             };

@@ -23,6 +23,7 @@ export default {
         id: null,
         firstName: "",
         lastName: "",
+        email: "",
         color: "",
         userRoleId: 0,
         portalPermissions: 0
@@ -48,6 +49,14 @@ export default {
         },
         hasPortalPermission: state => permission => {
             return permission === 0 || (state.portalPermissions & permission) !== 0;
+        },
+        getUserCardData: state => {
+            return {
+                firstName: state.firstName,
+                lastName: state.lastName,
+                email: state.email,
+                color: state.color
+            };
         }
     },
     mutations: {
@@ -56,6 +65,7 @@ export default {
             state.id = data.id;
             state.firstName = data.firstName;
             state.lastName = data.lastName;
+            state.email = data.email;
             state.color = data.color;
             state.userRoleId = data.userRoleId;
             if (data.permissions) {
@@ -68,6 +78,7 @@ export default {
             state.id = null;
             state.firstName = "";
             state.lastName = "";
+            state.email = "";
             state.color = "";
             state.userRoleId = 0;
             state.portalPermissions = 0;

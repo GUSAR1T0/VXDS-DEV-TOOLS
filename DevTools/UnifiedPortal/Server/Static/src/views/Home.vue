@@ -1,110 +1,118 @@
 <template>
-    <LoadingContainer :loading-state="loadingIsActive">
-        <template slot="content">
-            <el-collapse v-model="activeCollapseItems">
-                <el-collapse-item title="Users" name="users">
-                    <Blocks>
-                        <template slot="first">
-                            <UsersCard :users-count="usersCount"/>
-                        </template>
-                        <template slot="second">
-                            <UserRolesCard :roles-count="rolesCount"/>
-                        </template>
-                    </Blocks>
-                </el-collapse-item>
-                <el-collapse-item title="System" name="system">
-                    <Blocks>
-                        <template slot="first">
-                            <el-card shadow="hover">
-                                <div slot="header">
-                                    <h3>System Statistics</h3>
-                                </div>
-                                <Blocks>
-                                    <template slot="first">
-                                        <OperationsCard :operations-count="operationsCount"/>
-                                    </template>
-                                    <template slot="second">
-                                        <LogsCard :logs-count="logsCount"/>
-                                    </template>
-                                </Blocks>
-                                <el-button type="primary" plain class="system-row-button"
-                                           @click="$router.push('/system/operations')">
-                                    <fa icon="file-alt"/><strong> | See Operations</strong>
-                                </el-button>
-                            </el-card>
-                        </template>
-                    </Blocks>
-                </el-collapse-item>
-            </el-collapse>
-        </template>
-    </LoadingContainer>
+    <el-collapse v-model="activeNames" style="margin-top: 10px">
+        <el-collapse-item title="User Profile & ..." name="1">
+            <Blocks>
+                <template slot="first">
+                    <UserProfileCard/>
+                </template>
+                <template slot="second">
+                    <el-card shadow="hover" class="card-top">
+                        <div class="card-item">
+                            <strong style="font-size: 48px">...</strong>
+                        </div>
+                    </el-card>
+                    <el-card shadow="hover" class="card-bottom">
+                        <div class="card-item">
+                            <strong style="font-size: 48px">...</strong>
+                        </div>
+                    </el-card>
+                </template>
+                <template slot="third">
+                    <el-card shadow="hover" class="card-top">
+                        <div class="card-item">
+                            <strong style="font-size: 48px">...</strong>
+                        </div>
+                    </el-card>
+                    <el-card shadow="hover" class="card-bottom">
+                        <div class="card-item">
+                            <strong style="font-size: 48px">...</strong>
+                        </div>
+                    </el-card>
+                </template>
+            </Blocks>
+        </el-collapse-item>
+        <el-collapse-item title="Users & Components" name="2">
+            <el-carousel trigger="click" indicator-position="outside" height="400px"
+                         :type="windowWidth >= 1200 ? 'card' : ''">
+                <el-carousel-item>
+                    <UsersCard/>
+                </el-carousel-item>
+                <el-carousel-item>
+                    <UserRolesCard/>
+                </el-carousel-item>
+                <el-carousel-item>
+                    <ProjectsCard/>
+                </el-carousel-item>
+                <el-carousel-item>
+                    <ModulesCard/>
+                </el-carousel-item>
+            </el-carousel>
+        </el-collapse-item>
+        <el-collapse-item title="System" name="3">
+            <SystemCard/>
+        </el-collapse-item>
+    </el-collapse>
 </template>
 
-<style scoped src="@/styles/dashboard.css">
+<style scoped>
+    /*noinspection ALL*/
+    .card-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: -moz-available;
+        height: -webkit-fill-available;
+        height: fill-available;
+    }
+
+    .card-top {
+        margin: 10px 10px 40px;
+        height: 275px;
+    }
+
+    .card-bottom {
+        margin: 40px 10px 10px;
+        height: 275px;
+    }
 </style>
 
 <script>
-    import { GET_HTTP_REQUEST } from "@/constants/actions";
-    import { LOCALHOST } from "@/constants/servers";
-    import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
-    import { GET_DATA_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
-
     import Blocks from "@/components/page/Blocks";
+    import UserProfileCard from "@/components/dashboard/UserProfileCard";
     import UsersCard from "@/components/dashboard/UsersCard";
     import UserRolesCard from "@/components/dashboard/UserRolesCard";
-    import LogsCard from "@/components/dashboard/LogsCard";
-    import OperationsCard from "@/components/dashboard/OperationsCard";
-    import LoadingContainer from "@/components/page/LoadingContainer";
+    import ProjectsCard from "@/components/dashboard/ProjectsCard";
+    import ModulesCard from "@/components/dashboard/ModulesCard";
+    import SystemCard from "@/components/dashboard/SystemCard";
 
     export default {
         name: "Home",
         components: {
             Blocks,
-            LoadingContainer,
+            UserProfileCard,
             UsersCard,
             UserRolesCard,
-            LogsCard,
-            OperationsCard
+            ProjectsCard,
+            ModulesCard,
+            SystemCard
         },
         data() {
             return {
-                loadingIsActive: true,
-                activeCollapseItems: [ "users", "system" ],
-                usersCount: "—",
-                rolesCount: "—",
-                operationsCount: "—",
-                logsCount: "—"
+                windowWidth: window.innerWidth,
+                activeNames: [ "1", "2", "3" ]
             };
         },
         methods: {
-            loadDashboardData() {
-                this.loadingIsActive = true;
-                this.$store.dispatch(GET_HTTP_REQUEST, {
-                    server: LOCALHOST,
-                    endpoint: GET_DATA_FOR_DASHBOARD_ENDPOINT,
-                    config: getConfiguration()
-                }).then(response => {
-                    this.loadingIsActive = false;
-                    this.usersCount = response.data.usersCount;
-                    this.rolesCount = response.data.rolesCount;
-                    this.operationsCount = response.data.operationsCount;
-                    this.logsCount = response.data.logsCount;
-                }).catch(error => {
-                    this.loadingIsActive = false;
-                    this.$notify.error({
-                        title: "Failed to load data for admin panel",
-                        duration: 10000,
-                        message: renderErrorNotificationMessage(this.$createElement, error.response)
-                    });
-                });
-            },
+            handleResize() {
+                this.windowWidth = window.innerWidth;
+            }
         },
-        mounted() {
-            this.loadDashboardData();
+        created() {
+            window.addEventListener("resize", this.handleResize);
+            this.handleResize();
         },
-        beforeRouteUpdate(to, from, next) {
-            this.loadDashboardData();
-            next();
+        destroyed() {
+            window.removeEventListener("resize", this.handleResize);
         }
     };
 </script>

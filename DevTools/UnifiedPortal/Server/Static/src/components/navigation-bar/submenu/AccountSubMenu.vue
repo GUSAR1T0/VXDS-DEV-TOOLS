@@ -5,7 +5,7 @@
                 <span slot="title">Users</span>
                 <el-menu-item index="/users">
                     <fa class="fa-submenu-item" icon="users"/>
-                    <span slot="title" class="el-nav-menu-vertical-item">Users</span>
+                    <span slot="title" class="el-nav-menu-vertical-item">User Profiles</span>
                 </el-menu-item>
                 <el-menu-item index="/users/roles">
                     <fa class="fa-submenu-item" icon="users-cog"/>

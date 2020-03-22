@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Core.Entities.Operation;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Entities;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 
 namespace VXDesign.Store.DevTools.Common.Services
 {

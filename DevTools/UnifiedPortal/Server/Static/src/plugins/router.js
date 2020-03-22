@@ -8,6 +8,7 @@ let sections = {
     HOME: "Home Page",
     AUTHORIZATION: "Authorization",
     ACCOUNT: "Account",
+    COMPONENTS: "Components",
     PAGES: "Pages",
     SYSTEM: "System"
 };
@@ -57,28 +58,28 @@ export default new Router({
             }
         },
         {
+            path: "/components/project/:id",
+            name: "project",
+            component: () => import(/* webpackChunkName: "project" */ "../views/components/Project.vue"),
+            meta: {
+                sectionName: sections.COMPONENTS
+            }
+        },
+        {
+            path: "/components/projects",
+            name: "projects",
+            component: () => import(/* webpackChunkName: "projects" */ "../views/components/Projects.vue"),
+            meta: {
+                sectionName: sections.COMPONENTS
+            }
+        },
+        {
             path: "/pages/about",
             name: "about",
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
             component: () => import(/* webpackChunkName: "about" */ "../views/pages/About.vue"),
-            meta: {
-                sectionName: sections.PAGES
-            }
-        },
-        {
-            path: "/pages/project/:id",
-            name: "project",
-            component: () => import(/* webpackChunkName: "project" */ "../views/pages/Project.vue"),
-            meta: {
-                sectionName: sections.PAGES
-            }
-        },
-        {
-            path: "/pages/projects",
-            name: "projects",
-            component: () => import(/* webpackChunkName: "projects" */ "../views/pages/Projects.vue"),
             meta: {
                 sectionName: sections.PAGES
             }

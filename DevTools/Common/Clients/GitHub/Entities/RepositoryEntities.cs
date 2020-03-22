@@ -12,8 +12,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.GitHub.Entities
         public string Description { get; set; }
         public string HtmlUrl { get; set; }
         public int StargazersCount { get; set; }
-        public int WatchersCount { get; set; }
-        public int SubscribersCount { get; set; }
+        public int ForksCount { get; set; }
         public int OpenIssuesCount { get; set; }
         public LicenseEntity License { get; set; }
     }

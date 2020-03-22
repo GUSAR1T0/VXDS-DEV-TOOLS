@@ -1,4 +1,3 @@
-using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Entities.GitHub;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.GitHub;
 
@@ -33,8 +32,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
                 Description = entity.Description,
                 RepositoryUrl = entity.RepositoryUrl,
                 StargazersCount = entity.StargazersCount,
-                WatchersCount = entity.WatchersCount,
-                SubscribersCount = entity.SubscribersCount,
+                ForksCount = entity.ForksCount,
                 OpenIssuesCount = entity.OpenIssuesCount,
                 License = entity.License,
                 Languages = entity.Languages

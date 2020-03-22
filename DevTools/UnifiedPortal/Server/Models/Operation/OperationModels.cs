@@ -4,7 +4,7 @@ using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Operation;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Entities;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Common;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.SSP;

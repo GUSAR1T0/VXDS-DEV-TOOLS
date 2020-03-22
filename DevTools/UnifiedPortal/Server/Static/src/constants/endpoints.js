@@ -27,7 +27,12 @@ export const SEARCH_USER_ROLES_ENDPOINT = "userRole/search?p={pattern}";
 export const GET_USER_ROLE_PERMISSIONS_ENDPOINT = "userRole/permissions";
 
 // Admin panel endpoints
-export const GET_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard";
+export const GET_USERS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/users";
+export const GET_USER_ROLES_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/userRoles";
+export const GET_PROJECTS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/projects";
+export const GET_SYSTEM_STATISTICS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/system";
+
+// Operations endpoints
 export const GET_OPERATION_LIST_ENDPOINT = "operation/list";
 
 // Settings endpoints

@@ -8,7 +8,7 @@
         <el-table-column label="Project" min-width="750" align="center">
             <template slot-scope="scope">
                 <div style="text-align: left">
-                    <el-link :href="`/pages/project/${scope.row.id}`" type="primary" :underline="false">
+                    <el-link :href="`/components/project/${scope.row.id}`" type="primary" :underline="false">
                         <div style="font-size: 22px; padding-bottom: 5px">
                             <strong>{{ scope.row.name }} ({{ scope.row.alias }})</strong>
                         </div>

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using NLog;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 
 namespace VXDesign.Store.DevTools.Common.Core.Operations
 {

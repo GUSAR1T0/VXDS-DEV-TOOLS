@@ -11,7 +11,7 @@
                 </div>
             </el-col>
             <el-col :md="1" :lg="1" :xl="1" class="hidden-sm-and-down">
-                <el-divider direction="vertical"></el-divider>
+                <el-divider direction="vertical"/>
             </el-col>
             <el-col :md="10" :lg="10" :xl="10" class="hidden-sm-and-down">
                 <h2 style="text-align: left">{{ getFullName }}</h2>
@@ -20,19 +20,13 @@
         </el-row>
         <el-row type="flex" justify="center" align="middle">
             <el-col :xs="24" :sm="24" class="hidden-md-and-up">
-                <el-avatar :size="128" style="margin-top: 5px" :style="getAvatarStyle">
-                    <div style="font-size: 48px">
-                        {{ getInitials }}
-                    </div>
-                </el-avatar>
-                <h2>{{ getFullName }}</h2>
-                <h3 style="margin-bottom: 5px">{{ user.email }}</h3>
+                <UserVerticalCard :user="user"/>
             </el-col>
         </el-row>
     </div>
 </template>
 
-<style>
+<style scoped>
     .el-divider--vertical {
         height: 150px;
     }
@@ -41,10 +35,15 @@
 <script>
     import { getUserFullName, getUserInitials } from "@/extensions/utils";
 
+    import UserVerticalCard from "@/components/user/UserVerticalCard";
+
     export default {
         name: "UserCard",
         props: {
             user: Object
+        },
+        components: {
+            UserVerticalCard
         },
         computed: {
             getFullName() {

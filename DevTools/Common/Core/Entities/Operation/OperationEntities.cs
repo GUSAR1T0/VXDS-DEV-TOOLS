@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using VXDesign.Store.DevTools.Common.Core.Entities.SSP;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Entities;
 
 namespace VXDesign.Store.DevTools.Common.Core.Entities.Operation
 {

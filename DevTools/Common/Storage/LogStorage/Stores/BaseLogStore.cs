@@ -1,6 +1,6 @@
 using MongoDB.Driver;
 
-namespace VXDesign.Store.DevTools.Common.Storage.LogStorage
+namespace VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores
 {
     public abstract class BaseLogStore<TEntity>
     {
