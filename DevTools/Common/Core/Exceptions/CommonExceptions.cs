@@ -15,6 +15,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static OperationException OperationHasAlreadyCompleted(IOperation operation) => new OperationException(operation, "Operation has already completed");
 
+        public static NotFoundException OperationWasNotFound(IOperation operation, long operationId) => new NotFoundException(operation, $"Operation with ID \"{operationId}\" wasn't found");
+
         #endregion
 
         #region Camunda / SRS
@@ -123,6 +125,11 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         public static NotFoundException IncidentWasNotFound(IOperation operation, long operationId)
         {
             return new NotFoundException(operation, $"Incident for operation with ID \"{operationId}\" wasn't found");
+        }
+
+        public static BadRequestException IncidentCommentIsEmpty(IOperation operation)
+        {
+            return new BadRequestException(operation, "Incident history comment should be non-empty string");
         }
 
         #endregion

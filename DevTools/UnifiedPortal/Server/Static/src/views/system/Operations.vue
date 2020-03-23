@@ -11,7 +11,7 @@
                     <OperationsTableFilters :filter="filter"/>
                 </template>
                 <template slot="table">
-                    <OperationsTable :items="items"/>
+                    <OperationsTable :items="items" :reload="loadOperations"/>
                 </template>
             </FilterableTableView>
         </template>
@@ -22,7 +22,7 @@
     import { POST_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import { GET_OPERATION_LIST_ENDPOINT } from "@/constants/endpoints";
-    import { getConfiguration, renderErrorNotificationMessage, getOnlyNumbers } from "@/extensions/utils";
+    import { getConfiguration, renderErrorNotificationMessage, getOnlyNumbers, getDate } from "@/extensions/utils";
 
     import LoadingContainer from "@/components/page/LoadingContainer";
     import FilterableTableView from "@/components/table-filter/FilterableTableView";
@@ -54,28 +54,23 @@
                     isSuccessful: null,
                     startTimeRange: [],
                     stopTimeRange: [],
+                    incidentAuthorIds: [],
+                    incidentAssigneeIds: [],
+                    incidentInitialTimeRange: [],
+                    incidentStatuses: [],
+                    hasIncident: null,
 
                     userIdOptions: [],
-                    userIdsSearchLoading: false
+                    userIdsSearchLoading: false,
+                    incidentAuthorIdOptions: [],
+                    incidentAuthorIdsSearchLoading: false,
+                    incidentAssigneeIdOptions: [],
+                    incidentAssigneeIdsSearchLoading: false
                 },
                 items: []
             };
         },
         methods: {
-            getDate(date) {
-                let transformer = (value) => ("0" + value).slice(-2);
-                if (date) {
-                    let year = date.getFullYear();
-                    let month = date.getMonth() + 1;
-                    let day = date.getDate();
-                    let hour = date.getHours();
-                    let minute = date.getMinutes();
-                    let second = date.getSeconds();
-                    return `${year}-${transformer(month)}-${transformer(day)}T${transformer(hour)}:${transformer(minute)}:${transformer(second)}`;
-                } else {
-                    return null;
-                }
-            },
             loadOperations() {
                 this.loadingIsActive = true;
                 let request = {
@@ -86,13 +81,21 @@
                     isSystemAction: this.filter.isSystemAction,
                     isSuccessful: this.filter.isSuccessful,
                     startTimeRange: this.filter.startTimeRange && this.filter.startTimeRange.length > 1 ? {
-                        min: this.getDate(this.filter.startTimeRange[0]),
-                        max: this.getDate(this.filter.startTimeRange[1])
+                        min: getDate(this.filter.startTimeRange[0]),
+                        max: getDate(this.filter.startTimeRange[1])
                     } : null,
                     stopTimeRange: this.filter.stopTimeRange && this.filter.stopTimeRange.length > 1 ? {
-                        min: this.getDate(this.filter.stopTimeRange[0]),
-                        max: this.getDate(this.filter.stopTimeRange[1])
-                    } : null
+                        min: getDate(this.filter.stopTimeRange[0]),
+                        max: getDate(this.filter.stopTimeRange[1])
+                    } : null,
+                    incidentAuthorIds: getOnlyNumbers(this.filter.incidentAuthorIds),
+                    incidentAssigneeIds: getOnlyNumbers(this.filter.incidentAssigneeIds),
+                    incidentInitialTimeRange: this.filter.incidentInitialTimeRange && this.filter.incidentInitialTimeRange.length > 1 ? {
+                        min: getDate(this.filter.incidentInitialTimeRange[0]),
+                        max: getDate(this.filter.incidentInitialTimeRange[1])
+                    } : null,
+                    incidentStatuses: getOnlyNumbers(this.filter.incidentStatuses),
+                    hasIncident: this.filter.hasIncident
                 };
                 this.$store.dispatch(POST_HTTP_REQUEST, {
                     server: LOCALHOST,
@@ -125,9 +128,18 @@
                 this.filter.isSuccessful = null;
                 this.filter.startTimeRange = [];
                 this.filter.stopTimeRange = [];
+                this.filter.incidentAuthorIds = [];
+                this.filter.incidentAssigneeIds = [];
+                this.filter.incidentInitialTimeRange = [];
+                this.filter.incidentStatuses = [];
+                this.filter.hasIncident = null;
 
                 this.filter.userIdOptions = [];
                 this.filter.userIdsSearchLoading = false;
+                this.filter.incidentAuthorIdOptions = [];
+                this.filter.incidentAuthorIdsSearchLoading = false;
+                this.filter.incidentAssigneeIdOptions = [];
+                this.filter.incidentAssigneeIdsSearchLoading = false;
             },
             searchById(id) {
                 if (id && !isNaN(id)) {

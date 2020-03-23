@@ -34,6 +34,11 @@ export const GET_SYSTEM_STATISTICS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/syst
 
 // Operations endpoints
 export const GET_OPERATION_LIST_ENDPOINT = "operation/list";
+export const GET_INCIDENT_PROFILE_ENDPOINT = "operation/{id}/incident";
+export const INITIALIZE_INCIDENT_PROFILE_ENDPOINT = "operation/{id}/incident";
+export const SAVE_COMMENT_FOR_INCIDENT_ENDPOINT = "operation/{id}/incident/comment";
+export const DELETE_COMMENT_FOR_INCIDENT_ENDPOINT = "operation/{id}/incident/comment/{historyId}";
+export const UPDATE_INCIDENT_PROFILE_ENDPOINT = "operation/{id}/incident";
 
 // Settings endpoints
 export const LOAD_SETTINGS_ENDPOINT = "settings";

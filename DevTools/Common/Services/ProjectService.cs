@@ -66,7 +66,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
                 var response = await new Repositories.GetUserRepositoriesRequest().SendRequest(operation, gitHubClient);
                 return response.IsWithoutErrors() ? (true, response.Response) : throw CommonExceptions.UserRepositoriesCouldNotBeLoaded(operation, response.Output);
-            }, TimeSpan.FromMinutes(5));
+            });
         }
 
         private async Task<IReadOnlyDictionary<string, int>> GetGitHubRepositoryLanguagesFromCache(IOperation operation, string owner, string repository)
@@ -85,7 +85,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
                 var response = await new Repositories.GetRepositoryLanguagesRequest(owner, repository).SendRequest(operation, gitHubClient);
                 return response.IsWithoutErrors() ? response.ToDictionary<int>() : throw CommonExceptions.RepositoryLanguagesCouldNotBeLoaded(operation, response.Output);
-            }, TimeSpan.FromMinutes(5));
+            });
         }
 
         private static IEnumerable<ProjectWithRepositoryInfo> PreparePagingItems(IEnumerable<ProjectListItemEntity> projects, IReadOnlyCollection<RepositoryListItemEntity> repositories)

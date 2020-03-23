@@ -21,6 +21,7 @@
 
 <script>
     import { mapGetters } from "vuex";
+    import { PORTAL_PERMISSION } from "@/constants/permissions";
     import { LOAD_SETTINGS_REQUEST } from "@/constants/actions";
     import { renderErrorNotificationMessage } from "@/extensions/utils";
 
@@ -45,8 +46,12 @@
         },
         computed: {
             ...mapGetters([
+                "hasPortalPermission",
                 "getCodeServicesSettings"
-            ])
+            ]),
+            hasPermissionToManageSettings() {
+                return this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_SETTINGS);
+            }
         },
         methods: {
             loadSettings() {
@@ -67,10 +72,19 @@
             }
         },
         mounted() {
-            this.loadSettings();
+            if (!this.hasPermissionToManageSettings) {
+                this.$router.push(`/403?from=${this.$route.path}`);
+            } else {
+                this.loadSettings();
+            }
         },
         beforeRouteUpdate(to, from, next) {
-            this.loadSettings();
+            if (!this.hasPermissionToManageSettings) {
+                next(`/403?from=${to.path}`);
+                return;
+            } else {
+                this.loadSettings();
+            }
             next();
         }
     };

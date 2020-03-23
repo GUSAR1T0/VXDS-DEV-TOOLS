@@ -64,7 +64,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             services.AddScoped<IOperationWithLogsService, OperationWithLogsService>();
             services.AddScoped<IPortalSettingsService, PortalSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
-            services.AddScoped<IIncidentService, IncidentService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddRouting(options => options.LowercaseUrls = true);

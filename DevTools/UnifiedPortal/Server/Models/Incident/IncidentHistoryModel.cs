@@ -1,10 +1,10 @@
-using System;
 using VXDesign.Store.DevTools.Common.Core.Entities.Incident;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Incident
 {
     public class IncidentHistoryModel
     {
+        public long Id { get; set; }
         public long OperationId { get; set; }
 
         public int? AuthorId { get; set; }
@@ -19,7 +19,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Incident
         public string AssigneeLastName { get; set; }
 
         public IncidentStatus? Status { get; set; }
-        public DateTime ChangeTime { get; set; }
+        public int? ChangedBy { get; set; }
+        public string ChangedByColor { get; set; }
+        public string ChangedByFirstName { get; set; }
+        public string ChangedByLastName { get; set; }
+        public string ChangeTime { get; set; }
         public string Comment { get; set; }
     }
 }

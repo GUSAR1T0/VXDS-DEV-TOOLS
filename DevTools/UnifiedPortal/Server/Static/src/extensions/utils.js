@@ -83,3 +83,18 @@ export function renderErrorNotificationMessage(h, response) {
 export function getOnlyNumbers(array) {
     return array.map(String).filter(value => !isNaN(value)).map(value => parseInt(value.replace(/\D/g, ""))).map(Number);
 }
+
+export function getDate(date) {
+    let transformer = (value) => ("0" + value).slice(-2);
+    if (date) {
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        let second = date.getSeconds();
+        return `${year}-${transformer(month)}-${transformer(day)}T${transformer(hour)}:${transformer(minute)}:${transformer(second)}`;
+    } else {
+        return null;
+    }
+}

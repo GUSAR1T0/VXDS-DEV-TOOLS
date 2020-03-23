@@ -108,11 +108,12 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 WHERE au.[Id] = @Id;
             ");
             var id = await reader.ReadSingleOrDefaultAsync<int?>();
+            var permissions = await reader.ReadAsync<UserRolePermissionEntity>();
             return id != null
                 ? new UserAuthorizationEntity
                 {
                     Id = id.Value,
-                    Permissions = await reader.ReadAsync<UserRolePermissionEntity>()
+                    Permissions = permissions
                 }
                 : null;
         }

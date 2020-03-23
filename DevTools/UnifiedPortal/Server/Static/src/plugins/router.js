@@ -101,6 +101,14 @@ export default new Router({
             }
         },
         {
+            path: "/system/operation/:operationId/incident",
+            name: "incident",
+            component: () => import(/* webpackChunkName: "incident" */ "../views/system/Incident.vue"),
+            meta: {
+                sectionName: sections.SYSTEM
+            }
+        },
+        {
             path: "/403",
             name: "forbidden",
             component: () => import(/* webpackChunkName: "forbidden" */ "../views/errors/ForbiddenErrorPage.vue")

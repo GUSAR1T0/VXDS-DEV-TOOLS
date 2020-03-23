@@ -12,6 +12,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Incident
 
     public class IncidentHistoryEntity : IncidentHistoryRecordEntity
     {
+        public long Id { get; set; }
         public long OperationId { get; set; }
 
         public string AuthorColor { get; set; }
@@ -22,6 +23,10 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Incident
         public string AssigneeFirstName { get; set; }
         public string AssigneeLastName { get; set; }
 
+        public int? ChangedBy { get; set; }
+        public string ChangedByColor { get; set; }
+        public string ChangedByFirstName { get; set; }
+        public string ChangedByLastName { get; set; }
         public DateTime ChangeTime { get; set; }
         public string Comment { get; set; }
     }

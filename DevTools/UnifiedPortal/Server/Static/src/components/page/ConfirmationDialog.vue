@@ -19,6 +19,9 @@
     </el-dialog>
 </template>
 
+<style scoped src="@/styles/modal.css">
+</style>
+
 <style scoped>
     .confirmation-dialog-header {
         text-align: center;

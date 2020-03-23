@@ -8,13 +8,12 @@
         <el-table-column label="User Name" min-width="400" align="center">
             <template slot-scope="scope">
                 <div style="text-align: left">
-                    <el-link :href="`/user/${scope.row.id}`" type="primary" :underline="false">
-                        <UserAvatarAndFullName
-                                :first-name="scope.row.firstName"
-                                :last-name="scope.row.lastName"
-                                :color="scope.row.color"
-                        />
-                    </el-link>
+                    <UserAvatarAndFullNameWithLink
+                            :first-name="scope.row.firstName"
+                            :last-name="scope.row.lastName"
+                            :color="scope.row.color"
+                            :user-id="scope.row.id"
+                    />
                 </div>
             </template>
         </el-table-column>
@@ -43,7 +42,7 @@
 </template>
 
 <script>
-    import UserAvatarAndFullName from "@/components/user/UserAvatarAndFullName";
+    import UserAvatarAndFullNameWithLink from "@/components/user/UserAvatarAndFullNameWithLink";
 
     export default {
         name: "UsersTable",
@@ -51,7 +50,7 @@
             users: Array
         },
         components: {
-            UserAvatarAndFullName
+            UserAvatarAndFullNameWithLink
         }
     };
 </script>

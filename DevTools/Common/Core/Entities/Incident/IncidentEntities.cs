@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using VXDesign.Store.DevTools.Common.Core.Entities.SSP;
+using VXDesign.Store.DevTools.Common.Storage.LogStorage.Entities;
 
 namespace VXDesign.Store.DevTools.Common.Core.Entities.Incident
 {
     public class IncidentBaseEntity
     {
-        public long OperationId { get; set; }
+        public long IncidentOperationId { get; set; }
         public int AuthorId { get; set; }
         public int? AssigneeId { get; set; }
         public IncidentStatus Status { get; set; }
@@ -14,14 +15,12 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Incident
 
     public class IncidentUpdateEntity : IncidentBaseEntity
     {
+        public int? ChangedBy { get; set; }
         public string Comment { get; set; }
     }
 
     public class IncidentEntity : IncidentBaseEntity
     {
-        public string Scope { get; set; }
-        public string ContextName { get; set; }
-
         public string AuthorColor { get; set; }
         public string AuthorFirstName { get; set; }
         public string AuthorLastName { get; set; }
@@ -33,29 +32,20 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Incident
         public DateTime InitialTime { get; set; }
     }
 
-    public class IncidentListItem : IncidentEntity, IPagingResponseItemEntity
-    {
-    }
-
-    public class IncidentPagingFilter : IPagingFilterEntity
-    {
-        public IEnumerable<int> OperationIds { get; set; }
-        public IEnumerable<int> AuthorIds { get; set; }
-        public IEnumerable<int> AssigneeIds { get; set; }
-        public RangeFilter<DateTime> InitialTimeRange { get; set; }
-        public IEnumerable<IncidentStatus> Statuses { get; set; }
-    }
-
-    public class IncidentPagingRequest : ServerSidePagingRequest<IncidentPagingFilter>
-    {
-    }
-
-    public class IncidentPagingResponse : ServerSidePagingResponse<IncidentListItem>
-    {
-    }
-
     public class IncidentFullEntity : IncidentEntity
     {
+        public string Scope { get; set; }
+        public string ContextName { get; set; }
+        public bool? IsSuccessful { get; set; }
+        public int? UserId { get; set; }
+        public string Color { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public bool IsSystemAction { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime? StopTime { get; set; }
+
+        public IEnumerable<LogEntity> Logs { get; set; }
         public IEnumerable<IncidentHistoryEntity> History { get; set; }
     }
 }

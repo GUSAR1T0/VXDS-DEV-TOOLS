@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Constants;
+using VXDesign.Store.DevTools.Common.Core.Entities.Incident;
 using VXDesign.Store.DevTools.Common.Core.Entities.Operation;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage.Entities;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Common;
+using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Incident;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.SSP;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation
@@ -23,6 +24,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation
         public bool? IsSuccessful { get; set; }
         public string StartTime { get; set; }
         public string StopTime { get; set; }
+        public IncidentBaseModel Incident { get; set; }
         public IEnumerable<LogModel> Logs { get; set; }
 
         public OperationWithLogsModel ToModel(OperationWithLogs entity)
@@ -37,6 +39,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation
             IsSuccessful = entity.Operation.IsSuccessful;
             StartTime = entity.Operation.StartTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
             StopTime = entity.Operation.StopTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
+            Incident = entity.Operation.ToIncidentModel();
             Logs = entity.Logs.Select(log => log.ToModel());
             return this;
         }
@@ -52,6 +55,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation
         public bool? IsSuccessful { get; set; }
         public RangeFilterModel<DateTime> StartTimeRange { get; set; }
         public RangeFilterModel<DateTime> StopTimeRange { get; set; }
+        public IEnumerable<int> IncidentAuthorIds { get; set; }
+        public IEnumerable<int> IncidentAssigneeIds { get; set; }
+        public RangeFilterModel<DateTime> IncidentInitialTimeRange { get; set; }
+        public IEnumerable<IncidentStatus> IncidentStatuses { get; set; }
+        public bool? HasIncident { get; set; }
 
         public OperationPagingFilter ToEntity() => new OperationPagingFilter
         {
@@ -62,7 +70,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation
             IsSystemAction = IsSystemAction,
             IsSuccessful = IsSuccessful,
             StartTimeRange = StartTimeRange.ToEntity(),
-            StopTimeRange = StopTimeRange.ToEntity()
+            StopTimeRange = StopTimeRange.ToEntity(),
+            IncidentAuthorIds = IncidentAuthorIds,
+            IncidentAssigneeIds = IncidentAssigneeIds,
+            IncidentInitialTimeRange = IncidentInitialTimeRange.ToEntity(),
+            IncidentStatuses = IncidentStatuses,
+            HasIncident = HasIncident
         };
     }
 
