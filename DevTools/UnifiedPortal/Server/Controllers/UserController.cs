@@ -48,11 +48,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [PortalAuthentication]
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<UserShortModel>>> SearchUsersByPattern([FromQuery(Name = "p")] string pattern) => await Execute(async operation =>
+        public async Task<ActionResult<IEnumerable<UserShortModel>>> SearchUsersByPattern([FromQuery(Name = "p")] string pattern, [FromQuery(Name = "z")] string zeroUserName)
         {
-            var users = await userService.SearchUsersByPattern(operation, pattern);
-            return users.Select(user => user.ToModel());
-        });
+            return await Execute(async operation =>
+            {
+                var users = await userService.SearchUsersByPattern(operation, pattern, zeroUserName);
+                return users.Select(user => user.ToModel());
+            });
+        }
 
         /// <summary>
         /// Obtains user profile data by ID

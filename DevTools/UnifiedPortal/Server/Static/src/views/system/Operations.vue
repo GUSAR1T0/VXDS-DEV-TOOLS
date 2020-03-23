@@ -120,6 +120,7 @@
                 this.filter.ids = [];
                 this.filter.scopes = [];
                 this.filter.contextNames = [];
+                this.filter.userIds = [];
                 this.filter.isSystemAction = null;
                 this.filter.isSuccessful = null;
                 this.filter.startTimeRange = [];

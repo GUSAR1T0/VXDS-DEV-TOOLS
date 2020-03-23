@@ -118,11 +118,13 @@ namespace VXDesign.Store.DevTools.Common.Services
         public async Task<IEnumerable<GitHubRepositoryShortEntity>> SearchGitHubRepositoriesByPattern(IOperation operation, string pattern)
         {
             var (_, repositories) = await GetGitHubUserRepositoriesFromCache(operation);
-            return repositories.Where(repository => repository.FullName.Contains(pattern, StringComparison.InvariantCultureIgnoreCase)).Select(repository => new GitHubRepositoryShortEntity
-            {
-                Id = repository.Id,
-                FullName = repository.FullName
-            });
+            return repositories.Where(repository => repository.FullName.Contains(pattern, StringComparison.InvariantCultureIgnoreCase))
+                .Take(FormatPattern.SearchMaxCount)
+                .Select(repository => new GitHubRepositoryShortEntity
+                {
+                    Id = repository.Id,
+                    FullName = repository.FullName
+                });
         }
 
         public async Task<ProjectProfileGetEntity> GetProjectProfileById(IOperation operation, int id)

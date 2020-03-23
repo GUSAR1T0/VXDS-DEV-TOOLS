@@ -14,7 +14,7 @@ export const GET_PROFILE_ENDPOINT = "user/{id}";
 export const ACTIVATE_USER_ENDPOINT = "user/{id}/activate";
 export const DEACTIVATE_USER_ENDPOINT = "user/{id}/deactivate";
 export const UPDATE_USER_PROFILE_ENDPOINT = "user/{id}";
-export const SEARCH_USERS_ENDPOINT = "user/search?p={pattern}";
+export const SEARCH_USERS_ENDPOINT = "user/search?p={pattern}&z={zeroUserName}";
 
 // User roles endpoints
 export const GET_USER_ROLES_SHORT_INFO_ENDPOINT = "userRole/short/list";

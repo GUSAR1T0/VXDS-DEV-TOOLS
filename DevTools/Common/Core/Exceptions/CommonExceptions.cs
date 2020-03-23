@@ -31,12 +31,14 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static NotFoundException GitHubEndpointIsNotFoundByEndpointCode(IOperation operation) => new NotFoundException(operation, "Failed to find a GitHub endpoint by endpoint code");
 
-        public static BadRequestException UserRepositoriesCouldNotBeLoaded(IOperation operation, string message) => new BadRequestException(operation, $"Failed to retrieve all user repositories: {message}");
+        public static BadRequestException UserRepositoriesCouldNotBeLoaded(IOperation operation, string message) =>
+            new BadRequestException(operation, $"Failed to retrieve all user repositories: {message}");
 
-        public static BadRequestException RepositoryLanguagesCouldNotBeLoaded(IOperation operation, string message) => new BadRequestException(operation, $"Failed to retrieve all repository languages: {message}");
+        public static BadRequestException RepositoryLanguagesCouldNotBeLoaded(IOperation operation, string message) =>
+            new BadRequestException(operation, $"Failed to retrieve all repository languages: {message}");
 
         #endregion
-        
+
         public static BadRequestException ProjectHasAlreadyExisted(IOperation operation, IEnumerable<byte> errorCodes, string name, string alias, long? gitHubRepoId)
         {
             var errors = new List<string>();
@@ -55,6 +57,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
                         break;
                 }
             }
+
             return new BadRequestException(operation, $"Project with {string.Join(", ", errors)} has already existed");
         }
 
@@ -106,6 +109,20 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
             }
 
             return new AuthenticationException(operation, message, statusCode);
+        }
+
+        #endregion
+
+        #region Incidents
+
+        public static BadRequestException IncidentAlreadyExists(IOperation operation, long operationId)
+        {
+            return new BadRequestException(operation, $"Incident for operation with ID \"{operationId}\" already exists");
+        }
+
+        public static NotFoundException IncidentWasNotFound(IOperation operation, long operationId)
+        {
+            return new NotFoundException(operation, $"Incident for operation with ID \"{operationId}\" wasn't found");
         }
 
         #endregion

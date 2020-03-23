@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Permission;
 using VXDesign.Store.DevTools.Common.Core.Entities.User;
 using VXDesign.Store.DevTools.Common.Core.Operations;
@@ -131,7 +132,13 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 
         public async Task<IEnumerable<UserRoleEntity>> SearchUserRolesByPattern(IOperation operation, string pattern)
         {
-            return await operation.Connection.QueryAsync<UserRoleEntity>(new { Pattern = $"%{pattern}%" }, $@"{BaseSelect} WHERE [Name] LIKE @Pattern;");
+            return await operation.Connection.QueryAsync<UserRoleEntity>(new { Pattern = $"%{pattern}%" }, $@"
+                SELECT TOP {FormatPattern.SearchMaxCount}
+                    [Id],
+                    [Name]
+                FROM [authentication].[UserRole]
+                WHERE [Name] LIKE @Pattern;
+            ");
         }
 
         public async Task AddUserRole(IOperation operation, UserRoleWithPermissionsEntity entity)

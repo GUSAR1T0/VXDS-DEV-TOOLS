@@ -32,12 +32,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation
             ContextName = entity.Operation.ContextName;
             UserId = entity.Operation.UserId;
             Color = entity.Operation.Color;
-            FirstName = !entity.Operation.IsSystemAction ? entity.Operation.FirstName ?? "Unauthorized" : "System";
+            FirstName = !entity.Operation.IsSystemAction ? entity.Operation.FirstName : "System";
             LastName = entity.Operation.LastName;
             IsSuccessful = entity.Operation.IsSuccessful;
             StartTime = entity.Operation.StartTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
             StopTime = entity.Operation.StopTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
-            Logs = entity.Logs.Select<LogEntity, LogModel>(log => log.ToModel());
+            Logs = entity.Logs.Select(log => log.ToModel());
             return this;
         }
     }

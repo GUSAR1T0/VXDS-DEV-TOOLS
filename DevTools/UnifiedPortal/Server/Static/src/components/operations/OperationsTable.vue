@@ -49,14 +49,14 @@
                 <el-link :href="`/user/${scope.row.userId}`" type="primary" :underline="false"
                          v-if="scope.row.userId">
                     <UserAvatarAndFullName
-                            :first-name="scope.row.firstName"
+                            :first-name="getFirstName(scope.row.firstName)"
                             :last-name="scope.row.lastName"
                             :color="scope.row.color"
                     />
                 </el-link>
                 <div v-else>
                     <UserAvatarAndFullName
-                            :first-name="scope.row.firstName"
+                            :first-name="getFirstName(scope.row.firstName)"
                             :last-name="scope.row.lastName"
                             :color="scope.row.color"
                     />
@@ -87,6 +87,8 @@
 </style>
 
 <script>
+    import { UNAUTHORIZED } from "@/constants/formatPattern";
+
     import UserAvatarAndFullName from "@/components/user/UserAvatarAndFullName";
 
     export default {
@@ -106,6 +108,9 @@
                 } else {
                     return "";
                 }
+            },
+            getFirstName(firstName) {
+                return firstName ? firstName : UNAUTHORIZED;
             }
         }
     };

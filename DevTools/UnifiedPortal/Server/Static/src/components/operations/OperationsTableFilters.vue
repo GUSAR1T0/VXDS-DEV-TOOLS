@@ -103,6 +103,7 @@
     import format from "string-format";
     import { SEARCH_USERS_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
+    import { UNAUTHORIZED } from "@/constants/formatPattern";
 
     import Blocks from "@/components/page/Blocks";
     import TableFilterItem from "@/components/table-filter/TableFilterItem";
@@ -123,7 +124,8 @@
                     this.$store.dispatch(GET_HTTP_REQUEST, {
                         server: LOCALHOST,
                         endpoint: format(SEARCH_USERS_ENDPOINT, {
-                            pattern: query
+                            pattern: query,
+                            zeroUserName: UNAUTHORIZED
                         }),
                         config: getConfiguration()
                     }).then(response => {
