@@ -66,7 +66,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
                 var response = await new Repositories.GetUserRepositoriesRequest().SendRequest(operation, gitHubClient);
                 return response.IsWithoutErrors() ? (true, response.Response) : throw CommonExceptions.UserRepositoriesCouldNotBeLoaded(operation, response.Output);
-            }, TimeSpan.FromMinutes(5));
+            });
         }
 
         private async Task<IReadOnlyDictionary<string, int>> GetGitHubRepositoryLanguagesFromCache(IOperation operation, string owner, string repository)
@@ -85,7 +85,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
                 var response = await new Repositories.GetRepositoryLanguagesRequest(owner, repository).SendRequest(operation, gitHubClient);
                 return response.IsWithoutErrors() ? response.ToDictionary<int>() : throw CommonExceptions.RepositoryLanguagesCouldNotBeLoaded(operation, response.Output);
-            }, TimeSpan.FromMinutes(5));
+            });
         }
 
         private static IEnumerable<ProjectWithRepositoryInfo> PreparePagingItems(IEnumerable<ProjectListItemEntity> projects, IReadOnlyCollection<RepositoryListItemEntity> repositories)
@@ -118,11 +118,13 @@ namespace VXDesign.Store.DevTools.Common.Services
         public async Task<IEnumerable<GitHubRepositoryShortEntity>> SearchGitHubRepositoriesByPattern(IOperation operation, string pattern)
         {
             var (_, repositories) = await GetGitHubUserRepositoriesFromCache(operation);
-            return repositories.Where(repository => repository.FullName.Contains(pattern, StringComparison.InvariantCultureIgnoreCase)).Select(repository => new GitHubRepositoryShortEntity
-            {
-                Id = repository.Id,
-                FullName = repository.FullName
-            });
+            return repositories.Where(repository => repository.FullName.Contains(pattern, StringComparison.InvariantCultureIgnoreCase))
+                .Take(FormatPattern.SearchMaxCount)
+                .Select(repository => new GitHubRepositoryShortEntity
+                {
+                    Id = repository.Id,
+                    FullName = repository.FullName
+                });
         }
 
         public async Task<ProjectProfileGetEntity> GetProjectProfileById(IOperation operation, int id)

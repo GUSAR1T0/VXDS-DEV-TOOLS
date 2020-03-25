@@ -70,7 +70,7 @@
                 </TableFilterItem>
             </template>
         </Blocks>
-        <Blocks style="padding-bottom: 10px">
+        <Blocks style="padding-bottom: 20px">
             <template slot="first">
                 <TableFilterItem name="Start Time Range">
                     <template slot="field">
@@ -94,15 +94,78 @@
                 </TableFilterItem>
             </template>
         </Blocks>
+        <Blocks style="padding-bottom: 20px">
+            <template slot="first">
+                <TableFilterItem name="Incident Initial Time Range">
+                    <template slot="field">
+                        <el-date-picker style="width: 100%"
+                                        v-model="filter.incidentInitialTimeRange"
+                                        type="datetimerange"
+                                        range-separator="—">
+                        </el-date-picker>
+                    </template>
+                </TableFilterItem>
+            </template>
+            <template slot="second">
+                <TableFilterItem name="Has Incident?">
+                    <template slot="field">
+                        <el-radio-group v-model="filter.hasIncident" style="width: 100%">
+                            <el-radio :label="null">Not Stated</el-radio>
+                            <el-radio :label="true">Yes</el-radio>
+                            <el-radio :label="false">No</el-radio>
+                        </el-radio-group>
+                    </template>
+                </TableFilterItem>
+            </template>
+            <template slot="third">
+                <TableFilterItem name="Incident Statuses">
+                    <template slot="field">
+                        <el-select v-model="filter.incidentStatuses" multiple filterable reserve-keyword
+                                   default-first-option style="width: 100%">
+                            <el-option v-for="item in getLookupValues('incidentStatuses')" :key="item.value" :label="item.name"
+                                       :value="item.value"/>
+                        </el-select>
+                    </template>
+                </TableFilterItem>
+            </template>
+        </Blocks>
+        <Blocks style="padding-bottom: 20px">
+            <template slot="first">
+                <TableFilterItem name="Incident Authors">
+                    <template slot="field">
+                        <el-select v-model="filter.incidentAuthorIds" multiple filterable remote reserve-keyword
+                                   :remote-method="filterByAuthorIds" style="width: 100%">
+                            <el-option v-for="item in filter.incidentAuthorIdOptions" :key="item.id"
+                                       :label="item.fullName"
+                                       :value="item.id"/>
+                        </el-select>
+                    </template>
+                </TableFilterItem>
+            </template>
+            <template slot="second">
+                <TableFilterItem name="Incident Assignees">
+                    <template slot="field">
+                        <el-select v-model="filter.incidentAssigneeIds" multiple filterable remote reserve-keyword
+                                   :remote-method="filterByAssigneeIds" style="width: 100%">
+                            <el-option v-for="item in filter.incidentAssigneeIdOptions" :key="item.id"
+                                       :label="item.fullName"
+                                       :value="item.id"/>
+                        </el-select>
+                    </template>
+                </TableFilterItem>
+            </template>
+        </Blocks>
     </div>
 </template>
 
 <script>
+    import { mapGetters } from "vuex";
     import { GET_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import format from "string-format";
     import { SEARCH_USERS_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
+    import { UNAUTHORIZED, UNASSIGNED } from "@/constants/formatPattern";
 
     import Blocks from "@/components/page/Blocks";
     import TableFilterItem from "@/components/table-filter/TableFilterItem";
@@ -116,6 +179,11 @@
             Blocks,
             TableFilterItem
         },
+        computed: {
+            ...mapGetters([
+                "getLookupValues"
+            ])
+        },
         methods: {
             filterByUserIds(query) {
                 if (query !== "") {
@@ -123,7 +191,8 @@
                     this.$store.dispatch(GET_HTTP_REQUEST, {
                         server: LOCALHOST,
                         endpoint: format(SEARCH_USERS_ENDPOINT, {
-                            pattern: query
+                            pattern: query,
+                            zeroUserName: UNAUTHORIZED
                         }),
                         config: getConfiguration()
                     }).then(response => {
@@ -139,6 +208,55 @@
                     });
                 } else {
                     this.filter.userIdOptions = [];
+                }
+            },
+            filterByAuthorIds(query) {
+                if (query !== "") {
+                    this.filter.incidentAuthorIdsSearchLoading = true;
+                    this.$store.dispatch(GET_HTTP_REQUEST, {
+                        server: LOCALHOST,
+                        endpoint: format(SEARCH_USERS_ENDPOINT, {
+                            pattern: query
+                        }),
+                        config: getConfiguration()
+                    }).then(response => {
+                        this.filter.incidentAuthorIdsSearchLoading = false;
+                        this.filter.incidentAuthorIdOptions = response.data;
+                    }).catch(error => {
+                        this.filter.incidentAuthorIdsSearchLoading = false;
+                        this.$notify.error({
+                            title: "Failed to load list of authors",
+                            duration: 10000,
+                            message: renderErrorNotificationMessage(this.$createElement, error.response)
+                        });
+                    });
+                } else {
+                    this.filter.incidentAuthorIdOptions = [];
+                }
+            },
+            filterByAssigneeIds(query) {
+                if (query !== "") {
+                    this.filter.incidentAssigneeIdsSearchLoading = true;
+                    this.$store.dispatch(GET_HTTP_REQUEST, {
+                        server: LOCALHOST,
+                        endpoint: format(SEARCH_USERS_ENDPOINT, {
+                            pattern: query,
+                            zeroUserName: UNASSIGNED
+                        }),
+                        config: getConfiguration()
+                    }).then(response => {
+                        this.filter.incidentAssigneeIdsSearchLoading = false;
+                        this.filter.incidentAssigneeIdOptions = response.data;
+                    }).catch(error => {
+                        this.filter.incidentAssigneeIdsSearchLoading = false;
+                        this.$notify.error({
+                            title: "Failed to load list of assignees",
+                            duration: 10000,
+                            message: renderErrorNotificationMessage(this.$createElement, error.response)
+                        });
+                    });
+                } else {
+                    this.filter.incidentAssigneeIdOptions = [];
                 }
             }
         }

@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div v-else>
-                    <div class="field-input validation">
+                    <div class="field-input validation" style="line-height: 52px">
                         <div>No saved token is in the system</div>
                     </div>
                 </div>
@@ -67,8 +67,6 @@
 <script>
     import { SETUP_GITHUB_TOKEN_REQUEST } from "@/constants/actions";
     import { renderErrorNotificationMessage } from "@/extensions/utils";
-    import { mapGetters } from "vuex";
-    import { PORTAL_PERMISSION } from "@/constants/permissions";
 
     import ProfileBlock from "@/components/page/ProfileBlock";
 
@@ -84,14 +82,6 @@
             return {
                 token: ""
             };
-        },
-        computed: {
-            ...mapGetters([
-                "hasPortalPermission"
-            ]),
-            hasPermissionToManageSettings() {
-                return this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_SETTINGS);
-            }
         },
         methods: {
             setGitHubToken() {
@@ -147,18 +137,6 @@
                     });
                 });
             }
-        },
-        mounted() {
-            if (!this.hasPermissionToManageSettings) {
-                this.$router.push(`/403?from=${this.$route.path}`);
-            }
-        },
-        beforeRouteUpdate(to, from, next) {
-            if (!this.hasPermissionToManageSettings) {
-                next(`/403?from=${to.path}`);
-                return;
-            }
-            next();
         }
     };
 </script>

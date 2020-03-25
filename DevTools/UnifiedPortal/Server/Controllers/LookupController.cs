@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
+using VXDesign.Store.DevTools.Common.Core.Entities.Incident;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Core.Properties;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication;
@@ -39,7 +40,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
                 },
                 LookupValues = new LookupValuesModel
                 {
-                    PortalPermissions = EnumModel.GetEnumModelValues<PortalPermission>()
+                    PortalPermissions = EnumModel.GetEnumModelValues<PortalPermission>(),
+                    IncidentStatuses = EnumModel.GetEnumModelValues<IncidentStatus>()
                 }
             });
         }

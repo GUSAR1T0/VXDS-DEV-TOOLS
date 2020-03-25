@@ -296,8 +296,8 @@
                 this.dialogProjectFormStatus.visible = true;
             },
             submitProjectAction() {
-                this.loadProject();
                 this.$store.commit(RESET_PROJECT_STORE_STATE);
+                this.loadProject();
             },
             deleteProject(button) {
                 button.loading = true;
@@ -337,11 +337,11 @@
         },
         mounted() {
             this.projectId = this.$route.params.id;
-            this.loadProject(this.$route.params.id);
+            this.loadProject();
         },
         beforeRouteUpdate(to, from, next) {
             this.projectId = to.params.id;
-            this.loadProject(to.params.id);
+            this.loadProject();
             next();
         }
     };

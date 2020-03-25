@@ -44,6 +44,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Enum.Create.PermissionTable.sql");
                 Execute.EmbeddedScript("InitialLoading.Enum.Insert.Permissions.sql");
             }
+
+            if (!schema.Table(Table.IncidentStatus).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.IncidentStatusTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.IncidentStatuses.sql");
+            }
         }
 
         private void UpgradeAuthenticationSchema()
@@ -107,6 +113,16 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             {
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.ProjectTable.sql");
             }
+
+            if (!schema.Table(Table.Incident).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.IncidentTable.sql");
+            }
+
+            if (!schema.Table(Table.IncidentHistory).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.IncidentHistoryTable.sql");
+            }
         }
 
         #endregion
@@ -136,6 +152,16 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.Project).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Portal.Drop.ProjectTable.sql");
+                }
+
+                if (schema.Table(Table.IncidentHistory).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.IncidentHistoryTable.sql");
+                }
+
+                if (schema.Table(Table.Incident).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.IncidentTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Portal.Drop.Schema.sql");
@@ -195,6 +221,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.PermissionGroup).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Enum.Drop.PermissionGroupTable.sql");
+                }
+
+                if (schema.Table(Table.IncidentStatus).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.IncidentStatusTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Enum.Drop.Schema.sql");

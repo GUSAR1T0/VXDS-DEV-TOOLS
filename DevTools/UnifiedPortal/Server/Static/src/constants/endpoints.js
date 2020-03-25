@@ -14,7 +14,7 @@ export const GET_PROFILE_ENDPOINT = "user/{id}";
 export const ACTIVATE_USER_ENDPOINT = "user/{id}/activate";
 export const DEACTIVATE_USER_ENDPOINT = "user/{id}/deactivate";
 export const UPDATE_USER_PROFILE_ENDPOINT = "user/{id}";
-export const SEARCH_USERS_ENDPOINT = "user/search?p={pattern}";
+export const SEARCH_USERS_ENDPOINT = "user/search?p={pattern}&z={zeroUserName}";
 
 // User roles endpoints
 export const GET_USER_ROLES_SHORT_INFO_ENDPOINT = "userRole/short/list";
@@ -34,6 +34,11 @@ export const GET_SYSTEM_STATISTICS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/syst
 
 // Operations endpoints
 export const GET_OPERATION_LIST_ENDPOINT = "operation/list";
+export const GET_INCIDENT_PROFILE_ENDPOINT = "operation/{id}/incident";
+export const INITIALIZE_INCIDENT_PROFILE_ENDPOINT = "operation/{id}/incident";
+export const SAVE_COMMENT_FOR_INCIDENT_ENDPOINT = "operation/{id}/incident/comment";
+export const DELETE_COMMENT_FOR_INCIDENT_ENDPOINT = "operation/{id}/incident/comment/{historyId}";
+export const UPDATE_INCIDENT_PROFILE_ENDPOINT = "operation/{id}/incident";
 
 // Settings endpoints
 export const LOAD_SETTINGS_ENDPOINT = "settings";

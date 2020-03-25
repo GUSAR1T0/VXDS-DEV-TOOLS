@@ -7,4 +7,6 @@ SELECT 4, 1, N'Manage User Roles'
 UNION ALL
 SELECT 8, 1, N'Manage Settings'
 UNION ALL
-SELECT 16, 1, N'Manage Projects';
+SELECT 16, 1, N'Manage Projects'
+UNION ALL
+SELECT 32, 1, N'Manage Incidents';

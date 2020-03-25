@@ -46,6 +46,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             services.AddScoped<IOperationStore, OperationStore>();
             services.AddScoped<IPortalSettingsStore, PortalSettingsStore>();
             services.AddScoped<IProjectStore, ProjectStore>();
+            services.AddScoped<IIncidentStore, IncidentStore>();
 
             // Services
             services.AddSingleton<IMemoryCacheService, MemoryCacheService>();

@@ -10,7 +10,7 @@ namespace VXDesign.Store.DevTools.Common.Services
     public interface IUserService
     {
         Task<UserPagingResponse> GetUsers(IOperation operation, UserPagingRequest request);
-        Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
+        Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern, string zeroUserName);
         Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id);
         Task UpdateUserProfile(IOperation operation, UserProfileEntity entity);
         Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId);
@@ -37,7 +37,10 @@ namespace VXDesign.Store.DevTools.Common.Services
             };
         }
 
-        public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern) => await userDataStore.SearchUsersByPattern(operation, pattern);
+        public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern, string zeroUserName)
+        {
+            return await userDataStore.SearchUsersByPattern(operation, pattern, zeroUserName);
+        }
 
         public async Task<UserProfileEntity> GetUserProfileById(IOperation operation, int id)
         {

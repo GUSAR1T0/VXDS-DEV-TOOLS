@@ -11,6 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
     public interface IOperationStore
     {
         Task<(long total, IEnumerable<OperationEntity> operations)> Get(IOperation operation, OperationPagingRequest request);
+        Task<bool> IsOperationExist(IOperation operation, long id);
     }
 
     public class OperationStore : BaseDataStore, IOperationStore
@@ -20,6 +21,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var selectBase = $@"
                 SELECT {{0}} FROM [base].[Operation] bo
                 LEFT JOIN [authentication].[User] au ON au.[Id] = bo.[UserId]
+                LEFT JOIN [portal].[Incident] pin ON pin.[OperationId] = bo.[Id]
+                LEFT JOIN [authentication].[User] author ON author.[Id] = pin.[AuthorId]
+                LEFT JOIN [authentication].[User] assignee ON assignee.[Id] = pin.[AssigneeId]
                 {{1}}
                 {{2}}
             ";
@@ -34,7 +38,18 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     bo.[IsSystemAction],
                     bo.[IsSuccessful],
                     bo.[StartTime],
-                    bo.[StopTime]
+                    bo.[StopTime],
+                    IIF(pin.[OperationId] IS NOT NULL, 1, 0) AS [HasIncident],
+                    pin.[AuthorId] AS [IncidentAuthorId],
+                    author.[Color] AS [IncidentAuthorColor],
+                    author.[FirstName] AS [IncidentAuthorFirstName],
+                    author.[LastName] AS [IncidentAuthorLastName],
+                    pin.[AssigneeId] AS [IncidentAssigneeId],
+                    assignee.[Color] AS [IncidentAssigneeColor],
+                    assignee.[FirstName] AS [IncidentAssigneeFirstName],
+                    assignee.[LastName] AS [IncidentAssigneeLastName],
+                    pin.[InitialTime] AS [IncidentInitialTime],
+                    pin.[StatusId] AS [IncidentStatus]
             ";
             const string selectTotal = "COUNT_BIG(1)";
             var (@params, joins, filters) = HandleGetRequest(request.Filter);
@@ -115,7 +130,56 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 filters.Add("bo.[StopTime] BETWEEN @StopTimeMin AND @StopTimeMax");
             }
 
+            if (filter.IncidentAuthorIds?.Any() == true)
+            {
+                @params.Add("AuthorIds", filter.IncidentAuthorIds);
+                filters.Add("pin.[AuthorId] IN @AuthorIds");
+            }
+
+            if (filter.IncidentAssigneeIds?.Any() == true)
+            {
+                var assigneeIds = new List<int>(filter.IncidentAssigneeIds);
+                var assigneeIdsFilter = "pin.[AssigneeId] IN @AssigneeIds";
+
+                if (filter.IncidentAssigneeIds.Contains(0))
+                {
+                    assigneeIds.Remove(0);
+                    assigneeIdsFilter = $"(pin.[OperationId] IS NOT NULL AND pin.[AssigneeId] IS NULL OR {assigneeIdsFilter})";
+                }
+
+                @params.Add("AssigneeIds", assigneeIds);
+                filters.Add(assigneeIdsFilter);
+            }
+
+            if (filter.IncidentInitialTimeRange?.HasRange == true)
+            {
+                @params.Add("InitialTimeMin", filter.IncidentInitialTimeRange.Min);
+                @params.Add("InitialTimeMax", filter.IncidentInitialTimeRange.Max);
+                filters.Add("pin.[InitialTime] BETWEEN @InitialTimeMin AND @InitialTimeMax");
+            }
+
+            if (filter.IncidentStatuses?.Any() == true)
+            {
+                @params.Add("StatusIds", filter.IncidentStatuses.Select(status => (byte) status));
+                filters.Add("pin.[StatusId] IN @StatusIds");
+            }
+
+            if (filter.HasIncident != null)
+            {
+                @params.Add("HasIncident", filter.HasIncident);
+                filters.Add("IIF(pin.[OperationId] IS NULL, 0, 1) = @HasIncident");
+            }
+
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
+        }
+
+        public async Task<bool> IsOperationExist(IOperation operation, long id)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
+                SELECT TOP 1 1
+                FROM [base].[Operation]
+                WHERE [Id] = @Id;
+            ");
         }
     }
 }

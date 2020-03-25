@@ -19,10 +19,9 @@ namespace VXDesign.Store.DevTools.Common.Services
         #region GitHub
 
         Task<GitHubUserProfileEntity> SetupGitHubToken(IOperation operation, string token);
+        Task<IGitHubClientService> GetGitHubClient(IOperation operation);
 
         #endregion
-
-        Task<IGitHubClientService> GetGitHubClient(IOperation operation);
     }
 
     public class PortalSettingsService : IPortalSettingsService
@@ -81,12 +80,12 @@ namespace VXDesign.Store.DevTools.Common.Services
             return await GetGitHubUser(operation, settingsParameter);
         }
 
-        #endregion
-
         public async Task<IGitHubClientService> GetGitHubClient(IOperation operation)
         {
             var token = await portalSettingsStore.GetSettingsParameter(operation, PortalSettingsKey.GitHubToken);
             return !string.IsNullOrWhiteSpace(token) ? new GitHubClientService(token) : throw CommonExceptions.GitHubTokenIsNotStated(operation);
         }
+
+        #endregion
     }
 }

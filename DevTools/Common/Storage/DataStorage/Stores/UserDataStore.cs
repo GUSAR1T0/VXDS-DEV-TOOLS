@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.User;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Extensions;
@@ -26,7 +27,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 
         Task<bool> IsUserExist(IOperation operation, int id);
         Task<(long total, IEnumerable<UserListItem> users)> GetUsers(IOperation operation, UserPagingRequest request);
-        Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern);
+        Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern, string zeroUserName);
         Task<UserProfileEntity> GetProfileById(IOperation operation, int id);
         Task UpdateProfile(IOperation operation, UserProfileEntity entity);
         Task<int> GetAffectedUsersCount(IOperation operation, int userRoleId);
@@ -107,11 +108,12 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 WHERE au.[Id] = @Id;
             ");
             var id = await reader.ReadSingleOrDefaultAsync<int?>();
+            var permissions = await reader.ReadAsync<UserRolePermissionEntity>();
             return id != null
                 ? new UserAuthorizationEntity
                 {
                     Id = id.Value,
-                    Permissions = await reader.ReadAsync<UserRolePermissionEntity>()
+                    Permissions = permissions
                 }
                 : null;
         }
@@ -266,10 +268,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
         }
 
-        public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern)
+        public async Task<IEnumerable<UserShortEntity>> SearchUsersByPattern(IOperation operation, string pattern, string zeroUserName)
         {
-            return await operation.Connection.QueryAsync<UserShortEntity>(new { Pattern = $"%{pattern}%" }, @"
-                SELECT
+            return await operation.Connection.QueryAsync<UserShortEntity>(new { Pattern = $"%{pattern}%" }, $@"
+                SELECT TOP {FormatPattern.SearchMaxCount}
                     u.[Id],
                     u.[FullName]
                 FROM (
@@ -277,8 +279,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                         [Id],
                         ([FirstName] + ' ' + [LastName]) [FullName]
                     FROM [authentication].[User]
-                    UNION ALL
-                    SELECT 0, 'Unauthorized'
+                    {(!string.IsNullOrWhiteSpace(zeroUserName) ? $@"UNION ALL SELECT 0, '{zeroUserName}'" : "")}
                 ) u
                 WHERE u.[FullName] LIKE @Pattern;
             ");

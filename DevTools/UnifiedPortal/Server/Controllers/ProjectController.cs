@@ -77,7 +77,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
-        [PortalAuthentication]
+        [PortalAuthentication(PortalPermission.ManageProjects)]
         [HttpPost]
         public async Task<ActionResult<int>> CreateProjectProfile([FromBody] ProjectProfileModel model) => await Execute(async operation =>
         {
@@ -93,7 +93,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication]
+        [PortalAuthentication(PortalPermission.ManageProjects)]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProjectProfile(int id, [FromBody] ProjectProfileModel model) => await Execute(async operation =>
         {
@@ -110,7 +110,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication]
+        [PortalAuthentication(PortalPermission.ManageProjects)]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProjectProfile(int id) => await Execute(async operation => await projectService.DeleteProjectProfile(operation, id));
     }

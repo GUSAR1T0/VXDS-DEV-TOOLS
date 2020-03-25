@@ -1,69 +1,72 @@
 <template>
-    <el-table :data="userRoles" style="width: 100%" border highlight-current-row default-expand-all>
-        <el-table-column type="expand">
-            <template slot-scope="scope">
-                <UserRolePermissionsTable :user-role-permissions="userRolePermissions" :user-role="scope.row"/>
-            </template>
-        </el-table-column>
-        <el-table-column label="Operations" min-width="200" align="center"
-                         v-if="hasPermissionToManageUserRoles(null)">
-            <template slot-scope="scope">
-                <el-tooltip effect="dark" placement="top">
-                    <div slot="content">
-                        Edit This User Role
-                    </div>
-                    <el-button type="primary" plain circle @click="openDialogToCreateOrUpdate(scope.row)"
-                               v-if="hasPermissionToManageUserRoles(scope.row.id)" class="rounded-button">
-                        <span><fa icon="edit"/></span>
-                    </el-button>
-                </el-tooltip>
-                <el-tooltip effect="dark" placement="top">
-                    <div slot="content">
-                        Delete This User Role
-                    </div>
-                    <el-button type="danger" plain circle @click="openDeleteUserRoleDialog(scope.row)"
-                               v-if="hasPermissionToManageUserRoles(scope.row.id)" class="rounded-button"
-                               :ref="`deleteUserRoleButton-${scope.row.id}`">
-                        <span><fa icon="trash-alt"/></span>
-                    </el-button>
-                </el-tooltip>
+    <div>
+        <el-table :data="userRoles" style="width: 100%" border highlight-current-row default-expand-all>
+            <el-table-column type="expand">
+                <template slot-scope="scope">
+                    <UserRolePermissionsTable :user-role-permissions="userRolePermissions" :user-role="scope.row"/>
+                </template>
+            </el-table-column>
+            <el-table-column label="Manage Role" min-width="200" align="center"
+                             v-if="hasPermissionToManageUserRoles(null)">
+                <template slot-scope="scope">
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
+                            Edit This User Role
+                        </div>
+                        <el-button type="primary" plain circle @click="openDialogToCreateOrUpdate(scope.row)"
+                                   v-if="hasPermissionToManageUserRoles(scope.row.id)" class="rounded-button">
+                            <span><fa icon="edit"/></span>
+                        </el-button>
+                    </el-tooltip>
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
+                            Delete This User Role
+                        </div>
+                        <el-button type="danger" plain circle @click="openDeleteUserRoleDialog(scope.row)"
+                                   v-if="hasPermissionToManageUserRoles(scope.row.id)" class="rounded-button"
+                                   :ref="`deleteUserRoleButton-${scope.row.id}`">
+                            <span><fa icon="trash-alt"/></span>
+                        </el-button>
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+            <el-table-column label="User Role ID" min-width="100" align="center">
+                <template slot-scope="scope">
+                    <strong style="font-size: 16px">{{ scope.row.id }}</strong>
+                </template>
+            </el-table-column>
+            <el-table-column label="User Role Name" min-width="500" align="center">
+                <template slot-scope="scope">
+                    <strong style="font-size: 18px">{{ scope.row.name }}</strong>
+                </template>
+            </el-table-column>
+            <el-table-column label="User Count" min-width="100" align="center">
+                <template slot-scope="scope">
+                    <el-link :href="`/users?userRole=${scope.row.id}:${scope.row.name}`" type="primary"
+                             :underline="false"
+                             v-if="scope.row.userCount > 0">
+                        <strong style="font-size: 16px">{{ scope.row.userCount }}</strong>
+                    </el-link>
+                    <div v-else>—</div>
+                </template>
+            </el-table-column>
+        </el-table>
 
-                <UserRoleEditForm
-                        :dialog-status="dialogUserRoleFormStatus"
-                        :user-role-permissions="userRolePermissions"
-                        :permissions-for-user-role="permissionsForUserRole"
-                        :user-role="getUserRole"
-                        :user-role-form="getUserRoleForm"
-                        :closed="submitUserRoleAction"/>
-                <ConfirmationDialog v-if="hasPermissionToManageUserRoles(scope.row.id)"
-                                    :dialog-status="dialogUserRoleDeleteStatus"
-                                    :confirmation-text="dialogUserRoleDeleteStatus.confirmationText"
-                                    :additional-text="dialogUserRoleDeleteStatus.additionalText"
-                                    :cancel-click-action="() => dialogUserRoleDeleteStatus.visible = false"
-                                    :submit-click-action="button => deleteUserRole(button, scope.row)"
-                                    :closed="submitUserRoleAction"/>
-            </template>
-        </el-table-column>
-        <el-table-column label="User Role ID" min-width="100" align="center">
-            <template slot-scope="scope">
-                <strong style="font-size: 16px">{{ scope.row.id }}</strong>
-            </template>
-        </el-table-column>
-        <el-table-column label="User Role Name" min-width="500" align="center">
-            <template slot-scope="scope">
-                <strong style="font-size: 18px">{{ scope.row.name }}</strong>
-            </template>
-        </el-table-column>
-        <el-table-column label="User Count" min-width="100" align="center">
-            <template slot-scope="scope">
-                <el-link :href="`/users?userRole=${scope.row.id}:${scope.row.name}`" type="primary" :underline="false"
-                         v-if="scope.row.userCount > 0">
-                    <strong style="font-size: 16px">{{ scope.row.userCount }}</strong>
-                </el-link>
-                <div v-else>—</div>
-            </template>
-        </el-table-column>
-    </el-table>
+        <UserRoleEditForm
+                :dialog-status="dialogUserRoleFormStatus"
+                :user-role-permissions="userRolePermissions"
+                :permissions-for-user-role="permissionsForUserRole"
+                :user-role="getUserRole"
+                :user-role-form="getUserRoleForm"
+                :closed="submitUserRoleAction"/>
+        <ConfirmationDialog
+                :dialog-status="dialogUserRoleDeleteStatus"
+                :confirmation-text="dialogUserRoleDeleteStatus.confirmationText"
+                :additional-text="dialogUserRoleDeleteStatus.additionalText"
+                :cancel-click-action="() => dialogUserRoleDeleteStatus.visible = false"
+                :submit-click-action="deleteUserRole"
+                :closed="submitUserRoleAction"/>
+    </div>
 </template>
 
 <style scoped src="@/styles/button.css">
@@ -110,6 +113,8 @@
                 },
                 dialogUserRoleDeleteStatus: {
                     visible: false,
+                    id: null,
+                    name: "",
                     confirmationText: "",
                     additionalText: ""
                 }
@@ -156,6 +161,8 @@
                     let count = response.data;
                     this.dialogUserRoleDeleteStatus.confirmationText = `Are you sure that you want to delete user role "${userRole.name}"?`;
                     this.dialogUserRoleDeleteStatus.additionalText = count > 0 ? `Count of affected users: ${count}` : "";
+                    this.dialogUserRoleDeleteStatus.id = userRole.id;
+                    this.dialogUserRoleDeleteStatus.name = userRole.name;
                     this.dialogUserRoleDeleteStatus.visible = true;
                 }).catch(error => {
                     button.loading = false;
@@ -166,12 +173,12 @@
                     });
                 });
             },
-            deleteUserRole(button, userRole) {
+            deleteUserRole(button) {
                 button.loading = true;
                 this.$store.dispatch(DELETE_HTTP_REQUEST, {
                     server: LOCALHOST,
                     endpoint: format(DELETE_USER_ROLE_ENDPOINT, {
-                        id: userRole.id
+                        id: this.dialogUserRoleDeleteStatus.id
                     }),
                     config: getConfiguration()
                 }).then(() => {
@@ -181,7 +188,7 @@
 
                     this.$notify.success({
                         title: "User role was deleted",
-                        message: `User role "${userRole.name}" was removed`
+                        message: `User role "${this.dialogUserRoleDeleteStatus.name}" was removed`
                     });
                 }).catch(error => {
                     button.loading = false;
