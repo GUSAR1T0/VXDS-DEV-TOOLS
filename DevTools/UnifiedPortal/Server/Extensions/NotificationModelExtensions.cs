@@ -5,13 +5,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
 {
     internal static class NotificationModelExtensions
     {
-        internal static NotificationUpdateEntity ToEntity(this NotificationUpdateModel model) => new NotificationUpdateEntity
+        internal static NotificationUpdateEntity ToEntity(this NotificationUpdateModel model, int? userId) => new NotificationUpdateEntity
         {
             Id = model.Id,
             Message = model.Message,
             Level = model.Level,
             StartTime = model.StartTime.ToLocalTime(),
-            StopTime = model.StopTime.ToLocalTime()
+            StopTime = model.StopTime.ToLocalTime(),
+            UserId = userId
         };
     }
 }

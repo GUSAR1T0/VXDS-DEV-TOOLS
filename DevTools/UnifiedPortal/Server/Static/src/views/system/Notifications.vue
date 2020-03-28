@@ -74,7 +74,11 @@
                     levels: [],
                     startTimeRange: [],
                     stopTimeRange: [],
-                    isActive: true
+                    isActive: true,
+                    userIds: [],
+
+                    userIdOptions: [],
+                    userIdsSearchLoading: false
                 },
                 items: [],
                 dialogNotificationFormStatus: {
@@ -106,7 +110,8 @@
                         min: getDate(this.filter.stopTimeRange[0]),
                         max: getDate(this.filter.stopTimeRange[1])
                     } : null,
-                    isActive: this.filter.isActive
+                    isActive: this.filter.isActive,
+                    userIds: this.filter.userIds
                 };
                 this.$store.dispatch(POST_HTTP_REQUEST, {
                     server: LOCALHOST,
@@ -136,6 +141,10 @@
                 this.filter.startTimeRange = [];
                 this.filter.stopTimeRange = [];
                 this.filter.isActive = true;
+                this.filter.userIds = [];
+
+                this.filter.userIdOptions = [];
+                this.filter.userIdsSearchLoading = false;
             },
             openDialogToCreate() {
                 this.$store.commit(RESET_NOTIFICATION_STORE_STATE);

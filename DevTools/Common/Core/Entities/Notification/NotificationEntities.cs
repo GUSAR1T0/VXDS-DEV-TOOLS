@@ -11,6 +11,10 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Notification
         public NotificationLevel Level { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime StopTime { get; set; }
+        public int UserId { get; set; }
+        public string Color { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 
     public class NotificationPagingFilter : IPagingFilterEntity
@@ -20,6 +24,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Notification
         public RangeFilter<DateTime> StartTimeRange { get; set; }
         public RangeFilter<DateTime> StopTimeRange { get; set; }
         public bool? IsActive { get; set; }
+        public IEnumerable<int> UserIds { get; set; }
     }
 
     public class NotificationPagingRequest : ServerSidePagingRequest<NotificationPagingFilter>
@@ -37,5 +42,6 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Notification
         public NotificationLevel Level { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime StopTime { get; set; }
+        public int? UserId { get; set; }
     }
 }

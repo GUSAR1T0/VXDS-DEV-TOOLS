@@ -43,6 +43,17 @@
                     </strong>
                 </template>
             </el-table-column>
+            <el-table-column label="Created by User" min-width="300" align="center">
+                <template slot-scope="scope">
+                    <UserAvatarAndFullNameWithLink
+                            style="text-align: left"
+                            :first-name="scope.row.firstName"
+                            :last-name="scope.row.lastName"
+                            :color="scope.row.color"
+                            :user-id="scope.row.userId"
+                    />
+                </template>
+            </el-table-column>
             <el-table-column label="Notification Date / Time" min-width="400" align="center">
                 <template slot-scope="scope">
                     <div style="font-size: 16px">
@@ -88,6 +99,7 @@
 
     import NotificationEditForm from "@/components/notifications/NotificationEditForm";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
+    import UserAvatarAndFullNameWithLink from "@/components/user/UserAvatarAndFullNameWithLink";
 
     export default {
         name: "NotificationsTable",
@@ -97,7 +109,8 @@
         },
         components: {
             NotificationEditForm,
-            ConfirmationDialog
+            ConfirmationDialog,
+            UserAvatarAndFullNameWithLink
         },
         data() {
             return {

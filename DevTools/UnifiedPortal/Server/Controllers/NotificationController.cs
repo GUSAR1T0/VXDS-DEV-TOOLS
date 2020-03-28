@@ -48,7 +48,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [HttpPut]
         public async Task<ActionResult> ModifyNotification([FromBody] NotificationUpdateModel model) => await Execute(async operation =>
         {
-            var entity = model.ToEntity();
+            var entity = model.ToEntity(UserId);
             await notificationService.ModifyNotification(operation, entity);
         });
 

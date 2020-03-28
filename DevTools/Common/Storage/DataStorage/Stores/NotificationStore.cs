@@ -22,6 +22,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         {
             var selectBase = $@"
                 SELECT {{0}} FROM [portal].[Notification] pn
+                LEFT JOIN [authentication].[User] au ON au.[Id] = pn.[UserId]
                 {{1}}
                 {{2}}
             ";
@@ -30,7 +31,11 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     pn.[Message],
                     pn.[LevelId] AS [Level],
                     pn.[StartTime],
-                    pn.[StopTime]
+                    pn.[StopTime],
+                    pn.[UserId],
+                    au.[Color],
+                    au.[FirstName],
+                    au.[LastName]
             ";
             const string selectTotal = "COUNT_BIG(1)";
             var (@params, joins, filters) = HandleGetRequest(request.Filter);
@@ -83,6 +88,12 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 filters.Add($"@Now {(filter.IsActive == false ? "NOT " : "")}BETWEEN pn.[StartTime] AND pn.[StopTime]");
             }
 
+            if (filter.UserIds?.Any() == true)
+            {
+                @params.Add("UserIds", filter.UserIds);
+                filters.Add("pn.[UserId] IN @UserIds");
+            }
+
             return (@params, "", filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
         }
 
@@ -96,7 +107,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                         @Message   [Message],
                         @Level     [LevelId],
                         @StartTime [StartTime],
-                        @StopTime  [StopTime]
+                        @StopTime  [StopTime],
+                        @UserId    [UserId]
                 ) AS source
                 ON target.[Id] = source.[Id]
                 WHEN MATCHED THEN UPDATE SET
@@ -104,8 +116,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     target.[LevelId] = source.[LevelId],
                     target.[StartTime] = source.[StartTime],
                     target.[StopTime] = source.[StopTime]
-                WHEN NOT MATCHED THEN INSERT ([Message], [LevelId], [StartTime], [StopTime])
-                    VALUES (source.[Message], source.[LevelId], source.[StartTime], source.[StopTime]);
+                WHEN NOT MATCHED THEN INSERT ([Message], [LevelId], [StartTime], [StopTime], [UserId])
+                    VALUES (source.[Message], source.[LevelId], source.[StartTime], source.[StopTime], source.[UserId]);
             ");
         }
 

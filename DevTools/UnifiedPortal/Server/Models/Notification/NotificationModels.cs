@@ -19,6 +19,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification
         public DateTime StartDateTime { get; set; }
         public string StopTime { get; set; }
         public DateTime StopDateTime { get; set; }
+        public int? UserId { get; set; }
+        public string Color { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
         public NotificationModel ToModel(NotificationEntity entity)
         {
@@ -29,6 +33,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification
             StartDateTime = entity.StartTime;
             StopTime = entity.StopTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
             StopDateTime = entity.StopTime;
+            UserId = entity.UserId;
+            Color = entity.Color;
+            FirstName = entity.FirstName;
+            LastName = entity.LastName;
             return this;
         }
     }
@@ -40,6 +48,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification
         public RangeFilterModel<DateTime> StartTimeRange { get; set; }
         public RangeFilterModel<DateTime> StopTimeRange { get; set; }
         public bool? IsActive { get; set; }
+        public IEnumerable<int> UserIds { get; set; }
 
         public NotificationPagingFilter ToEntity() => new NotificationPagingFilter
         {
@@ -47,7 +56,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification
             Levels = Levels,
             StartTimeRange = StartTimeRange.ToEntity(),
             StopTimeRange = StopTimeRange.ToEntity(),
-            IsActive = IsActive
+            IsActive = IsActive,
+            UserIds = UserIds
         };
     }
 
@@ -78,5 +88,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification
         public NotificationLevel Level { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime StopTime { get; set; }
+        public int? UserId { get; set; }
     }
 }
