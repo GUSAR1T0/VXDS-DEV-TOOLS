@@ -51,3 +51,6 @@ export const GET_PROJECT_PROFILE_ENDPOINT = "project/{id}";
 export const CREATE_PROJECT_PROFILE_ENDPOINT = "project";
 export const UPDATE_PROJECT_PROFILE_ENDPOINT = "project/{id}";
 export const DELETE_PROJECT_PROFILE_ENDPOINT = "project/{id}";
+
+// Notifications endpoints
+export const GET_NOTIFICATION_LIST_ENDPOINT = "notification/list";

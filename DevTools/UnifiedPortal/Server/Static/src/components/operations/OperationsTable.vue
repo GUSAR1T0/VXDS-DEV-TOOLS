@@ -85,7 +85,7 @@
                 <template slot-scope="scope">
                     <el-tooltip effect="dark" placement="top">
                         <div slot="content">
-                            To Incident
+                            To Incident Page
                         </div>
                         <el-button type="info" plain circle
                                    @click="$router.push(`/system/operation/${scope.row.id}/incident`)"
@@ -113,7 +113,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="Operation ID / Scope / Context" min-width="900">
+            <el-table-column label="Operation ID / Scope / Context" min-width="900" align="center">
                 <template slot-scope="scope">
                     <div style="font-size: 22px; padding-bottom: 5px">
                         <strong>{{ scope.row.id }}</strong>
@@ -126,9 +126,10 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="Performed by User" min-width="300">
+            <el-table-column label="Performed by User" min-width="300" align="center">
                 <template slot-scope="scope">
                     <UserAvatarAndFullNameWithLink
+                            style="text-align: left"
                             :first-name="getOperationFirstName(scope.row.firstName)"
                             :last-name="scope.row.lastName"
                             :color="scope.row.color"
@@ -136,7 +137,7 @@
                     />
                 </template>
             </el-table-column>
-            <el-table-column label="Operation Date / Time" min-width="400">
+            <el-table-column label="Operation Date / Time" min-width="400" align="center">
                 <template slot-scope="scope">
                     <div style="font-size: 16px">
                         <strong>Start Time</strong>: {{ scope.row.startTime }}

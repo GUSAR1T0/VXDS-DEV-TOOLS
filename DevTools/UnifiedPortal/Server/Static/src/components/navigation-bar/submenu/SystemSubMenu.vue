@@ -4,6 +4,10 @@
             <fa class="fa-submenu-item" icon="tools"/>
             <span slot="title" class="el-nav-menu-vertical-item">Settings</span>
         </el-menu-item>
+        <el-menu-item index="/system/notifications">
+            <fa class="fa-submenu-item" icon="bell"/>
+            <span slot="title" class="el-nav-menu-vertical-item">Notifications</span>
+        </el-menu-item>
         <el-menu-item index="/system/operations">
             <fa class="fa-submenu-item" icon="file-alt"/>
             <span slot="title" class="el-nav-menu-vertical-item">Operations</span>
