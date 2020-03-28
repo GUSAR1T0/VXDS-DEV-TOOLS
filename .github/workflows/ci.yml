@@ -50,6 +50,6 @@ jobs:
     - run: npm install -C DevTools/UnifiedPortal/Server/Static
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.101'
+        dotnet-version: '3.1.201'
     - run: dotnet restore DevTools/DevTools.sln
     - run: dotnet build DevTools/DevTools.sln

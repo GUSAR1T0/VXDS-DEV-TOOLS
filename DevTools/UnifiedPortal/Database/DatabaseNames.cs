@@ -21,5 +21,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string Incident = "Incident";
         internal const string IncidentStatus = "IncidentStatus";
         internal const string IncidentHistory = "IncidentHistory";
+        internal const string Notification = "Notification";
+        internal const string NotificationLevel = "NotificationLevel";
     }
 }

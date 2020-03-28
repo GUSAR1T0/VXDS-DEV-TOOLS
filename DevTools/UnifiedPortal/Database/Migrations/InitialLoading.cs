@@ -50,6 +50,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Enum.Create.IncidentStatusTable.sql");
                 Execute.EmbeddedScript("InitialLoading.Enum.Insert.IncidentStatuses.sql");
             }
+
+            if (!schema.Table(Table.NotificationLevel).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.NotificationLevelTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.NotificationLevels.sql");
+            }
         }
 
         private void UpgradeAuthenticationSchema()
@@ -123,6 +129,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             {
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.IncidentHistoryTable.sql");
             }
+
+            if (!schema.Table(Table.Notification).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.NotificationTable.sql");
+            }
         }
 
         #endregion
@@ -162,6 +173,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.Incident).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Portal.Drop.IncidentTable.sql");
+                }
+
+                if (schema.Table(Table.Notification).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.NotificationTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Portal.Drop.Schema.sql");
@@ -226,6 +242,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.IncidentStatus).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Enum.Drop.IncidentStatusTable.sql");
+                }
+
+                if (schema.Table(Table.NotificationLevel).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.NotificationLevelTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Enum.Drop.Schema.sql");

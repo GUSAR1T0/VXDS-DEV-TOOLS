@@ -1,5 +1,5 @@
 INSERT INTO [authentication].[UserRolePermission] ([UserRoleId], [PermissionGroupId], [Permissions])
-SELECT 1, 1, 63
+SELECT 1, 1, 127
 UNION ALL
 SELECT 2, 1, 1
 UNION ALL

@@ -93,6 +93,14 @@ export default new Router({
             }
         },
         {
+            path: "/system/notifications",
+            name: "notifications",
+            component: () => import(/* webpackChunkName: "notifications" */ "../views/system/Notifications.vue"),
+            meta: {
+                sectionName: sections.SYSTEM
+            }
+        },
+        {
             path: "/system/operations",
             name: "operations",
             component: () => import(/* webpackChunkName: "operations" */ "../views/system/Operations.vue"),

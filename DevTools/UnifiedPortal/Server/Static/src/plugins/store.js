@@ -9,10 +9,21 @@ import lookup from "@/store/lookup";
 import settings from "@/store/settings";
 import project from "@/store/project";
 import incident from "@/store/incident";
+import notification from "@/store/notification";
 
 Vue.use(Vuex);
 
-let modules = {initialization, httpClient, authentication, userProfile, userRole, lookup, settings, project, incident};
 export default new Vuex.Store({
-    modules
+    modules: {
+        initialization,
+        httpClient,
+        authentication,
+        userProfile,
+        userRole,
+        lookup,
+        settings,
+        project,
+        incident,
+        notification
+    }
 });

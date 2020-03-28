@@ -47,6 +47,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             services.AddScoped<IPortalSettingsStore, PortalSettingsStore>();
             services.AddScoped<IProjectStore, ProjectStore>();
             services.AddScoped<IIncidentStore, IncidentStore>();
+            services.AddScoped<INotificationStore, NotificationStore>();
 
             // Services
             services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
@@ -64,6 +65,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             services.AddScoped<IOperationWithLogsService, OperationWithLogsService>();
             services.AddScoped<IPortalSettingsService, PortalSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddRouting(options => options.LowercaseUrls = true);

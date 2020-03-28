@@ -22,6 +22,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication
         ManageProjects = 16,
 
         [Description("Manage Incidents")]
-        ManageIncidents = 32
+        ManageIncidents = 32,
+
+        [Description("Manage Notifications")]
+        ManageNotifications = 64
     }
 }
