@@ -5,6 +5,7 @@ using VXDesign.Store.DevTools.Common.Core.Controllers;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Services;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication;
+using VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
@@ -34,5 +35,35 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
             var response = new NotificationPagingResponseModel().ToModel(items);
             return response;
         });
+
+        /// <summary>
+        /// Creates new or updates existed notification
+        /// </summary>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.ManageNotifications)]
+        [HttpPut]
+        public async Task<ActionResult> ModifyNotification([FromBody] NotificationUpdateModel model) => await Execute(async operation =>
+        {
+            var entity = model.ToEntity();
+            await notificationService.ModifyNotification(operation, entity);
+        });
+
+        /// <summary>
+        /// Removes an existed notification
+        /// </summary>
+        /// <param name="id">ID of a notification</param>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.ManageNotifications)]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteUserRole(int id) => await Execute(async operation => await notificationService.DeleteNotificationById(operation, id));
     }
 }

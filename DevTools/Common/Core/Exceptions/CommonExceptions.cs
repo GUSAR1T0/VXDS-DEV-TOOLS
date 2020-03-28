@@ -133,5 +133,14 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         }
 
         #endregion
+
+        #region Notifications
+
+        public static NotFoundException NotificationWasNotFound(IOperation operation, int notificationId)
+        {
+            return new NotFoundException(operation, $"Notification with ID \"{notificationId}\" wasn't found");
+        }
+
+        #endregion
     }
 }

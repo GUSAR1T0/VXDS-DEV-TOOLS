@@ -11,6 +11,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
     public interface INotificationStore
     {
         Task<(long total, IEnumerable<NotificationEntity> notifications)> Get(IOperation operation, NotificationPagingRequest request);
+        Task ModifyNotification(IOperation operation, NotificationUpdateEntity entity);
+        Task<bool> IsNotificationExist(IOperation operation, int id);
+        Task DeleteNotificationById(IOperation operation, int id);
     }
 
     public class NotificationStore : BaseDataStore, INotificationStore
@@ -81,6 +84,46 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             }
 
             return (@params, "", filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
+        }
+
+        public async Task ModifyNotification(IOperation operation, NotificationUpdateEntity entity)
+        {
+            await operation.Connection.ExecuteAsync(entity, @"
+                MERGE [portal].[Notification] AS target
+                USING (
+                    SELECT
+                        @Id        [Id],
+                        @Message   [Message],
+                        @Level     [LevelId],
+                        @StartTime [StartTime],
+                        @StopTime  [StopTime]
+                ) AS source
+                ON target.[Id] = source.[Id]
+                WHEN MATCHED THEN UPDATE SET
+                    target.[Message] = source.[Message],
+                    target.[LevelId] = source.[LevelId],
+                    target.[StartTime] = source.[StartTime],
+                    target.[StopTime] = source.[StopTime]
+                WHEN NOT MATCHED THEN INSERT ([Message], [LevelId], [StartTime], [StopTime])
+                    VALUES (source.[Message], source.[LevelId], source.[StartTime], source.[StopTime]);
+            ");
+        }
+
+        public async Task<bool> IsNotificationExist(IOperation operation, int id)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = id }, @"
+                SELECT TOP 1 1
+                FROM [portal].[Notification]
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task DeleteNotificationById(IOperation operation, int id)
+        {
+            await operation.Connection.ExecuteAsync(new { Id = id }, @"
+                DELETE FROM [portal].[Notification]
+                WHERE [Id] = @Id;
+            ");
         }
     }
 }

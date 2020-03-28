@@ -54,3 +54,5 @@ export const DELETE_PROJECT_PROFILE_ENDPOINT = "project/{id}";
 
 // Notifications endpoints
 export const GET_NOTIFICATION_LIST_ENDPOINT = "notification/list";
+export const MODIFY_NOTIFICATION_LIST_ENDPOINT = "notification";
+export const DELETE_NOTIFICATION_LIST_ENDPOINT = "notification/{id}";

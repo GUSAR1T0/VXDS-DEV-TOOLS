@@ -29,4 +29,13 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Notification
     public class NotificationPagingResponse : ServerSidePagingResponse<NotificationEntity>
     {
     }
+
+    public class NotificationUpdateEntity : IDataEntity
+    {
+        public int? Id { get; set; }
+        public string Message { get; set; }
+        public NotificationLevel Level { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime StopTime { get; set; }
+    }
 }

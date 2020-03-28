@@ -152,8 +152,7 @@
             dialogStatus: Object,
             closed: Function,
             incidentAuthorIdOptions: Array,
-            incidentAssigneeIdOptions: Array,
-            incidentStatusOptions: Array
+            incidentAssigneeIdOptions: Array
         },
         components: {
             UserAvatarAndFullNameWithLink

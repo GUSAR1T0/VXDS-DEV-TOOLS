@@ -9,4 +9,6 @@ SELECT 8, 1, N'Manage Settings'
 UNION ALL
 SELECT 16, 1, N'Manage Projects'
 UNION ALL
-SELECT 32, 1, N'Manage Incidents';
+SELECT 32, 1, N'Manage Incidents'
+UNION ALL
+SELECT 64, 1, N'Manage Notifications';

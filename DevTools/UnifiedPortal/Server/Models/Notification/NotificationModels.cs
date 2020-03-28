@@ -16,7 +16,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification
         public string Message { get; set; }
         public NotificationLevel Level { get; set; }
         public string StartTime { get; set; }
+        public DateTime StartDateTime { get; set; }
         public string StopTime { get; set; }
+        public DateTime StopDateTime { get; set; }
 
         public NotificationModel ToModel(NotificationEntity entity)
         {
@@ -24,7 +26,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification
             Message = entity.Message;
             Level = entity.Level;
             StartTime = entity.StartTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
+            StartDateTime = entity.StartTime;
             StopTime = entity.StopTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
+            StopDateTime = entity.StopTime;
             return this;
         }
     }
@@ -65,5 +69,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Notification
             Items = entity.Items.Select(item => new NotificationModel().ToModel(item));
             return this;
         }
+    }
+
+    public class NotificationUpdateModel
+    {
+        public int? Id { get; set; }
+        public string Message { get; set; }
+        public NotificationLevel Level { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime StopTime { get; set; }
     }
 }
