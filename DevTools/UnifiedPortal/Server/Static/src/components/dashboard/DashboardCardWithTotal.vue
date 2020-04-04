@@ -10,7 +10,7 @@
                 <div>
                     <div class="dashboard-total-key">Total:</div>
                     <div class="dashboard-total-value">
-                        <strong>{{ total > 0 ? total : "—" }}</strong>
+                        <strong>{{ total === null ? "—" : total }}</strong>
                     </div>
                 </div>
             </el-col>

@@ -30,6 +30,7 @@ export const GET_USER_ROLE_PERMISSIONS_ENDPOINT = "userRole/permissions";
 export const GET_NOTIFICATIONS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/notifications";
 export const GET_INCIDENTS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/incidents";
 export const GET_SERVER_TIME_FOR_DASHBOARD_ENDPOINT = "dashboard/serverDateTime";
+export const GET_SERVER_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT = "dashboard/serverHealthCheck";
 export const GET_USERS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/users";
 export const GET_USER_ROLES_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/userRoles";
 export const GET_PROJECTS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/projects";

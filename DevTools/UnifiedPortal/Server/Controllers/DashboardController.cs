@@ -76,6 +76,21 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
+        /// Obtains server health check data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(ServerDateTimeModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("serverHealthCheck")]
+        public ActionResult<ServerHealthCheckDataModel> GetServerHealthCheck() => Execute(_ => new ServerHealthCheckDataModel
+        {
+            IsOk = new Random().Next(100) < 50 // TODO: Implement checker
+        });
+
+        /// <summary>
         /// Obtains users data for admin panel
         /// </summary>
         /// <returns>Model of admin panel data</returns>

@@ -11,11 +11,7 @@
                 </template>
                 <template slot="third">
                     <ServerTimeCard class="card-top"/>
-                    <el-card shadow="hover" class="card-bottom">
-                        <div class="card-item">
-                            <strong style="font-size: 48px">...</strong>
-                        </div>
-                    </el-card>
+                    <HealthCheckCard class="card-bottom"/>
                 </template>
             </Blocks>
         </el-collapse-item>
@@ -43,16 +39,6 @@
 </template>
 
 <style scoped>
-    /*noinspection ALL*/
-    .card-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: -moz-available;
-        height: -webkit-fill-available;
-        height: fill-available;
-    }
-
     .card-top {
         margin: 10px 10px 40px;
         height: 275px;
@@ -75,6 +61,7 @@
     import NotificationsCard from "@/components/dashboard/NotificationsCard";
     import IncidentsCard from "@/components/dashboard/IncidentsCard";
     import ServerTimeCard from "@/components/dashboard/ServerTimeCard";
+    import HealthCheckCard from "@/components/dashboard/HealthCheckCard";
 
     export default {
         name: "Home",
@@ -88,7 +75,8 @@
             SystemCard,
             NotificationsCard,
             IncidentsCard,
-            ServerTimeCard
+            ServerTimeCard,
+            HealthCheckCard
         },
         data() {
             return {
