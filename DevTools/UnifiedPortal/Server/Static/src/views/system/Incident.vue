@@ -14,7 +14,7 @@
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="getIncident.operation.id > -1 && hasPermissionToManageIncidents">
+                                v-if="getIncident.operation.id > -1">
                         <div slot="content">
                             Edit This Incident
                         </div>
@@ -222,7 +222,7 @@
                                                         Edit This Comment
                                                     </div>
                                                     <el-button type="primary" plain circle
-                                                               v-if="item.changedBy === getUserId"
+                                                               v-if="item.changedBy === getUserId || hasPermissionToManageIncidentComments"
                                                                @click="editComment(item.comment, item.id)"
                                                                class="rounded-button">
                                                         <span><fa icon="edit"/></span>
@@ -234,7 +234,7 @@
                                                         Delete This Comment
                                                     </div>
                                                     <el-button type="danger" plain circle
-                                                               v-if="item.changedBy === getUserId && item.comment"
+                                                               v-if="(item.changedBy === getUserId || hasPermissionToManageIncidentComments) && item.comment"
                                                                @click="deleteComment(item.comment, item.id)"
                                                                class="rounded-button">
                                                         <span><fa icon="trash-alt"/></span>
@@ -419,8 +419,8 @@
                 "getIncidentAssigneeOptions",
                 "getUserId"
             ]),
-            hasPermissionToManageIncidents() {
-                return this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_INCIDENTS);
+            hasPermissionToManageIncidentComments() {
+                return this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_INCIDENT_COMMENTS);
             }
         },
         methods: {

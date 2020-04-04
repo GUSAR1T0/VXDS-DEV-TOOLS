@@ -1,33 +1,17 @@
 <template>
     <el-collapse v-model="activeNames" style="margin-top: 10px">
-        <el-collapse-item title="User Profile & ..." name="1">
+        <el-collapse-item title="User Profile & Server" name="1">
             <Blocks>
                 <template slot="first">
                     <UserProfileCard/>
                 </template>
                 <template slot="second">
-                    <el-card shadow="hover" class="card-top">
-                        <div class="card-item">
-                            <strong style="font-size: 48px">...</strong>
-                        </div>
-                    </el-card>
-                    <el-card shadow="hover" class="card-bottom">
-                        <div class="card-item">
-                            <strong style="font-size: 48px">...</strong>
-                        </div>
-                    </el-card>
+                    <NotificationsCard class="card-top"/>
+                    <IncidentsCard class="card-bottom"/>
                 </template>
                 <template slot="third">
-                    <el-card shadow="hover" class="card-top">
-                        <div class="card-item">
-                            <strong style="font-size: 48px">...</strong>
-                        </div>
-                    </el-card>
-                    <el-card shadow="hover" class="card-bottom">
-                        <div class="card-item">
-                            <strong style="font-size: 48px">...</strong>
-                        </div>
-                    </el-card>
+                    <ServerTimeCard class="card-top"/>
+                    <HealthCheckCard class="card-bottom"/>
                 </template>
             </Blocks>
         </el-collapse-item>
@@ -55,16 +39,6 @@
 </template>
 
 <style scoped>
-    /*noinspection ALL*/
-    .card-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: -moz-available;
-        height: -webkit-fill-available;
-        height: fill-available;
-    }
-
     .card-top {
         margin: 10px 10px 40px;
         height: 275px;
@@ -84,6 +58,10 @@
     import ProjectsCard from "@/components/dashboard/ProjectsCard";
     import ModulesCard from "@/components/dashboard/ModulesCard";
     import SystemCard from "@/components/dashboard/SystemCard";
+    import NotificationsCard from "@/components/dashboard/NotificationsCard";
+    import IncidentsCard from "@/components/dashboard/IncidentsCard";
+    import ServerTimeCard from "@/components/dashboard/ServerTimeCard";
+    import HealthCheckCard from "@/components/dashboard/HealthCheckCard";
 
     export default {
         name: "Home",
@@ -94,7 +72,11 @@
             UserRolesCard,
             ProjectsCard,
             ModulesCard,
-            SystemCard
+            SystemCard,
+            NotificationsCard,
+            IncidentsCard,
+            ServerTimeCard,
+            HealthCheckCard
         },
         data() {
             return {

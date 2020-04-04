@@ -47,7 +47,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Incident
 
     public class IncidentCommentModel
     {
-        public int? HistoryId { get; set; }
+        public long? HistoryId { get; set; }
         public string Comment { get; set; }
     }
 }
