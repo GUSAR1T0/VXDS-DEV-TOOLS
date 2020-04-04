@@ -1,28 +1,16 @@
 <template>
     <el-collapse v-model="activeNames" style="margin-top: 10px">
-        <el-collapse-item title="User Profile & ..." name="1">
+        <el-collapse-item title="User Profile & Server" name="1">
             <Blocks>
                 <template slot="first">
                     <UserProfileCard/>
                 </template>
                 <template slot="second">
-                    <el-card shadow="hover" class="card-top">
-                        <div class="card-item">
-                            <strong style="font-size: 48px">...</strong>
-                        </div>
-                    </el-card>
-                    <el-card shadow="hover" class="card-bottom">
-                        <div class="card-item">
-                            <strong style="font-size: 48px">...</strong>
-                        </div>
-                    </el-card>
+                    <NotificationsCard class="card-top"/>
+                    <IncidentsCard class="card-bottom"/>
                 </template>
                 <template slot="third">
-                    <el-card shadow="hover" class="card-top">
-                        <div class="card-item">
-                            <strong style="font-size: 48px">...</strong>
-                        </div>
-                    </el-card>
+                    <ServerTimeCard class="card-top"/>
                     <el-card shadow="hover" class="card-bottom">
                         <div class="card-item">
                             <strong style="font-size: 48px">...</strong>
@@ -84,6 +72,9 @@
     import ProjectsCard from "@/components/dashboard/ProjectsCard";
     import ModulesCard from "@/components/dashboard/ModulesCard";
     import SystemCard from "@/components/dashboard/SystemCard";
+    import NotificationsCard from "@/components/dashboard/NotificationsCard";
+    import IncidentsCard from "@/components/dashboard/IncidentsCard";
+    import ServerTimeCard from "@/components/dashboard/ServerTimeCard";
 
     export default {
         name: "Home",
@@ -94,7 +85,10 @@
             UserRolesCard,
             ProjectsCard,
             ModulesCard,
-            SystemCard
+            SystemCard,
+            NotificationsCard,
+            IncidentsCard,
+            ServerTimeCard
         },
         data() {
             return {

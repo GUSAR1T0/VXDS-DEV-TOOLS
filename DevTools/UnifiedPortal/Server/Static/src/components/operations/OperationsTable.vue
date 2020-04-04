@@ -93,7 +93,7 @@
                             <span><fa icon="exclamation-triangle"/></span>
                         </el-button>
                     </el-tooltip>
-                    <el-tooltip effect="dark" placement="top" v-if="hasPermissionToManageIncidents">
+                    <el-tooltip effect="dark" placement="top">
                         <div slot="content">
                             Initialize Incident
                         </div>
@@ -176,7 +176,6 @@
 <script>
     import { mapGetters } from "vuex";
     import { UNASSIGNED, UNAUTHORIZED } from "@/constants/formatPattern";
-    import { PORTAL_PERMISSION } from "@/constants/permissions";
     import {
         PREPARE_INCIDENT_FORM,
         RESET_INCIDENT_STORE_STATE,
@@ -209,7 +208,6 @@
         },
         computed: {
             ...mapGetters([
-                "hasPortalPermission",
                 "getLookupValues",
                 "getIncident",
                 "getIncidentForm",
@@ -217,10 +215,7 @@
                 "getIncidentAssigneeOptions",
                 "getUserId",
                 "getFullName"
-            ]),
-            hasPermissionToManageIncidents() {
-                return this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_INCIDENTS);
-            }
+            ])
         },
         methods: {
             defineOperationResultIcon(row) {

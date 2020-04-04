@@ -10,7 +10,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task<IncidentFullEntity> GetIncidentWithHistory(IOperation operation, long operationId);
         Task<bool> IsIncidentExist(IOperation operation, long operationId);
         Task InitializeIncident(IOperation operation, IncidentUpdateEntity entity);
-        Task SaveComment(IOperation operation, long operationId, int? userId, int? historyId, string comment);
+        Task<int?> GetChangeInitiator(IOperation operation, long historyId);
+        Task<bool> IsIncidentHistoryChangeExist(IOperation operation, long historyId);
+        Task SaveComment(IOperation operation, long operationId, int? userId, long? historyId, string comment);
         Task DeleteComment(IOperation operation, long historyId);
         Task UpdateIncident(IOperation operation, IncidentUpdateEntity entity, IncidentHistoryRecordEntity history);
     }
@@ -137,7 +139,25 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ");
         }
 
-        public async Task SaveComment(IOperation operation, long operationId, int? userId, int? historyId, string comment)
+        public async Task<int?> GetChangeInitiator(IOperation operation, long historyId)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<int?>(new { Id = historyId }, @"
+                SELECT TOP 1 [ChangedBy]
+                FROM [portal].[IncidentHistory]
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task<bool> IsIncidentHistoryChangeExist(IOperation operation, long historyId)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = historyId }, @"
+                SELECT TOP 1 1
+                FROM [portal].[IncidentHistory]
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task SaveComment(IOperation operation, long operationId, int? userId, long? historyId, string comment)
         {
             await operation.Connection.ExecuteAsync(new
             {
@@ -149,7 +169,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 MERGE [portal].[IncidentHistory] t
                 USING (SELECT @Id [Id]) s
                 ON t.[Id] = s.[Id]
-                WHEN MATCHED AND t.[ChangedBy] = @ChangedBy THEN
+                WHEN MATCHED THEN
                     UPDATE SET
                         t.[Comment] = @Comment
                 WHEN NOT MATCHED THEN

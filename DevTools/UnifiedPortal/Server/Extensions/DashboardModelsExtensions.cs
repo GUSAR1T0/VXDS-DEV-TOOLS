@@ -7,6 +7,17 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
 {
     internal static class DashboardModelsExtensions
     {
+        internal static NotificationsDataModel ToModel(this NotificationsDataEntity entity) => new NotificationsDataModel
+        {
+            NotificationsCount = entity.NotificationsCount
+        };
+
+        internal static IncidentsDataModel ToModel(this IncidentsDataEntity entity) => new IncidentsDataModel
+        {
+            AssigneeIncidentsCount = entity.AssigneeIncidentsCount,
+            AuthorIncidentsCount = entity.AuthorIncidentsCount
+        };
+
         internal static UsersDataModel ToModel(this UsersDataEntity entity) => new UsersDataModel
         {
             ActivatedCount = entity.ActivatedCount,

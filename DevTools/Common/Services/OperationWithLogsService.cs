@@ -19,7 +19,8 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         Task<IncidentFullEntity> GetIncidentWithHistory(IOperation operation, long operationId);
         Task InitializeIncident(IOperation operation, IncidentUpdateEntity entity);
-        Task SaveComment(IOperation operation, long operationId, int? userId, int? historyId, string comment);
+        Task<int?> GetChangeInitiator(IOperation operation, long operationId, long historyId);
+        Task SaveComment(IOperation operation, long operationId, int? userId, long? historyId, string comment);
         Task DeleteComment(IOperation operation, long operationId, long historyId);
         Task UpdateIncident(IOperation operation, IncidentUpdateEntity entity);
 
@@ -87,16 +88,36 @@ namespace VXDesign.Store.DevTools.Common.Services
             await incidentStore.InitializeIncident(operation, entity);
         }
 
-        public async Task SaveComment(IOperation operation, long operationId, int? userId, int? historyId, string comment)
+        public async Task<int?> GetChangeInitiator(IOperation operation, long operationId, long historyId)
         {
-            if (string.IsNullOrWhiteSpace(comment))
-            {
-                throw CommonExceptions.IncidentCommentIsEmpty(operation);
-            }
-
             if (!await incidentStore.IsIncidentExist(operation, operationId))
             {
                 throw CommonExceptions.IncidentWasNotFound(operation, operationId);
+            }
+
+            if (!await incidentStore.IsIncidentHistoryChangeExist(operation, historyId))
+            {
+                throw CommonExceptions.IncidentHistoryChangeWasNotFound(operation, operationId, historyId);
+            }
+
+            return await incidentStore.GetChangeInitiator(operation, historyId);
+        }
+
+        public async Task SaveComment(IOperation operation, long operationId, int? userId, long? historyId, string comment)
+        {
+            if (!await incidentStore.IsIncidentExist(operation, operationId))
+            {
+                throw CommonExceptions.IncidentWasNotFound(operation, operationId);
+            }
+
+            if (historyId.HasValue && !await incidentStore.IsIncidentHistoryChangeExist(operation, historyId.Value))
+            {
+                throw CommonExceptions.IncidentHistoryChangeWasNotFound(operation, operationId, historyId.Value);
+            }
+
+            if (string.IsNullOrWhiteSpace(comment) && historyId.HasValue)
+            {
+                await incidentStore.DeleteComment(operation, historyId.Value);
             }
 
             await incidentStore.SaveComment(operation, operationId, userId, historyId, comment);
@@ -107,6 +128,11 @@ namespace VXDesign.Store.DevTools.Common.Services
             if (!await incidentStore.IsIncidentExist(operation, operationId))
             {
                 throw CommonExceptions.IncidentWasNotFound(operation, operationId);
+            }
+
+            if (!await incidentStore.IsIncidentHistoryChangeExist(operation, historyId))
+            {
+                throw CommonExceptions.IncidentHistoryChangeWasNotFound(operation, operationId, historyId);
             }
 
             await incidentStore.DeleteComment(operation, historyId);

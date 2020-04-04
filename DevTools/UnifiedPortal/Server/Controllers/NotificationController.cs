@@ -27,7 +27,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(NotificationPagingResponseModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
-        [PortalAuthentication]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
         [HttpPost("list")]
         public async Task<ActionResult<NotificationPagingResponseModel>> GetNotifications([FromBody] NotificationPagingRequestModel model) => await Execute(async operation =>
         {

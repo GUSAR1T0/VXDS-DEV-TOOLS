@@ -1,7 +1,9 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
+using VXDesign.Store.DevTools.Common.Core.Exceptions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Services;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication;
@@ -46,7 +48,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
         [HttpGet("{id}/incident")]
         public async Task<ActionResult<IncidentModel>> GetIncident(long id) => await Execute(async operation =>
         {
@@ -62,10 +64,18 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
         [HttpPut("{id}/incident/comment")]
         public async Task<ActionResult> SaveIncidentComment(long id, [FromBody] IncidentCommentModel model) => await Execute(async operation =>
         {
+            var portalPermissions = (PortalPermission) (UserPermissions.FirstOrDefault(item => item.PermissionGroupId == 1)?.Permissions ?? 0);
+            if (model.HistoryId.HasValue &&
+                UserId != await operationWithLogsService.GetChangeInitiator(operation, id, model.HistoryId.Value) &&
+                (portalPermissions & PortalPermission.ManageIncidentComments) == 0)
+            {
+                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
+            }
+
             await operationWithLogsService.SaveComment(operation, id, UserId, model.HistoryId, model.Comment);
         });
 
@@ -77,10 +87,17 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
         [HttpDelete("{id}/incident/comment/{historyId}")]
         public async Task<ActionResult> DeleteIncidentComment(long id, long historyId) => await Execute(async operation =>
         {
+            var portalPermissions = (PortalPermission) (UserPermissions.FirstOrDefault(item => item.PermissionGroupId == 1)?.Permissions ?? 0);
+            if (UserId != await operationWithLogsService.GetChangeInitiator(operation, id, historyId) &&
+                (portalPermissions & PortalPermission.ManageIncidentComments) == 0)
+            {
+                throw CommonExceptions.AccessDenied(operation, StatusCodes.Status403Forbidden);
+            }
+
             await operationWithLogsService.DeleteComment(operation, id, historyId);
         });
 
@@ -93,7 +110,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication(PortalPermission.ManageIncidents)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
         [HttpPost("{id}/incident")]
         public async Task<ActionResult> InitializeIncident(long id, [FromBody] IncidentUpdateModel model) => await Execute(async operation =>
         {
@@ -111,7 +128,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
-        [PortalAuthentication(PortalPermission.ManageIncidents)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
         [HttpPut("{id}/incident")]
         public async Task<ActionResult> UpdateIncident(long id, [FromBody] IncidentUpdateModel model) => await Execute(async operation =>
         {

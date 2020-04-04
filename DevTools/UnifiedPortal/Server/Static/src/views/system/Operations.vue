@@ -144,16 +144,50 @@
             searchById(id) {
                 if (id && !isNaN(id)) {
                     id = parseInt(id);
-                    this.filter.ids = [id];
+                    this.filter.ids = [ id ];
+                }
+            },
+            searchByIncidentAssignee(user) {
+                if (user) {
+                    let userIdAndFullName = user.split(":");
+                    if (userIdAndFullName && userIdAndFullName.length === 2 && !isNaN(userIdAndFullName[0]) && userIdAndFullName[1]) {
+                        let userId = parseInt(userIdAndFullName[0]);
+                        this.filter.incidentAssigneeIdOptions = [ {
+                            id: userId,
+                            fullName: userIdAndFullName[1]
+                        } ];
+                        this.filter.incidentAssigneeIds = [ userId ];
+                    }
+                }
+            },
+            searchByIncidentAuthor(user) {
+                if (user) {
+                    let userIdAndFullName = user.split(":");
+                    if (userIdAndFullName && userIdAndFullName.length === 2 && !isNaN(userIdAndFullName[0]) && userIdAndFullName[1]) {
+                        let userId = parseInt(userIdAndFullName[0]);
+                        this.filter.incidentAuthorIdOptions = [ {
+                            id: userId,
+                            fullName: userIdAndFullName[1]
+                        } ];
+                        this.filter.incidentAuthorIds = [ userId ];
+                    }
                 }
             }
         },
         mounted() {
             this.searchById(this.$route.query.id);
+            this.searchByIncidentAssignee(this.$route.query.incidentAssignee);
+            this.searchByIncidentAuthor(this.$route.query.incidentAuthor);
+            this.filter.hasIncident = this.$route.query.hasIncident !== undefined ? this.$route.query.hasIncident === "true" : null;
+            this.filter.incidentStatuses = this.$route.query.isIncidentActive !== undefined && this.$route.query.isIncidentActive === "true" ? [ "1", "2" ] : [];
             this.loadOperations();
         },
         beforeRouteUpdate(to, from, next) {
             this.searchById(to.query.id);
+            this.searchByIncidentAssignee(to.query.incidentAssignee);
+            this.searchByIncidentAuthor(to.query.incidentAuthor);
+            this.filter.hasIncident = to.query.hasIncident !== undefined ? to.query.hasIncident === "true" : null;
+            this.filter.incidentStatuses = to.query.isIncidentActive !== undefined && to.query.isIncidentActive === "true" ? [ "1", "2" ] : [];
             this.loadOperations();
             next();
         }

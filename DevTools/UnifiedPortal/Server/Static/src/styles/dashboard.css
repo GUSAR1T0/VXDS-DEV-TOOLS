@@ -10,3 +10,13 @@
     margin-top: 20px;
     width: 100%;
 }
+
+/*noinspection ALL*/
+.dashboard-main-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: -moz-available;
+    height: -webkit-fill-available;
+    height: fill-available;
+}

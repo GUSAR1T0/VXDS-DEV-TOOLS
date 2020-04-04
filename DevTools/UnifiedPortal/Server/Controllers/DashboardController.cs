@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,60 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         {
             this.dashboardService = dashboardService;
         }
+
+        /// <summary>
+        /// Obtains notifications data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(NotificationsDataModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("notifications")]
+        public async Task<ActionResult<NotificationsDataModel>> GetNotificationsData() => await Execute(async operation =>
+        {
+            var entity = await dashboardService.GetNotificationsData(operation);
+            return entity.ToModel();
+        });
+
+        /// <summary>
+        /// Obtains incidents data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(IncidentsDataModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("incidents")]
+        public async Task<ActionResult<IncidentsDataModel>> GetIncidentsData() => await Execute(async operation =>
+        {
+            var entity = await dashboardService.GetIncidentsData(operation, UserId.Value);
+            return entity.ToModel();
+        });
+
+        /// <summary>
+        /// Obtains server date / time data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(ServerDateTimeModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("serverDateTime")]
+        public ActionResult<ServerDateTimeModel> GetServerDateTime() => Execute(_ =>
+        {
+            var dateTime = DateTime.Now.ToUniversalTime();
+            return new ServerDateTimeModel
+            {
+                Hours = dateTime.ToString("HH"),
+                Minutes = dateTime.ToString("mm"),
+                DayOfWeek = dateTime.ToString("dddd"),
+                Date = dateTime.ToString("dd MMMM yyyy")
+            };
+        });
 
         /// <summary>
         /// Obtains users data for admin panel

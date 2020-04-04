@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Core.Entities.Dashboard;
+using VXDesign.Store.DevTools.Common.Core.Entities.Incident;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
 namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 {
     public interface IDashboardStore
     {
+        Task<NotificationsDataEntity> GetNotificationsData(IOperation operation);
+        Task<IncidentsDataEntity> GetIncidentsData(IOperation operation, int userId);
         Task<UsersDataEntity> GetUsersData(IOperation operation);
         Task<(IEnumerable<UserRoleDataEntity> userRoles, int total)> GetUserRolesData(IOperation operation);
         Task<ProjectsDataEntity> GetProjectsData(IOperation operation);
@@ -16,6 +19,32 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 
     public class DashboardStore : BaseDataStore, IDashboardStore
     {
+        public async Task<NotificationsDataEntity> GetNotificationsData(IOperation operation)
+        {
+            return await operation.Connection.QueryFirstAsync<NotificationsDataEntity>(new
+            {
+                Now = DateTime.Now.ToUniversalTime()
+            }, @"
+                SELECT COUNT(IIF(@Now BETWEEN [StartTime] AND [StopTime], 1, NULL)) AS [NotificationsCount]
+                FROM [portal].[Notification];
+            ");
+        }
+
+        public async Task<IncidentsDataEntity> GetIncidentsData(IOperation operation, int userId)
+        {
+            return await operation.Connection.QueryFirstAsync<IncidentsDataEntity>(new
+            {
+                UserId = userId,
+                Statuses = new[] { IncidentStatus.Opened, IncidentStatus.InProgress }
+            }, @"
+                SELECT
+                    COUNT(IIF([AssigneeId] = @UserId, 1, NULL)) AS [AssigneeIncidentsCount],
+                    COUNT(IIF([AuthorId] = @UserId, 1, NULL)) AS [AuthorIncidentsCount]
+                FROM [portal].[Incident]
+                WHERE [StatusId] IN @Statuses;
+            ");
+        }
+
         public async Task<UsersDataEntity> GetUsersData(IOperation operation)
         {
             return await operation.Connection.QueryFirstAsync<UsersDataEntity>(@"
@@ -58,7 +87,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             {
                 SevenDaysAgo = sevenDaysAgo,
                 Today = today
-            },@"
+            }, @"
                 SELECT operations.[Date], COUNT_BIG(*) AS [Count]
                 FROM (
                     SELECT CONVERT(DATE, [StartTime]) AS [Date]

@@ -127,9 +127,9 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
             return new NotFoundException(operation, $"Incident for operation with ID \"{operationId}\" wasn't found");
         }
 
-        public static BadRequestException IncidentCommentIsEmpty(IOperation operation)
+        public static NotFoundException IncidentHistoryChangeWasNotFound(IOperation operation, long operationId, long historyId)
         {
-            return new BadRequestException(operation, "Incident history comment should be non-empty string");
+            return new NotFoundException(operation, $"Incident history change with ID \"{historyId}\" for operation with ID \"{operationId}\" wasn't found");
         }
 
         #endregion
