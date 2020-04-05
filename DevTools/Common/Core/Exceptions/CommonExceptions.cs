@@ -119,6 +119,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
             return new AuthenticationException(operation, message, statusCode);
         }
 
+        public static NotFoundException PermissionGroupWasNotFound(IOperation operation, string name) => new NotFoundException(operation, $"Permission group \"{name}\" was not found into database");
+
         #endregion
 
         #region Incidents

@@ -37,6 +37,7 @@ matrix:
         - cd DevTools
       install:
         - npm install -C UnifiedPortal/Server/Static
+        - npm install -C Modules/SimpleNoteService/Server/Static
         - dotnet restore
       script:
         - dotnet build

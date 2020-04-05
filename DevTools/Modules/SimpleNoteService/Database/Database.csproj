@@ -13,8 +13,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Scripts\InitialLoading\Create\SimpleNoteServiceTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Drop\SimpleNoteServiceTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Delete\PermissionGroups.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\PermissionGroups.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Module\Create\SimpleNoteServiceTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Module\Drop\SimpleNoteServiceTable.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

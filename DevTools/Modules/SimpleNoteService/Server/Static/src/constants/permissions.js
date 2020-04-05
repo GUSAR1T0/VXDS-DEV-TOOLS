@@ -1,0 +1,3 @@
+export const PORTAL_PERMISSION = {
+    ACCESS_TO_MODULE: 1
+};

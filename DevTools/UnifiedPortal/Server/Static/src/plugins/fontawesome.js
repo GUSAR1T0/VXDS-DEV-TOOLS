@@ -3,19 +3,14 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
     faUserCircle,
     faUserAlt,
-    faEllipsisH,
     faInfoCircle,
     faSignOutAlt,
     faSignInAlt,
     faUserPlus,
-    faQuestionCircle,
     faAlignJustify,
     faEdit,
     faTools,
     faUsers,
-    faExternalLinkAlt,
-    faEnvelope,
-    faMinusCircle,
     faPlusCircle,
     faCogs,
     faUsersCog,
@@ -50,11 +45,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(
-    faUserCircle, faUserAlt, faEllipsisH, faInfoCircle, faSignOutAlt, faSignInAlt, faUserPlus, faQuestionCircle,
-    faAlignJustify, faEdit, faTools, faUsers, faExternalLinkAlt, faEnvelope, faMinusCircle, faPlusCircle, faCogs,
-    faUsersCog, faFileAlt, faServer, faGithub, faCodeBranch, faCode, faLock, faLockOpen, faTrashAlt, faAddressCard,
-    faFilter, faTable, faStar, faEye, faTasks, faCopy, faCubes, faExclamationCircle, faExclamationTriangle, faFireAlt,
-    faCheckCircle, faTimesCircle, faHistory, faBell, farCheckCircle, farTimesCircle
+    faUserCircle, faUserAlt, faInfoCircle, faSignOutAlt, faSignInAlt, faUserPlus, faAlignJustify, faEdit, faTools,
+    faUsers, faPlusCircle, faCogs, faUsersCog, faFileAlt, faServer, faGithub, faCodeBranch, faCode, faLock, faLockOpen,
+    faTrashAlt, faAddressCard, faFilter, faTable, faStar, faEye, faTasks, faCopy, faCubes, faExclamationCircle,
+    faExclamationTriangle, faFireAlt, faCheckCircle, faTimesCircle, faHistory, faBell, farCheckCircle, farTimesCircle
 );
 
 Vue.component("fa", FontAwesomeIcon);

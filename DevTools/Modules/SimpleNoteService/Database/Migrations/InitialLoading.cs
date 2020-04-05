@@ -9,7 +9,8 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
     public class InitialLoading : Migration
     {
         private OperationContext Context => OperationContext.Builder()
-            .SetName(GetType().FullName, "SimpleNoteService", "Migration", "InitialLoading")
+            .SetName(GetType().FullName, "InitialLoading")
+            .SetUserId(null, true)
             .Create();
 
         private readonly IOperationService operationService;
@@ -23,7 +24,25 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
 
         public override void Up()
         {
-            operationService.Make(Context, async operation => UpgradeModuleSchema(operation)).Wait();
+            operationService.Make(Context, async operation =>
+            {
+                UpgradeEnumSchema(operation);
+                UpgradeModuleSchema(operation);
+            }).Wait();
+        }
+
+        private void UpgradeEnumSchema(IOperation operation)
+        {
+            var schema = Schema.Schema(Database.Schema.Enum);
+            if (!schema.Exists())
+            {
+                throw CommonExceptions.DatabaseSchemaWasNotFound(operation, Database.Schema.Enum);
+            }
+
+            if (schema.Table(Table.PermissionGroup).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.PermissionGroups.sql");
+            }
         }
 
         private void UpgradeModuleSchema(IOperation operation)
@@ -46,7 +65,11 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
 
         public override void Down()
         {
-            operationService.Make(Context, async operation => DowngradeModuleSchema(operation)).Wait();
+            operationService.Make(Context, async operation =>
+            {
+                DowngradeModuleSchema(operation);
+                DowngradeEnumSchema(operation);
+            }).Wait();
         }
 
         private void DowngradeModuleSchema(IOperation operation)
@@ -60,6 +83,20 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
             if (schema.Table(Table.SimpleNoteService).Exists())
             {
                 Execute.EmbeddedScript("InitialLoading.Module.Drop.SimpleNoteServiceTable.sql");
+            }
+        }
+
+        private void DowngradeEnumSchema(IOperation operation)
+        {
+            var schema = Schema.Schema(Database.Schema.Enum);
+            if (!schema.Exists())
+            {
+                throw CommonExceptions.DatabaseSchemaWasNotFound(operation, Database.Schema.Enum);
+            }
+
+            if (schema.Table(Table.PermissionGroup).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Delete.PermissionGroups.sql");
             }
         }
 

@@ -1,0 +1,64 @@
+* {
+    font-family: 'Didact Gothic', 'Avenir', Helvetica, Arial, sans-serif;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 20px;
+}
+
+h4 {
+    font-size: 16px;
+}
+
+h5 {
+    font-size: 12px;
+}
+
+h6 {
+    font-size: 8px;
+}
+
+#app {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+    min-height: 100%;
+    width: 100%
+}
+
+.app-container {
+    min-height: 100%;
+}
+
+.app-header {
+    padding-top: 20px !important;
+}
+
+.app-main {
+    padding-top: 0 !important;
+    text-align: center;
+}
+
+.app-footer {
+    /*background-color: #B3C0D1;*/
+    /*color: #333;*/
+    font-size: 14px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.main-loading-spinner-custom > div > .el-icon-loading {
+    font-size: 48px;
+}
+
+.main-loading-spinner-custom > div > .el-loading-text {
+    font-size: 24px;
+}
