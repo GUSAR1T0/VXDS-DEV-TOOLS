@@ -13,10 +13,11 @@ namespace VXDesign.Store.DevTools.Common.Core.Utils
 {
     public static class MigrationUtils
     {
-        public static void Perform(string[] args, DatabaseConnectionProperties properties, Assembly assembly)
+        public static void Perform(string[] args, DatabaseConnectionProperties properties, Assembly assembly, Action<IServiceCollection> serviceHandler = null)
         {
-            var serviceProvider = CreateServices(properties, assembly);
-            using var scope = serviceProvider.CreateScope();
+            var serviceCollection = CreateServices(properties, assembly);
+            serviceHandler?.Invoke(serviceCollection);
+            using var scope = serviceCollection.BuildServiceProvider(false).CreateScope();
             var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
 
             if (args.Length >= 1)
@@ -42,7 +43,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Utils
             }
         }
 
-        private static IServiceProvider CreateServices(DatabaseConnectionProperties properties, Assembly assembly) => new ServiceCollection()
+        private static IServiceCollection CreateServices(DatabaseConnectionProperties properties, Assembly assembly) => new ServiceCollection()
             .AddFluentMigratorCore()
             .AddSingleton<ILoggerStore>(factory => new LoggerStore(properties.LogStoreConnectionString, "VXDS_DB"))
             .ConfigureRunner(rb => rb
@@ -52,7 +53,6 @@ namespace VXDesign.Store.DevTools.Common.Core.Utils
                 .For.VersionTableMetaData()
                 .For.EmbeddedResources()
                 .For.Migrations())
-            .AddLogging(lb => lb.AddNLog())
-            .BuildServiceProvider(false);
+            .AddLogging(lb => lb.AddNLog());
     }
 }

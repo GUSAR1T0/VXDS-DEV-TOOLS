@@ -6,6 +6,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string Base = "base";
         internal const string Portal = "portal";
         internal const string Enum = "enum";
+        internal const string Module = "module";
     }
 
     internal class Table
@@ -23,5 +24,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string IncidentHistory = "IncidentHistory";
         internal const string Notification = "Notification";
         internal const string NotificationLevel = "NotificationLevel";
+        internal const string Module = "Module";
     }
 }

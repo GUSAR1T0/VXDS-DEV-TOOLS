@@ -19,6 +19,12 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         #endregion
 
+        #region Database
+
+        public static NotFoundException DatabaseSchemaWasNotFound(IOperation operation, string schema) => new NotFoundException(operation, $"Database schema \"{schema}\" wasn't found");
+
+        #endregion
+
         #region Camunda / SRS
 
         public static NotFoundException CamundaEndpointIsNotFoundByActionCode(IOperation operation) => new NotFoundException(operation, "Failed to find a Camunda endpoint by action code");

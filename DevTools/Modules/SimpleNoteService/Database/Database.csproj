@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AssemblyName>VXDesign.Store.DevTools.Modules.SimpleNoteService.Database</AssemblyName>
+        <RootNamespace>VXDesign.Store.DevTools.Modules.SimpleNoteService.Database</RootNamespace>
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\Core\Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Scripts\InitialLoading\Create\SimpleNoteServiceTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Drop\SimpleNoteServiceTable.sql" />
+    </ItemGroup>
+
+</Project>

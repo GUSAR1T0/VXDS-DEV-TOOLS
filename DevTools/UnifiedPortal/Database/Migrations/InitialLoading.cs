@@ -21,6 +21,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             UpgradeAuthenticationSchema();
             UpgradeBaseSchema();
             UpgradePortalSchema();
+            UpgradeModuleSchema();
 
             loggerStore.Info<InitialLoading>(0, "Database is initialized").Wait();
         }
@@ -136,18 +137,47 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             }
         }
 
+        private void UpgradeModuleSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Module);
+            if (!schema.Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Module.Create.Schema.sql");
+            }
+
+            if (!schema.Table(Table.Module).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Module.Create.ModuleTable.sql");
+            }
+        }
+
         #endregion
 
         #region Downgrade
 
         public override void Down()
         {
+            DowngradeModuleSchema();
             DowngradePortalSchema();
             DowngradeBaseSchema();
             DowngradeAuthenticationSchema();
             DowngradeEnumSchema();
 
             loggerStore.DropAllLogCollections().Wait();
+        }
+
+        private void DowngradeModuleSchema()
+        {
+            var schema = Schema.Schema(Database.Schema.Module);
+            if (schema.Exists())
+            {
+                if (schema.Table(Table.Module).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Module.Drop.ModuleTable.sql");
+                }
+
+                Execute.EmbeddedScript("InitialLoading.Module.Drop.Schema.sql");
+            }
         }
 
         private void DowngradePortalSchema()
