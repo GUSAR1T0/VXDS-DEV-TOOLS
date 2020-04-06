@@ -85,6 +85,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Authentication.Create.UserTable.sql");
                 Execute.EmbeddedScript("InitialLoading.Authentication.Insert.Users.sql");
             }
+
+            if (!schema.Table(Table.UserRefreshToken).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Authentication.Create.UserRefreshTokenTable.sql");
+            }
         }
 
         private void UpgradeBaseSchema()
@@ -234,6 +239,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             var schema = Schema.Schema(Database.Schema.Authentication);
             if (schema.Exists())
             {
+                if (schema.Table(Table.UserRefreshToken).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Authentication.Drop.UserRefreshTokenTable.sql");
+                }
+
                 if (schema.Table(Table.User).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Authentication.Drop.UserTable.sql");

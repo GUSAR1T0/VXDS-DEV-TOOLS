@@ -82,7 +82,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [Authorize]
         [HttpPost("logout")]
-        public async Task<ActionResult> Logout() => await Execute(async operation => await authenticationService.Logout(operation, User.Claims));
+        public async Task<ActionResult> Logout([FromBody] JwtTokenModel model) => await Execute(async operation => await authenticationService.Logout(operation, User.Claims, model.RefreshToken));
 
         /// <summary>
         /// Obtains authorization user data by token

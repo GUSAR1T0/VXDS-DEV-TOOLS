@@ -19,7 +19,7 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
         Task<RawJwtToken> SignIn(IOperation operation, string email, string password);
         Task<RawJwtToken> SignUp(IOperation operation, UserRegistrationEntity entity);
         Task<RawJwtToken> RefreshToken(IOperation operation, string accessToken, string refreshToken);
-        Task Logout(IOperation operation, IEnumerable<Claim> claims);
+        Task Logout(IOperation operation, IEnumerable<Claim> claims, string refreshToken);
         Task<UserAuthorizationEntity> GetUserData(IOperation operation, IEnumerable<Claim> claims);
         Task<bool> IsUserActivated(IOperation operation, int id);
 
@@ -58,7 +58,7 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
                 RefreshToken = AuthenticationUtils.GenerateRefreshToken()
             };
 
-            await userDataStore.UpdateRefreshTokenById(operation, userIdentityClaims.Id, token.RefreshToken);
+            await userDataStore.AddRefreshToken(operation, userIdentityClaims.Id, token.RefreshToken);
 
             return token;
         }
@@ -84,7 +84,7 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
                 RefreshToken = AuthenticationUtils.GenerateRefreshToken()
             };
 
-            await userDataStore.UpdateRefreshTokenById(operation, user.Id, token.RefreshToken);
+            await userDataStore.AddRefreshToken(operation, user.Id, token.RefreshToken);
 
             return token;
         }
@@ -100,8 +100,8 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
                 throw CommonExceptions.AccessDenied(operation, StatusCodes.Status401Unauthorized, true);
             }
 
-            var storedRefreshToken = await userDataStore.GetRefreshTokenById(operation, id);
-            if (storedRefreshToken?.Equals(refreshToken) != true)
+            var refreshTokenId = await userDataStore.GetRefreshTokenId(operation, id, refreshToken);
+            if (!refreshTokenId.HasValue)
             {
                 throw CommonExceptions.RefreshTokensAreDifferent(operation);
             }
@@ -120,18 +120,26 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
                 RefreshToken = AuthenticationUtils.GenerateRefreshToken()
             };
 
-            await userDataStore.UpdateRefreshTokenById(operation, id, token.RefreshToken);
+            await userDataStore.UpdateRefreshToken(operation, refreshTokenId.Value, token.RefreshToken);
 
             return token;
         }
 
-        public async Task Logout(IOperation operation, IEnumerable<Claim> claims)
+        public async Task Logout(IOperation operation, IEnumerable<Claim> claims, string refreshToken)
         {
             var claimsList = claims.ToList();
             var id = AuthenticationUtils.GetUserId(claimsList) ?? throw CommonExceptions.FailedToReadAuthenticationDataFromClaims(operation);
+
+            var refreshTokenId = await userDataStore.GetRefreshTokenId(operation, id, refreshToken);
+            if (!refreshTokenId.HasValue)
+            {
+                throw CommonExceptions.RefreshTokensAreDifferent(operation);
+            }
+
             var identity = GetIdentity(claimsList);
             identity?.Claims.ToList().ForEach(claim => identity.RemoveClaim(claim));
-            await userDataStore.UpdateRefreshTokenById(operation, id, null);
+
+            await userDataStore.RemoveRefreshToken(operation, refreshTokenId.Value);
         }
 
         public async Task<UserAuthorizationEntity> GetUserData(IOperation operation, IEnumerable<Claim> claims)

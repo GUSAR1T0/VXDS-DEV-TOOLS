@@ -183,6 +183,7 @@ export default {
                     dispatch(POST_HTTP_REQUEST, {
                         server: SYRINX,
                         endpoint: LOGOUT_ENDPOINT,
+                        data: {accessToken, refreshToken},
                         config: getConfiguration(accessToken),
                         ignoreReloadPage: true
                     }).then(() => {

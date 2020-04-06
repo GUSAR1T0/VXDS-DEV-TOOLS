@@ -10,11 +10,13 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRefreshTokenTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRolePermissionTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRolePermissionTableType.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserRoleTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Create\UserTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRefreshTokenTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRolePermissionTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRolePermissionTableType.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Authentication\Drop\UserRoleTable.sql" />
