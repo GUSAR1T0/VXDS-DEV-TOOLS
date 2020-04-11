@@ -6,7 +6,8 @@ Vue.use(Router);
 
 let sections = {
     HOME: "Home Page",
-    AUTHORIZATION: "Authorization"
+    AUTHORIZATION: "Authorization",
+    ACCOUNT: "Account"
 };
 
 export default new Router({
@@ -30,16 +31,22 @@ export default new Router({
             }
         },
         {
-            path: "/user",
-            beforeEnter(to, from, next) {
-                window.open(`${to.query.unifiedPortalHost}/user`, "_blank");
-                next(from.fullPath);
+            path: "/user/:id?",
+            name: "user",
+            component: () => import(/* webpackChunkName: "user-profile" */ "../views/users/UserProfile.vue"),
+            meta: {
+                sectionName: sections.ACCOUNT
             }
         },
         {
             path: "/unifiedPortal",
             beforeEnter(to, from, next) {
-                window.open(to.query.unifiedPortalHost, "_blank");
+                let link = to.query.host;
+                if (to.query.link) {
+                    link += "/" + to.query.link;
+                }
+
+                window.open(link, "_blank");
                 next(from.fullPath);
             }
         },

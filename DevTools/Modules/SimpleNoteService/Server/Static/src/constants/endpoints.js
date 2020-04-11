@@ -7,3 +7,6 @@ export const GET_USER_DATA_ENDPOINT = "account";
 
 // Lookup endpoints
 export const GET_LOOKUP_VALUES_ENDPOINT = "lookup/values";
+
+// User endpoints
+export const GET_PROFILE_ENDPOINT = "user/{id}";

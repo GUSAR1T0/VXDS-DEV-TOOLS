@@ -71,6 +71,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     LastName = user.LastName,
                     Email = user.Email,
                     Color = user.Color,
+                    UserRoleId = user.UserRoleId,
                     Permissions = await reader.ReadAsync<UserRolePermissionEntity>()
                 }
                 : null;

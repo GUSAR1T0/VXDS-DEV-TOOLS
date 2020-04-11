@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Authentication;
+using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Constants;
 using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Lookup;
 using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Properties;
 
@@ -35,10 +36,15 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Controllers
                         Host = portalProperties.SyrinxProperties.Host,
                         Api = portalProperties.SyrinxProperties.Api
                     },
-                    UnifiedPortalHost = portalProperties.UnifiedPortalHost
+                    UnifiedPortal = new UnifiedPortalHostModel
+                    {
+                        Host = portalProperties.UnifiedPortalProperties.Host,
+                        Api = portalProperties.UnifiedPortalProperties.Api
+                    }
                 },
                 LookupValues = new LookupValuesModel
                 {
+                    PermissionGroupId = PortalPermissionKey.PermissionGroupId,
                     PortalPermissions = EnumModel.GetEnumModelValues<PortalPermission>()
                 }
             });

@@ -12,6 +12,7 @@ import {
     LOGOUT_REQUEST,
     POST_HTTP_REQUEST,
     REFRESH_REQUEST,
+    SET_PERMISSION_GROUP_ID,
     SIGN_IN_REQUEST,
     SIGN_UP_REQUEST
 } from "@/constants/actions";
@@ -26,6 +27,7 @@ export default {
         email: "",
         color: "",
         userRoleId: 0,
+        permissionGroupId: 0,
         portalPermissions: 0
     },
     getters: {
@@ -60,6 +62,9 @@ export default {
         }
     },
     mutations: {
+        [SET_PERMISSION_GROUP_ID]: (state, permissionGroupId) => {
+            state.permissionGroupId = permissionGroupId;
+        },
         [SIGN_IN_REQUEST]: (state, data) => {
             state.isAuthenticated = true;
             state.id = data.id;
@@ -69,7 +74,7 @@ export default {
             state.color = data.color;
             state.userRoleId = data.userRoleId;
             if (data.permissions) {
-                let portalPermissions = data.permissions.filter(item => item.permissionGroupId === 1);
+                let portalPermissions = data.permissions.filter(item => item.permissionGroupId === state.permissionGroupId);
                 state.portalPermissions = portalPermissions && portalPermissions.length > 0 ? portalPermissions[0].permissions : 0;
             }
         },

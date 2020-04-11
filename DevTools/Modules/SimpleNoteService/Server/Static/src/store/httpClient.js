@@ -6,7 +6,7 @@ import {
     STORE_ENVIRONMENT_VARIABLES_FOR_HTTP_CLIENT
 } from "@/constants/actions";
 import axios from "axios";
-import { LOCALHOST, SYRINX } from "@/constants/servers";
+import { LOCALHOST, UNIFIED_PORTAL, SYRINX } from "@/constants/servers";
 
 let printResponseErrors = error => {
     let message = "";
@@ -32,6 +32,10 @@ let getHostAndApi = (state, server) => {
     if (server === LOCALHOST) {
         host = "";
         api = "api";
+    } else if (server === UNIFIED_PORTAL) {
+        let env = state.environmentValues;
+        host = env.unifiedPortal.host;
+        api = env.unifiedPortal.api;
     } else if (server === SYRINX) {
         let env = state.environmentValues;
         host = env.syrinx.host;
@@ -62,7 +66,7 @@ export default {
     },
     getters: {
         getUnifiedPortalHost: state => {
-            return state.environmentValues.unifiedPortalHost;
+            return state.environmentValues.unifiedPortal.host;
         }
     },
     mutations: {

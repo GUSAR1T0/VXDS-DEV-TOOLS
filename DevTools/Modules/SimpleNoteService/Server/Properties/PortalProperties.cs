@@ -7,10 +7,10 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Properties
         [PropertyField(Key = "Syrinx")]
         public SyrinxProperties SyrinxProperties { get; set; }
 
+        [PropertyField(Key = "UnifiedPortal")]
+        public UnifiedPortalProperties UnifiedPortalProperties { get; set; }
+
         [PropertyField(Key = "Database")]
         public DatabaseConnectionProperties DatabaseConnectionProperties { get; set; }
-
-        [PropertyField]
-        public string UnifiedPortalHost { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="account">
         <div v-if="isAuthenticated">
-            <el-menu-item :index="`/user?unifiedPortalHost=${getUnifiedPortalHost}`">
+            <el-menu-item index="/user">
                 <fa class="fa-submenu-item" icon="user-alt"/>
                 <span slot="title" class="el-nav-menu-vertical-item">{{ getFullName }}</span>
             </el-menu-item>
@@ -27,7 +27,6 @@
         computed: {
             ...mapGetters([
                 "isAuthenticated",
-                "getUnifiedPortalHost",
                 "getFullName",
             ])
         }
