@@ -93,6 +93,9 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
         User = 30,
 
         [CamundaCategory("Variable Instance", "variable-instance")]
-        VariableInstance = 31
+        VariableInstance = 31,
+
+        [CamundaCategory("Version", "version")]
+        Version = 32
     }
 }

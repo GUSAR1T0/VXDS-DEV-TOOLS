@@ -29,7 +29,7 @@ namespace VXDesign.Store.DevTools.SRS.Camunda
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             if (!string.IsNullOrWhiteSpace(properties.Login) && !string.IsNullOrWhiteSpace(properties.Password))
             {
-                httpClient.DefaultRequestHeaders.Add("Authentication", $"Basic {BasicAuth()}");
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {BasicAuth()}");
             }
 
             return httpClient;

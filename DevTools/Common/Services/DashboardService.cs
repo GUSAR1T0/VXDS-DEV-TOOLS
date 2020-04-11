@@ -1,10 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using VXDesign.Store.DevTools.Common.Clients.Camunda;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Dashboard;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
+using Version = VXDesign.Store.DevTools.Common.Clients.Camunda.Models.Version.Version;
 
 namespace VXDesign.Store.DevTools.Common.Services
 {
@@ -12,6 +16,7 @@ namespace VXDesign.Store.DevTools.Common.Services
     {
         Task<NotificationsDataEntity> GetNotificationsData(IOperation operation);
         Task<IncidentsDataEntity> GetIncidentsData(IOperation operation, int userId);
+        Task<bool> IsSystemHealthStatusOk(IOperation operation);
         Task<UsersDataEntity> GetUsersData(IOperation operation);
         Task<UserRolesDataEntity> GetUserRolesData(IOperation operation);
         Task<ProjectsDataEntity> GetProjectsData(IOperation operation);
@@ -22,16 +27,38 @@ namespace VXDesign.Store.DevTools.Common.Services
     {
         private readonly IDashboardStore dashboardStore;
         private readonly ILoggerStore loggerStore;
+        private readonly ISyrinxCamundaClientService camundaService;
+        private readonly IMemoryCacheService memoryCacheService;
 
-        public DashboardService(IDashboardStore dashboardStore, ILoggerStore loggerStore)
+        public DashboardService(IDashboardStore dashboardStore, ILoggerStore loggerStore, ISyrinxCamundaClientService camundaService, IMemoryCacheService memoryCacheService)
         {
             this.dashboardStore = dashboardStore;
             this.loggerStore = loggerStore;
+            this.camundaService = camundaService;
+            this.memoryCacheService = memoryCacheService;
         }
 
         public async Task<NotificationsDataEntity> GetNotificationsData(IOperation operation) => await dashboardStore.GetNotificationsData(operation);
 
         public async Task<IncidentsDataEntity> GetIncidentsData(IOperation operation, int userId) => await dashboardStore.GetIncidentsData(operation, userId);
+
+        public async Task<bool> IsSystemHealthStatusOk(IOperation operation)
+        {
+            try
+            {
+                var camundaVersion = await GetCamundaVersionFromCache(operation);
+                return camundaVersion.IsWithoutErrors();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task<Version.GetVersionResponse> GetCamundaVersionFromCache(IOperation operation)
+        {
+            return await memoryCacheService.Get(MemoryCacheKey.CamundaVersion, async () => await new Version.GetVersionRequest().SendRequest(operation, camundaService));
+        }
 
         public async Task<UsersDataEntity> GetUsersData(IOperation operation) => await dashboardStore.GetUsersData(operation);
 

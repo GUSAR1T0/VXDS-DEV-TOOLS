@@ -5,8 +5,8 @@
                 <div style="font-size: 72px">
                     <fa :icon="['far', defineIcon]" :class="defineClass"/>
                 </div>
-                <h3 v-if="isOk">Server works fine</h3>
-                <h3 v-else>Server has issues</h3>
+                <h3 v-if="isOk">System works fine</h3>
+                <h3 v-else>System has issues</h3>
             </div>
         </el-container>
     </el-card>
@@ -26,7 +26,7 @@
 </style>
 
 <script>
-    import { GET_SERVER_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
+    import { GET_SYSTEM_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
     import { GET_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
@@ -65,7 +65,7 @@
 
                 this.$store.dispatch(GET_HTTP_REQUEST, {
                     server: LOCALHOST,
-                    endpoint: GET_SERVER_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT,
+                    endpoint: GET_SYSTEM_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT,
                     config: getConfiguration()
                 }).then(response => {
                     this.isOk = response.data.isOk;
@@ -73,7 +73,7 @@
                 }).catch(error => {
                     // state.loadingIsActive = false;
                     this.$notify.error({
-                        title: "Failed to load server health check data",
+                        title: "Failed to load system health check data",
                         duration: 10000,
                         message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });

@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Clients\Camunda\Camunda.csproj" />
       <ProjectReference Include="..\Clients\GitHub\GitHub.csproj" />
       <ProjectReference Include="..\Core\Core.csproj" />
       <ProjectReference Include="..\Storage\DataStorage\DataStorage.csproj" />
