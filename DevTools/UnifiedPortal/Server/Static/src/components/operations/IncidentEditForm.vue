@@ -301,9 +301,9 @@
             },
             defineOperationResultClass(row) {
                 if (row.isSuccessful === true) {
-                    return "is-successful";
+                    return "success";
                 } else if (row.isSuccessful === false) {
-                    return "is-unsuccessful";
+                    return "error";
                 } else {
                     return "";
                 }

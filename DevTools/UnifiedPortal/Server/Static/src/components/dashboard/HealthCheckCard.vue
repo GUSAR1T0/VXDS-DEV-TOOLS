@@ -46,9 +46,9 @@
             },
             defineClass() {
                 if (this.isOk === true) {
-                    return "is-successful";
+                    return "success";
                 } else if (this.isOk === false) {
-                    return "is-unsuccessful";
+                    return "error";
                 } else {
                     return "";
                 }

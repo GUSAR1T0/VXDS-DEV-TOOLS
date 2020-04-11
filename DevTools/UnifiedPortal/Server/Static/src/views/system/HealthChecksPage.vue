@@ -11,8 +11,8 @@
                         </el-table-column>
                         <el-table-column label="Health Check Status" align="center">
                             <template slot-scope="scope">
-                                <div style="font-size: 48px">
-                                    <fa :icon="['far', defineIcon(scope.row)]" :class="defineClass(scope.row)"/>
+                                <div style="font-size: 32px">
+                                    <fa :icon="defineIcon(scope.row)" :class="defineClass(scope.row)"/>
                                 </div>
                             </template>
                         </el-table-column>
@@ -59,9 +59,9 @@
             },
             defineClass(row) {
                 if (row.isOk === true) {
-                    return "is-successful";
+                    return "success";
                 } else if (row.isOk === false) {
-                    return "is-unsuccessful";
+                    return "error";
                 } else {
                     return "";
                 }

@@ -31,9 +31,14 @@
             </el-table-column>
             <el-table-column label="Notification Level" min-width="350" align="center">
                 <template slot-scope="scope">
-                    <strong style="font-size: 18px">
-                        {{ getLevelName(scope.row.level) }}
-                    </strong>
+                    <div style="display: flex; justify-content: center">
+                        <div style="font-size: 14px; margin-right: 5px">
+                            <fa icon="circle" :class="getLevelColor(scope.row.level)"/>
+                        </div>
+                        <strong style="font-size: 18px">
+                            {{ getLevelName(scope.row.level) }}
+                        </strong>
+                    </div>
                 </template>
             </el-table-column>
             <el-table-column label="Message" min-width="900" align="center">
@@ -81,6 +86,9 @@
 </template>
 
 <style scoped src="@/styles/button.css">
+</style>
+
+<style scoped src="@/styles/status.css">
 </style>
 
 <script>
@@ -139,6 +147,17 @@
             getLevelName(levelId) {
                 let levels = this.getLookupValues("notificationLevels").filter(level => parseInt(level.value) === levelId);
                 return levels && levels.length > 0 ? levels[0].name : "—";
+            },
+            getLevelColor(levelId) {
+                if (levelId === 1) {
+                    return "info";
+                } else if (levelId === 2) {
+                    return "success";
+                } else if (levelId === 3) {
+                    return "warning";
+                } else if (levelId === 4) {
+                    return "error";
+                }
             },
             openDialogToUpdate(notification) {
                 this.$store.commit(STORE_NOTIFICATION_DATA_REQUEST, notification);
