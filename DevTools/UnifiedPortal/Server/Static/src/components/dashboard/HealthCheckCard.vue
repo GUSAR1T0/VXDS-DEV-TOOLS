@@ -2,11 +2,13 @@
     <el-card shadow="hover">
         <el-container v-loading="loadingIsActive" class="dashboard-main-item">
             <div v-if="!loadingIsActive" style="width: 100%">
-                <div style="font-size: 72px">
-                    <fa :icon="['far', defineIcon]" :class="defineClass"/>
-                </div>
-                <h3 v-if="isOk">System works fine</h3>
-                <h3 v-else>System has issues</h3>
+                <el-link :href="`/system/health`" type="primary" :underline="false">
+                    <div style="font-size: 72px">
+                        <fa :icon="['far', defineIcon]" :class="defineClass"/>
+                    </div>
+                    <h3 v-if="isOk">System works fine</h3>
+                    <h3 v-else>System has issues</h3>
+                </el-link>
             </div>
         </el-container>
     </el-card>
@@ -15,14 +17,7 @@
 <style scoped src="@/styles/dashboard.css">
 </style>
 
-<style scoped>
-    .is-successful {
-        color: #0C7C59;
-    }
-
-    .is-unsuccessful {
-        color: #DB2B3D;
-    }
+<style scoped src="@/styles/status.css">
 </style>
 
 <script>

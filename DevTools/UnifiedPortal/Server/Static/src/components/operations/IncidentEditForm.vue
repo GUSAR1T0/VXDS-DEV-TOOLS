@@ -119,14 +119,7 @@
 <style scoped src="@/styles/modal.css">
 </style>
 
-<style scoped>
-    .is-successful {
-        color: #0C7C59;
-    }
-
-    .is-unsuccessful {
-        color: #DB2B3D;
-    }
+<style scoped src="@/styles/status.css">
 </style>
 
 <script>
