@@ -1,6 +1,6 @@
 using VXDesign.Store.DevTools.Common.Core.Entities.SSP;
 
-namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.SSP
+namespace VXDesign.Store.DevTools.Common.Core.Controllers.Models.SSP
 {
     public interface IPagingResponseItemModel<out TModel, in TEntity> where TModel : PagingResponseItemModel where TEntity : IPagingResponseItemEntity
     {

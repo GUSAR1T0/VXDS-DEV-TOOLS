@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
+using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Authentication;
 using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Constants;

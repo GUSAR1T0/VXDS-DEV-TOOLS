@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Constants;
+using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
+using VXDesign.Store.DevTools.Common.Core.Controllers.Models.SSP;
 using VXDesign.Store.DevTools.Common.Core.Entities.Incident;
 using VXDesign.Store.DevTools.Common.Core.Entities.Operation;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions;
-using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Common;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Incident;
-using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.SSP;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Operation
 {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-table :data="notes" style="width: 100%" border @current-change="row => $router.push(`/note/${row.id}`)">
+        <el-table :data="notes" style="width: 100%" border>
             <el-table-column label="Note ID" min-width="150" align="center">
                 <template slot-scope="scope">
                     <strong style="font-size: 16px">{{ scope.row.id }}</strong>
@@ -8,6 +8,15 @@
             </el-table-column>
             <el-table-column label="Manage Note" min-width="200" align="center">
                 <template slot-scope="scope">
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
+                            To This Note
+                        </div>
+                        <el-button type="info" plain circle @click="$router.push(`/note/${scope.row.id}`)"
+                                   class="rounded-button">
+                            <span><fa icon="sticky-note"/></span>
+                        </el-button>
+                    </el-tooltip>
                     <el-tooltip effect="dark" placement="top">
                         <div slot="content">
                             Delete This Note
@@ -21,9 +30,12 @@
             </el-table-column>
             <el-table-column label="Title" min-width="900" align="center">
                 <template slot-scope="scope">
-                    <strong style="font-size: 18px">
+                    <strong style="font-size: 20px">
                         {{ scope.row.title }}
                     </strong>
+                    <div style="font-size: 16px">
+                        {{ scope.row.text }}
+                    </div>
                 </template>
             </el-table-column>
             <el-table-column label="Created by User" min-width="300" align="center">
@@ -49,6 +61,7 @@
         <ConfirmationDialog
                 :dialog-status="dialogNoteDeleteStatus"
                 :confirmation-text="dialogNoteDeleteStatus.confirmationText"
+                :additional-text="dialogNoteDeleteStatus.additionalText"
                 :cancel-click-action="() => dialogNoteDeleteStatus.visible = false"
                 :submit-click-action="deleteNote"
                 :closed="reload"/>
@@ -83,6 +96,7 @@
                 dialogNoteDeleteStatus: {
                     id: null,
                     confirmationText: "",
+                    additionalText: "",
                     visible: false
                 }
             };
@@ -90,7 +104,8 @@
         methods: {
             openDeleteNoteDialog(note) {
                 this.dialogNoteDeleteStatus.id = note.id;
-                this.dialogNoteDeleteStatus.confirmationText = `Are you sure that you want to delete note with ID "${note.id}"`;
+                this.dialogNoteDeleteStatus.confirmationText = "Are you sure that you want to delete the note?";
+                this.dialogNoteDeleteStatus.additionalText = `ID: "${note.id}", title: "${note.title}"`;
                 this.dialogNoteDeleteStatus.visible = true;
             },
             deleteNote(button) {
@@ -98,23 +113,24 @@
                 this.$store.dispatch(DELETE_HTTP_REQUEST, {
                     server: LOCALHOST,
                     endpoint: format(DELETE_NOTE_ENDPOINT, {
-                        id: this.dialogNotificationDeleteStatus.id
+                        id: this.dialogNoteDeleteStatus.id
                     }),
                     config: getConfiguration()
                 }).then(() => {
                     button.loading = false;
-                    this.dialogNotificationDeleteStatus.visible = false;
+                    this.dialogNoteDeleteStatus.visible = false;
                     this.reload();
 
                     this.$notify.success({
                         title: "Note was deleted",
-                        message: `Note with ID "${this.dialogNotificationDeleteStatus.id}" was removed`
+                        message: `Note with ID "${this.dialogNoteDeleteStatus.id}" was removed`
                     });
-                    this.dialogNotificationDeleteStatus.id = null;
-                    this.dialogNotificationDeleteStatus.confirmationText = "";
+                    this.dialogNoteDeleteStatus.id = null;
+                    this.dialogNoteDeleteStatus.confirmationText = "";
+                    this.dialogNoteDeleteStatus.additionalText = "";
                 }).catch(error => {
                     button.loading = false;
-                    this.dialogNotificationDeleteStatus.visible = false;
+                    this.dialogNoteDeleteStatus.visible = false;
 
                     this.$notify.error({
                         title: "Failed to delete notification",

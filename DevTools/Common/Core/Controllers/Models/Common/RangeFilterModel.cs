@@ -1,4 +1,4 @@
-namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Common
+namespace VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common
 {
     public class RangeFilterModel<T>
     {

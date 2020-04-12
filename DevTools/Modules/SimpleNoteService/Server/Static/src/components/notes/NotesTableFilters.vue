@@ -24,18 +24,18 @@
                 </TableFilterItem>
             </template>
         </Blocks>
-        <template slot="first">
-            <TableFilterItem name="Users">
-                <template slot="field">
-                    <el-select v-model="filter.userIds" multiple filterable remote reserve-keyword
-                               :remote-method="filterByUserIds" style="width: 100%">
-                        <el-option v-for="item in filter.userIdOptions" :key="item.id" :label="item.fullName"
-                                   :value="item.id"/>
-                    </el-select>
-                </template>
-            </TableFilterItem>
-        </template>
         <Blocks style="padding-bottom: 20px">
+            <template slot="first">
+                <TableFilterItem name="Users">
+                    <template slot="field">
+                        <el-select v-model="filter.userIds" multiple filterable remote reserve-keyword
+                                   :remote-method="filterByUserIds" style="width: 100%">
+                            <el-option v-for="item in filter.userIdOptions" :key="item.id" :label="item.fullName"
+                                       :value="item.id"/>
+                        </el-select>
+                    </template>
+                </TableFilterItem>
+            </template>
             <template slot="second">
                 <TableFilterItem name="Edit Time Range">
                     <template slot="field">

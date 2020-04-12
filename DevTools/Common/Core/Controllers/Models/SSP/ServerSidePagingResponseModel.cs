@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using VXDesign.Store.DevTools.Common.Core.Entities.SSP;
 
-namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.SSP
+namespace VXDesign.Store.DevTools.Common.Core.Controllers.Models.SSP
 {
     public abstract class ServerSidePagingResponseModel<TResponseItemModel, TResponseModel, TResponse>
         where TResponseItemModel : PagingResponseItemModel

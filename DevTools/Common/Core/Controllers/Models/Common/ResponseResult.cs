@@ -1,4 +1,4 @@
-namespace VXDesign.Store.DevTools.Common.Core.Controllers
+namespace VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common
 {
     public class ResponseResult
     {

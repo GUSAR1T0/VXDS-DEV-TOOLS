@@ -11,6 +11,7 @@ using VXDesign.Store.DevTools.Common.Clients.Syrinx;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
+using VXDesign.Store.DevTools.Common.Services;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
 using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Constants;
@@ -42,6 +43,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server
                 return new LoggerStore(logStoreConnectionString, scope);
             });
             services.AddScoped<IUserRoleStore, UserRoleStore>();
+            services.AddScoped<INoteStore, NoteStore>();
 
             // Services
             services.AddScoped<IOperationService>(factory =>
@@ -52,6 +54,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server
             });
             services.AddScoped<ISyrinxCamundaClientService>(factory => new SyrinxCamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
             services.AddScoped<ISyrinxAuthenticationClientService>(factory => new SyrinxAuthenticationClientService(factory.GetService<PortalProperties>().SyrinxProperties));
+            services.AddScoped<INoteService, NoteService>();
 
             // Permission group (workaround)
             var provider = services.BuildServiceProvider();

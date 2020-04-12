@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 
-namespace VXDesign.Store.DevTools.Common.Core.Controllers
+namespace VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common
 {
     public class EnumModel
     {

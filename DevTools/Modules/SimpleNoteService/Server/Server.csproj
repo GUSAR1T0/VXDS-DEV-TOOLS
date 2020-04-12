@@ -21,6 +21,7 @@
       <ProjectReference Include="..\..\..\Common\Clients\Camunda\Camunda.csproj" />
       <ProjectReference Include="..\..\..\Common\Clients\Syrinx\Syrinx.csproj" />
       <ProjectReference Include="..\..\..\Common\Core\Core.csproj" />
+      <ProjectReference Include="..\..\..\Common\Services\Services.csproj" />
       <ProjectReference Include="..\..\..\Common\Storage\DataStorage\DataStorage.csproj" />
     </ItemGroup>
 
