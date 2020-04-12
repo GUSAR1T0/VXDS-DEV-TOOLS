@@ -12,6 +12,7 @@ namespace VXDesign.Store.DevTools.Common.Services
     {
         Task<NotificationsDataEntity> GetNotificationsData(IOperation operation);
         Task<IncidentsDataEntity> GetIncidentsData(IOperation operation, int userId);
+        Task<bool> IsSystemHealthStatusOk(IOperation operation);
         Task<UsersDataEntity> GetUsersData(IOperation operation);
         Task<UserRolesDataEntity> GetUserRolesData(IOperation operation);
         Task<ProjectsDataEntity> GetProjectsData(IOperation operation);
@@ -22,16 +23,20 @@ namespace VXDesign.Store.DevTools.Common.Services
     {
         private readonly IDashboardStore dashboardStore;
         private readonly ILoggerStore loggerStore;
+        private readonly IHealthChecksService healthChecksService;
 
-        public DashboardService(IDashboardStore dashboardStore, ILoggerStore loggerStore)
+        public DashboardService(IDashboardStore dashboardStore, ILoggerStore loggerStore, IHealthChecksService healthChecksService)
         {
             this.dashboardStore = dashboardStore;
             this.loggerStore = loggerStore;
+            this.healthChecksService = healthChecksService;
         }
 
         public async Task<NotificationsDataEntity> GetNotificationsData(IOperation operation) => await dashboardStore.GetNotificationsData(operation);
 
         public async Task<IncidentsDataEntity> GetIncidentsData(IOperation operation, int userId) => await dashboardStore.GetIncidentsData(operation, userId);
+
+        public async Task<bool> IsSystemHealthStatusOk(IOperation operation) => await healthChecksService.GetHealthChecksData(operation).AllAsync(check => check.IsOk);
 
         public async Task<UsersDataEntity> GetUsersData(IOperation operation) => await dashboardStore.GetUsersData(operation);
 

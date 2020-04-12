@@ -119,14 +119,7 @@
 <style scoped src="@/styles/modal.css">
 </style>
 
-<style scoped>
-    .is-successful {
-        color: #0C7C59;
-    }
-
-    .is-unsuccessful {
-        color: #DB2B3D;
-    }
+<style scoped src="@/styles/status.css">
 </style>
 
 <script>
@@ -308,9 +301,9 @@
             },
             defineOperationResultClass(row) {
                 if (row.isSuccessful === true) {
-                    return "is-successful";
+                    return "success";
                 } else if (row.isSuccessful === false) {
-                    return "is-unsuccessful";
+                    return "error";
                 } else {
                     return "";
                 }

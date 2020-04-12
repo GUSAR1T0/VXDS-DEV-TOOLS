@@ -117,6 +117,14 @@ export default new Router({
             }
         },
         {
+            path: "/system/health",
+            name: "health",
+            component: () => import(/* webpackChunkName: "health" */ "../views/system/HealthChecksPage.vue"),
+            meta: {
+                sectionName: sections.SYSTEM
+            }
+        },
+        {
             path: "/403",
             name: "forbidden",
             component: () => import(/* webpackChunkName: "forbidden" */ "../views/errors/ForbiddenErrorPage.vue")

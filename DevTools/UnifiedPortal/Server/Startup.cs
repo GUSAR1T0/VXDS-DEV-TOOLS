@@ -66,6 +66,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             services.AddScoped<IPortalSettingsService, PortalSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IHealthChecksService, HealthChecksService>();
 
             services.AddCors(options =>
             {

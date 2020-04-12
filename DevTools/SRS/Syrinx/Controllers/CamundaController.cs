@@ -32,7 +32,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [AllowAnonymous]
         [HttpGet("version")]
-        public string GetSupportedVersion() => "7.11";
+        public string GetSupportedVersion() => "7.12.0";
 
         /// <summary>
         /// Obtains all supported APIs of Camunda server

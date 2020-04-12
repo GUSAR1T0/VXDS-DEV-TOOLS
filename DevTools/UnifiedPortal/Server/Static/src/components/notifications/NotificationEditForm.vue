@@ -17,7 +17,14 @@
                         <el-select v-model="notificationForm.level" filterable reserve-keyword
                                    default-first-option style="width: 100%">
                             <el-option v-for="item in getLookupValues('notificationLevels')" :key="item.value"
-                                       :label="item.name" :value="item.value"/>
+                                       :label="item.name" :value="item.value">
+                                <div style="display: flex;">
+                                    <div style="font-size: 14px; margin-right: 5px">
+                                        <fa icon="circle" :class="getLevelColor(item.value)"/>
+                                    </div>
+                                    {{ item.name }}
+                                </div>
+                            </el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -68,6 +75,9 @@
 <style scoped src="@/styles/modal.css">
 </style>
 
+<style scoped src="@/styles/status.css">
+</style>
+
 <script>
     import { PUT_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
@@ -107,6 +117,18 @@
             ])
         },
         methods: {
+            getLevelColor(levelId) {
+                levelId = parseInt(levelId);
+                if (levelId === 1) {
+                    return "info";
+                } else if (levelId === 2) {
+                    return "success";
+                } else if (levelId === 3) {
+                    return "warning";
+                } else if (levelId === 4) {
+                    return "error";
+                }
+            },
             cancel() {
                 this.dialogStatus.visible = false;
             },

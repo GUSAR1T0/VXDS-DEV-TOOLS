@@ -140,6 +140,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             {
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.NotificationTable.sql");
             }
+
+            if (!schema.Table(Table.Module).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.ModuleTable.sql");
+            }
         }
 
         private void UpgradeModuleSchema()
@@ -148,11 +153,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             if (!schema.Exists())
             {
                 Execute.EmbeddedScript("InitialLoading.Module.Create.Schema.sql");
-            }
-
-            if (!schema.Table(Table.Module).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Module.Create.ModuleTable.sql");
             }
         }
 
@@ -176,11 +176,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             var schema = Schema.Schema(Database.Schema.Module);
             if (schema.Exists())
             {
-                if (schema.Table(Table.Module).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Module.Drop.ModuleTable.sql");
-                }
-
                 Execute.EmbeddedScript("InitialLoading.Module.Drop.Schema.sql");
             }
         }
@@ -213,6 +208,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.Notification).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Portal.Drop.NotificationTable.sql");
+                }
+
+                if (schema.Table(Table.Module).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.ModuleTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Portal.Drop.Schema.sql");

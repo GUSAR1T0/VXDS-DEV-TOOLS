@@ -11,7 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Extensions
     {
         internal static TResponse PostHandle<TResponse>(this TResponse response, IOperation operation) where TResponse : ICamundaResponse
         {
-            if (!response.IsWithoutErrors()) throw new BadRequestException(operation, $"Failed to send request to Camunda through Syrinx: {response.Status} \"{response.Reason}\"");
+            if (!response.IsWithoutErrors()) throw CommonExceptions.CamundaRequestCanNotBeSent(operation, response.Status, response.Reason);
 
             var settings = new JsonSerializerSettings
             {

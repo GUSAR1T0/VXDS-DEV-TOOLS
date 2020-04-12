@@ -42,7 +42,14 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
         ProcessDefinitionStartProcessInstanceByKey = 24002,
 
         [CamundaAction(CamundaCategory.ProcessDefinition, "Start Process Instance (by key and tenant id)", HttpMethod.Post, "key/{key}/tenant-id/{tenant-id}/start")]
-        ProcessDefinitionStartProcessInstanceByKeyAndTenantId = 24003
+        ProcessDefinitionStartProcessInstanceByKeyAndTenantId = 24003,
+
+        #endregion
+
+        #region Version
+
+        [CamundaAction(CamundaCategory.Version, "Get Version", HttpMethod.Get)]
+        Version = 32001
 
         #endregion
     }
