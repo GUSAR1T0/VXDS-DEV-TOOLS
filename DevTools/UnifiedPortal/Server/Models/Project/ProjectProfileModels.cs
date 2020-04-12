@@ -11,6 +11,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Project
         public long? GitHubRepoId { get; set; }
         public bool IsActive { get; set; }
     }
+
+    public class ProjectSearchModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Alias { get; set; }
+    }
+
     public class ProjectProfileGetModel : ProjectProfileModel
     {
         public bool GitHubTokenSetup { get; set; }

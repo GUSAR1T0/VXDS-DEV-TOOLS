@@ -15,8 +15,12 @@
     <ItemGroup>
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Delete\PermissionGroups.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\PermissionGroups.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Module\Create\SimpleNoteServiceTable.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Module\Drop\SimpleNoteServiceTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\NoteProjectTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\NoteTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\NoteProjectTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\NoteTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\Schema.sql" />
     </ItemGroup>
 
     <ItemGroup>

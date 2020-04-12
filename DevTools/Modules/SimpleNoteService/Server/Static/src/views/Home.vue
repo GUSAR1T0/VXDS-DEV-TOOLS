@@ -30,6 +30,7 @@
 </template>
 
 <script>
+    import { mapGetters } from "vuex";
     import { LOCALHOST } from "@/constants/servers";
     import { POST_HTTP_REQUEST } from "@/constants/actions";
     import { GET_NOTE_LIST_ENDPOINT } from "@/constants/endpoints";
@@ -60,16 +61,24 @@
                     ids: [],
                     userIds: [],
                     titles: [],
+                    projectIds: [],
                     editTimeRange: [],
 
                     userIdOptions: [],
-                    userIdsSearchLoading: false
+                    userIdsSearchLoading: false,
+                    projectIdOptions: [],
+                    projectIdsSearchLoading: false
                 },
                 items: [],
                 dialogNotificationFormStatus: {
                     visible: false
                 }
             };
+        },
+        computed: {
+            ...mapGetters([
+                "getUnifiedPortalHost"
+            ])
         },
         methods: {
             loadNotes() {
@@ -78,6 +87,7 @@
                     ids: getOnlyNumbers(this.filter.ids),
                     userIds: this.filter.userIds,
                     titles: this.filter.titles,
+                    projectIds: this.filter.projectIds,
                     editTimeRange: this.filter.editTimeRange && this.filter.editTimeRange.length > 1 ? {
                         min: getDate(this.filter.editTimeRange[0]),
                         max: getDate(this.filter.editTimeRange[1])
@@ -101,7 +111,7 @@
                     this.$notify.error({
                         title: "Failed to load list of notes",
                         duration: 10000,
-                        message: renderErrorNotificationMessage(this.$createElement, error.response)
+                        message: renderErrorNotificationMessage(this.$createElement, this.getUnifiedPortalHost, error.response)
                     });
                 });
             },
@@ -109,10 +119,13 @@
                 this.filter.ids = [];
                 this.filter.userIds = [];
                 this.filter.titles = [];
+                this.filter.projectIds = [];
                 this.filter.editTimeRange = [];
 
                 this.filter.userIdOptions = [];
                 this.filter.userIdsSearchLoading = false;
+                this.filter.projectIdOptions = [];
+                this.filter.projectIdsSearchLoading = false;
             }
         },
         mounted() {

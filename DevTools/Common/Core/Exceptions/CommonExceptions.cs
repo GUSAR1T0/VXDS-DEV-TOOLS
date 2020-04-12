@@ -152,5 +152,11 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         }
 
         #endregion
+
+        #region Note
+
+        public static NotFoundException NoteWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Note with ID \"{id}\" was not found");
+
+        #endregion
     }
 }

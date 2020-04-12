@@ -45,8 +45,6 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\NotificationLevels.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\PermissionGroups.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\Permissions.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Module\Create\Schema.sql" />
-      <EmbeddedResource Include="Scripts\InitialLoading\Module\Drop\Schema.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\IncidentHistoryTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\IncidentTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\ModuleTable.sql" />

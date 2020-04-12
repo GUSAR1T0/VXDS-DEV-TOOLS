@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Project;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Extensions;
@@ -11,6 +12,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
     public interface IProjectStore
     {
         Task<(long total, IEnumerable<ProjectListItemEntity> projects)> GetProjects(IOperation operation, ProjectPagingRequest request);
+        Task<IEnumerable<ProjectSearchEntity>> SearchProjectsByPattern(IOperation operation, string pattern);
         Task<ProjectProfileEntity> Get(IOperation operation, int id);
         Task<IEnumerable<byte>> CheckFieldsForProjectCreation(IOperation operation, string name, string alias, long? gitHubRepoId, int? id = null);
         Task<bool> IsProjectExist(IOperation operation, int id);
@@ -87,6 +89,18 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             }
 
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
+        }
+
+        public async Task<IEnumerable<ProjectSearchEntity>> SearchProjectsByPattern(IOperation operation, string pattern)
+        {
+            return await operation.Connection.QueryAsync<ProjectSearchEntity>(new { Pattern = $"%{pattern}%" }, $@"
+                SELECT TOP {FormatPattern.SearchMaxCount}
+                    [Id],
+                    [Name],
+                    [Alias]
+                FROM [portal].[Project]
+                WHERE [Name] LIKE @Pattern OR [Alias] LIKE @Pattern;
+            ");
         }
 
         public async Task<ProjectProfileEntity> Get(IOperation operation, int id)

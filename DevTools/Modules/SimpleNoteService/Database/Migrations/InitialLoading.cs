@@ -27,7 +27,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
             operationService.Make(Context, async operation =>
             {
                 UpgradeEnumSchema(operation);
-                UpgradeModuleSchema(operation);
+                UpgradeSimpleNoteServiceSchema();
             }).Wait();
         }
 
@@ -45,17 +45,22 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
             }
         }
 
-        private void UpgradeModuleSchema(IOperation operation)
+        private void UpgradeSimpleNoteServiceSchema()
         {
-            var schema = Schema.Schema(Database.Schema.Module);
+            var schema = Schema.Schema(Database.Schema.SimpleNoteService);
             if (!schema.Exists())
             {
-                throw CommonExceptions.DatabaseSchemaWasNotFound(operation, Database.Schema.Module);
+                Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Create.Schema.sql");
             }
 
-            if (!schema.Table(Table.SimpleNoteService).Exists())
+            if (!schema.Table(Table.Note).Exists())
             {
-                Execute.EmbeddedScript("InitialLoading.Module.Create.SimpleNoteServiceTable.sql");
+                Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Create.NoteTable.sql");
+            }
+
+            if (!schema.Table(Table.NoteProject).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Create.NoteProjectTable.sql");
             }
         }
 
@@ -67,22 +72,27 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
         {
             operationService.Make(Context, async operation =>
             {
-                DowngradeModuleSchema(operation);
+                DowngradeSimpleNoteServiceSchema();
                 DowngradeEnumSchema(operation);
             }).Wait();
         }
 
-        private void DowngradeModuleSchema(IOperation operation)
+        private void DowngradeSimpleNoteServiceSchema()
         {
-            var schema = Schema.Schema(Database.Schema.Module);
-            if (!schema.Exists())
+            var schema = Schema.Schema(Database.Schema.SimpleNoteService);
+            if (schema.Exists())
             {
-                throw CommonExceptions.DatabaseSchemaWasNotFound(operation, Database.Schema.Module);
-            }
+                if (schema.Table(Table.NoteProject).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Drop.NoteProjectTable.sql");
+                }
 
-            if (schema.Table(Table.SimpleNoteService).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Module.Drop.SimpleNoteServiceTable.sql");
+                if (schema.Table(Table.Note).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Drop.NoteTable.sql");
+                }
+
+                Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Drop.Schema.sql");
             }
         }
 

@@ -14,6 +14,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Note
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime EditTime { get; set; }
+        public IEnumerable<NoteProjectEntity> Projects { get; set; }
     }
 
     public class NotePagingFilter : IPagingFilterEntity
@@ -21,6 +22,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Note
         public IEnumerable<int> Ids { get; set; }
         public IEnumerable<string> Titles { get; set; }
         public IEnumerable<int> UserIds { get; set; }
+        public IEnumerable<int> ProjectIds { get; set; }
         public RangeFilter<DateTime> EditTimeRange { get; set; }
     }
 

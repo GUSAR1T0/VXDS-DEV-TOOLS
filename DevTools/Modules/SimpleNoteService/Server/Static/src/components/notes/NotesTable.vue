@@ -28,13 +28,29 @@
                     </el-tooltip>
                 </template>
             </el-table-column>
-            <el-table-column label="Title" min-width="900" align="center">
+            <el-table-column label="Title" min-width="500" align="center">
                 <template slot-scope="scope">
                     <strong style="font-size: 20px">
                         {{ scope.row.title }}
                     </strong>
                     <div style="font-size: 16px">
                         {{ scope.row.text }}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="Projects" min-width="500" align="center">
+                <template slot-scope="scope">
+                    <el-link
+                            type="primary" :underline="false"
+                            v-for="item in scope.row.projects" :key="item.id"
+                            :href="`${getUnifiedPortalHost}/components/project/${item.projectId}`"
+                    >
+                        <strong style="font-size: 16px">
+                            {{ item.projectName }} ({{ item.projectAlias }})
+                        </strong>
+                    </el-link>
+                    <div v-if="hasNoProjects(scope.row)">
+                        <strong style="font-size: 16px">—</strong>
                     </div>
                 </template>
             </el-table-column>
@@ -72,6 +88,7 @@
 </style>
 
 <script>
+    import { mapGetters } from "vuex";
     import { LOCALHOST } from "@/constants/servers";
     import { DELETE_HTTP_REQUEST } from "@/constants/actions";
     import { DELETE_NOTE_ENDPOINT } from "@/constants/endpoints";
@@ -100,6 +117,11 @@
                     visible: false
                 }
             };
+        },
+        computed: {
+            ...mapGetters([
+                "getUnifiedPortalHost"
+            ])
         },
         methods: {
             openDeleteNoteDialog(note) {
@@ -138,6 +160,9 @@
                         message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });
                 });
+            },
+            hasNoProjects(row) {
+                return !row.projects || row.projects.length <= 0;
             }
         }
     };

@@ -10,3 +10,7 @@ FROM (
     SELECT 1 [Id], N'Access to Module' [Name]
 ) t
 CROSS APPLY @PermissionGroupIds i;
+
+INSERT INTO [authentication].[UserRolePermission] ([UserRoleId], [PermissionGroupId], [Permissions])
+SELECT 1, i.[Id], 1
+FROM @PermissionGroupIds i;

@@ -23,6 +23,17 @@
                     </template>
                 </TableFilterItem>
             </template>
+            <template slot="third">
+                <TableFilterItem name="Note Projects">
+                    <template slot="field">
+                        <el-select v-model="filter.projectIds" multiple filterable remote reserve-keyword
+                                   :remote-method="filterByProjectIds" style="width: 100%">
+                            <el-option v-for="item in filter.projectIdOptions" :key="item.id"
+                                       :label="`${item.name} (${item.alias})`" :value="item.id"/>
+                        </el-select>
+                    </template>
+                </TableFilterItem>
+            </template>
         </Blocks>
         <Blocks style="padding-bottom: 20px">
             <template slot="first">
@@ -52,9 +63,10 @@
 </template>
 
 <script>
+    import { mapGetters } from "vuex";
     import { GET_HTTP_REQUEST } from "@/constants/actions";
     import { UNIFIED_PORTAL } from "@/constants/servers";
-    import { SEARCH_USERS_ENDPOINT } from "@/constants/endpoints";
+    import { SEARCH_USERS_ENDPOINT, SEARCH_PROJECTS_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import format from "string-format";
 
@@ -69,6 +81,11 @@
         components: {
             Blocks,
             TableFilterItem
+        },
+        computed: {
+            ...mapGetters([
+                "getUnifiedPortalHost"
+            ])
         },
         methods: {
             filterByUserIds(query) {
@@ -88,11 +105,35 @@
                         this.$notify.error({
                             title: "Failed to load list of users",
                             duration: 10000,
-                            message: renderErrorNotificationMessage(this.$createElement, error.response)
+                            message: renderErrorNotificationMessage(this.$createElement, this.getUnifiedPortalHost, error.response)
                         });
                     });
                 } else {
                     this.filter.userIdOptions = [];
+                }
+            },
+            filterByProjectIds(query) {
+                if (query !== "") {
+                    this.filter.projectIdsSearchLoading = true;
+                    this.$store.dispatch(GET_HTTP_REQUEST, {
+                        server: UNIFIED_PORTAL,
+                        endpoint: format(SEARCH_PROJECTS_ENDPOINT, {
+                            pattern: query
+                        }),
+                        config: getConfiguration()
+                    }).then(response => {
+                        this.filter.projectIdsSearchLoading = false;
+                        this.filter.projectIdOptions = response.data;
+                    }).catch(error => {
+                        this.filter.projectIdsSearchLoading = false;
+                        this.$notify.error({
+                            title: "Failed to load list of projects",
+                            duration: 10000,
+                            message: renderErrorNotificationMessage(this.$createElement, this.getUnifiedPortalHost, error.response)
+                        });
+                    });
+                } else {
+                    this.filter.projectIdOptions = [];
                 }
             }
         }

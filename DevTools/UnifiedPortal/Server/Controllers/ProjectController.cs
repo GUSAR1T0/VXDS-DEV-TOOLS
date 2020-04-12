@@ -41,6 +41,21 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
+        /// Searches projects by pattern
+        /// </summary>
+        /// <returns>List of projects shortly</returns>
+        [ProducesResponseType(typeof(IEnumerable<ProjectSearchModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [PortalAuthentication]
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<ProjectSearchModel>>> SearchProjectsByPattern([FromQuery(Name = "p")] string pattern) => await Execute(async operation =>
+        {
+            var repositories = await projectService.SearchProjectsByPattern(operation, pattern);
+            return repositories.Select(repository => repository.ToModel());
+        });
+
+        /// <summary>
         /// Searches GitHub repositories by pattern
         /// </summary>
         /// <returns>List of GitHub repositories shortly</returns>

@@ -1,0 +1,1 @@
+CREATE SCHEMA [simple-note-service];

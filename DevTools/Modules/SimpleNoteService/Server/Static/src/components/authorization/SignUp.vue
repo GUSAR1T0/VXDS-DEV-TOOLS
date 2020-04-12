@@ -114,7 +114,8 @@
         },
         computed: {
             ...mapGetters([
-                "getFullName"
+                "getFullName",
+                "getUnifiedPortalHost"
             ])
         },
         methods: {
@@ -145,7 +146,7 @@
                         this.$notify.error({
                             title: "Failed to sign up",
                             duration: 10000,
-                            message: renderErrorNotificationMessage(this.$createElement, error.response)
+                            message: renderErrorNotificationMessage(this.$createElement, this.getUnifiedPortalHost, error.response)
                         });
                     });
                 });

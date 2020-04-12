@@ -6,6 +6,7 @@ using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
 using VXDesign.Store.DevTools.Common.Core.Controllers.Models.SSP;
 using VXDesign.Store.DevTools.Common.Core.Entities.Note;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
+using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Extensions;
 
 namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note
 {
@@ -19,6 +20,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EditTime { get; set; }
+        public IEnumerable<NoteProjectModel> Projects { get; set; }
 
         public NoteModel ToModel(NoteEntity entity)
         {
@@ -30,6 +32,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note
             FirstName = entity.FirstName;
             LastName = entity.LastName;
             EditTime = entity.EditTime.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek);
+            Projects = entity.Projects.ToModel();
             return this;
         }
     }
@@ -39,6 +42,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note
         public IEnumerable<int> Ids { get; set; }
         public IEnumerable<string> Titles { get; set; }
         public IEnumerable<int> UserIds { get; set; }
+        public IEnumerable<int> ProjectIds { get; set; }
         public RangeFilterModel<DateTime> EditTimeRange { get; set; }
 
         public NotePagingFilter ToEntity() => new NotePagingFilter
@@ -46,6 +50,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note
             Ids = Ids,
             Titles = Titles,
             UserIds = UserIds,
+            ProjectIds = ProjectIds,
             EditTimeRange = EditTimeRange.ToEntity()
         };
     }

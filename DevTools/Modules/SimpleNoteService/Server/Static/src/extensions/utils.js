@@ -50,6 +50,9 @@ function showOperationBlock(h, unifiedPortalHost, operationId) {
                 props: {
                     href: `${unifiedPortalHost}/system/operations?id=${operationId}`,
                     type: "primary"
+                },
+                attrs: {
+                    target: "_blank"
                 }
             }, [
                 h("strong", null, [

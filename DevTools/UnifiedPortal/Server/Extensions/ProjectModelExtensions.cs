@@ -17,6 +17,13 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             IsActive = entity.IsActive
         };
 
+        internal static ProjectSearchModel ToModel(this ProjectSearchEntity entity) => new ProjectSearchModel
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Alias = entity.Alias
+        };
+
         internal static ProjectProfileEntity ToEntity(this ProjectProfileModel model) => new ProjectProfileEntity
         {
             Id = model.Id,

@@ -6,7 +6,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string Base = "base";
         internal const string Portal = "portal";
         internal const string Enum = "enum";
-        internal const string Module = "module";
     }
 
     internal class Table

@@ -36,5 +36,19 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Controllers
             var response = new NotePagingResponseModel().ToModel(items);
             return response;
         });
+
+        /// <summary>
+        /// Removes an existed note
+        /// </summary>
+        /// <param name="id">ID of a note</param>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteNote(int id) => await Execute(async operation => await noteService.DeleteNoteById(operation, id));
     }
 }
