@@ -10,3 +10,8 @@ export const GET_LOOKUP_VALUES_ENDPOINT = "lookup/values";
 
 // User endpoints
 export const GET_PROFILE_ENDPOINT = "user/{id}";
+export const SEARCH_USERS_ENDPOINT = "user/search?p={pattern}&z={zeroUserName}";
+
+// Note endpoints
+export const GET_NOTE_LIST_ENDPOINT = "note";
+export const DELETE_NOTE_ENDPOINT = "note/{id}";

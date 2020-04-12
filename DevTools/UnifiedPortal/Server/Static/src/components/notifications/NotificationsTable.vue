@@ -101,7 +101,7 @@
         RESET_NOTIFICATION_STORE_STATE,
         STORE_NOTIFICATION_DATA_REQUEST
     } from "@/constants/actions";
-    import { DELETE_NOTIFICATION_LIST_ENDPOINT } from "@/constants/endpoints";
+    import { DELETE_NOTIFICATION_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import format from "string-format";
 
@@ -177,7 +177,7 @@
                 button.loading = true;
                 this.$store.dispatch(DELETE_HTTP_REQUEST, {
                     server: LOCALHOST,
-                    endpoint: format(DELETE_NOTIFICATION_LIST_ENDPOINT, {
+                    endpoint: format(DELETE_NOTIFICATION_ENDPOINT, {
                         id: this.dialogNotificationDeleteStatus.id
                     }),
                     config: getConfiguration()

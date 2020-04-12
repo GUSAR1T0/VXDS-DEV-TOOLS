@@ -81,7 +81,7 @@
 <script>
     import { PUT_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
-    import { MODIFY_NOTIFICATION_LIST_ENDPOINT } from "@/constants/endpoints";
+    import { MODIFY_NOTIFICATION_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import { mapGetters } from "vuex";
 
@@ -142,7 +142,7 @@
 
                     this.$store.dispatch(PUT_HTTP_REQUEST, {
                         server: LOCALHOST,
-                        endpoint: MODIFY_NOTIFICATION_LIST_ENDPOINT,
+                        endpoint: MODIFY_NOTIFICATION_ENDPOINT,
                         data: {
                             id: this.notificationForm.id,
                             message: this.notificationForm.message,

@@ -8,12 +8,15 @@ import {
     faUserAlt,
     faUserCircle,
     faUserPlus,
-    faAddressCard
+    faAddressCard,
+    faTrashAlt,
+    faPlusCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(
-    faUserCircle, faUserAlt, faEllipsisH, faSignOutAlt, faSignInAlt, faUserPlus, faServer, faAddressCard
+    faUserCircle, faUserAlt, faEllipsisH, faSignOutAlt, faSignInAlt, faUserPlus, faServer, faAddressCard, faTrashAlt,
+    faPlusCircle
 );
 
 Vue.component("fa", FontAwesomeIcon);

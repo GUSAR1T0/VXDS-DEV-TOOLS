@@ -7,7 +7,8 @@ Vue.use(Router);
 let sections = {
     HOME: "Home Page",
     AUTHORIZATION: "Authorization",
-    ACCOUNT: "Account"
+    ACCOUNT: "Account",
+    NOTE: "Note"
 };
 
 export default new Router({
@@ -36,6 +37,14 @@ export default new Router({
             component: () => import(/* webpackChunkName: "user-profile" */ "../views/users/UserProfile.vue"),
             meta: {
                 sectionName: sections.ACCOUNT
+            }
+        },
+        {
+            path: "/note/:id?",
+            name: "note",
+            component: () => import(/* webpackChunkName: "note" */ "../views/notes/Note.vue"),
+            meta: {
+                sectionName: sections.NOTE
             }
         },
         {

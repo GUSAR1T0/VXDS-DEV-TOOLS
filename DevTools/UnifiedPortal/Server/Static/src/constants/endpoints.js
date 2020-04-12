@@ -58,8 +58,8 @@ export const DELETE_PROJECT_PROFILE_ENDPOINT = "project/{id}";
 
 // Notifications endpoints
 export const GET_NOTIFICATION_LIST_ENDPOINT = "notification/list";
-export const MODIFY_NOTIFICATION_LIST_ENDPOINT = "notification";
-export const DELETE_NOTIFICATION_LIST_ENDPOINT = "notification/{id}";
+export const MODIFY_NOTIFICATION_ENDPOINT = "notification";
+export const DELETE_NOTIFICATION_ENDPOINT = "notification/{id}";
 
 // Health checks endpoints
 export const LOAD_HEALTH_CHECKS_ENDPOINT = "healthChecks";
