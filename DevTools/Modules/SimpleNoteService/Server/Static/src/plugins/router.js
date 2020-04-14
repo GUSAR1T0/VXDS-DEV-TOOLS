@@ -40,7 +40,7 @@ export default new Router({
             }
         },
         {
-            path: "/note/:id?",
+            path: "/folder/:folderId/note/:noteId?",
             name: "note",
             component: () => import(/* webpackChunkName: "note" */ "../views/notes/Note.vue"),
             meta: {

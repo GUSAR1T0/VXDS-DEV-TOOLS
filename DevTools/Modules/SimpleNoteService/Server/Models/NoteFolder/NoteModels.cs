@@ -4,11 +4,11 @@ using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
 using VXDesign.Store.DevTools.Common.Core.Controllers.Models.SSP;
-using VXDesign.Store.DevTools.Common.Core.Entities.Note;
+using VXDesign.Store.DevTools.Common.Core.Entities.NoteFolder;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Extensions;
 
-namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note
+namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.NoteFolder
 {
     public class NoteModel : PagingResponseItemModel, IPagingResponseItemModel<NoteModel, NoteEntity>
     {
@@ -73,5 +73,18 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note
             Items = entity.Items.Select(item => new NoteModel().ToModel(item));
             return this;
         }
+    }
+
+    public class NoteExtendedModel : NoteModel
+    {
+        public int FolderId { get; set; }
+        public string FolderName { get; set; }
+    }
+
+    public class NoteUpdateModel
+    {
+        public string Title { get; set; }
+        public string Text { get; set; }
+        public IEnumerable<int> ProjectIds { get; set; }
     }
 }

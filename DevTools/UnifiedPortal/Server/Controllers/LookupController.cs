@@ -27,6 +27,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         /// </summary>
         /// <returns>Dictionary with values</returns>
         [ProducesResponseType(typeof(LookupModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [HttpGet("values")]
         public ActionResult<LookupModel> GetAllValues()
         {

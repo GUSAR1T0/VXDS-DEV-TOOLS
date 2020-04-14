@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using VXDesign.Store.DevTools.Common.Core.Entities.SSP;
 
-namespace VXDesign.Store.DevTools.Common.Core.Entities.Note
+namespace VXDesign.Store.DevTools.Common.Core.Entities.NoteFolder
 {
     public class NoteEntity : IDataEntity, IPagingResponseItemEntity
     {
@@ -19,6 +19,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Note
 
     public class NotePagingFilter : IPagingFilterEntity
     {
+        public int FolderId { get; set; }
         public IEnumerable<int> Ids { get; set; }
         public IEnumerable<string> Titles { get; set; }
         public IEnumerable<int> UserIds { get; set; }
@@ -32,5 +33,18 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Note
 
     public class NotePagingResponse : ServerSidePagingResponse<NoteEntity>
     {
+    }
+
+    public class NoteExtendedEntity : NoteEntity
+    {
+        public int FolderId { get; set; }
+        public string FolderName { get; set; }
+    }
+
+    public class NoteUpdateEntity
+    {
+        public string Title { get; set; }
+        public string Text { get; set; }
+        public IEnumerable<int> ProjectIds { get; set; }
     }
 }

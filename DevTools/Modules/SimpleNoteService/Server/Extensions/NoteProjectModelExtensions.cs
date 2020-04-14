@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using VXDesign.Store.DevTools.Common.Core.Entities.Note;
-using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note;
+using VXDesign.Store.DevTools.Common.Core.Entities.NoteFolder;
+using VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.NoteFolder;
 
 namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Extensions
 {

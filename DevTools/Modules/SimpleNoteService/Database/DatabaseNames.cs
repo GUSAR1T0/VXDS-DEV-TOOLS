@@ -11,5 +11,6 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database
         internal const string PermissionGroup = "PermissionGroup";
         internal const string Note = "Note";
         internal const string NoteProject = "NoteProject";
+        internal const string Folder = "Folder";
     }
 }

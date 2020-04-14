@@ -29,7 +29,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static NotFoundException CamundaEndpointIsNotFoundByActionCode(IOperation operation) => new NotFoundException(operation, "Failed to find a Camunda endpoint by action code");
 
-        public static BadRequestException CamundaRequestCanNotBeSent(IOperation operation, int status, string reason) => new BadRequestException(operation, $"Failed to send request to Camunda through Syrinx: {status} \"{reason}\"");
+        public static BadRequestException CamundaRequestCanNotBeSent(IOperation operation, int status, string reason) =>
+            new BadRequestException(operation, $"Failed to send request to Camunda through Syrinx: {status} \"{reason}\"");
 
         #endregion
 
@@ -153,9 +154,13 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         #endregion
 
-        #region Note
+        #region Folder / Note
+
+        public static NotFoundException FolderWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Folder with ID \"{id}\" was not found");
 
         public static NotFoundException NoteWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Note with ID \"{id}\" was not found");
+
+        public static BadRequestException NoteTitleIsEmpty(IOperation operation) => new BadRequestException(operation, "Note title can't be empty");
 
         #endregion
     }

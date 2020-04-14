@@ -5,7 +5,12 @@ using Microsoft.SqlServer.Server;
 
 namespace VXDesign.Store.DevTools.Common.Core.Entities
 {
-    public abstract class SingleColumnTableEntity<TEntity> : List<TEntity>, IEnumerable<SqlDataRecord>
+    public interface ITableValuedEntity
+    {
+        SqlMapper.ICustomQueryParameter ToTable();
+    }
+
+    public abstract class SingleColumnTableEntity<TEntity> : List<TEntity>, IEnumerable<SqlDataRecord>, ITableValuedEntity
     {
         protected const string ColumnName = "Value";
 

@@ -15,12 +15,19 @@
     <ItemGroup>
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Delete\PermissionGroups.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\PermissionGroups.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\FolderTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\FoldersUpdateValueType.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\NoteProjectTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\NoteTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\NoteUpdateTrigger.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Create\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\FoldersUpdateValueType.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\FolderTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\NoteProjectTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\NoteTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\NoteUpdateTrigger.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Drop\Schema.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\SimpleNoteService\Insert\RootFolder.sql" />
     </ItemGroup>
 
     <ItemGroup>

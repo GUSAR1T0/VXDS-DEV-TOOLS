@@ -53,9 +53,17 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Create.Schema.sql");
             }
 
+            if (!schema.Table(Table.Folder).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Create.FolderTable.sql");
+                Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Create.FoldersUpdateValueType.sql");
+                Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Insert.RootFolder.sql");
+            }
+
             if (!schema.Table(Table.Note).Exists())
             {
                 Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Create.NoteTable.sql");
+                Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Create.NoteUpdateTrigger.sql");
             }
 
             if (!schema.Table(Table.NoteProject).Exists())
@@ -89,7 +97,14 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
 
                 if (schema.Table(Table.Note).Exists())
                 {
+                    Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Drop.NoteUpdateTrigger.sql");
                     Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Drop.NoteTable.sql");
+                }
+
+                if (schema.Table(Table.Folder).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Drop.FoldersUpdateValueType.sql");
+                    Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Drop.FolderTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.SimpleNoteService.Drop.Schema.sql");

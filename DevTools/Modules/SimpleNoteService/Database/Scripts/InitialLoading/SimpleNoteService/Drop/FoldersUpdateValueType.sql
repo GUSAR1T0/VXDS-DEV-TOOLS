@@ -1,0 +1,1 @@
+DROP TYPE [simple-note-service].[FoldersUpdateValue];

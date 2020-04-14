@@ -22,7 +22,7 @@ export const GET_USER_ROLES_FULL_INFO_ENDPOINT = "userRole/full/list";
 export const ADD_USER_ROLE_ENDPOINT = "userRole";
 export const UPDATE_USER_ROLE_ENDPOINT = "userRole/{id}";
 export const DELETE_USER_ROLE_ENDPOINT = "userRole/{id}";
-export const GET_AFFECTED_USERS_COUNT_BY_USER_ROLE_ENDPOINT = "userRole/{id}/affectedUsers/count";
+export const GET_AFFECTED_USERS_COUNT_BY_USER_ROLE_ENDPOINT = "userRole/{id}/affected/count";
 export const SEARCH_USER_ROLES_ENDPOINT = "userRole/search?p={pattern}";
 export const GET_USER_ROLE_PERMISSIONS_ENDPOINT = "userRole/permissions";
 

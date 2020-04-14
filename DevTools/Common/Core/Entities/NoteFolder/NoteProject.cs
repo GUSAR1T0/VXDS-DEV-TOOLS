@@ -1,6 +1,6 @@
-namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Models.Note
+namespace VXDesign.Store.DevTools.Common.Core.Entities.NoteFolder
 {
-    public class NoteProjectModel
+    public class NoteProjectEntity : IDataEntity
     {
         public int Id { get; set; }
         public int NoteId { get; set; }

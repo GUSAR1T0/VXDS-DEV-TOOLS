@@ -143,7 +143,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [PortalAuthentication]
-        [HttpGet("{id}/affectedUsers/count")]
+        [HttpGet("{id}/affected/count")]
         public async Task<ActionResult<int>> GetAffectedUsersCount(int id) => await Execute(async operation =>
         {
             var count = await userService.GetAffectedUsersCount(operation, id);
