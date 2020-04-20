@@ -1,0 +1,1 @@
+DROP SCHEMA [simple-note-service];

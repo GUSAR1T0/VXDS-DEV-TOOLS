@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using VXDesign.Store.DevTools.Common.Core.Controllers.Models.SSP;
 using VXDesign.Store.DevTools.Common.Core.Entities.User;
-using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.SSP;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.User
 {

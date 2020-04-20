@@ -1,0 +1,46 @@
+.profile-tab {
+    text-align: left;
+    margin: 10px;
+}
+
+.profile-header {
+    margin: auto;
+    font-size: 36px;
+}
+
+.profile-buttons {
+    display: inline-flex;
+}
+
+.profile-block {
+    margin-bottom: 40px;
+}
+
+.profile-block-header {
+    margin-bottom: 10px;
+}
+
+.profile-block-divider {
+    margin: 10px 0 25px 0;
+}
+
+.profile-block-content {
+    margin-left: 10px;
+}
+
+.field {
+    margin-bottom: 20px;
+}
+
+.field-header {
+    margin: auto;
+}
+
+.field-content {
+    padding-top: 10px;
+    display: flex;
+}
+
+.inline-field-element {
+    margin-left: 10px;
+}

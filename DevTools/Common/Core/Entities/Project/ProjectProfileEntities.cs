@@ -12,6 +12,13 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Project
         public bool IsActive { get; set; }
     }
 
+    public class ProjectSearchEntity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Alias { get; set; }
+    }
+
     public class ProjectProfileGetEntity : ProjectProfileEntity
     {
         public bool GitHubTokenSetup { get; set; }

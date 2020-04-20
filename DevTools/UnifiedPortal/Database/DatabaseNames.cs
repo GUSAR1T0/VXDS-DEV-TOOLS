@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string UserRole = "UserRole";
         internal const string UserRolePermission = "UserRolePermission";
         internal const string User = "User";
+        internal const string UserRefreshToken = "UserRefreshToken";
         internal const string Operation = "Operation";
         internal const string PortalSettings = "Settings";
         internal const string Project = "Project";
@@ -23,5 +24,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string IncidentHistory = "IncidentHistory";
         internal const string Notification = "Notification";
         internal const string NotificationLevel = "NotificationLevel";
+        internal const string Module = "Module";
     }
 }

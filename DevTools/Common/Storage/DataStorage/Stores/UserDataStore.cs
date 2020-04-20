@@ -14,12 +14,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         #region Autorization
 
         Task<UserAuthorizationEntity> GetAuthorizationById(IOperation operation, int id);
-        Task<string> GetRefreshTokenById(IOperation operation, int id);
         Task<UserAuthorizationEntity> GetUserIdentityClaimsByAccessData(IOperation operation, string email, string password = null);
         Task<UserAuthorizationEntity> GetUserIdentityClaimsById(IOperation operation, int id);
-        Task UpdateRefreshTokenById(IOperation operation, int id, string refreshToken);
         Task<UserAuthorizationEntity> CreateUser(IOperation operation, UserRegistrationEntity entity);
         Task<bool> IsUserActivated(IOperation operation, int id);
+
+        Task<int?> GetRefreshTokenId(IOperation operation, int userId, string refreshToken);
+        Task AddRefreshToken(IOperation operation, int userId, string refreshToken);
+        Task UpdateRefreshToken(IOperation operation, int refreshTokenId, string refreshToken);
+        Task RemoveRefreshToken(IOperation operation, int refreshTokenId);
 
         #endregion
 
@@ -68,18 +71,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     LastName = user.LastName,
                     Email = user.Email,
                     Color = user.Color,
+                    UserRoleId = user.UserRoleId,
                     Permissions = await reader.ReadAsync<UserRolePermissionEntity>()
                 }
                 : null;
-        }
-
-        public async Task<string> GetRefreshTokenById(IOperation operation, int id)
-        {
-            return await operation.Connection.QuerySingleOrDefaultAsync<string>(new { Id = id }, @"
-                SELECT [RefreshToken]
-                FROM [authentication].[User]
-                WHERE [Id] = @Id
-            ");
         }
 
         public async Task<UserAuthorizationEntity> GetUserIdentityClaimsByAccessData(IOperation operation, string email, string password = null)
@@ -135,19 +130,6 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             };
         }
 
-        public async Task UpdateRefreshTokenById(IOperation operation, int id, string refreshToken)
-        {
-            await operation.Connection.ExecuteAsync(new
-            {
-                Id = id,
-                RefreshToken = refreshToken
-            }, @"
-                UPDATE [authentication].[User]
-                SET [RefreshToken] = @RefreshToken
-                WHERE [Id] = @Id
-            ");
-        }
-
         public async Task<UserAuthorizationEntity> CreateUser(IOperation operation, UserRegistrationEntity entity)
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<UserAuthorizationEntity>(new
@@ -181,6 +163,53 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 SELECT TOP 1 1
                 FROM [authentication].[User]
                 WHERE [Id] = @Id AND [IsActivated] = 1
+            ");
+        }
+
+        public async Task<int?> GetRefreshTokenId(IOperation operation, int userId, string refreshToken)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<int?>(new
+            {
+                UserId = userId,
+                RefreshToken = refreshToken
+            }, @"
+                SELECT [Id]
+                FROM [authentication].[UserRefreshToken]
+                WHERE [UserId] = @UserId AND [RefreshToken] = @RefreshToken;
+            ");
+        }
+
+        public async Task AddRefreshToken(IOperation operation, int userId, string refreshToken)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                UserId = userId,
+                RefreshToken = refreshToken
+            }, @"
+                INSERT INTO [authentication].[UserRefreshToken] ([UserId], [RefreshToken])
+                VALUES (@UserId, @RefreshToken);
+            ");
+        }
+
+        public async Task UpdateRefreshToken(IOperation operation, int refreshTokenId, string refreshToken)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                Id = refreshTokenId,
+                RefreshToken = refreshToken
+            }, @"
+                UPDATE rf
+                SET [RefreshToken] = @RefreshToken
+                FROM [authentication].[UserRefreshToken] rf
+                WHERE rf.[Id] = @Id;
+            ");
+        }
+
+        public async Task RemoveRefreshToken(IOperation operation, int refreshTokenId)
+        {
+            await operation.Connection.ExecuteAsync(new { Id = refreshTokenId }, @"
+                DELETE FROM [authentication].[UserRefreshToken]
+                WHERE [Id] = @Id;
             ");
         }
 

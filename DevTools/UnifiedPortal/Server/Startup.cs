@@ -66,6 +66,17 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             services.AddScoped<IPortalSettingsService, PortalSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IHealthChecksService, HealthChecksService>();
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -89,6 +100,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             }
 
             app.UseRouting();
+            app.UseCors();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthorization();

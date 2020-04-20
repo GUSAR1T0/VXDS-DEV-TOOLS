@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+        <AssemblyName>VXDesign.Store.DevTools.Modules.SimpleNoteService.Server</AssemblyName>
+        <RootNamespace>VXDesign.Store.DevTools.Modules.SimpleNoteService.Server</RootNamespace>
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\Clients\Camunda\Camunda.csproj" />
+      <ProjectReference Include="..\..\..\Common\Clients\Syrinx\Syrinx.csproj" />
+      <ProjectReference Include="..\..\..\Common\Core\Core.csproj" />
+      <ProjectReference Include="..\..\..\Common\Services\Services.csproj" />
+      <ProjectReference Include="..\..\..\Common\Storage\DataStorage\DataStorage.csproj" />
+    </ItemGroup>
+
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+        <Exec Command="npm run build -C Static" />
+    </Target>
+
+</Project>

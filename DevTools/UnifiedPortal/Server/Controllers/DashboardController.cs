@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
+using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Services;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication;
@@ -76,18 +77,18 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
-        /// Obtains server health check data for admin panel
+        /// Obtains system health check data for admin panel
         /// </summary>
         /// <returns>Model of admin panel data</returns>
-        [ProducesResponseType(typeof(ServerDateTimeModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SystemHealthCheckDataModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
-        [HttpGet("serverHealthCheck")]
-        public ActionResult<ServerHealthCheckDataModel> GetServerHealthCheck() => Execute(_ => new ServerHealthCheckDataModel
+        [HttpGet("systemHealthCheck")]
+        public async Task<ActionResult<SystemHealthCheckDataModel>> GetSystemHealthCheck() => await Execute(async operation => new SystemHealthCheckDataModel
         {
-            IsOk = new Random().Next(100) < 50 // TODO: Implement checker
+            IsOk = await dashboardService.IsSystemHealthStatusOk(operation)
         });
 
         /// <summary>

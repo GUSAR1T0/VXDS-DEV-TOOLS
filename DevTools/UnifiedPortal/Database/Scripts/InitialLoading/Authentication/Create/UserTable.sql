@@ -8,7 +8,6 @@ CREATE TABLE [authentication].[User]
     [Color]        NVARCHAR(32)        NOT NULL,
     [Location]     NVARCHAR(255)       NULL,
     [Bio]          NVARCHAR(1000)      NULL,
-    [RefreshToken] NVARCHAR(64)        NULL,
     [UserRoleId]   INT                 NULL,
     [IsActivated]  BIT DEFAULT ((1))   NOT NULL,
     CONSTRAINT [PK_User_Id] PRIMARY KEY CLUSTERED ([Id] ASC),

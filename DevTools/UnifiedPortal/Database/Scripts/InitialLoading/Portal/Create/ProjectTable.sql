@@ -8,6 +8,5 @@ CREATE TABLE [portal].[Project]
     [IsActive]     BIT DEFAULT ((1))   NOT NULL,
     CONSTRAINT [PK_Project_Id] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [UQ_Project_Name] UNIQUE ([Name] ASC),
-    CONSTRAINT [UQ_Project_Alias] UNIQUE ([Alias] ASC),
-    CONSTRAINT [UQ_Project_GitHubRepo] UNIQUE ([GitHubRepoId] ASC)
+    CONSTRAINT [UQ_Project_Alias] UNIQUE ([Alias] ASC)
 );

@@ -18,6 +18,7 @@ namespace VXDesign.Store.DevTools.Common.Services
     public interface IProjectService
     {
         Task<ProjectPagingResponse> GetItems(IOperation operation, ProjectPagingRequest request);
+        Task<IEnumerable<ProjectSearchEntity>> SearchProjectsByPattern(IOperation operation, string pattern);
         Task<IEnumerable<GitHubRepositoryShortEntity>> SearchGitHubRepositoriesByPattern(IOperation operation, string pattern);
         Task<ProjectProfileGetEntity> GetProjectProfileById(IOperation operation, int id);
         Task<int> CreateProjectProfile(IOperation operation, ProjectProfileEntity entity);
@@ -49,6 +50,8 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Items = PreparePagingItems(projects, repositories)
             };
         }
+
+        public async Task<IEnumerable<ProjectSearchEntity>> SearchProjectsByPattern(IOperation operation, string pattern) => await projectStore.SearchProjectsByPattern(operation, pattern);
 
         private async Task<(bool flag, List<RepositoryListItemEntity> repositories)> GetGitHubUserRepositoriesFromCache(IOperation operation)
         {

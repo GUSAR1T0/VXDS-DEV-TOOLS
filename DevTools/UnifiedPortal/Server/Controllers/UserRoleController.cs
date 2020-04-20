@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
+using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Services;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication;
@@ -142,7 +143,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [PortalAuthentication]
-        [HttpGet("{id}/affectedUsers/count")]
+        [HttpGet("{id}/affected/count")]
         public async Task<ActionResult<int>> GetAffectedUsersCount(int id) => await Execute(async operation =>
         {
             var count = await userService.GetAffectedUsersCount(operation, id);

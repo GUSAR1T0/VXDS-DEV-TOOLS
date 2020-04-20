@@ -1,6 +1,6 @@
 <template>
     <el-collapse v-model="activeNames" style="margin-top: 10px">
-        <el-collapse-item title="User Profile & Server" name="1">
+        <el-collapse-item title="User Profile & System Status" name="1">
             <Blocks>
                 <template slot="first">
                     <UserProfileCard/>
@@ -32,7 +32,7 @@
                 </el-carousel-item>
             </el-carousel>
         </el-collapse-item>
-        <el-collapse-item title="System" name="3">
+        <el-collapse-item title="System Operations" name="3">
             <SystemCard/>
         </el-collapse-item>
     </el-collapse>

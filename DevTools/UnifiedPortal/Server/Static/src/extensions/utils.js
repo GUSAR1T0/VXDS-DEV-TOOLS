@@ -50,6 +50,9 @@ function showOperationBlock(h, operationId) {
                 props: {
                     href: `/system/operations?id=${operationId}`,
                     type: "primary"
+                },
+                attrs: {
+                    target: "_blank"
                 }
             }, [
                 h("strong", null, [

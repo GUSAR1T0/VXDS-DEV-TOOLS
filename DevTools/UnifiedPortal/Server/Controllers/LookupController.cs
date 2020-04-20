@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
+using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
 using VXDesign.Store.DevTools.Common.Core.Entities.Incident;
 using VXDesign.Store.DevTools.Common.Core.Entities.Notification;
 using VXDesign.Store.DevTools.Common.Core.Operations;
@@ -26,6 +27,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         /// </summary>
         /// <returns>Dictionary with values</returns>
         [ProducesResponseType(typeof(LookupModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [HttpGet("values")]
         public ActionResult<LookupModel> GetAllValues()
         {

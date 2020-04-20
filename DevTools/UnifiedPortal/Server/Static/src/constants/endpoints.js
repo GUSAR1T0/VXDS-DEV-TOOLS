@@ -22,7 +22,7 @@ export const GET_USER_ROLES_FULL_INFO_ENDPOINT = "userRole/full/list";
 export const ADD_USER_ROLE_ENDPOINT = "userRole";
 export const UPDATE_USER_ROLE_ENDPOINT = "userRole/{id}";
 export const DELETE_USER_ROLE_ENDPOINT = "userRole/{id}";
-export const GET_AFFECTED_USERS_COUNT_BY_USER_ROLE_ENDPOINT = "userRole/{id}/affectedUsers/count";
+export const GET_AFFECTED_USERS_COUNT_BY_USER_ROLE_ENDPOINT = "userRole/{id}/affected/count";
 export const SEARCH_USER_ROLES_ENDPOINT = "userRole/search?p={pattern}";
 export const GET_USER_ROLE_PERMISSIONS_ENDPOINT = "userRole/permissions";
 
@@ -30,7 +30,7 @@ export const GET_USER_ROLE_PERMISSIONS_ENDPOINT = "userRole/permissions";
 export const GET_NOTIFICATIONS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/notifications";
 export const GET_INCIDENTS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/incidents";
 export const GET_SERVER_TIME_FOR_DASHBOARD_ENDPOINT = "dashboard/serverDateTime";
-export const GET_SERVER_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT = "dashboard/serverHealthCheck";
+export const GET_SYSTEM_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT = "dashboard/systemHealthCheck";
 export const GET_USERS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/users";
 export const GET_USER_ROLES_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/userRoles";
 export const GET_PROJECTS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/projects";
@@ -58,5 +58,8 @@ export const DELETE_PROJECT_PROFILE_ENDPOINT = "project/{id}";
 
 // Notifications endpoints
 export const GET_NOTIFICATION_LIST_ENDPOINT = "notification/list";
-export const MODIFY_NOTIFICATION_LIST_ENDPOINT = "notification";
-export const DELETE_NOTIFICATION_LIST_ENDPOINT = "notification/{id}";
+export const MODIFY_NOTIFICATION_ENDPOINT = "notification";
+export const DELETE_NOTIFICATION_ENDPOINT = "notification/{id}";
+
+// Health checks endpoints
+export const LOAD_HEALTH_CHECKS_ENDPOINT = "healthChecks";

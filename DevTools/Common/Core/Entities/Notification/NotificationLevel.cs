@@ -7,10 +7,13 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Notification
         [Description("Information")]
         Information = 1,
 
+        [Description("Success")]
+        Success = 2,
+
         [Description("Warning")]
-        Warning = 2,
+        Warning = 3,
 
         [Description("Error")]
-        Error = 3
+        Error = 4
     }
 }

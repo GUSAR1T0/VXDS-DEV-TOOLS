@@ -22,6 +22,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task<bool> IsUserRoleExist(IOperation operation, int id);
         Task<bool> IsUserRoleExist(IOperation operation, string name, int? id = null);
         Task<IEnumerable<PermissionGroupEntity>> GetUserRolePermissions(IOperation operation);
+        Task<int?> GetUserRolePermission(IOperation operation, string name);
     }
 
     public class UserRoleStore : BaseDataStore, IUserRoleStore
@@ -238,6 +239,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 Name = group.Name,
                 Permissions = permissions.Where(item => item.PermissionGroupId == group.Id)
             });
+        }
+
+        public async Task<int?> GetUserRolePermission(IOperation operation, string name)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<int?>(new { Name = name }, @"
+                SELECT [Id]
+                FROM [enum].[PermissionGroup]
+                WHERE [Name] = @Name;
+            ");
         }
     }
 }

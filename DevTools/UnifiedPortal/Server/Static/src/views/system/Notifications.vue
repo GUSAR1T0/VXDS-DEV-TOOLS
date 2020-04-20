@@ -44,8 +44,8 @@
     import { LOCALHOST } from "@/constants/servers";
     import { GET_NOTIFICATION_LIST_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, getDate, getOnlyNumbers, renderErrorNotificationMessage } from "@/extensions/utils";
-
     import { PORTAL_PERMISSION } from "@/constants/permissions";
+
     import LoadingContainer from "@/components/page/LoadingContainer";
     import FilterableTableView from "@/components/table-filter/FilterableTableView";
     import NotificationsTableFilters from "@/components/notifications/NotificationsTableFilters";

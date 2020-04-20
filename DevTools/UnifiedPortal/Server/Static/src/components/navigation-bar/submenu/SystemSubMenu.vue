@@ -12,6 +12,10 @@
             <fa class="fa-submenu-item" icon="file-alt"/>
             <span slot="title" class="el-nav-menu-vertical-item">Operations</span>
         </el-menu-item>
+        <el-menu-item index="/system/health">
+            <fa class="fa-submenu-item" icon="heartbeat"/>
+            <span slot="title" class="el-nav-menu-vertical-item">Health Checks</span>
+        </el-menu-item>
     </div>
 </template>
 
