@@ -48,7 +48,7 @@
                     <div v-for="item in scope.row.projects" :key="item.id">
                         <el-link
                                 type="primary" :underline="false"
-                                :href="`${getUnifiedPortalHost}/components/project/${item.projectId}`"
+                                :href="`/project/${item.projectId}`"
                         >
                             <strong style="font-size: 16px">
                                 {{ item.projectName }} ({{ item.projectAlias }})

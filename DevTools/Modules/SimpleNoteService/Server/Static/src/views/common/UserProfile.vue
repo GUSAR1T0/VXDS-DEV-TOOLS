@@ -16,7 +16,7 @@
                             To User On Unified Portal Page
                         </div>
                         <el-button type="info" plain circle class="rounded-button"
-                                   @click="$router.push(`unifiedPortal?host=${getUnifiedPortalHost}&link=user/${getUserId}`)">
+                                   @click="$router.push(`/unifiedPortal?host=${getUnifiedPortalHost}&link=user/${userId}`)">
                             <span><fa icon="user-alt"/></span>
                         </el-button>
                     </el-tooltip>
@@ -78,6 +78,7 @@
         data() {
             return {
                 loadingIsActive: true,
+                userId: null,
                 dialogStatuses,
                 userRolePermissions: []
             };
@@ -94,10 +95,12 @@
             }
         },
         methods: {
-            fillForms(id = null) {
+            fillForms() {
                 this.loadingIsActive = true;
                 this.$store.dispatch(STORE_USER_PROFILE_DATA_REQUEST,
-                    format(GET_PROFILE_ENDPOINT, {id: id ? id : this.getUserId})
+                    format(GET_PROFILE_ENDPOINT, {
+                        id: this.userId
+                    })
                 ).then(() => {
                     this.loadingIsActive = false;
                 }).catch(error => {
@@ -111,10 +114,12 @@
             }
         },
         mounted() {
-            this.fillForms(this.$route.params.id);
+            this.userId = this.$route.params.id ? this.$route.params.id : this.getUserId;
+            this.fillForms();
         },
         beforeRouteUpdate(to, from, next) {
-            this.fillForms(to.params.id);
+            this.userId = to.params.id ? to.params.id : this.getUserId;
+            this.fillForms();
             next();
         },
         beforeRouteLeave(to, from, next) {

@@ -13,6 +13,7 @@ export const GET_PROFILE_ENDPOINT = "user/{id}";
 export const SEARCH_USERS_ENDPOINT = "user/search?p={pattern}&z={zeroUserName}";
 
 // Project endpoints
+export const GET_PROJECT_PROFILE_ENDPOINT = "project/{id}";
 export const SEARCH_PROJECTS_ENDPOINT = "project/search?p={pattern}";
 
 // Folder & Note endpoints
