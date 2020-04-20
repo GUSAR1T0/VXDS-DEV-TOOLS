@@ -15,6 +15,23 @@
                 </template>
             </Row>
             <Row name="Edit Date / Time" :value="note.editTime"/>
+            <Row name="Projects">
+                <template slot="description">
+                    <div v-for="item in note.projects" :key="item.id">
+                        <el-link
+                                type="primary" :underline="false"
+                                :href="`/project/${item.projectId}`"
+                        >
+                            <strong style="font-size: 16px">
+                                {{ item.projectName }} ({{ item.projectAlias }})
+                            </strong>
+                        </el-link>
+                    </div>
+                    <div v-if="hasNoProjects">
+                        <strong style="font-size: 16px">—</strong>
+                    </div>
+                </template>
+            </Row>
         </div>
     </el-dialog>
 </template>
@@ -35,6 +52,11 @@
         components: {
             Row,
             UserAvatarAndFullNameWithLink
+        },
+        computed: {
+            hasNoProjects() {
+                return !this.note.projects || this.note.projects.length <= 0;
+            }
         }
     };
 </script>

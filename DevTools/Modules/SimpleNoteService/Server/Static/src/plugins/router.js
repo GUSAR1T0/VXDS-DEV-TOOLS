@@ -7,7 +7,7 @@ Vue.use(Router);
 let sections = {
     HOME: "Home Page",
     AUTHORIZATION: "Authorization",
-    ACCOUNT: "Account",
+    COMMON: "Common",
     NOTE: "Note"
 };
 
@@ -34,9 +34,17 @@ export default new Router({
         {
             path: "/user/:id?",
             name: "user",
-            component: () => import(/* webpackChunkName: "user-profile" */ "../views/users/UserProfile.vue"),
+            component: () => import(/* webpackChunkName: "user-profile" */ "../views/common/UserProfile.vue"),
             meta: {
-                sectionName: sections.ACCOUNT
+                sectionName: sections.COMMON
+            }
+        },
+        {
+            path: "/project/:id?",
+            name: "project",
+            component: () => import(/* webpackChunkName: "project" */ "../views/common/Project.vue"),
+            meta: {
+                sectionName: sections.COMMON
             }
         },
         {
