@@ -1,0 +1,48 @@
+using System.Collections.Generic;
+using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
+using VXDesign.Store.DevTools.Common.Core.Entities.SSP;
+
+namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
+{
+    public class ModuleEntity : IDataEntity, IPagingResponseItemEntity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Alias { get; set; }
+
+        public int UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Color { get; set; }
+
+        public int HostId { get; set; }
+        public string HostName { get; set; }
+        public string HostDomain { get; set; }
+        public HostOperationSystem HostOperationSystem { get; set; }
+
+        public bool IsActive { get; set; }
+    }
+
+    public class ModulePagingFilter : IPagingFilterEntity
+    {
+        public IEnumerable<int> Ids { get; set; }
+        public IEnumerable<string> Names { get; set; }
+        public IEnumerable<string> Aliases { get; set; }
+        public IEnumerable<int> UserIds { get; set; }
+        public IEnumerable<int> HostIds { get; set; }
+        public bool? IsActive { get; set; }
+    }
+
+    public class ModulePagingRequest : ServerSidePagingRequest<ModulePagingFilter>
+    {
+    }
+
+    public class ModulePagingResponse : ServerSidePagingResponse<ModuleEntity>
+    {
+    }
+
+    public class ModuleFullEntity : ModuleEntity
+    {
+        public ModuleConfigurationFileType FileType { get; set; }
+    }
+}

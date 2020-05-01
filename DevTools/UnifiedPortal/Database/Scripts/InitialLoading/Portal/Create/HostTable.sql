@@ -2,7 +2,7 @@ CREATE TABLE [portal].[Host]
 (
     [Id]                INT IDENTITY (1, 1) NOT NULL,
     [Name]              VARCHAR(50)         NOT NULL,
-    [Domain]            NVARCHAR(MAX)       NOT NULL,
+    [Domain]            NVARCHAR(512)       NOT NULL,
     [OperationSystemId] TINYINT             NOT NULL,
     [Credentials]       NVARCHAR(MAX)       NULL,
     [IsActive]          BIT DEFAULT (1)     NOT NULL,

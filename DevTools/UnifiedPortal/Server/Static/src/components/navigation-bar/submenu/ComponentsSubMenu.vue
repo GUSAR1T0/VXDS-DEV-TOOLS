@@ -4,6 +4,10 @@
             <fa class="fa-submenu-item" icon="code"/>
             <span slot="title" class="el-nav-menu-vertical-item">Projects</span>
         </el-menu-item>
+        <el-menu-item index="/components/modules">
+            <fa class="fa-submenu-item" icon="cubes"/>
+            <span slot="title" class="el-nav-menu-vertical-item">Modules</span>
+        </el-menu-item>
     </div>
 </template>
 

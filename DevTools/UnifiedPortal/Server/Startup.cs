@@ -48,6 +48,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             services.AddScoped<IProjectStore, ProjectStore>();
             services.AddScoped<IIncidentStore, IncidentStore>();
             services.AddScoped<INotificationStore, NotificationStore>();
+            services.AddScoped<IModuleStore, ModuleStore>();
 
             // Services
             services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
@@ -67,6 +68,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IHealthChecksService, HealthChecksService>();
+            services.AddScoped<IModuleService, ModuleService>();
 
             services.AddCors(options =>
             {

@@ -123,7 +123,7 @@
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import format from "string-format";
 
-    import HostEditForm from "@/components/settings/HostEditForm";
+    import HostEditForm from "@/components/hosts/HostEditForm";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
 
     export default {

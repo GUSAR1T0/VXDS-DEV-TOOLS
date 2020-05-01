@@ -27,5 +27,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string Notification = "Notification";
         internal const string NotificationLevel = "NotificationLevel";
         internal const string Module = "Module";
+        internal const string ModuleConfiguration = "ModuleConfiguration";
+        internal const string ModuleConfigurationFileType = "ModuleConfigurationFileType";
     }
 }

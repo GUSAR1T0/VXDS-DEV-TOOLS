@@ -25,6 +25,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication
         ManageIncidentComments = 32,
 
         [Description("Manage Notifications")]
-        ManageNotifications = 64
+        ManageNotifications = 64,
+
+        [Description("Manage Modules")]
+        ManageModules = 128
     }
 }

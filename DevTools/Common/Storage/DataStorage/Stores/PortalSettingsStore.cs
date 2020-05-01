@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
@@ -14,6 +15,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         #region Hosts
 
         Task<(long total, IEnumerable<HostSettingsItemEntity> hosts)> GetHosts(IOperation operation, HostPagingRequest request);
+        Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern);
         Task<bool> IsHostExist(IOperation operation, int hostId);
         Task AddHost(IOperation operation, HostSettingsItemEntity host);
         Task UpdateHost(IOperation operation, HostSettingsItemEntity host);
@@ -28,6 +30,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task ModifySettings(IOperation operation, string name, string value);
 
         #endregion
+
     }
 
     public class PortalSettingsStore : BaseDataStore, IPortalSettingsStore
@@ -95,6 +98,18 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             filters.Add("ph.[IsActive] = 1");
 
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
+        }
+
+        public async Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern)
+        {
+            return await operation.Connection.QueryAsync<HostSettingsShortEntity>(new { Pattern = $"%{pattern}%" }, $@"
+                SELECT TOP {FormatPattern.SearchMaxCount}
+                    [Id],
+                    [Name],
+                    [Domain]
+                FROM [portal].[Host]
+                WHERE [Name] LIKE @Pattern OR [Domain] LIKE @Pattern;
+            ");
         }
 
         public async Task<bool> IsHostExist(IOperation operation, int hostId)

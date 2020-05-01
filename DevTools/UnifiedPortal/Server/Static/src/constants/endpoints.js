@@ -48,6 +48,7 @@ export const ADD_HOST_ENDPOINT = "settings/host";
 export const UPDATE_HOST_ENDPOINT = "settings/host/{id}";
 export const DELETE_HOST_ENDPOINT = "settings/host/{id}";
 export const GET_AFFECTED_MODULES_COUNT_BY_HOST_ENDPOINT = "settings/host/{id}/affected/count";
+export const SEARCH_HOSTS_ENDPOINT = "settings/host/search?p={pattern}";
 export const LOAD_CODE_SERVICES_SETTINGS_ENDPOINT = "settings/codeService";
 export const SETUP_GITHUB_TOKEN_ENDPOINT = "settings/codeService/github/token?t={token}";
 
@@ -66,3 +67,6 @@ export const DELETE_NOTIFICATION_ENDPOINT = "notification/{id}";
 
 // Health checks endpoints
 export const LOAD_HEALTH_CHECKS_ENDPOINT = "healthChecks";
+
+// Modules endpoints
+export const GET_MODULES_ENDPOINT = "module/list";

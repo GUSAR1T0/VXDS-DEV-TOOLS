@@ -69,9 +69,9 @@
 
     import LoadingContainer from "@/components/page/LoadingContainer";
     import ProfileBlock from "@/components/page/ProfileBlock";
-    import HostsTable from "@/components/settings/HostsTable";
-    import HostsTableFilters from "@/components/settings/HostsTableFilters";
-    import HostEditForm from "@/components/settings/HostEditForm";
+    import HostsTable from "@/components/hosts/HostsTable";
+    import HostsTableFilters from "@/components/hosts/HostsTableFilters";
+    import HostEditForm from "@/components/hosts/HostEditForm";
 
     export default {
         name: "Environment",
@@ -167,12 +167,20 @@
                     credentials: []
                 };
                 this.loadSettings();
+            },
+            searchHostsById(id) {
+                if (id && !isNaN(id)) {
+                    id = parseInt(id);
+                    this.filter.ids = [ id ];
+                }
             }
         },
         mounted() {
+            this.searchHostsById(this.$route.query.hostId);
             this.loadSettings();
         },
         beforeRouteUpdate(to, from, next) {
+            this.searchHostsById(to.query.hostId);
             this.loadSettings();
             next();
         }

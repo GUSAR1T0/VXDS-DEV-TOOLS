@@ -62,6 +62,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Enum.Create.OperationSystemTable.sql");
                 Execute.EmbeddedScript("InitialLoading.Enum.Insert.OperationSystems.sql");
             }
+
+            if (!schema.Table(Table.ModuleConfigurationFileType).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.ModuleConfigurationFileTypeTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.ModuleConfigurationFileTypes.sql");
+            }
         }
 
         private void UpgradeAuthenticationSchema()
@@ -131,6 +137,16 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.HostTable.sql");
             }
 
+            if (!schema.Table(Table.Module).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.ModuleTable.sql");
+            }
+
+            if (!schema.Table(Table.ModuleConfiguration).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.ModuleConfigurationTable.sql");
+            }
+
             if (!schema.Table(Table.Project).Exists())
             {
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.ProjectTable.sql");
@@ -149,11 +165,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             if (!schema.Table(Table.Notification).Exists())
             {
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.NotificationTable.sql");
-            }
-
-            if (!schema.Table(Table.Module).Exists())
-            {
-                Execute.EmbeddedScript("InitialLoading.Portal.Create.ModuleTable.sql");
             }
         }
 
@@ -181,6 +192,16 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                     Execute.EmbeddedScript("InitialLoading.Portal.Drop.SettingsTable.sql");
                 }
 
+                if (schema.Table(Table.ModuleConfiguration).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.ModuleConfigurationTable.sql");
+                }
+
+                if (schema.Table(Table.Module).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.ModuleTable.sql");
+                }
+
                 if (schema.Table(Table.Host).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Portal.Drop.HostTable.sql");
@@ -204,11 +225,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.Notification).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Portal.Drop.NotificationTable.sql");
-                }
-
-                if (schema.Table(Table.Module).Exists())
-                {
-                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.ModuleTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Portal.Drop.Schema.sql");
@@ -288,6 +304,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.OperationSystem).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Enum.Drop.OperationSystemTable.sql");
+                }
+
+                if (schema.Table(Table.ModuleConfigurationFileType).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.ModuleConfigurationFileTypeTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Enum.Drop.Schema.sql");

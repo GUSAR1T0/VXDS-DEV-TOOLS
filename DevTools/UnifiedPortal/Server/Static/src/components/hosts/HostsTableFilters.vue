@@ -62,14 +62,14 @@
         props: {
             filter: Object
         },
-        computed: {
-            ...mapGetters([
-                "getLookupValues"
-            ])
-        },
         components: {
             Blocks,
             TableFilterItem
         },
+        computed: {
+            ...mapGetters([
+                "getLookupValues"
+            ])
+        }
     };
 </script>

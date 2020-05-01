@@ -22,6 +22,13 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             }) ?? new List<HostCredentialsItemEntity>()
         };
 
+        internal static HostSettingsShortModel ToModel(this HostSettingsShortEntity entity) => new HostSettingsShortModel
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Domain = entity.Domain
+        };
+
         internal static HostSettingsItemModel ToModel(this HostSettingsItemEntity entity) => new HostSettingsItemModel
         {
             Id = entity.Id,

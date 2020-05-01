@@ -48,4 +48,11 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Settings
     public class HostPagingResponse : ServerSidePagingResponse<HostSettingsItemEntity>
     {
     }
+
+    public class HostSettingsShortEntity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Domain { get; set; }
+    }
 }

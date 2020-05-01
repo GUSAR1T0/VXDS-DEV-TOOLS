@@ -74,6 +74,22 @@ export default new Router({
             }
         },
         {
+            path: "/components/module/:id",
+            name: "module",
+            component: () => import(/* webpackChunkName: "module" */ "../views/components/Module.vue"),
+            meta: {
+                sectionName: sections.COMPONENTS
+            }
+        },
+        {
+            path: "/components/modules",
+            name: "modules",
+            component: () => import(/* webpackChunkName: "modules" */ "../views/components/Modules.vue"),
+            meta: {
+                sectionName: sections.COMPONENTS
+            }
+        },
+        {
             path: "/pages/about",
             name: "about",
             // route level code-splitting

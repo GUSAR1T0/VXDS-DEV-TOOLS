@@ -32,18 +32,21 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Base\Drop\OperationTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Base\Insert\InitialLoadingRecord.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\IncidentStatusTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\ModuleConfigurationFileTypeTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\NotificationLevelTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\OperationSystemTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\Schema.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\PermissionGroupTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\PermissionTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\IncidentStatusTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\ModuleConfigurationFileTypeTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\NotificationLevelTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\OperationSystemTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\Schema.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\PermissionGroupTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\PermissionTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\IncidentStatuses.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\ModuleConfigurationFileTypes.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\NotificationLevels.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\OperationSystems.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\PermissionGroups.sql" />
@@ -51,6 +54,7 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\HostTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\IncidentHistoryTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\IncidentTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\ModuleConfigurationTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\ModuleTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\NotificationTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\Schema.sql" />
@@ -59,6 +63,7 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\HostTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\IncidentHistoryTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\IncidentTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\ModuleConfigurationTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\ModuleTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\NotificationTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\Schema.sql" />

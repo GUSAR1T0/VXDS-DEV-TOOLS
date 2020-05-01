@@ -60,4 +60,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Settings
             return this;
         }
     }
+
+    public class HostSettingsShortModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Domain { get; set; }
+    }
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +41,25 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
             var hosts = await portalSettingsService.GetHosts(operation, model.ToEntity());
             return new HostPagingResponseModel().ToModel(hosts);
         });
+
+        /// <summary>
+        /// Searches hosts by pattern
+        /// </summary>
+        /// <returns>List of hosts shortly</returns>
+        [ProducesResponseType(typeof(IEnumerable<HostSettingsShortModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("host/search")]
+        public async Task<ActionResult<IEnumerable<HostSettingsShortModel>>> SearchUsersByPattern([FromQuery(Name = "p")] string pattern)
+        {
+            return await Execute(async operation =>
+            {
+                var hosts = await portalSettingsService.SearchHostsByPattern(operation, pattern);
+                return hosts.Select(host => host.ToModel());
+            });
+        }
 
         /// <summary>
         /// Adds new host data

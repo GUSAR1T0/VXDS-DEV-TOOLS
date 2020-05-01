@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Clients.GitHub;
@@ -17,6 +18,7 @@ namespace VXDesign.Store.DevTools.Common.Services
         #region Hosts
 
         Task<HostPagingResponse> GetHosts(IOperation operation, HostPagingRequest request);
+        Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern);
         Task AddHost(IOperation operation, HostSettingsItemEntity host);
         Task UpdateHost(IOperation operation, HostSettingsItemEntity host);
         Task DeleteHost(IOperation operation, int hostId);
@@ -53,6 +55,8 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Items = hosts
             };
         }
+
+        public async Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern) => await portalSettingsStore.SearchHostsByPattern(operation, pattern);
 
         public async Task AddHost(IOperation operation, HostSettingsItemEntity host) => await portalSettingsStore.AddHost(operation, host);
 
