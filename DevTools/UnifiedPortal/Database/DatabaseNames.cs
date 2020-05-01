@@ -16,6 +16,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string UserRefreshToken = "UserRefreshToken";
         internal const string Operation = "Operation";
         internal const string PortalSettings = "Settings";
+        internal const string Host = "Host";
+        internal const string OperationSystem = "OperationSystem";
         internal const string Project = "Project";
         internal const string PermissionGroup = "PermissionGroup";
         internal const string Permission = "Permission";

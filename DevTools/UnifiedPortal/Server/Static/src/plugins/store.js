@@ -6,7 +6,6 @@ import authentication from "@/store/authentication";
 import userProfile from "@/store/userProfile";
 import userRole from "@/store/userRole";
 import lookup from "@/store/lookup";
-import settings from "@/store/settings";
 import project from "@/store/project";
 import incident from "@/store/incident";
 import notification from "@/store/notification";
@@ -21,7 +20,6 @@ export default new Vuex.Store({
         userProfile,
         userRole,
         lookup,
-        settings,
         project,
         incident,
         notification

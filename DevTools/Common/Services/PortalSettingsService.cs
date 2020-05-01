@@ -14,10 +14,19 @@ namespace VXDesign.Store.DevTools.Common.Services
 {
     public interface IPortalSettingsService
     {
-        Task<SettingsParametersEntity> GetSettings(IOperation operation);
+        #region Hosts
 
-        #region GitHub
+        Task<HostPagingResponse> GetHosts(IOperation operation, HostPagingRequest request);
+        Task AddHost(IOperation operation, HostSettingsItemEntity host);
+        Task UpdateHost(IOperation operation, HostSettingsItemEntity host);
+        Task DeleteHost(IOperation operation, int hostId);
+        Task<int> GetAffectedModulesCount(IOperation operation, int hostId);
 
+        #endregion
+
+        #region Code Services
+
+        Task<CodeServiceSettingsEntity> GetCodeServicesData(IOperation operation);
         Task<GitHubUserProfileEntity> SetupGitHubToken(IOperation operation, string token);
         Task<IGitHubClientService> GetGitHubClient(IOperation operation);
 
@@ -33,21 +42,58 @@ namespace VXDesign.Store.DevTools.Common.Services
             this.portalSettingsStore = portalSettingsStore;
         }
 
-        public async Task<SettingsParametersEntity> GetSettings(IOperation operation)
+        #region Hosts
+
+        public async Task<HostPagingResponse> GetHosts(IOperation operation, HostPagingRequest request)
         {
-            var parameters = await portalSettingsStore.GetSettingsParameters(operation);
-            var settings = new SettingsParametersEntity
+            var (total, hosts) = await portalSettingsStore.GetHosts(operation, request);
+            return new HostPagingResponse
             {
-                CodeServiceSettings = new CodeServiceSettingsEntity()
+                Total = total,
+                Items = hosts
             };
-
-            var token = parameters.FirstOrDefault(item => item.Name == PortalSettingsKey.GitHubToken);
-            settings.CodeServiceSettings.GitHubUser = await GetGitHubUser(operation, token?.Value);
-
-            return settings;
         }
 
-        #region GitHub
+        public async Task AddHost(IOperation operation, HostSettingsItemEntity host) => await portalSettingsStore.AddHost(operation, host);
+
+        public async Task UpdateHost(IOperation operation, HostSettingsItemEntity host)
+        {
+            if (!await portalSettingsStore.IsHostExist(operation, host.Id))
+            {
+                throw CommonExceptions.HostWasNotFound(operation, host.Id);
+            }
+
+            await portalSettingsStore.UpdateHost(operation, host);
+        }
+
+        public async Task DeleteHost(IOperation operation, int hostId)
+        {
+            if (!await portalSettingsStore.IsHostExist(operation, hostId))
+            {
+                throw CommonExceptions.HostWasNotFound(operation, hostId);
+            }
+
+            await portalSettingsStore.DeleteHost(operation, hostId);
+        }
+
+        public async Task<int> GetAffectedModulesCount(IOperation operation, int hostId)
+        {
+            // TODO: Implement later
+            return 0;
+        }
+
+        #endregion
+
+        #region Code Services
+
+        public async Task<CodeServiceSettingsEntity> GetCodeServicesData(IOperation operation)
+        {
+            var parameters = await portalSettingsStore.GetSettingsParameters(operation, PortalSettingsKey.GitHubToken);
+            return new CodeServiceSettingsEntity
+            {
+                GitHubUser = await GetGitHubUser(operation, parameters.FirstOrDefault()?.Value)
+            };
+        }
 
         private static async Task<GitHubUserProfileEntity> GetGitHubUser(IOperation operation, string token)
         {

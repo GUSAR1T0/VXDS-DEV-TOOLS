@@ -184,7 +184,6 @@
                 }).then(() => {
                     button.loading = false;
                     this.dialogUserRoleDeleteStatus.visible = false;
-                    this.reload();
 
                     this.$notify.success({
                         title: "User role was deleted",

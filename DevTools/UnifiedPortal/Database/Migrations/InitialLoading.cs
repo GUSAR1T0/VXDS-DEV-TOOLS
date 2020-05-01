@@ -56,6 +56,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Enum.Create.NotificationLevelTable.sql");
                 Execute.EmbeddedScript("InitialLoading.Enum.Insert.NotificationLevels.sql");
             }
+
+            if (!schema.Table(Table.OperationSystem).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.OperationSystemTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.OperationSystems.sql");
+            }
         }
 
         private void UpgradeAuthenticationSchema()
@@ -120,6 +126,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.SettingsTable.sql");
             }
 
+            if (!schema.Table(Table.Host).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.HostTable.sql");
+            }
+
             if (!schema.Table(Table.Project).Exists())
             {
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.ProjectTable.sql");
@@ -168,6 +179,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.PortalSettings).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Portal.Drop.SettingsTable.sql");
+                }
+
+                if (schema.Table(Table.Host).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.HostTable.sql");
                 }
 
                 if (schema.Table(Table.Project).Exists())
@@ -267,6 +283,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.NotificationLevel).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Enum.Drop.NotificationLevelTable.sql");
+                }
+
+                if (schema.Table(Table.OperationSystem).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.OperationSystemTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Enum.Drop.Schema.sql");

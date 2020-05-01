@@ -12,7 +12,6 @@ import {
     faTools,
     faUsers,
     faPlusCircle,
-    faCogs,
     faUsersCog,
     faFileAlt,
     faServer,
@@ -37,10 +36,14 @@ import {
     faHistory,
     faBell,
     faHeartbeat,
-    faCircle
+    faCircle,
+    faDatabase,
+    faNetworkWired,
+    faQuestionCircle,
+    faPlug
 } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import { 
+import { faGithub, faWindows, faLinux, faApple } from "@fortawesome/free-brands-svg-icons";
+import {
     faCheckCircle as farCheckCircle,
     faTimesCircle as farTimesCircle
 } from "@fortawesome/free-regular-svg-icons";
@@ -48,10 +51,10 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(
     faUserCircle, faUserAlt, faInfoCircle, faSignOutAlt, faSignInAlt, faUserPlus, faAlignJustify, faEdit, faTools,
-    faUsers, faPlusCircle, faCogs, faUsersCog, faFileAlt, faServer, faGithub, faCodeBranch, faCode, faLock, faLockOpen,
+    faUsers, faPlusCircle, faUsersCog, faFileAlt, faServer, faGithub, faCodeBranch, faCode, faLock, faLockOpen,
     faTrashAlt, faAddressCard, faFilter, faTable, faStar, faEye, faTasks, faCopy, faCubes, faExclamationCircle,
     faExclamationTriangle, faFireAlt, faCheckCircle, faTimesCircle, faHistory, faBell, farCheckCircle, farTimesCircle,
-    faHeartbeat, faCircle
+    faHeartbeat, faCircle, faDatabase, faNetworkWired, faQuestionCircle, faWindows, faLinux, faApple, faPlug
 );
 
 Vue.component("fa", FontAwesomeIcon);

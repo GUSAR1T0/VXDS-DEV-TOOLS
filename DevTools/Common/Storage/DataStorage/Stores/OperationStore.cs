@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using VXDesign.Store.DevTools.Common.Core.Entities.Operation;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Extensions;
 
@@ -71,25 +72,25 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var joins = new List<string>();
             var filters = new List<string>();
 
-            if (filter.Ids?.Any() == true)
+            if (!filter.Ids.IsNullOrEmpty())
             {
                 @params.Add("Ids", filter.Ids);
                 filters.Add("bo.[Id] IN @Ids");
             }
 
-            if (filter.Scopes?.Any() == true)
+            if (!filter.Scopes.IsNullOrEmpty())
             {
                 @params.Add("Scopes", filter.Scopes.Select(item => $"%{item}%").ToStringTable());
                 joins.Add("INNER JOIN @Scopes sc ON bo.[Scope] LIKE sc.[Value]");
             }
 
-            if (filter.ContextNames?.Any() == true)
+            if (!filter.ContextNames.IsNullOrEmpty())
             {
                 @params.Add("ContextNames", filter.ContextNames.Select(item => $"%{item}%").ToStringTable());
                 joins.Add("INNER JOIN @ContextNames cn ON bo.[ContextName] LIKE cn.[Value]");
             }
 
-            if (filter.UserIds?.Any() == true)
+            if (!filter.UserIds.IsNullOrEmpty())
             {
                 var userIds = new List<int>(filter.UserIds);
                 var userIdsFilter = "bo.[UserId] IN @UserIds";
@@ -130,13 +131,13 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 filters.Add("bo.[StopTime] BETWEEN @StopTimeMin AND @StopTimeMax");
             }
 
-            if (filter.IncidentAuthorIds?.Any() == true)
+            if (!filter.IncidentAuthorIds.IsNullOrEmpty())
             {
                 @params.Add("AuthorIds", filter.IncidentAuthorIds);
                 filters.Add("pin.[AuthorId] IN @AuthorIds");
             }
 
-            if (filter.IncidentAssigneeIds?.Any() == true)
+            if (!filter.IncidentAssigneeIds.IsNullOrEmpty())
             {
                 var assigneeIds = new List<int>(filter.IncidentAssigneeIds);
                 var assigneeIdsFilter = "pin.[AssigneeId] IN @AssigneeIds";
@@ -158,7 +159,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 filters.Add("pin.[InitialTime] BETWEEN @InitialTimeMin AND @InitialTimeMax");
             }
 
-            if (filter.IncidentStatuses?.Any() == true)
+            if (!filter.IncidentStatuses.IsNullOrEmpty())
             {
                 @params.Add("StatusIds", filter.IncidentStatuses.Select(status => (byte) status));
                 filters.Add("pin.[StatusId] IN @StatusIds");

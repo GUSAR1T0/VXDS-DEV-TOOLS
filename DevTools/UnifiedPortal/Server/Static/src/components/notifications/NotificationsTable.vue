@@ -170,7 +170,7 @@
             },
             openDeleteNotificationDialog(notification) {
                 this.dialogNotificationDeleteStatus.id = notification.id;
-                this.dialogNotificationDeleteStatus.confirmationText = `Are you sure that you want to delete notification with ID "${notification.id}"`;
+                this.dialogNotificationDeleteStatus.confirmationText = `Are you sure that you want to delete notification with ID "${notification.id}"?`;
                 this.dialogNotificationDeleteStatus.visible = true;
             },
             deleteNotification(button) {
@@ -184,7 +184,6 @@
                 }).then(() => {
                     button.loading = false;
                     this.dialogNotificationDeleteStatus.visible = false;
-                    this.reload();
 
                     this.$notify.success({
                         title: "Notification was deleted",

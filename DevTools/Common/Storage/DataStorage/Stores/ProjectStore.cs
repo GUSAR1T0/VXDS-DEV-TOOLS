@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dapper;
 using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Project;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Extensions;
 
@@ -58,25 +59,25 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var joins = new List<string>();
             var filters = new List<string>();
 
-            if (filter.Ids?.Any() == true)
+            if (!filter.Ids.IsNullOrEmpty())
             {
                 @params.Add("Ids", filter.Ids);
                 filters.Add("pp.[Id] IN @Ids");
             }
 
-            if (filter.Names?.Any() == true)
+            if (!filter.Names.IsNullOrEmpty())
             {
                 @params.Add("Names", filter.Names.Select(item => $"%{item}%").ToStringTable());
                 joins.Add("INNER JOIN @Names name ON pp.[Name] LIKE name.[Value]");
             }
 
-            if (filter.Aliases?.Any() == true)
+            if (!filter.Aliases.IsNullOrEmpty())
             {
                 @params.Add("Aliases", filter.Aliases.Select(item => $"%{item}%").ToStringTable());
                 joins.Add("INNER JOIN @Aliases alias ON pp.[Alias] LIKE alias.[Value]");
             }
 
-            if (filter.GitHubRepoIds?.Any() == true)
+            if (!filter.GitHubRepoIds.IsNullOrEmpty())
             {
                 @params.Add("GitHubRepoIds", filter.GitHubRepoIds);
                 filters.Add("pp.[GitHubRepoId] IN @GitHubRepoIds");

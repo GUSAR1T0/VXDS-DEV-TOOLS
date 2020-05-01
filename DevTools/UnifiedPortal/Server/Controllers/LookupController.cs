@@ -4,6 +4,7 @@ using VXDesign.Store.DevTools.Common.Core.Controllers;
 using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
 using VXDesign.Store.DevTools.Common.Core.Entities.Incident;
 using VXDesign.Store.DevTools.Common.Core.Entities.Notification;
+using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Core.Properties;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication;
@@ -45,7 +46,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
                 {
                     PortalPermissions = EnumModel.GetEnumModelValues<PortalPermission>(),
                     IncidentStatuses = EnumModel.GetEnumModelValues<IncidentStatus>(),
-                    NotificationLevels = EnumModel.GetEnumModelValues<NotificationLevel>()
+                    NotificationLevels = EnumModel.GetEnumModelValues<NotificationLevel>(),
+                    HostOperationSystems = EnumModel.GetEnumModelValues<HostOperationSystem>(),
+                    HostConnectionTypes = EnumModel.GetEnumModelValues<HostConnectionType>()
                 }
             });
         }

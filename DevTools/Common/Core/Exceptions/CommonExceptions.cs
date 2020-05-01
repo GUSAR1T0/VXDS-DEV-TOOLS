@@ -34,6 +34,12 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         #endregion
 
+        #region Hosts
+
+        public static NotFoundException HostWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Host with ID \"{id}\" was not found");
+
+        #endregion
+
         #region Projects
 
         #region GitHub
