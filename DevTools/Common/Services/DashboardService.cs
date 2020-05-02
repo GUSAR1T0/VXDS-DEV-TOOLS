@@ -16,6 +16,8 @@ namespace VXDesign.Store.DevTools.Common.Services
         Task<UsersDataEntity> GetUsersData(IOperation operation);
         Task<UserRolesDataEntity> GetUserRolesData(IOperation operation);
         Task<ProjectsDataEntity> GetProjectsData(IOperation operation);
+        Task<ModulesDataEntity> GetModulesData(IOperation operation);
+        Task<HostOperatingSystemsDataEntity> GetHostOperatingSystemsData(IOperation operation);
         Task<SystemStatisticsDataEntity> GetSystemStatisticsData(IOperation operation);
     }
 
@@ -51,6 +53,18 @@ namespace VXDesign.Store.DevTools.Common.Services
         }
 
         public async Task<ProjectsDataEntity> GetProjectsData(IOperation operation) => await dashboardStore.GetProjectsData(operation);
+
+        public async Task<ModulesDataEntity> GetModulesData(IOperation operation) => await dashboardStore.GetModulesData(operation);
+
+        public async Task<HostOperatingSystemsDataEntity> GetHostOperatingSystemsData(IOperation operation)
+        {
+            var (operatingSystems, total) = await dashboardStore.GetHostOperatingSystemsData(operation);
+            return new HostOperatingSystemsDataEntity
+            {
+                OperatingSystems = operatingSystems,
+                Total = total
+            };
+        }
 
         public async Task<SystemStatisticsDataEntity> GetSystemStatisticsData(IOperation operation)
         {

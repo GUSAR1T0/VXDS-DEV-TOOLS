@@ -140,6 +140,38 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
+        /// Obtains modules data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(ModulesDataModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("modules")]
+        public async Task<ActionResult<ModulesDataModel>> GetModulesData() => await Execute(async operation =>
+        {
+            var entity = await dashboardService.GetModulesData(operation);
+            return entity.ToModel();
+        });
+
+        /// <summary>
+        /// Obtains host operating systems data for admin panel
+        /// </summary>
+        /// <returns>Model of admin panel data</returns>
+        [ProducesResponseType(typeof(ModulesDataModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("hostOperatingSystems")]
+        public async Task<ActionResult<HostOperatingSystemsDataModel>> GetHostOperatingSystemsData() => await Execute(async operation =>
+        {
+            var entity = await dashboardService.GetHostOperatingSystemsData(operation);
+            return entity.ToModel();
+        });
+
+        /// <summary>
         /// Obtains system statistics data for admin panel
         /// </summary>
         /// <returns>Model of admin panel data</returns>

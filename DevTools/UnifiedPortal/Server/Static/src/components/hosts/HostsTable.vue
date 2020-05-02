@@ -90,11 +90,11 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="Operation System" min-width="400" align="center">
+            <el-table-column label="Operating System" min-width="400" align="center">
                 <template slot-scope="scope">
                     <div style="font-size: 18px">
-                        <fa :icon="['fab', getOperationSystemIcon(scope.row.operationSystem)]"/>
-                        {{ getOperationSystemName(scope.row.operationSystem) }}
+                        <fa :icon="['fab', getOperatingSystemIcon(scope.row.operatingSystem)]"/>
+                        {{ getOperatingSystemName(scope.row.operatingSystem) }}
                     </div>
                 </template>
             </el-table-column>
@@ -157,8 +157,8 @@
             ])
         },
         methods: {
-            getOperationSystemIcon(osId) {
-                let osList = this.getLookupValues("hostOperationSystems").filter(os => parseInt(os.value) === osId);
+            getOperatingSystemIcon(osId) {
+                let osList = this.getLookupValues("hostOperatingSystems").filter(os => parseInt(os.value) === osId);
                 if (osList && osList.length > 0) {
                     let os = osList[0];
                     if (os.value === "1") {
@@ -172,8 +172,8 @@
                     return "question-circle";
                 }
             },
-            getOperationSystemName(osId) {
-                let osList = this.getLookupValues("hostOperationSystems").filter(os => parseInt(os.value) === osId);
+            getOperatingSystemName(osId) {
+                let osList = this.getLookupValues("hostOperatingSystems").filter(os => parseInt(os.value) === osId);
                 return osList && osList.length > 0 ? osList[0].name : "—";
             },
             getConnectionType(typeId) {

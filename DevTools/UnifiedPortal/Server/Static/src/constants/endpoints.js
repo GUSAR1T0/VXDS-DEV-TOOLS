@@ -32,6 +32,8 @@ export const GET_SYSTEM_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT = "dashboard/systemH
 export const GET_USERS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/users";
 export const GET_USER_ROLES_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/userRoles";
 export const GET_PROJECTS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/projects";
+export const GET_MODULES_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/modules";
+export const GET_HOST_OPERATING_SYSTEMS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/hostOperatingSystems";
 export const GET_SYSTEM_STATISTICS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/system";
 
 // Operations endpoints

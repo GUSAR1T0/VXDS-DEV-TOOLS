@@ -1,7 +1,7 @@
 <template>
     <div>
         <div style="font-size: 20px">
-            <fa :icon="['fab', getOperationSystemIcon(operationSystem)]"/>
+            <fa :icon="['fab', getOperatingSystemIcon(operatingSystem)]"/>
         </div>
         <div style="font-size: 22px; padding: 5px">
             <strong>{{ name }}</strong>
@@ -20,7 +20,7 @@
         props: {
             name: String,
             domain: String,
-            operationSystem: [ Number, String ]
+            operatingSystem: [ Number, String ]
         },
         computed: {
             ...mapGetters([
@@ -28,8 +28,8 @@
             ])
         },
         methods: {
-            getOperationSystemIcon(osId) {
-                let osList = this.getLookupValues("hostOperationSystems").filter(os => parseInt(os.value) === parseInt(osId));
+            getOperatingSystemIcon(osId) {
+                let osList = this.getLookupValues("hostOperatingSystems").filter(os => parseInt(os.value) === parseInt(osId));
                 if (osList && osList.length > 0) {
                     let os = osList[0];
                     if (os.value === "1") {

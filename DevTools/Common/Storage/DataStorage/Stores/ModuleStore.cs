@@ -36,7 +36,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     pm.[HostId],
                     ph.[Name] AS [HostName],
                     ph.[Domain] AS [HostDomain],
-                    ph.[OperationSystemId] AS [HostOperationSystem],
+                    ph.[OperatingSystemId] AS [HostOperatingSystem],
                     pm.[IsActive]
             ";
             const string selectTotal = "COUNT_BIG(1)";

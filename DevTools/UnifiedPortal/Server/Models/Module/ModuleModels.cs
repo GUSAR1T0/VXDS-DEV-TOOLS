@@ -20,7 +20,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
         public int HostId { get; set; }
         public string HostName { get; set; }
         public string HostDomain { get; set; }
-        public HostOperationSystem HostOperationSystem { get; set; }
+        public HostOperatingSystem HostOperatingSystem { get; set; }
 
         public bool IsActive { get; set; }
 
@@ -36,7 +36,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
             HostId = entity.HostId;
             HostName = entity.HostName;
             HostDomain = entity.HostDomain;
-            HostOperationSystem = entity.HostOperationSystem;
+            HostOperatingSystem = entity.HostOperatingSystem;
             IsActive = entity.IsActive;
             return this;
         }

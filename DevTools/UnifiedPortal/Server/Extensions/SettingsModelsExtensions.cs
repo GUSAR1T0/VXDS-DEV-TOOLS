@@ -12,7 +12,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             Id = id ?? model.Id,
             Name = model.Name,
             Domain = model.Domain,
-            OperationSystem = model.OperationSystem,
+            OperatingSystem = model.OperatingSystem,
             CredentialsList = model.Credentials?.Select(item => new HostCredentialsItemEntity
             {
                 Type = item.Type,
@@ -34,7 +34,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             Id = entity.Id,
             Name = entity.Name,
             Domain = entity.Domain,
-            OperationSystem = entity.OperationSystem,
+            OperatingSystem = entity.OperatingSystem,
             Credentials = entity.CredentialsList?.Select(item => new HostCredentialsItemModel
             {
                 Type = item.Type,

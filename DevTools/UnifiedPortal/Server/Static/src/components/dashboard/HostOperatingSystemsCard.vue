@@ -1,46 +1,40 @@
 <template>
     <DashboardCardWithTotal
-            :total="modulesTotal"
-            entityName="Modules"
-            entityIcon="cubes"
-            linkToEntity="/components/modules"
+            :total="operatingSystemsTotal"
+            entityName="Host Operating Systems"
+            entityIcon="network-wired"
+            linkToEntity="/system/settings?tab=environment"
             :load="load"
     >
         <template v-slot="{ state }">
-            <ModulesChart v-if="!state.loadingIsActive"
-                           :active-count="activeCount"
-                           :inactive-count="inactiveCount"
-                           style="height: 150px"
+            <HostOperatingSystemsChart v-if="!state.loadingIsActive"
+                                       :operating-systems="operatingSystems"
+                                       style="height: 150px"
             />
         </template>
     </DashboardCardWithTotal>
 </template>
 
 <script>
+    import { GET_HOST_OPERATING_SYSTEMS_DATA_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
     import { GET_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
-    import { GET_MODULES_DATA_FOR_DASHBOARD_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
 
     import DashboardCardWithTotal from "@/components/dashboard/DashboardCardWithTotal";
-    import ModulesChart from "@/components/charts/ModulesChart";
+    import HostOperatingSystemsChart from "@/components/charts/HostOperatingSystemsChart";
 
     export default {
-        name: "ModulesCard",
+        name: "HostOperatingSystemsCard",
         components: {
             DashboardCardWithTotal,
-            ModulesChart
+            HostOperatingSystemsChart
         },
         data() {
             return {
-                activeCount: 0,
-                inactiveCount: 0
+                operatingSystemsTotal: 0,
+                operatingSystems: []
             };
-        },
-        computed: {
-            modulesTotal() {
-                return this.activeCount + this.inactiveCount;
-            }
         },
         methods: {
             load(state) {
@@ -48,16 +42,16 @@
 
                 this.$store.dispatch(GET_HTTP_REQUEST, {
                     server: LOCALHOST,
-                    endpoint: GET_MODULES_DATA_FOR_DASHBOARD_ENDPOINT,
+                    endpoint: GET_HOST_OPERATING_SYSTEMS_DATA_FOR_DASHBOARD_ENDPOINT,
                     config: getConfiguration()
                 }).then(response => {
-                    this.activeCount = response.data.activeCount;
-                    this.inactiveCount = response.data.inactiveCount;
+                    this.operatingSystemsTotal = response.data.total;
+                    this.operatingSystems = response.data.operatingSystems;
                     state.loadingIsActive = false;
                 }).catch(error => {
                     // state.loadingIsActive = false;
                     this.$notify.error({
-                        title: "Failed to load modules data",
+                        title: "Failed to load host operating systems data",
                         duration: 10000,
                         message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });

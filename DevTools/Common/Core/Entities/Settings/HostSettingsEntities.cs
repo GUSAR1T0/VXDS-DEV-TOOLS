@@ -10,7 +10,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Settings
         public int Id { get; set; }
         public string Name { get; set; }
         public string Domain { get; set; }
-        public HostOperationSystem OperationSystem { get; set; }
+        public HostOperatingSystem OperatingSystem { get; set; }
         public IEnumerable<HostCredentialsItemEntity> CredentialsList { get; set; }
 
         public string Credentials
@@ -38,7 +38,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Settings
         public IEnumerable<int> Ids { get; set; }
         public IEnumerable<string> Names { get; set; }
         public IEnumerable<string> Domains { get; set; }
-        public IEnumerable<HostOperationSystem> OperationSystems { get; set; }
+        public IEnumerable<HostOperatingSystem> OperatingSystems { get; set; }
     }
 
     public class HostPagingRequest : ServerSidePagingRequest<HostPagingFilter>

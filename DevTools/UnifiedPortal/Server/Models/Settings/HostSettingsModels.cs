@@ -11,7 +11,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Settings
         public int Id { get; set; }
         public string Name { get; set; }
         public string Domain { get; set; }
-        public HostOperationSystem OperationSystem { get; set; }
+        public HostOperatingSystem OperatingSystem { get; set; }
         public IEnumerable<HostCredentialsItemModel> Credentials { get; set; }
 
         public HostSettingsItemModel ToModel(HostSettingsItemEntity entity) => entity.ToModel();
@@ -30,14 +30,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Settings
         public IEnumerable<int> Ids { get; set; }
         public IEnumerable<string> Names { get; set; }
         public IEnumerable<string> Domains { get; set; }
-        public IEnumerable<HostOperationSystem> OperationSystems { get; set; }
+        public IEnumerable<HostOperatingSystem> OperatingSystems { get; set; }
 
         public HostPagingFilter ToEntity() => new HostPagingFilter
         {
             Ids = Ids,
             Names = Names,
             Domains = Domains,
-            OperationSystems = OperationSystems
+            OperatingSystems = OperatingSystems
         };
     }
 

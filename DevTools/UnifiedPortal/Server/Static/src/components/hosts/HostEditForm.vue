@@ -21,16 +21,16 @@
             </el-row>
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
-                    <el-form-item prop="operationSystem" label="Operation System">
-                        <el-select v-model="pageStatus.form.operationSystem" filterable reserve-keyword
+                    <el-form-item prop="operatingSystem" label="Operating System">
+                        <el-select v-model="pageStatus.form.operatingSystem" filterable reserve-keyword
                                    default-first-option style="width: 100%">
-                            <el-option v-for="item in getLookupValues('hostOperationSystems')" :key="item.value"
+                            <el-option v-for="item in getLookupValues('hostOperatingSystems')" :key="item.value"
                                        :label="item.name" :value="parseInt(item.value)">
                                 <div style="display: flex;">
                                     <div style="font-size: 14px; margin-right: 5px">
-                                        <fa :icon="['fab', getOperationSystemIcon(item.value)]"/>
+                                        <fa :icon="['fab', getOperatingSystemIcon(item.value)]"/>
                                     </div>
-                                    {{ getOperationSystemName(item.value) }}
+                                    {{ getOperatingSystemName(item.value) }}
                                 </div>
                             </el-option>
                         </el-select>
@@ -167,8 +167,8 @@
                         {required: true, message: "Please, input host domain", trigger: "change"},
                         {validator: validateDomain, trigger: "change"}
                     ],
-                    operationSystem: [
-                        {required: true, message: "Please, input host operation system", trigger: "change"}
+                    operatingSystem: [
+                        {required: true, message: "Please, input host operating system", trigger: "change"}
                     ]
                 }
             };
@@ -179,8 +179,8 @@
             ])
         },
         methods: {
-            getOperationSystemIcon(osId) {
-                let osList = this.getLookupValues("hostOperationSystems").filter(os => os.value === osId);
+            getOperatingSystemIcon(osId) {
+                let osList = this.getLookupValues("hostOperatingSystems").filter(os => os.value === osId);
                 if (osList && osList.length > 0) {
                     let os = osList[0];
                     if (os.value === "1") {
@@ -194,8 +194,8 @@
                     return "question-circle";
                 }
             },
-            getOperationSystemName(osId) {
-                let osList = this.getLookupValues("hostOperationSystems").filter(os => os.value === osId);
+            getOperatingSystemName(osId) {
+                let osList = this.getLookupValues("hostOperatingSystems").filter(os => os.value === osId);
                 return osList && osList.length > 0 ? osList[0].name : "—";
             },
             getConnectionType(typeId) {
@@ -236,7 +236,7 @@
                             data: {
                                 name: this.pageStatus.form.name,
                                 domain: this.pageStatus.form.domain,
-                                operationSystem: this.pageStatus.form.operationSystem,
+                                operatingSystem: this.pageStatus.form.operatingSystem,
                                 credentials: this.pageStatus.form.credentials
                             },
                             config: getConfiguration()
@@ -264,7 +264,7 @@
                             data: {
                                 name: this.pageStatus.form.name,
                                 domain: this.pageStatus.form.domain,
-                                operationSystem: this.pageStatus.form.operationSystem,
+                                operatingSystem: this.pageStatus.form.operatingSystem,
                                 credentials: this.pageStatus.form.credentials
                             },
                             config: getConfiguration()

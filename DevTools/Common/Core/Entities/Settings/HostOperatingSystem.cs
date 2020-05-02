@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace VXDesign.Store.DevTools.Common.Core.Entities.Settings
 {
-    public enum HostOperationSystem : byte
+    public enum HostOperatingSystem : byte
     {
         [Description("Windows OS")]
         WindowsOS = 1,

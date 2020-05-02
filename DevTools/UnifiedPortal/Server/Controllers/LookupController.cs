@@ -47,7 +47,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
                     PortalPermissions = EnumModel.GetEnumModelValues<PortalPermission>(),
                     IncidentStatuses = EnumModel.GetEnumModelValues<IncidentStatus>(),
                     NotificationLevels = EnumModel.GetEnumModelValues<NotificationLevel>(),
-                    HostOperationSystems = EnumModel.GetEnumModelValues<HostOperationSystem>(),
+                    HostOperatingSystems = EnumModel.GetEnumModelValues<HostOperatingSystem>(),
                     HostConnectionTypes = EnumModel.GetEnumModelValues<HostConnectionType>()
                 }
             });

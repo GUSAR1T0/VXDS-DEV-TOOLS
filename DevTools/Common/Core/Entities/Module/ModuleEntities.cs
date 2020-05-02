@@ -18,7 +18,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
         public int HostId { get; set; }
         public string HostName { get; set; }
         public string HostDomain { get; set; }
-        public HostOperationSystem HostOperationSystem { get; set; }
+        public HostOperatingSystem HostOperatingSystem { get; set; }
 
         public bool IsActive { get; set; }
     }

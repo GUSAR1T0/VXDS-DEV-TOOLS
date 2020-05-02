@@ -34,14 +34,14 @@
                     <HostFullName
                             :name="scope.row.hostName"
                             :domain="scope.row.hostDomain"
-                            :operation-system="scope.row.hostOperationSystem"
+                            :operating-system="scope.row.hostOperatingSystem"
                     />
                 </el-link>
                 <div v-else>
                     <HostFullName
                             :name="scope.row.hostName"
                             :domain="scope.row.hostDomain"
-                            :operation-system="scope.row.hostOperationSystem"
+                            :operating-system="scope.row.hostOperatingSystem"
                     />
                 </div>
             </template>

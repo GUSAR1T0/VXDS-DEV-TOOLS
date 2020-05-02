@@ -37,11 +37,11 @@
                 </TableFilterItem>
             </template>
             <template slot="second">
-                <TableFilterItem name="Operation Systems">
+                <TableFilterItem name="Operating Systems">
                     <template slot="field">
-                        <el-select v-model="filter.operationSystems" multiple filterable reserve-keyword
+                        <el-select v-model="filter.operatingSystems" multiple filterable reserve-keyword
                                    default-first-option style="width: 100%">
-                            <el-option v-for="item in getLookupValues('hostOperationSystems')" :key="item.value" :label="item.name"
+                            <el-option v-for="item in getLookupValues('hostOperatingSystems')" :key="item.value" :label="item.name"
                                        :value="item.value"/>
                         </el-select>
                     </template>

@@ -40,6 +40,22 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             InactiveCount = entity.InactiveCount
         };
 
+        internal static ModulesDataModel ToModel(this ModulesDataEntity entity) => new ModulesDataModel
+        {
+            ActiveCount = entity.ActiveCount,
+            InactiveCount = entity.InactiveCount
+        };
+
+        internal static HostOperatingSystemsDataModel ToModel(this HostOperatingSystemsDataEntity entity) => new HostOperatingSystemsDataModel
+        {
+            OperatingSystems = entity.OperatingSystems.Select(item => new HostOperatingSystemDataModel
+            {
+                OperatingSystem = item.OperatingSystem,
+                Count = item.Count
+            }),
+            Total = entity.Total
+        };
+
         internal static SystemStatisticsDataModel ToModel(this SystemStatisticsDataEntity entity)
         {
             var dates = new List<string>();

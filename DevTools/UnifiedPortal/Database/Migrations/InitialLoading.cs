@@ -57,10 +57,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Enum.Insert.NotificationLevels.sql");
             }
 
-            if (!schema.Table(Table.OperationSystem).Exists())
+            if (!schema.Table(Table.OperatingSystem).Exists())
             {
-                Execute.EmbeddedScript("InitialLoading.Enum.Create.OperationSystemTable.sql");
-                Execute.EmbeddedScript("InitialLoading.Enum.Insert.OperationSystems.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.OperatingSystemTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.OperatingSystems.sql");
             }
 
             if (!schema.Table(Table.ModuleConfigurationFileType).Exists())
@@ -301,9 +301,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                     Execute.EmbeddedScript("InitialLoading.Enum.Drop.NotificationLevelTable.sql");
                 }
 
-                if (schema.Table(Table.OperationSystem).Exists())
+                if (schema.Table(Table.OperatingSystem).Exists())
                 {
-                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.OperationSystemTable.sql");
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.OperatingSystemTable.sql");
                 }
 
                 if (schema.Table(Table.ModuleConfigurationFileType).Exists())

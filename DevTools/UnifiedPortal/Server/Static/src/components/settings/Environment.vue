@@ -94,7 +94,7 @@
                     ids: [],
                     names: [],
                     domains: [],
-                    operationSystems: []
+                    operatingSystems: []
                 },
                 hosts: [],
                 hostEditDialog: {
@@ -113,7 +113,7 @@
                     ids: getOnlyNumbers(this.filter.ids),
                     names: this.filter.names,
                     domains: this.filter.domains,
-                    operationSystems: getOnlyNumbers(this.filter.operationSystems)
+                    operatingSystems: getOnlyNumbers(this.filter.operatingSystems)
                 };
                 this.$store.dispatch(POST_HTTP_REQUEST, {
                     server: LOCALHOST,
@@ -141,7 +141,7 @@
                 this.filter.ids = [];
                 this.filter.names = [];
                 this.filter.domains = [];
-                this.filter.operationSystems = [];
+                this.filter.operatingSystems = [];
             },
             applyFiltersComplex() {
                 this.settings.pageNo = 1;

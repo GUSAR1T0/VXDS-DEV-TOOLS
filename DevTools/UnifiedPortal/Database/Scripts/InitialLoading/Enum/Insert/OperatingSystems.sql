@@ -1,4 +1,4 @@
-INSERT INTO [enum].[OperationSystem] ([Name])
+INSERT INTO [enum].[OperatingSystem] ([Name])
 SELECT N'Windows OS'
 UNION ALL
 SELECT N'Linux'

@@ -48,7 +48,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     ph.[Id],
                     ph.[Name],
                     ph.[Domain],
-                    ph.[OperationSystemId] [OperationSystem],
+                    ph.[OperatingSystemId] [OperatingSystem],
                     ph.[Credentials]
             ";
             const string selectTotal = "COUNT_BIG(1)";
@@ -89,10 +89,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 joins.Add("INNER JOIN @Domains domain ON ph.[Domain] LIKE domain.[Value]");
             }
 
-            if (!filter.OperationSystems.IsNullOrEmpty())
+            if (!filter.OperatingSystems.IsNullOrEmpty())
             {
-                @params.Add("OperationSystemIds", filter.OperationSystems);
-                filters.Add("ph.[OperationSystemId] IN @OperationSystemIds");
+                @params.Add("OperatingSystemIds", filter.OperatingSystems);
+                filters.Add("ph.[OperatingSystemId] IN @OperatingSystemIds");
             }
 
             filters.Add("ph.[IsActive] = 1");
@@ -127,11 +127,11 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             {
                 host.Name,
                 host.Domain,
-                host.OperationSystem,
+                host.OperatingSystem,
                 host.Credentials
             }, @"
-                INSERT INTO [portal].[Host] ([Name], [Domain], [OperationSystemId], [Credentials])
-                VALUES (@Name, @Domain, @OperationSystem, @Credentials);
+                INSERT INTO [portal].[Host] ([Name], [Domain], [OperatingSystemId], [Credentials])
+                VALUES (@Name, @Domain, @OperatingSystem, @Credentials);
             ");
         }
 
@@ -142,14 +142,14 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 host.Id,
                 host.Name,
                 host.Domain,
-                host.OperationSystem,
+                host.OperatingSystem,
                 host.Credentials
             }, @"
                 UPDATE [portal].[Host]
                 SET
                     [Name] = @Name,
                     [Domain] = @Domain,
-                    [OperationSystemId] = @OperationSystem,
+                    [OperatingSystemId] = @OperatingSystem,
                     [Credentials] = @Credentials
                 WHERE [Id] = @Id;
             ");
