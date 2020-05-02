@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
+using VXDesign.Store.DevTools.Common.Core.Entities.File;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
 namespace VXDesign.Store.DevTools.Common.Core.Exceptions
@@ -167,6 +170,29 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         public static NotFoundException NoteWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Note with ID \"{id}\" was not found");
 
         public static BadRequestException NoteTitleIsEmpty(IOperation operation) => new BadRequestException(operation, "Note title can't be empty");
+
+        #endregion
+
+        #region Files
+
+        public static BadRequestException UnexpectedExtensionOfUploadedFile(IOperation operation, string fileExtension, params FileExtension[] expectedExtensions)
+        {
+            var message = $"Unexpected uploaded file extension \"{fileExtension}\" is, use [{string.Join(", ", expectedExtensions.Select(x => x.GetDescription()))}] instead";
+            return new BadRequestException(operation, message);
+        }
+
+        public static BadRequestException UploadedFileExtensionIsUndefined(IOperation operation, params FileExtension[] expectedExtensions)
+        {
+            return new BadRequestException(operation, $"Uploaded file extension is undefined, use [{string.Join(", ", expectedExtensions.Select(x => x.GetDescription()))}]");
+        }
+
+        #endregion
+
+        #region Modules
+
+        public static BadRequestException ModuleConfigurationIsInvalid(IOperation operation) => new BadRequestException(operation, "Uploaded module configuration is invalid");
+
+        public static BadRequestException ModuleConfigurationsHaveDifferentLength(IOperation operation) => new BadRequestException(operation, "Uploaded and stored module configurations have different length");
 
         #endregion
     }

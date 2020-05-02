@@ -1,7 +1,6 @@
 CREATE TABLE [portal].[Module]
 (
     [Id]       INT IDENTITY (1, 1) NOT NULL,
-    [Name]     NVARCHAR(255)       NOT NULL,
     [Alias]    NVARCHAR(255)       NOT NULL,
     [UserId]   INT                 NOT NULL,
     [HostId]   INT                 NOT NULL,

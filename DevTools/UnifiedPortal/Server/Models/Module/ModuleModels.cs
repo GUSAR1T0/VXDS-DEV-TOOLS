@@ -11,6 +11,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
         public int Id { get; set; }
         public string Name { get; set; }
         public string Alias { get; set; }
+        public string Version { get; set; }
 
         public int UserId { get; set; }
         public string FirstName { get; set; }
@@ -29,6 +30,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
             Id = entity.Id;
             Name = entity.Name;
             Alias = entity.Alias;
+            Version = entity.Version;
             UserId = entity.UserId;
             FirstName = entity.FirstName;
             LastName = entity.LastName;

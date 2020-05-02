@@ -8,7 +8,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         public static void Main(string[] args)
         {
             var configuration = ConfigurationUtils.GetEnvironmentConfiguration();
-            ConsoleApplicationUtils.Launch(() => MigrationUtils.Perform(args, new DatabaseConnectionProperties
+            ConsoleApplicationUtils.Launch(() => DatabaseMigrationUtils.Perform(args, new DatabaseConnectionProperties
             {
                 DataStoreConnectionString = configuration["Database:DataStoreConnectionString"],
                 LogStoreConnectionString = configuration["Database:LogStoreConnectionString"]

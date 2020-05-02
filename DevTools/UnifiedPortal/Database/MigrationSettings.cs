@@ -4,8 +4,8 @@ using VXDesign.Store.DevTools.Common.Core.Migrations;
 namespace VXDesign.Store.DevTools.UnifiedPortal.Database
 {
     [VersionTableMetaData]
-    public class MigrationSettings : BaseMigrationSettings
+    public class MigrationSettings : DatabaseMigrationSettings
     {
-        public override string TableName => "UnifiedPortal";
+        protected override string ProjectName => "UnifiedPortal";
     }
 }

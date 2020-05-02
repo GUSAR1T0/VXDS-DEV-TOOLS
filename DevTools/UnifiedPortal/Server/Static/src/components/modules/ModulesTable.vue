@@ -12,6 +12,9 @@
                         <div style="font-size: 22px">
                             <strong>{{ scope.row.name }} ({{ scope.row.alias }})</strong>
                         </div>
+                        <div style="font-size: 16px">
+                            ver. <strong>{{ scope.row.version }}</strong>
+                        </div>
                     </el-link>
                 </div>
             </template>
@@ -29,8 +32,8 @@
         </el-table-column>
         <el-table-column label="Host" min-width="300" align="center">
             <template slot-scope="scope">
-                <el-link :href="`/system/settings?tab=environment&hostId=${scope.row.hostId}`" type="primary" :underline="false"
-                         v-if="hasPermissionToOpenSettingsPage">
+                <el-link :href="`/system/settings?tab=environment&hostId=${scope.row.hostId}`" type="primary"
+                         :underline="false" v-if="hasPermissionToOpenSettingsPage">
                     <HostFullName
                             :name="scope.row.hostName"
                             :domain="scope.row.hostDomain"

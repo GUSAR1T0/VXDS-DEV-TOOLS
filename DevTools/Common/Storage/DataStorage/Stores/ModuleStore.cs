@@ -11,15 +11,31 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 {
     public interface IModuleStore
     {
-        Task<(long total, IEnumerable<ModuleEntity> modules)> Get(IOperation operation, ModulePagingRequest request);
+        Task<(long total, IEnumerable<ModuleEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
+        Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias);
+        // Task<int> CreateModule(IOperation operation, );
     }
 
     public class ModuleStore : IModuleStore
     {
-        public async Task<(long total, IEnumerable<ModuleEntity> modules)> Get(IOperation operation, ModulePagingRequest request)
+        private const string WithModuleVersions = @"
+            ;WITH ModuleVersions ([ModuleId], [Name], [Version]) AS (
+                SELECT t.[ModuleId], t.[Name], t.[Version]
+                FROM [portal].[ModuleConfiguration] t
+                INNER JOIN (
+                    SELECT MAX([Id]) [Id]
+                    FROM [portal].[ModuleConfiguration]
+                    GROUP BY [ModuleId]
+                ) d ON d.[Id] = t.[Id]
+            )
+        ";
+
+        public async Task<(long total, IEnumerable<ModuleEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request)
         {
             var selectBase = $@"
+                {WithModuleVersions}
                 SELECT {{0}} FROM [portal].[Module] pm
+                INNER JOIN ModuleVersions mv ON mv.[ModuleId] = pm.[Id]
                 INNER JOIN [authentication].[User] au ON au.[Id] = pm.[UserId]
                 INNER JOIN [portal].[Host] ph ON ph.[Id] = pm.[HostId]
                 {{1}}
@@ -27,8 +43,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ";
             const string selectEntity = @"
                     pm.[Id],
-                    pm.[Name],
                     pm.[Alias],
+                    mv.[Name],
+                    mv.[Version],
                     pm.[UserId],
                     au.[Color],
                     au.[FirstName],
@@ -68,7 +85,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             if (!filter.Names.IsNullOrEmpty())
             {
                 @params.Add("Names", filter.Names.Select(item => $"%{item}%").ToStringTable());
-                joins.Add("INNER JOIN @Names name ON pm.[Name] LIKE name.[Value]");
+                joins.Add("INNER JOIN @Names name ON mv.[Name] LIKE name.[Value]");
             }
 
             if (!filter.Aliases.IsNullOrEmpty())
@@ -96,6 +113,21 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             }
 
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
+        }
+
+        public async Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<ModuleInfoEntity>(new { Alias = alias }, $@"
+                {WithModuleVersions}
+                SELECT
+                    pm.[Id],
+                    pm.[Alias],
+                    mv.[Name],
+                    mv.[Version]
+                FROM [portal].[Module] pm
+                INNER JOIN ModuleVersions mv ON mv.[ModuleId] = pm.[Id]
+                WHERE pm.[Alias] = @Alias;
+            ");
         }
     }
 }

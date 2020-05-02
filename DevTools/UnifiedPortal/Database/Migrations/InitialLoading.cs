@@ -63,10 +63,10 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Enum.Insert.OperatingSystems.sql");
             }
 
-            if (!schema.Table(Table.ModuleConfigurationFileType).Exists())
+            if (!schema.Table(Table.FileExtension).Exists())
             {
-                Execute.EmbeddedScript("InitialLoading.Enum.Create.ModuleConfigurationFileTypeTable.sql");
-                Execute.EmbeddedScript("InitialLoading.Enum.Insert.ModuleConfigurationFileTypes.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.FileExtensionTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.FileExtensions.sql");
             }
         }
 
@@ -116,6 +116,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             {
                 Execute.EmbeddedScript("InitialLoading.Base.Create.OperationTable.sql");
                 Execute.EmbeddedScript("InitialLoading.Base.Insert.InitialLoadingRecord.sql");
+            }
+
+            if (!schema.Table(Table.File).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Base.Create.FileTable.sql");
             }
         }
 
@@ -236,6 +241,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
             var schema = Schema.Schema(Database.Schema.Base);
             if (schema.Exists())
             {
+                if (schema.Table(Table.File).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Base.Drop.FileTable.sql");
+                }
+
                 if (schema.Table(Table.Operation).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Base.Drop.OperationTable.sql");
@@ -306,9 +316,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                     Execute.EmbeddedScript("InitialLoading.Enum.Drop.OperatingSystemTable.sql");
                 }
 
-                if (schema.Table(Table.ModuleConfigurationFileType).Exists())
+                if (schema.Table(Table.FileExtension).Exists())
                 {
-                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.ModuleConfigurationFileTypeTable.sql");
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.FileExtensionTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Enum.Drop.Schema.sql");

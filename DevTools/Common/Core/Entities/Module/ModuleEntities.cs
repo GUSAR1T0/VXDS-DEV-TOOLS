@@ -9,6 +9,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
         public int Id { get; set; }
         public string Name { get; set; }
         public string Alias { get; set; }
+        public string Version { get; set; }
 
         public int UserId { get; set; }
         public string FirstName { get; set; }
@@ -41,8 +42,19 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
     {
     }
 
-    public class ModuleFullEntity : ModuleEntity
+    public class ModuleInfoEntity : IDataEntity
     {
-        public ModuleConfigurationFileType FileType { get; set; }
+        public int Id { get; set; }
+        public string Alias { get; set; }
+        public string Name { get; set; }
+        public string Version { get; set; }
+    }
+
+    public class ModuleConfigurationEntity : IDataEntity
+    {
+        public int Id { get; set; }
+        public int ModuleId { get; set; }
+        public string Name { get; set; }
+        public string Version { get; set; }
     }
 }

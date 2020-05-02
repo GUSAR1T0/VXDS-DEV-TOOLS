@@ -159,7 +159,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         /// Obtains host operating systems data for admin panel
         /// </summary>
         /// <returns>Model of admin panel data</returns>
-        [ProducesResponseType(typeof(ModulesDataModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(HostOperatingSystemsDataModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]

@@ -11,7 +11,7 @@ using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 
 namespace VXDesign.Store.DevTools.Common.Core.Utils
 {
-    public static class MigrationUtils
+    public static class DatabaseMigrationUtils
     {
         public static void Perform(string[] args, DatabaseConnectionProperties properties, Assembly assembly, Action<IServiceCollection> serviceHandler = null)
         {
@@ -52,7 +52,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Utils
                 .ScanIn(assembly)
                 .For.VersionTableMetaData()
                 .For.EmbeddedResources()
-                .For.Migrations())
-            .AddLogging(lb => lb.AddNLog());
+                .For.Migrations()
+            ).AddLogging(lb => lb.AddNLog());
     }
 }

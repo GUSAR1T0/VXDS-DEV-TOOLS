@@ -2,7 +2,7 @@ using FluentMigrator.Runner;
 
 namespace VXDesign.Store.DevTools.Common.Core.Extensions
 {
-    public static class MigrationRunnerExtensions
+    public static class DatabaseMigrationRunnerExtensions
     {
         public static void UpgradeDatabase(this IMigrationRunner runner, long? version = null)
         {

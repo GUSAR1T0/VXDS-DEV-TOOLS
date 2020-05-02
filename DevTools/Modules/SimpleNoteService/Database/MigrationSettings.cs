@@ -4,8 +4,8 @@ using VXDesign.Store.DevTools.Common.Core.Migrations;
 namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database
 {
     [VersionTableMetaData]
-    public class MigrationSettings : BaseMigrationSettings
+    public class MigrationSettings : DatabaseMigrationSettings
     {
-        public override string TableName => "SimpleNoteService";
+        protected override string ProjectName => "SimpleNoteService";
     }
 }
