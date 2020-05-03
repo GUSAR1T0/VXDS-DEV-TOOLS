@@ -5,7 +5,7 @@
                 <TableFilterItem name="Module IDs">
                     <template slot="field">
                         <el-select v-model="filter.ids" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -16,7 +16,7 @@
                 <TableFilterItem name="Module Names">
                     <template slot="field">
                         <el-select v-model="filter.names" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -27,7 +27,7 @@
                 <TableFilterItem name="Module Aliases">
                     <template slot="field">
                         <el-select v-model="filter.aliases" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -40,7 +40,8 @@
                 <TableFilterItem name="Users">
                     <template slot="field">
                         <el-select v-model="filter.userIds" multiple filterable remote reserve-keyword
-                                   :remote-method="filterByUserIds" style="width: 100%">
+                                   :remote-method="filterByUserIds" :loading="filter.userIdsSearchLoading"
+                                   clearable style="width: 100%">
                             <el-option v-for="item in filter.userIdOptions" :key="item.id" :label="item.fullName"
                                        :value="item.id"/>
                         </el-select>
@@ -51,9 +52,17 @@
                 <TableFilterItem name="Hosts">
                     <template slot="field">
                         <el-select v-model="filter.hostIds" multiple filterable remote reserve-keyword
-                                   :remote-method="filterByHostIds" style="width: 100%">
+                                   :remote-method="filterByHostIds" :loading="filter.hostIdsSearchLoading"
+                                   clearable style="width: 100%">
                             <el-option v-for="item in filter.hostIdOptions" :key="item.id"
-                                       :label="`${item.name} (${item.domain})`" :value="item.id"/>
+                                       :label="`${item.name} (${item.domain})`" :value="item.id">
+                                <div style="display: flex; font-size: 14px">
+                                    <div style="margin-right: 5px">
+                                        <fa :icon="['fab', getOperatingSystemIcon(item.operatingSystem)]"/>
+                                    </div>
+                                    {{ item.name }} ({{ item.domain }})
+                                </div>
+                            </el-option>
                         </el-select>
                     </template>
                 </TableFilterItem>
@@ -145,6 +154,21 @@
                     });
                 } else {
                     this.filter.hostIdOptions = [];
+                }
+            },
+            getOperatingSystemIcon(osId) {
+                let osList = this.getLookupValues("hostOperatingSystems").filter(os => parseInt(os.value) === parseInt(osId));
+                if (osList && osList.length > 0) {
+                    let os = osList[0];
+                    if (os.value === "1") {
+                        return "windows";
+                    } else if (os.value === "2") {
+                        return "linux";
+                    } else if (os.value === "3") {
+                        return "apple";
+                    }
+                } else {
+                    return "question-circle";
                 }
             }
         }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
 using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
+using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Services;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Authentication;
@@ -52,11 +53,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
         [HttpGet("host/search")]
-        public async Task<ActionResult<IEnumerable<HostSettingsShortModel>>> SearchUsersByPattern([FromQuery(Name = "p")] string pattern)
+        public async Task<ActionResult<IEnumerable<HostSettingsShortModel>>> SearchUsersByPattern([FromQuery(Name = "p")] string pattern,
+            [FromQuery(Name = "os")] IEnumerable<HostOperatingSystem> operatingSystems = null)
         {
             return await Execute(async operation =>
             {
-                var hosts = await portalSettingsService.SearchHostsByPattern(operation, pattern);
+                var hosts = await portalSettingsService.SearchHostsByPattern(operation, pattern, operatingSystems ?? new List<HostOperatingSystem>());
                 return hosts.Select(host => host.ToModel());
             });
         }

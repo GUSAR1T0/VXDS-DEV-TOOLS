@@ -66,5 +66,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Settings
         public int Id { get; set; }
         public string Name { get; set; }
         public string Domain { get; set; }
+        public HostOperatingSystem OperatingSystem { get; set; }
     }
 }

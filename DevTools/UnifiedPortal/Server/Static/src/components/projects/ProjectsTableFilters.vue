@@ -5,7 +5,7 @@
                 <TableFilterItem name="Project IDs">
                     <template slot="field">
                         <el-select v-model="filter.ids" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -16,7 +16,7 @@
                 <TableFilterItem name="Project Names">
                     <template slot="field">
                         <el-select v-model="filter.names" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -27,7 +27,7 @@
                 <TableFilterItem name="Project Aliases">
                     <template slot="field">
                         <el-select v-model="filter.aliases" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -40,7 +40,8 @@
                 <TableFilterItem name="GitHub Repositories">
                     <template slot="field">
                         <el-select v-model="filter.gitHubRepoIds" multiple filterable remote reserve-keyword
-                                   :remote-method="filterByGitHubRepoIds" style="width: 100%">
+                                   :remote-method="filterByGitHubRepoIds" :loading="filter.gitHubRepoIdsSearchLoading"
+                                   clearable style="width: 100%">
                             <el-option v-for="item in filter.gitHubRepoIdOptions" :key="item.id" :label="item.fullName"
                                        :value="item.id"/>
                         </el-select>

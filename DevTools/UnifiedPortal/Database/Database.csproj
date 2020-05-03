@@ -35,6 +35,7 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Base\Insert\InitialLoadingRecord.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\IncidentStatusTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\FileExtensionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\ModuleStatusTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\NotificationLevelTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\OperatingSystemTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\Schema.sql" />
@@ -42,6 +43,7 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Create\PermissionTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\IncidentStatusTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\FileExtensionTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\ModuleStatusTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\NotificationLevelTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\OperatingSystemTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\Schema.sql" />
@@ -49,6 +51,7 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Drop\PermissionTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\IncidentStatuses.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\FileExtensions.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\ModuleStatuses.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\NotificationLevels.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\OperatingSystems.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Enum\Insert\PermissionGroups.sql" />

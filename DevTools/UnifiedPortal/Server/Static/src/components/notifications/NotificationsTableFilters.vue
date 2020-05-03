@@ -5,7 +5,7 @@
                 <TableFilterItem name="Notification IDs">
                     <template slot="field">
                         <el-select v-model="filter.ids" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -16,7 +16,7 @@
                 <TableFilterItem name="Notification Levels">
                     <template slot="field">
                         <el-select v-model="filter.levels" multiple filterable reserve-keyword
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in getLookupValues('notificationLevels')" :key="item.value" :label="item.name"
                                        :value="item.value"/>
                         </el-select>
@@ -27,7 +27,8 @@
                 <TableFilterItem name="Users">
                     <template slot="field">
                         <el-select v-model="filter.userIds" multiple filterable remote reserve-keyword
-                                   :remote-method="filterByUserIds" style="width: 100%">
+                                   :remote-method="filterByUserIds" :loading="filter.userIdsSearchLoading"
+                                   clearable style="width: 100%">
                             <el-option v-for="item in filter.userIdOptions" :key="item.id" :label="item.fullName"
                                        :value="item.id"/>
                         </el-select>
@@ -53,7 +54,8 @@
                         <el-date-picker style="width: 100%"
                                         v-model="filter.startTimeRange"
                                         type="datetimerange"
-                                        range-separator="—">
+                                        range-separator="—"
+                                        clearable>
                         </el-date-picker>
                     </template>
                 </TableFilterItem>
@@ -64,7 +66,8 @@
                         <el-date-picker style="width: 100%"
                                         v-model="filter.stopTimeRange"
                                         type="datetimerange"
-                                        range-separator="—">
+                                        range-separator="—"
+                                        clearable>
                         </el-date-picker>
                     </template>
                 </TableFilterItem>

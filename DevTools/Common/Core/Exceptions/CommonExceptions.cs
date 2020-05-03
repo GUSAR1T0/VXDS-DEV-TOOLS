@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using VXDesign.Store.DevTools.Common.Core.Entities.File;
+using VXDesign.Store.DevTools.Common.Core.Entities.Module;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
@@ -186,13 +187,37 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
             return new BadRequestException(operation, $"Uploaded file extension is undefined, use [{string.Join(", ", expectedExtensions.Select(x => x.GetDescription()))}]");
         }
 
+        public static NotFoundException FileWasNotFound(IOperation operation, int fileId)
+        {
+            return new NotFoundException(operation, $"File with ID \"{fileId}\" was not found");
+        }
+
         #endregion
 
         #region Modules
 
         public static BadRequestException ModuleConfigurationIsInvalid(IOperation operation) => new BadRequestException(operation, "Uploaded module configuration is invalid");
 
-        public static BadRequestException ModuleConfigurationsHaveDifferentLength(IOperation operation) => new BadRequestException(operation, "Uploaded and stored module configurations have different length");
+        public static BadRequestException ModuleConfigurationsHaveDifferentLength(IOperation operation)
+        {
+            return new BadRequestException(operation, "Uploaded and stored module configurations have different length");
+        }
+
+        public static NotFoundException FailedToDefineModuleForSubmission(IOperation operation)
+        {
+            return new NotFoundException(operation, "Failed to define module to submit configuration by file");
+        }
+
+        public static NotFoundException FailedToDefineModuleForUpgrade(IOperation operation)
+        {
+            return new NotFoundException(operation, "Failed to define module to upgrade configuration by file");
+        }
+
+        public static BadRequestException FailedToSubmitModuleConfiguration(IOperation operation, ModuleConfigurationVerdict verdict)
+        {
+            var message = $"Failed to submit module configuration due to conflicts between module and new configuration versions, module verdict: {verdict.GetDescription()}";
+            return new BadRequestException(operation, message);
+        }
 
         #endregion
     }

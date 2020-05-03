@@ -4,9 +4,11 @@ CREATE TABLE [portal].[Module]
     [Alias]    NVARCHAR(255)       NOT NULL,
     [UserId]   INT                 NOT NULL,
     [HostId]   INT                 NOT NULL,
-    [IsActive] BIT DEFAULT (0)     NOT NULL,
+    [StatusId] TINYINT DEFAULT (1) NOT NULL,
+    [IsActive] AS IIF([StatusId] = 15, 1, 0), -- Status is "Run"
     CONSTRAINT [PK_Module_Id] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [UQ_Module_Alias] UNIQUE ([Alias] ASC),
     CONSTRAINT [FK_Module_UserId] FOREIGN KEY ([UserId]) REFERENCES [authentication].[User] ([Id]),
-    CONSTRAINT [FK_Module_HostId] FOREIGN KEY ([HostId]) REFERENCES [portal].[Host] ([Id]) ON DELETE CASCADE
+    CONSTRAINT [FK_Module_HostId] FOREIGN KEY ([HostId]) REFERENCES [portal].[Host] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Module_StatusId] FOREIGN KEY ([StatusId]) REFERENCES [enum].[ModuleStatus] ([Id]) ON DELETE CASCADE
 );

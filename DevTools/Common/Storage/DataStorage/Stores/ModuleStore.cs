@@ -11,9 +11,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 {
     public interface IModuleStore
     {
-        Task<(long total, IEnumerable<ModuleEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
+        Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
         Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias);
-        // Task<int> CreateModule(IOperation operation, );
+        Task<int> CreateModule(IOperation operation, int userId, int hostId, int fileId, ModuleConfigurationFile configuration);
+        Task UpgradeModule(IOperation operation, int moduleId, int userId, int fileId, ModuleConfigurationFile configuration);
     }
 
     public class ModuleStore : IModuleStore
@@ -30,7 +31,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             )
         ";
 
-        public async Task<(long total, IEnumerable<ModuleEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request)
+        public async Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request)
         {
             var selectBase = $@"
                 {WithModuleVersions}
@@ -66,7 +67,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ";
             using var reader = await operation.Connection.QueryMultipleAsync(@params, query);
             var total = await reader.ReadSingleAsync<long>();
-            var modules = await reader.ReadAsync<ModuleEntity>();
+            var modules = await reader.ReadAsync<ModuleListItemEntity>();
             return (total, modules);
         }
 
@@ -123,10 +124,72 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     pm.[Id],
                     pm.[Alias],
                     mv.[Name],
-                    mv.[Version]
+                    mv.[Version],
+                    pm.[UserId],
+                    au.[FirstName],
+                    au.[LastName],
+                    pm.[HostId],
+                    ph.[Name] AS [HostName],
+                    ph.[Domain] AS [HostDomain],
+                    ph.[OperatingSystemId] AS [HostOperatingSystem],
+                    pm.[StatusId] [Status]
                 FROM [portal].[Module] pm
                 INNER JOIN ModuleVersions mv ON mv.[ModuleId] = pm.[Id]
+                INNER JOIN [authentication].[User] au ON au.[Id] = pm.[UserId]
+                INNER JOIN [portal].[Host] ph ON ph.[Id] = pm.[HostId]
                 WHERE pm.[Alias] = @Alias;
+            ");
+        }
+
+        public async Task<int> CreateModule(IOperation operation, int userId, int hostId, int fileId, ModuleConfigurationFile configuration)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<int>(new
+            {
+                UserId = userId,
+                HostId = hostId,
+                FileId = fileId,
+                Alias = configuration.Alias.ToUpper(),
+                configuration.Name,
+                configuration.Version,
+                configuration.Author,
+                configuration.Email
+            }, @"
+                DECLARE @Ids TABLE ([Id] INT);
+
+                INSERT INTO [portal].[Module] ([Alias], [UserId], [HostId])
+                OUTPUT INSERTED.[Id] INTO @Ids
+                VALUES (@Alias, @UserId, @HostId);
+
+                DECLARE @Id INT;
+                SELECT @Id = [Id] FROM @Ids;
+
+                INSERT INTO [portal].[ModuleConfiguration] ([ModuleId], [Name], [Version], [Author], [Email], [FileId])
+                VALUES (@Id, @Name, @Version, @Author, @Email, @FileId);
+
+                SELECT @Id;
+            ");
+        }
+
+        public async Task UpgradeModule(IOperation operation, int moduleId, int userId, int fileId, ModuleConfigurationFile configuration)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                Id = moduleId,
+                UserId = userId,
+                FileId = fileId,
+                configuration.Name,
+                configuration.Version,
+                configuration.Author,
+                configuration.Email
+            }, @"
+                UPDATE [portal].[Module]
+                SET
+                    [UserId] = @UserId,
+                    [StatusId] = 4 -- Status is 'Updated To Upgrade'
+                WHERE [Id] = @Id;
+
+                INSERT INTO [portal].[ModuleConfiguration] ([ModuleId], [Name], [Version], [Author], [Email], [FileId])
+                VALUES (@Id, @Name, @Version, @Author, @Email, @FileId);
             ");
         }
     }

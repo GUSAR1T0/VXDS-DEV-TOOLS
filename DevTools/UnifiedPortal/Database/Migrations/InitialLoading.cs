@@ -68,6 +68,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Enum.Create.FileExtensionTable.sql");
                 Execute.EmbeddedScript("InitialLoading.Enum.Insert.FileExtensions.sql");
             }
+
+            if (!schema.Table(Table.ModuleStatus).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Enum.Create.ModuleStatusTable.sql");
+                Execute.EmbeddedScript("InitialLoading.Enum.Insert.ModuleStatuses.sql");
+            }
         }
 
         private void UpgradeAuthenticationSchema()
@@ -319,6 +325,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.FileExtension).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Enum.Drop.FileExtensionTable.sql");
+                }
+
+                if (schema.Table(Table.ModuleStatus).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Enum.Drop.ModuleStatusTable.sql");
                 }
 
                 Execute.EmbeddedScript("InitialLoading.Enum.Drop.Schema.sql");

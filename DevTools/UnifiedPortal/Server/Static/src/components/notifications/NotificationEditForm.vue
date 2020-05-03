@@ -15,7 +15,7 @@
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="level" label="Level">
                         <el-select v-model="notificationForm.level" filterable reserve-keyword
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in getLookupValues('notificationLevels')" :key="item.value"
                                        :label="item.name" :value="item.value">
                                 <div style="display: flex;">
@@ -35,7 +35,8 @@
                         <el-date-picker style="width: 100%"
                                         v-model="notificationForm.startDateTime"
                                         type="datetime"
-                                        range-separator="—"/>
+                                        range-separator="—"
+                                        clearable/>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -45,7 +46,8 @@
                         <el-date-picker style="width: 100%"
                                         v-model="notificationForm.stopDateTime"
                                         type="datetime"
-                                        range-separator="—"/>
+                                        range-separator="—"
+                                        clearable/>
                     </el-form-item>
                 </el-col>
             </el-row>

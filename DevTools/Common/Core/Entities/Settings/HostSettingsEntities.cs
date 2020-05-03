@@ -54,5 +54,6 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Settings
         public int Id { get; set; }
         public string Name { get; set; }
         public string Domain { get; set; }
+        public HostOperatingSystem OperatingSystem { get; set; }
     }
 }

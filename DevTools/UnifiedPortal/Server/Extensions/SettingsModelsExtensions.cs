@@ -26,7 +26,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
         {
             Id = entity.Id,
             Name = entity.Name,
-            Domain = entity.Domain
+            Domain = entity.Domain,
+            OperatingSystem = entity.OperatingSystem
         };
 
         internal static HostSettingsItemModel ToModel(this HostSettingsItemEntity entity) => new HostSettingsItemModel

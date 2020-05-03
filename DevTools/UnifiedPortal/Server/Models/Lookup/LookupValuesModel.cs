@@ -11,5 +11,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Lookup
         public IEnumerable<EnumModel> NotificationLevels { get; set; }
         public IEnumerable<EnumModel> HostOperatingSystems { get; set; }
         public IEnumerable<EnumModel> HostConnectionTypes { get; set; }
+        public IEnumerable<EnumModel> ModuleStatuses { get; set; }
+        public IEnumerable<EnumModel> ModuleConfigurationVerdicts { get; set; }
     }
 }

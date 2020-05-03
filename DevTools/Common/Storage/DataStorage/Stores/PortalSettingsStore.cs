@@ -15,7 +15,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         #region Hosts
 
         Task<(long total, IEnumerable<HostSettingsItemEntity> hosts)> GetHosts(IOperation operation, HostPagingRequest request);
-        Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern);
+        Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern, IEnumerable<HostOperatingSystem> operatingSystems);
         Task<bool> IsHostExist(IOperation operation, int hostId);
         Task AddHost(IOperation operation, HostSettingsItemEntity host);
         Task UpdateHost(IOperation operation, HostSettingsItemEntity host);
@@ -100,15 +100,22 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
         }
 
-        public async Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern)
+        public async Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern, IEnumerable<HostOperatingSystem> operatingSystems)
         {
-            return await operation.Connection.QueryAsync<HostSettingsShortEntity>(new { Pattern = $"%{pattern}%" }, $@"
+            var operatingSystemList = operatingSystems.ToList();
+            return await operation.Connection.QueryAsync<HostSettingsShortEntity>(new
+            {
+                Pattern = $"%{pattern}%",
+                OperatingSystems = operatingSystemList.Select(item => (int) item).ToIntTable()
+            }, $@"
                 SELECT TOP {FormatPattern.SearchMaxCount}
-                    [Id],
-                    [Name],
-                    [Domain]
-                FROM [portal].[Host]
-                WHERE [Name] LIKE @Pattern OR [Domain] LIKE @Pattern;
+                    ph.[Id],
+                    ph.[Name],
+                    ph.[Domain],
+                    ph.[OperatingSystemId] AS [OperatingSystem]
+                FROM [portal].[Host] ph
+                {(operatingSystemList.Any() ? "INNER JOIN @OperatingSystems os ON os.[Value] = ph.[OperatingSystemId]" : "")} 
+                WHERE ph.[Name] LIKE @Pattern OR ph.[Domain] LIKE @Pattern;
             ");
         }
 

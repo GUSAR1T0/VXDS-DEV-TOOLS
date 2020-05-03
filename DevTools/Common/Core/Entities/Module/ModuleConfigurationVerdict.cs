@@ -14,6 +14,12 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
         Upgrade = 3,
 
         [Description("Downgrade")]
-        Downgrade = 4
+        Downgrade = 4,
+
+        [Description("Module Is Being Updated")]
+        Updating = 5,
+
+        [Description("Broken Changes")]
+        BrokenChanges = 6
     }
 }

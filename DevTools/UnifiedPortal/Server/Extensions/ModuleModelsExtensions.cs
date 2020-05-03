@@ -7,14 +7,30 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
     {
         internal static ModuleConfigurationFileUploadResultModel ToModel(this ModuleConfigurationFileUploadResult entity) => new ModuleConfigurationFileUploadResultModel
         {
-            Id = entity.Id,
+            ModuleId = entity.ModuleId,
             FileId = entity.FileId,
             Alias = entity.Alias,
             OldName = entity.OldName,
             NewName = entity.NewName,
             OldVersion = entity.OldVersion,
             NewVersion = entity.NewVersion,
+            UserId = entity.UserId,
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            HostId = entity.HostId,
+            HostName = entity.HostName,
+            HostDomain = entity.HostDomain,
+            HostOperatingSystem = entity.HostOperatingSystem,
+            OperatingSystems = entity.OperatingSystems,
             Verdict = entity.Verdict
+        };
+
+        internal static ModuleConfigurationSubmitEntity ToEntity(this ModuleConfigurationSubmitModel model) => new ModuleConfigurationSubmitEntity
+        {
+            ModuleId = model.ModuleId,
+            FileId = model.FileId,
+            UserId = model.UserId,
+            HostId = model.HostId
         };
     }
 }

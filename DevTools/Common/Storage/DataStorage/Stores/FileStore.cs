@@ -7,26 +7,26 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 {
     public interface IFileStore
     {
-        Task<int?> Find(IOperation operation, UploadedFile file);
+        Task<int?> Find(IOperation operation, IFile file);
         Task<int> Upload(IOperation operation, UploadedFile file);
         Task<File> Download(IOperation operation, int fileId);
     }
 
     public class FileStore : IFileStore
     {
-        public async Task<int?> Find(IOperation operation, UploadedFile file)
+        public async Task<int?> Find(IOperation operation, IFile file)
         {
             return await operation.Connection.QueryFirstOrDefaultAsync<int?>(new
             {
                 file.Name,
-                file.Extension,
+                file.SourceExtension,
                 file.Hash
             }, @"
                 SELECT [Id]
                 FROM [base].[File]
                 WHERE
                     [Name] = @Name AND
-                    [ExtensionId] = @Extension AND
+                    [Extension] = @SourceExtension AND
                     [Hash] = @Hash;
             ");
         }
@@ -36,13 +36,14 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             return await operation.Connection.QueryFirstOrDefaultAsync<int>(new
             {
                 file.Name,
+                file.SourceExtension,
                 file.Extension,
                 Content = Encoding.Unicode.GetBytes(file.Content),
                 file.Hash
             }, @"
-                INSERT INTO [base].[File] ([Name], [ExtensionId], [Content], [Hash])
+                INSERT INTO [base].[File] ([Name], [Extension], [ExtensionId], [Content], [Hash])
                 OUTPUT INSERTED.[Id]
-                VALUES (@Name, @Extension, @Content, @Hash);
+                VALUES (@Name, @SourceExtension, @Extension, @Content, @Hash);
             ");
         }
 
@@ -52,6 +53,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 SELECT
                     [Id],
                     [Name],
+                    [Extension] AS [SourceExtension],
                     [ExtensionId] AS [Extension],
                     [Content] AS [ByteContent],
                     [Time]

@@ -11,7 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Utils
 {
     public static class ModuleConfigurationUtils
     {
-        public static ModuleConfigurationFile Parse(IOperation operation, UploadedFile file) => file.Extension switch
+        public static ModuleConfigurationFile Parse(IOperation operation, IFile file) => file.Extension switch
         {
             FileExtension.YAML => ParseYaml(file.Content),
             FileExtension.JSON => ParseJson(file.Content),

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -49,7 +48,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
-        // [PortalAuthentication(PortalPermission.ManageModules)]
+        [PortalAuthentication(PortalPermission.ManageModules)]
         [HttpPost("configuration/upload")]
         public async Task<ActionResult<List<ModuleConfigurationFileUploadResultModel>>> UploadModuleConfiguration(List<IFormFile> files) => await Execute(async operation =>
         {
@@ -64,6 +63,23 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
             }
 
             return results;
+        });
+
+        /// <summary>
+        /// Submits module configuration
+        /// </summary>
+        /// <returns>ID of module</returns>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.ManageModules)]
+        [HttpPost("configuration")]
+        public async Task<ActionResult<int>> SubmitModuleConfiguration([FromBody] ModuleConfigurationSubmitModel model) => await Execute(async operation =>
+        {
+            var moduleId = await moduleService.SubmitConfiguration(operation, model.ToEntity());
+            return moduleId;
         });
     }
 }

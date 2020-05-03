@@ -6,7 +6,7 @@ using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
 {
-    public class ModuleModel : PagingResponseItemModel, IPagingResponseItemModel<ModuleModel, ModuleEntity>
+    public class ModuleModel : PagingResponseItemModel, IPagingResponseItemModel<ModuleModel, ModuleListItemEntity>
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -25,7 +25,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
 
         public bool IsActive { get; set; }
 
-        public ModuleModel ToModel(ModuleEntity entity)
+        public ModuleModel ToModel(ModuleListItemEntity entity)
         {
             Id = entity.Id;
             Name = entity.Name;

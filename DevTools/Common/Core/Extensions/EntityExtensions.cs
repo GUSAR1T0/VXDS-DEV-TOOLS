@@ -15,21 +15,14 @@ namespace VXDesign.Store.DevTools.Common.Core.Extensions
             return canBeEmpty ? commandsList.IsNullOrEmpty() || listChecker() : !commandsList.IsNullOrEmpty() && listChecker();
         }
 
-        public static FileExtension? DefineExtension(string fileExtension)
+        public static FileExtension? DefineExtension(string fileExtension) => fileExtension switch
         {
-            switch (fileExtension?.ToLower())
-            {
-                case "yml":
-                case "yaml":
-                    return FileExtension.YAML;
-                case "json":
-                    return FileExtension.JSON;
-                case null:
-                case "":
-                    return FileExtension.Undefined;
-                default:
-                    return null;
-            }
-        }
+            "yml" => FileExtension.YAML,
+            "yaml" => FileExtension.YAML,
+            "json" => FileExtension.JSON,
+            null => FileExtension.Undefined,
+            "" => FileExtension.Undefined,
+            _ => null
+        };
     }
 }

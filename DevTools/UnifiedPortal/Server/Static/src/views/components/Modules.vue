@@ -13,7 +13,7 @@
                             Upload Module Configuration
                         </div>
                         <el-button type="primary" circle v-if="hasPermissionToManageModules"
-                                   class="rounded-button">
+                                   class="rounded-button" @click="uploadDialog.visible = true">
                             <span><fa icon="upload"/></span>
                         </el-button>
                     </el-tooltip>
@@ -25,6 +25,11 @@
                     <ModulesTable :modules="items"/>
                 </template>
             </FilterableTableView>
+
+            <ModuleConfigurationUploadForm
+                    :dialog-status="uploadDialog"
+                    :closed="loadModules"
+            />
         </template>
     </LoadingContainer>
 </template>
@@ -44,6 +49,7 @@
     import FilterableTableView from "@/components/table-filter/FilterableTableView";
     import ModulesTableFilters from "@/components/modules/ModulesTableFilters";
     import ModulesTable from "@/components/modules/ModulesTable";
+    import ModuleConfigurationUploadForm from "@/components/modules/ModuleConfigurationUploadForm";
 
     export default {
         name: "Modules",
@@ -51,7 +57,8 @@
             LoadingContainer,
             FilterableTableView,
             ModulesTableFilters,
-            ModulesTable
+            ModulesTable,
+            ModuleConfigurationUploadForm
         },
         data() {
             return {
@@ -74,7 +81,10 @@
                     hostIdOptions: [],
                     hostIdsSearchLoading: false
                 },
-                items: []
+                items: [],
+                uploadDialog: {
+                    visible: false
+                }
             };
         },
         computed: {
