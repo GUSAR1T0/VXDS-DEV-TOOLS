@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
 using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
+using VXDesign.Store.DevTools.Common.Core.Entities.File;
 using VXDesign.Store.DevTools.Common.Core.Entities.Incident;
 using VXDesign.Store.DevTools.Common.Core.Entities.Module;
 using VXDesign.Store.DevTools.Common.Core.Entities.Notification;
@@ -51,7 +52,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
                     HostOperatingSystems = EnumModel.GetEnumModelValues<HostOperatingSystem>(),
                     HostConnectionTypes = EnumModel.GetEnumModelValues<HostConnectionType>(),
                     ModuleStatuses = EnumModel.GetEnumModelValues<ModuleStatus>(),
-                    ModuleConfigurationVerdicts = EnumModel.GetEnumModelValues<ModuleConfigurationVerdict>()
+                    ModuleConfigurationVerdicts = EnumModel.GetEnumModelValues<ModuleConfigurationVerdict>(),
+                    FileExtensions = EnumModel.GetEnumModelValues<FileExtension>()
                 }
             });
         }

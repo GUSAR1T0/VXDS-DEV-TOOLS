@@ -12,7 +12,7 @@
                         <div slot="content">
                             Upload Module Configuration
                         </div>
-                        <el-button type="primary" circle v-if="hasPermissionToManageModules"
+                        <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
                                    class="rounded-button" @click="uploadDialog.visible = true">
                             <span><fa icon="upload"/></span>
                         </el-button>

@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Services
     public interface IModuleService
     {
         Task<ModulePagingResponse> GetItems(IOperation operation, ModulePagingRequest request);
+        Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
         Task<ModuleConfigurationFileUploadResult> ReadConfiguration(IOperation operation, UploadedFile file);
         Task<int> SubmitConfiguration(IOperation operation, ModuleConfigurationSubmitEntity entity);
     }
@@ -40,6 +41,19 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Total = total,
                 Items = modules
             };
+        }
+
+        public async Task<ModuleEntity> GetModule(IOperation operation, int moduleId)
+        {
+            var module = await moduleStore.GetModule(operation, moduleId);
+            var fileIds = module.Configurations.Select(item => item.FileId).ToList();
+            var files = (await fileStore.Download(operation, fileIds)).ToList();
+            foreach (var configuration in module.Configurations)
+            {
+                configuration.File = files.FirstOrDefault(file => file.Id == configuration.FileId);
+            }
+
+            return module;
         }
 
         public async Task<ModuleConfigurationFileUploadResult> ReadConfiguration(IOperation operation, UploadedFile file)

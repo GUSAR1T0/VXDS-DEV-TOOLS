@@ -41,6 +41,22 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
+        /// Obtains information about the module
+        /// </summary>
+        /// <returns>Model of module data</returns>
+        [ProducesResponseType(typeof(ModuleModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("{moduleId}")]
+        public async Task<ActionResult<ModuleModel>> GetModule(int moduleId) => await Execute(async operation =>
+        {
+            var module = await moduleService.GetModule(operation, moduleId);
+            return module.ToModel();
+        });
+
+        /// <summary>
         /// Uploads module configuration
         /// </summary>
         /// <returns>Model of configuration data shortly</returns>

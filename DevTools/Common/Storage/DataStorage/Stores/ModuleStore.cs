@@ -12,6 +12,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
     public interface IModuleStore
     {
         Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
+        Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
         Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias);
         Task<int> CreateModule(IOperation operation, int userId, int hostId, int fileId, ModuleConfigurationFile configuration);
         Task UpgradeModule(IOperation operation, int moduleId, int userId, int fileId, ModuleConfigurationFile configuration);
@@ -114,6 +115,46 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             }
 
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
+        }
+
+        public async Task<ModuleEntity> GetModule(IOperation operation, int moduleId)
+        {
+            var reader = await operation.Connection.QueryMultipleAsync(new { Id = moduleId }, $@"
+                {WithModuleVersions}
+                SELECT
+                    pm.[Id],
+                    pm.[Alias],
+                    mv.[Name],
+                    mv.[Version],
+                    pm.[UserId],
+                    au.[Color],
+                    au.[FirstName],
+                    au.[LastName],
+                    pm.[HostId],
+                    ph.[Name] AS [HostName],
+                    ph.[Domain] AS [HostDomain],
+                    ph.[OperatingSystemId] AS [HostOperatingSystem],
+                    pm.[StatusId] AS [Status]
+                FROM [portal].[Module] pm
+                INNER JOIN ModuleVersions mv ON mv.[ModuleId] = pm.[Id]
+                INNER JOIN [authentication].[User] au ON au.[Id] = pm.[UserId]
+                INNER JOIN [portal].[Host] ph ON ph.[Id] = pm.[HostId]
+                WHERE pm.[Id] = @Id;
+
+                SELECT
+                    [Id],
+                    [ModuleId],
+                    [Name],
+                    [Version],
+                    [Author],
+                    [Email],
+                    [FileId]
+                FROM [portal].[ModuleConfiguration]
+                WHERE [ModuleId] = @Id;
+            ");
+            var entity = await reader.ReadFirstOrDefaultAsync<ModuleEntity>();
+            entity.Configurations = await reader.ReadAsync<ModuleConfigurationEntity>();
+            return entity;
         }
 
         public async Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias)

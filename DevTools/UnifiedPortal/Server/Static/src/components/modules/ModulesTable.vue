@@ -32,21 +32,12 @@
         </el-table-column>
         <el-table-column label="Host" min-width="300" align="center">
             <template slot-scope="scope">
-                <el-link :href="`/system/settings?tab=environment&hostId=${scope.row.hostId}`" type="primary"
-                         :underline="false" v-if="hasPermissionToOpenSettingsPage">
-                    <HostFullName
-                            :name="scope.row.hostName"
-                            :domain="scope.row.hostDomain"
-                            :operating-system="scope.row.hostOperatingSystem"
-                    />
-                </el-link>
-                <div v-else>
-                    <HostFullName
-                            :name="scope.row.hostName"
-                            :domain="scope.row.hostDomain"
-                            :operating-system="scope.row.hostOperatingSystem"
-                    />
-                </div>
+                <HostFullNameWithLink
+                        :host-id="scope.row.hostId"
+                        :name="scope.row.hostName"
+                        :domain="scope.row.hostDomain"
+                        :operating-system="scope.row.hostOperatingSystem"
+                />
             </template>
         </el-table-column>
         <el-table-column label="Module Status" min-width="200" align="center">
@@ -58,11 +49,8 @@
 </template>
 
 <script>
-    import { mapGetters } from "vuex";
-    import { PORTAL_PERMISSION } from "@/constants/permissions";
-
     import UserAvatarAndFullNameWithLink from "@/components/user/UserAvatarAndFullNameWithLink";
-    import HostFullName from "@/components/hosts/HostFullName";
+    import HostFullNameWithLink from "@/components/hosts/HostFullNameWithLink";
 
     export default {
         name: "ModulesTable",
@@ -70,16 +58,8 @@
             modules: Array
         },
         components: {
-            HostFullName,
+            HostFullNameWithLink,
             UserAvatarAndFullNameWithLink
-        },
-        computed: {
-            ...mapGetters([
-                "hasPortalPermission"
-            ]),
-            hasPermissionToOpenSettingsPage() {
-                return this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_SETTINGS);
-            }
         }
     };
 </script>

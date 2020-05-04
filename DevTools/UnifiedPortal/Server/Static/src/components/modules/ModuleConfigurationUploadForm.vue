@@ -112,6 +112,7 @@
         name: "ModuleConfigurationUploadForm",
         props: {
             dialogStatus: Object,
+            success: Function,
             closed: Function
         },
         data() {
@@ -320,7 +321,13 @@
                         title: "Configuration submission is success",
                         message: "Configuration was saved and the system started to configure this module"
                     });
-                    this.$router.push(`/components/module/${response.data}`);
+
+                    if (this.success) {
+                        this.success(response.data);
+                    } else {
+                        this.dialogStatus.visible = false;
+                        this.$router.push(`/components/module/${response.data}`);
+                    }
                 }).catch(error => {
                     button.loading = false;
                     this.$notify.error({

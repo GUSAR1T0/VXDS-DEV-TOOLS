@@ -13,5 +13,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Lookup
         public IEnumerable<EnumModel> HostConnectionTypes { get; set; }
         public IEnumerable<EnumModel> ModuleStatuses { get; set; }
         public IEnumerable<EnumModel> ModuleConfigurationVerdicts { get; set; }
+        public IEnumerable<EnumModel> FileExtensions { get; set; }
     }
 }
