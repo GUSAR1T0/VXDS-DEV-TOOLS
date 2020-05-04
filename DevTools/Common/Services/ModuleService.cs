@@ -14,6 +14,8 @@ namespace VXDesign.Store.DevTools.Common.Services
     {
         Task<ModulePagingResponse> GetItems(IOperation operation, ModulePagingRequest request);
         Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
+        Task LaunchModule(IOperation operation, int moduleId);
+        Task StopModule(IOperation operation, int moduleId);
         Task<ModuleConfigurationFileUploadResult> ReadConfiguration(IOperation operation, UploadedFile file);
         Task<int> SubmitConfiguration(IOperation operation, ModuleConfigurationSubmitEntity entity);
     }
@@ -45,6 +47,11 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         public async Task<ModuleEntity> GetModule(IOperation operation, int moduleId)
         {
+            if (!await moduleStore.IsModuleExists(operation, moduleId))
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
             var module = await moduleStore.GetModule(operation, moduleId);
             var fileIds = module.Configurations.Select(item => item.FileId).ToList();
             var files = (await fileStore.Download(operation, fileIds)).ToList();
@@ -54,6 +61,38 @@ namespace VXDesign.Store.DevTools.Common.Services
             }
 
             return module;
+        }
+
+        public async Task LaunchModule(IOperation operation, int moduleId)
+        {
+            if (!await moduleStore.IsModuleExists(operation, moduleId))
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
+            if (!await moduleStore.HasStatus(operation, moduleId, ModuleStatus.Stopped))
+            {
+                throw CommonExceptions.FailedToRunModule(operation);
+            }
+
+            await moduleStore.ChangeStatus(operation, moduleId, ModuleStatus.UpdatedToRun);
+            // TODO: Camunda trigger
+        }
+
+        public async Task StopModule(IOperation operation, int moduleId)
+        {
+            if (!await moduleStore.IsModuleExists(operation, moduleId))
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
+            if (!await moduleStore.HasStatus(operation, moduleId, ModuleStatus.Run))
+            {
+                throw CommonExceptions.FailedToStopModule(operation);
+            }
+
+            await moduleStore.ChangeStatus(operation, moduleId, ModuleStatus.UpdatedToStop);
+            // TODO: Camunda trigger
         }
 
         public async Task<ModuleConfigurationFileUploadResult> ReadConfiguration(IOperation operation, UploadedFile file)

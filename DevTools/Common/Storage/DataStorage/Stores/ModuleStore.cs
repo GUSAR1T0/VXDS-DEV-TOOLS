@@ -13,6 +13,9 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
     {
         Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
         Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
+        Task<bool> IsModuleExists(IOperation operation, int moduleId);
+        Task<bool> HasStatus(IOperation operation, int moduleId, ModuleStatus status);
+        Task ChangeStatus(IOperation operation, int moduleId, ModuleStatus status);
         Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias);
         Task<int> CreateModule(IOperation operation, int userId, int hostId, int fileId, ModuleConfigurationFile configuration);
         Task UpgradeModule(IOperation operation, int moduleId, int userId, int fileId, ModuleConfigurationFile configuration);
@@ -155,6 +158,41 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var entity = await reader.ReadFirstOrDefaultAsync<ModuleEntity>();
             entity.Configurations = await reader.ReadAsync<ModuleConfigurationEntity>();
             return entity;
+        }
+
+        public async Task<bool> IsModuleExists(IOperation operation, int moduleId)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = moduleId }, @"
+                SELECT TOP 1 1
+                FROM [portal].[Module]
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task<bool> HasStatus(IOperation operation, int moduleId, ModuleStatus status)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new
+            {
+                Id = moduleId,
+                Status = status
+            }, @"
+                SELECT TOP 1 IIF([StatusId] = @Status, 1, 0)
+                FROM [portal].[Module]
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task ChangeStatus(IOperation operation, int moduleId, ModuleStatus status)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                Id = moduleId,
+                Status = status
+            }, @"
+                UPDATE [portal].[Module]
+                SET [StatusId] = @Status
+                WHERE [Id] = @Id;
+            ");
         }
 
         public async Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias)

@@ -187,10 +187,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
             return new BadRequestException(operation, $"Uploaded file extension is undefined, use [{string.Join(", ", expectedExtensions.Select(x => x.GetDescription()))}]");
         }
 
-        public static NotFoundException FileWasNotFound(IOperation operation, int fileId)
-        {
-            return new NotFoundException(operation, $"File with ID \"{fileId}\" was not found");
-        }
+        public static NotFoundException FileWasNotFound(IOperation operation, int fileId) => new NotFoundException(operation, $"File with ID \"{fileId}\" was not found");
 
         #endregion
 
@@ -218,6 +215,12 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
             var message = $"Failed to submit module configuration due to conflicts between module and new configuration versions, module verdict: {verdict.GetDescription()}";
             return new BadRequestException(operation, message);
         }
+
+        public static NotFoundException ModuleWasNotFound(IOperation operation, int moduleId) => new NotFoundException(operation, $"Module with ID \"{moduleId}\" was not found");
+
+        public static BadRequestException FailedToRunModule(IOperation operation) => new BadRequestException(operation, "Failed to run module because it's not ready for that");
+
+        public static BadRequestException FailedToStopModule(IOperation operation) => new BadRequestException(operation, "Failed to stop module because it's not ready for that");
 
         #endregion
     }

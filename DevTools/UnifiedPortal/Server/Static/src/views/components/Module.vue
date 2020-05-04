@@ -13,6 +13,26 @@
                         </el-button>
                     </el-tooltip>
 
+                    <el-tooltip effect="dark" placement="top" v-if="module.status === 18">
+                        <div slot="content">
+                            Run This Module
+                        </div>
+                        <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
+                                   class="rounded-button" @click="runModule">
+                            <span><fa icon="forward"/></span>
+                        </el-button>
+                    </el-tooltip>
+
+                    <el-tooltip effect="dark" placement="top" v-if="module.status === 15">
+                        <div slot="content">
+                            Stop This Module
+                        </div>
+                        <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
+                                   class="rounded-button" @click="stopModule">
+                            <span><fa icon="pause"/></span>
+                        </el-button>
+                    </el-tooltip>
+
                     <el-tooltip effect="dark" placement="top">
                         <div slot="content">
                             Upload Module Configuration
@@ -23,7 +43,9 @@
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip effect="dark" placement="top">
+                    <el-tooltip effect="dark" placement="top" 
+                                v-if="module.status === 15 || module.status === 18"
+                    >
                         <div slot="content">
                             Downgrade This Module
                         </div>
@@ -33,7 +55,9 @@
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip effect="dark" placement="top">
+                    <el-tooltip effect="dark" placement="top"
+                                v-if="module.status === 15 || module.status === 18"
+                    >
                         <div slot="content">
                             Uninstall This Module
                         </div>
@@ -137,9 +161,9 @@
 <script>
     import { mapGetters } from "vuex";
     import { PORTAL_PERMISSION } from "@/constants/permissions";
-    import { GET_HTTP_REQUEST } from "@/constants/actions";
+    import { GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
-    import { GET_MODULE_PROFILE_ENDPOINT } from "@/constants/endpoints";
+    import { GET_MODULE_PROFILE_ENDPOINT, RUN_MODULE_ENDPOINT, STOP_MODULE_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import format from "string-format";
 
@@ -227,6 +251,52 @@
                 if (id !== this.moduleId) {
                     this.$router.push(`/components/module/${id}`);
                 }
+            },
+            runModule() {
+                this.$store.dispatch(PUT_HTTP_REQUEST, {
+                    server: LOCALHOST,
+                    endpoint: format(RUN_MODULE_ENDPOINT, {
+                        id: this.moduleId
+                    }),
+                    config: getConfiguration()
+                }).then(() => {
+                    this.loadingIsActive = false;
+                    this.$notify.success({
+                        title: "This module was updated",
+                        message: "The status of module was triggered for running"
+                    });
+                    this.loadModule();
+                }).catch(error => {
+                    this.loadingIsActive = false;
+                    this.$notify.error({
+                        title: "Failed to run module",
+                        duration: 10000,
+                        message: renderErrorNotificationMessage(this.$createElement, error.response)
+                    });
+                });
+            },
+            stopModule() {
+                this.$store.dispatch(PUT_HTTP_REQUEST, {
+                    server: LOCALHOST,
+                    endpoint: format(STOP_MODULE_ENDPOINT, {
+                        id: this.moduleId
+                    }),
+                    config: getConfiguration()
+                }).then(() => {
+                    this.loadingIsActive = false;
+                    this.$notify.success({
+                        title: "This module was updated",
+                        message: "The status of module was triggered for stopping"
+                    });
+                    this.loadModule();
+                }).catch(error => {
+                    this.loadingIsActive = false;
+                    this.$notify.error({
+                        title: "Failed to stop module",
+                        duration: 10000,
+                        message: renderErrorNotificationMessage(this.$createElement, error.response)
+                    });
+                });
             }
         },
         mounted() {

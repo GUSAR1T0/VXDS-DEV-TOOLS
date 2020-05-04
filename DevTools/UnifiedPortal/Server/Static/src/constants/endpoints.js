@@ -73,5 +73,7 @@ export const LOAD_HEALTH_CHECKS_ENDPOINT = "healthChecks";
 // Modules endpoints
 export const GET_MODULES_ENDPOINT = "module/list";
 export const GET_MODULE_PROFILE_ENDPOINT = "module/{id}";
+export const RUN_MODULE_ENDPOINT = "module/{id}/launch";
+export const STOP_MODULE_ENDPOINT = "module/{id}/stop";
 export const UPLOAD_MODULE_CONFIGURATIONS_ENDPOINT = "module/configuration/upload";
 export const SUBMIT_MODULE_CONFIGURATION_ENDPOINT = "module/configuration";
