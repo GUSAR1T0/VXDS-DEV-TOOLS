@@ -21,7 +21,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
         public string HostDomain { get; set; }
         public HostOperatingSystem HostOperatingSystem { get; set; }
 
-        public bool IsActive { get; set; }
+        public ModuleStatus Status { get; set; }
     }
 
     public class ModulePagingFilter : IPagingFilterEntity
@@ -31,7 +31,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
         public IEnumerable<string> Aliases { get; set; }
         public IEnumerable<int> UserIds { get; set; }
         public IEnumerable<int> HostIds { get; set; }
-        public bool? IsActive { get; set; }
+        public IEnumerable<ModuleStatus> Statuses { get; set; }
     }
 
     public class ModulePagingRequest : ServerSidePagingRequest<ModulePagingFilter>

@@ -23,24 +23,12 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 
     public class ModuleStore : IModuleStore
     {
-        private const string WithModuleVersions = @"
-            ;WITH ModuleVersions ([ModuleId], [Name], [Version]) AS (
-                SELECT t.[ModuleId], t.[Name], t.[Version]
-                FROM [portal].[ModuleConfiguration] t
-                INNER JOIN (
-                    SELECT MAX([Id]) [Id]
-                    FROM [portal].[ModuleConfiguration]
-                    GROUP BY [ModuleId]
-                ) d ON d.[Id] = t.[Id]
-            )
-        ";
-
         public async Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request)
         {
             var selectBase = $@"
-                {WithModuleVersions}
                 SELECT {{0}} FROM [portal].[Module] pm
-                INNER JOIN ModuleVersions mv ON mv.[ModuleId] = pm.[Id]
+                INNER JOIN [portal].[ActiveModuleConfiguration] amc ON amc.[ModuleId] = pm.[Id]
+                INNER JOIN [portal].[ModuleConfiguration] mc ON mc.[Id] = amc.[ModuleConfigurationId]
                 INNER JOIN [authentication].[User] au ON au.[Id] = pm.[UserId]
                 INNER JOIN [portal].[Host] ph ON ph.[Id] = pm.[HostId]
                 {{1}}
@@ -49,8 +37,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             const string selectEntity = @"
                     pm.[Id],
                     pm.[Alias],
-                    mv.[Name],
-                    mv.[Version],
+                    mc.[Name],
+                    mc.[Version],
                     pm.[UserId],
                     au.[Color],
                     au.[FirstName],
@@ -59,7 +47,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     ph.[Name] AS [HostName],
                     ph.[Domain] AS [HostDomain],
                     ph.[OperatingSystemId] AS [HostOperatingSystem],
-                    pm.[IsActive]
+                    pm.[StatusId] AS [Status]
             ";
             const string selectTotal = "COUNT_BIG(1)";
             var (@params, joins, filters) = HandleGetRequest(request.Filter);
@@ -90,7 +78,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             if (!filter.Names.IsNullOrEmpty())
             {
                 @params.Add("Names", filter.Names.Select(item => $"%{item}%").ToStringTable());
-                joins.Add("INNER JOIN @Names name ON mv.[Name] LIKE name.[Value]");
+                joins.Add("INNER JOIN @Names name ON mc.[Name] LIKE name.[Value]");
             }
 
             if (!filter.Aliases.IsNullOrEmpty())
@@ -111,10 +99,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 filters.Add("pm.[UserId] IN @UserIds");
             }
 
-            if (filter.IsActive != null)
+            if (!filter.Statuses.IsNullOrEmpty())
             {
-                @params.Add("IsActive", filter.IsActive);
-                filters.Add("pm.[IsActive] = @IsActive");
+                @params.Add("StatusIds", filter.Statuses);
+                filters.Add("pm.[StatusId] IN @StatusIds");
             }
 
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
@@ -123,12 +111,11 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         public async Task<ModuleEntity> GetModule(IOperation operation, int moduleId)
         {
             var reader = await operation.Connection.QueryMultipleAsync(new { Id = moduleId }, $@"
-                {WithModuleVersions}
                 SELECT
                     pm.[Id],
                     pm.[Alias],
-                    mv.[Name],
-                    mv.[Version],
+                    mc.[Name],
+                    mc.[Version],
                     pm.[UserId],
                     au.[Color],
                     au.[FirstName],
@@ -139,7 +126,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     ph.[OperatingSystemId] AS [HostOperatingSystem],
                     pm.[StatusId] AS [Status]
                 FROM [portal].[Module] pm
-                INNER JOIN ModuleVersions mv ON mv.[ModuleId] = pm.[Id]
+                INNER JOIN [portal].[ActiveModuleConfiguration] amc ON amc.[ModuleId] = pm.[Id]
+                INNER JOIN [portal].[ModuleConfiguration] mc ON mc.[Id] = amc.[ModuleConfigurationId]
                 INNER JOIN [authentication].[User] au ON au.[Id] = pm.[UserId]
                 INNER JOIN [portal].[Host] ph ON ph.[Id] = pm.[HostId]
                 WHERE pm.[Id] = @Id;
@@ -198,12 +186,11 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         public async Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias)
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<ModuleInfoEntity>(new { Alias = alias }, $@"
-                {WithModuleVersions}
                 SELECT
                     pm.[Id],
                     pm.[Alias],
-                    mv.[Name],
-                    mv.[Version],
+                    mc.[Name],
+                    mc.[Version],
                     pm.[UserId],
                     au.[FirstName],
                     au.[LastName],
@@ -213,7 +200,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     ph.[OperatingSystemId] AS [HostOperatingSystem],
                     pm.[StatusId] [Status]
                 FROM [portal].[Module] pm
-                INNER JOIN ModuleVersions mv ON mv.[ModuleId] = pm.[Id]
+                INNER JOIN [portal].[ActiveModuleConfiguration] amc ON amc.[ModuleId] = pm.[Id]
+                INNER JOIN [portal].[ModuleConfiguration] mc ON mc.[Id] = amc.[ModuleConfigurationId]
                 INNER JOIN [authentication].[User] au ON au.[Id] = pm.[UserId]
                 INNER JOIN [portal].[Host] ph ON ph.[Id] = pm.[HostId]
                 WHERE pm.[Alias] = @Alias;
@@ -242,8 +230,17 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 DECLARE @Id INT;
                 SELECT @Id = [Id] FROM @Ids;
 
+                DECLARE @ConfigurationIds TABLE ([Id] INT);
+
                 INSERT INTO [portal].[ModuleConfiguration] ([ModuleId], [Name], [Version], [Author], [Email], [FileId])
+                OUTPUT INSERTED.[Id] INTO @ConfigurationIds
                 VALUES (@Id, @Name, @Version, @Author, @Email, @FileId);
+
+                DECLARE @ConfigurationId INT;
+                SELECT @ConfigurationId = [Id] FROM @ConfigurationIds;
+
+                INSERT INTO [portal].[ActiveModuleConfiguration] ([ModuleId], [ModuleConfigurationId])
+                VALUES (@Id, @ConfigurationId);
 
                 SELECT @Id;
             ");
@@ -264,11 +261,21 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 UPDATE [portal].[Module]
                 SET
                     [UserId] = @UserId,
-                    [StatusId] = 4 -- Status is 'Updated To Upgrade'
+                    [StatusId] = 5 -- Status is 'Updated To Upgrade'
                 WHERE [Id] = @Id;
 
+                DECLARE @ConfigurationIds TABLE ([Id] INT);
+
                 INSERT INTO [portal].[ModuleConfiguration] ([ModuleId], [Name], [Version], [Author], [Email], [FileId])
+                OUTPUT INSERTED.[Id] INTO @ConfigurationIds
                 VALUES (@Id, @Name, @Version, @Author, @Email, @FileId);
+
+                DECLARE @ConfigurationId INT;
+                SELECT @ConfigurationId = [Id] FROM @ConfigurationIds;
+
+                UPDATE [portal].[ActiveModuleConfiguration]
+                SET [ModuleConfigurationId] = @ConfigurationId
+                WHERE [ModuleId] = @Id;
             ");
         }
     }

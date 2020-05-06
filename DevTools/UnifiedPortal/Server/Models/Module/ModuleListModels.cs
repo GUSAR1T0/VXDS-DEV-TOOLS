@@ -23,7 +23,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
         public string HostDomain { get; set; }
         public HostOperatingSystem HostOperatingSystem { get; set; }
 
-        public bool IsActive { get; set; }
+        public ModuleStatus Status { get; set; }
 
         public ModuleListItemModel ToModel(ModuleListItemEntity entity)
         {
@@ -39,7 +39,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
             HostName = entity.HostName;
             HostDomain = entity.HostDomain;
             HostOperatingSystem = entity.HostOperatingSystem;
-            IsActive = entity.IsActive;
+            Status = entity.Status;
             return this;
         }
     }
@@ -51,7 +51,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
         public IEnumerable<string> Aliases { get; set; }
         public IEnumerable<int> UserIds { get; set; }
         public IEnumerable<int> HostIds { get; set; }
-        public bool? IsActive { get; set; }
+        public IEnumerable<ModuleStatus> Statuses { get; set; }
 
         public ModulePagingFilter ToEntity() => new ModulePagingFilter
         {
@@ -60,7 +60,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
             Aliases = Aliases,
             UserIds = UserIds,
             HostIds = HostIds,
-            IsActive = IsActive
+            Statuses = Statuses
         };
     }
 

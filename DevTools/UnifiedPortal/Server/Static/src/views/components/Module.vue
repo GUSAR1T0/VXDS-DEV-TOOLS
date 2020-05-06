@@ -13,7 +13,7 @@
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip effect="dark" placement="top" v-if="module.status === 18">
+                    <el-tooltip effect="dark" placement="top" v-if="module.status === 24">
                         <div slot="content">
                             Run This Module
                         </div>
@@ -23,7 +23,7 @@
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip effect="dark" placement="top" v-if="module.status === 15">
+                    <el-tooltip effect="dark" placement="top" v-if="module.status === 19">
                         <div slot="content">
                             Stop This Module
                         </div>
@@ -43,8 +43,8 @@
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip effect="dark" placement="top" 
-                                v-if="module.status === 15 || module.status === 18"
+                    <el-tooltip effect="dark" placement="top"
+                                v-if="module.status === 19 || module.status === 24"
                     >
                         <div slot="content">
                             Downgrade This Module
@@ -56,7 +56,7 @@
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="module.status === 15 || module.status === 18"
+                                v-if="module.status === 19 || module.status === 24"
                     >
                         <div slot="content">
                             Uninstall This Module
@@ -81,7 +81,16 @@
                                     <Row name="Version" :value="module.version" half/>
                                 </template>
                                 <template slot="second">
-                                    <Row name="Module Status" :value="getStatusName(module.status)" half/>
+                                    <Row name="Module Status" half>
+                                        <template slot="description">
+                                            <div style="font-size: 20px">
+                                                <fa :icon="getStatusIcon(module.status)"
+                                                    :class="getStatusColor(module.status)"
+                                                    style="font-size: 18px"/>
+                                                {{ getStatusName(module.status) }}
+                                            </div>
+                                        </template>
+                                    </Row>
                                 </template>
                             </DoubleRow>
                             <Row name="Responsible User">
@@ -149,6 +158,9 @@
 </template>
 
 <style scoped src="@/styles/button.css">
+</style>
+
+<style scoped src="@/styles/status.css">
 </style>
 
 <style scoped>
@@ -241,6 +253,32 @@
             getStatusName(statusId) {
                 let statuses = this.getLookupValues("moduleStatuses").filter(item => parseInt(item.value) === statusId);
                 return statuses && statuses.length > 0 ? statuses[0].name : "—";
+            },
+            getStatusIcon(statusId) {
+                if (statusId % 4 === 1) {
+                    return "info-circle";
+                } else if (statusId % 4 === 2) {
+                    return "spinner";
+                } else if (statusId % 4 === 3) {
+                    return "check-circle";
+                } else if (statusId % 4 === 0) {
+                    return "times-circle";
+                } else {
+                    return "question-circle";
+                }
+            },
+            getStatusColor(statusId) {
+                if (statusId % 4 === 1) {
+                    return "info";
+                } else if (statusId % 4 === 2) {
+                    return "warning";
+                } else if (statusId % 4 === 3) {
+                    return "success";
+                } else if (statusId % 4 === 0) {
+                    return "error";
+                } else {
+                    return "unknown";
+                }
             },
             getFileExtension(extensionId) {
                 let extensions = this.getLookupValues("fileExtensions").filter(item => parseInt(item.value) === extensionId);

@@ -68,13 +68,13 @@
                 </TableFilterItem>
             </template>
             <template slot="third">
-                <TableFilterItem name="Is Active?">
+                <TableFilterItem name="Module Statuses">
                     <template slot="field">
-                        <el-radio-group v-model="filter.isActive" style="width: 100%">
-                            <el-radio :label="null">Not Stated</el-radio>
-                            <el-radio :label="true">Yes</el-radio>
-                            <el-radio :label="false">No</el-radio>
-                        </el-radio-group>
+                        <el-select v-model="filter.statuses" multiple filterable reserve-keyword
+                                   default-first-option clearable style="width: 100%">
+                            <el-option v-for="item in getLookupValues('moduleStatuses')" :key="item.value" :label="item.name"
+                                       :value="item.value"/>
+                        </el-select>
                     </template>
                 </TableFilterItem>
             </template>

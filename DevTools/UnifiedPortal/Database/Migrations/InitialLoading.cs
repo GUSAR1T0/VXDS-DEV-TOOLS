@@ -158,6 +158,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.ModuleConfigurationTable.sql");
             }
 
+            if (!schema.Table(Table.ActiveModuleConfiguration).Exists())
+            {
+                Execute.EmbeddedScript("InitialLoading.Portal.Create.ActiveModuleConfigurationTable.sql");
+            }
+
             if (!schema.Table(Table.Project).Exists())
             {
                 Execute.EmbeddedScript("InitialLoading.Portal.Create.ProjectTable.sql");
@@ -201,6 +206,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database.Migrations
                 if (schema.Table(Table.PortalSettings).Exists())
                 {
                     Execute.EmbeddedScript("InitialLoading.Portal.Drop.SettingsTable.sql");
+                }
+
+                if (schema.Table(Table.ActiveModuleConfiguration).Exists())
+                {
+                    Execute.EmbeddedScript("InitialLoading.Portal.Drop.ActiveModuleConfigurationTable.sql");
                 }
 
                 if (schema.Table(Table.ModuleConfiguration).Exists())

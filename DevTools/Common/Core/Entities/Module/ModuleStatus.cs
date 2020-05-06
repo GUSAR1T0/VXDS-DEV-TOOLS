@@ -13,49 +13,67 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
         [Description("Installed")]
         Installed = 3,
 
+        [Description("Failed To Install")]
+        FailedToInstall = 4,
+
         [Description("Updated To Upgrade")]
-        UpdatedToUpgrade = 4,
+        UpdatedToUpgrade = 5,
 
         [Description("Upgrading")]
-        Upgrading = 5,
+        Upgrading = 6,
 
         [Description("Upgraded")]
-        Upgraded = 6,
+        Upgraded = 7,
+
+        [Description("Failed To Upgrade")]
+        FailedToUpgrade = 8,
 
         [Description("Updated To Downgrade")]
-        UpdatedToDowngrade = 7,
+        UpdatedToDowngrade = 9,
 
         [Description("Downgrading")]
-        Downgrading = 8,
+        Downgrading = 10,
 
         [Description("Downgraded")]
-        Downgraded = 9,
+        Downgraded = 11,
+
+        [Description("Failed To Downgrade")]
+        FailedToDowngrade = 12,
 
         [Description("Updated To Uninstall")]
-        UpdatedToUninstall = 10,
+        UpdatedToUninstall = 13,
 
         [Description("Uninstalling")]
-        Uninstalling = 11,
+        Uninstalling = 14,
 
         [Description("Uninstalled")]
-        Uninstalled = 12,
+        Uninstalled = 15,
+
+        [Description("Failed To Uninstall")]
+        FailedToUninstall = 16,
 
         [Description("Updated To Run")]
-        UpdatedToRun = 13,
+        UpdatedToRun = 17,
 
         [Description("Running")]
-        Running = 14,
+        Running = 18,
 
         [Description("Run")]
-        Run = 15,
+        Run = 19,
+
+        [Description("Failed To Run")]
+        FailedToRun = 20,
 
         [Description("Updated To Stop")]
-        UpdatedToStop = 16,
+        UpdatedToStop = 21,
 
         [Description("Stopping")]
-        Stopping = 17,
+        Stopping = 22,
 
         [Description("Stopped")]
-        Stopped = 18
+        Stopped = 23,
+
+        [Description("Failed To Stopped")]
+        FailedToStop = 24
     }
 }

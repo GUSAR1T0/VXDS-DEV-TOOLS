@@ -74,7 +74,7 @@
                     aliases: [],
                     userIds: [],
                     hostIds: [],
-                    isActive: null,
+                    statuses: [],
 
                     userIdOptions: [],
                     userIdsSearchLoading: false,
@@ -104,7 +104,7 @@
                     aliases: this.filter.aliases,
                     userIds: this.filter.userIds,
                     hostIds: this.filter.hostIds,
-                    isActive: this.filter.isActive
+                    statuses: getOnlyNumbers(this.filter.statuses)
                 };
                 this.$store.dispatch(POST_HTTP_REQUEST, {
                     server: LOCALHOST,
@@ -135,7 +135,7 @@
                 this.filter.aliases = [];
                 this.filter.userIds = [];
                 this.filter.hostIds = [];
-                this.filter.isActive = null;
+                this.filter.statuses = [];
 
                 this.filter.userIdOptions = [];
                 this.filter.userIdsSearchLoading = false;

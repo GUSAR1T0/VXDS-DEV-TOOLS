@@ -87,8 +87,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         {
             return await operation.Connection.QueryFirstAsync<ModulesDataEntity>(@"
                 SELECT
-                    COUNT(IIF([IsActive] = 1, 1, NULL)) AS [ActiveCount],
-                    COUNT(IIF([IsActive] = 0, 1, NULL)) AS [InactiveCount]
+                    COUNT(IIF([StatusId] = 19, 1, NULL)) AS [ActiveCount],
+                    COUNT(IIF([StatusId] <> 19, 1, NULL)) AS [InactiveCount]
                 FROM [portal].[Module];
             ");
         }

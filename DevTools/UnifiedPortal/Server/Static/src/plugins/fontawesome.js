@@ -45,7 +45,8 @@ import {
     faCog,
     faBackspace,
     faPause,
-    faForward
+    faForward,
+    faSpinner
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faWindows, faLinux, faApple } from "@fortawesome/free-brands-svg-icons";
 import {
@@ -60,7 +61,7 @@ library.add(
     faTrashAlt, faAddressCard, faFilter, faTable, faStar, faEye, faTasks, faCopy, faCubes, faExclamationCircle,
     faExclamationTriangle, faFireAlt, faCheckCircle, faTimesCircle, faHistory, faBell, farCheckCircle, farTimesCircle,
     faHeartbeat, faCircle, faDatabase, faNetworkWired, faQuestionCircle, faWindows, faLinux, faApple, faPlug,
-    faUpload, faCog, faBackspace, faPause, faForward
+    faUpload, faCog, faBackspace, faPause, faForward, faSpinner
 );
 
 Vue.component("fa", FontAwesomeIcon);
