@@ -23,6 +23,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
             this.moduleService = moduleService;
         }
 
+        #region Modules
+
         /// <summary>
         /// Obtains information about all modules
         /// </summary>
@@ -68,7 +70,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [PortalAuthentication(PortalPermission.ManageModules)]
         [HttpPut("{moduleId}")]
-        public async Task<ActionResult> UpdateModule(int moduleId, [FromBody] ModuleUpdateModel model) => await Execute(async operation => await moduleService.UpdateModule(operation, moduleId, model.UserId));
+        public async Task<ActionResult> UpdateModule(int moduleId, [FromBody] ModuleUpdateModel model) =>
+            await Execute(async operation => await moduleService.UpdateModule(operation, moduleId, model.UserId));
 
         /// <summary>
         /// Launches a module
@@ -97,7 +100,24 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         public async Task<ActionResult> StopModule(int moduleId) => await Execute(async operation => await moduleService.StopModule(operation, moduleId));
 
         /// <summary>
-        /// Uploads module configuration
+        /// Uninstalls a module
+        /// </summary>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.ManageModules)]
+        [HttpDelete("{moduleId}")]
+        public async Task<ActionResult> UninstallModule(int moduleId) => await Execute(async operation => await moduleService.UninstallModule(operation, moduleId));
+
+        #endregion
+
+        #region Module Configurations
+
+        /// <summary>
+        /// Uploads a module configuration
         /// </summary>
         /// <returns>Model of configuration data shortly</returns>
         [ProducesResponseType(typeof(List<ModuleConfigurationFileUploadResultModel>), StatusCodes.Status200OK)]
@@ -122,7 +142,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
-        /// Submits module configuration
+        /// Submits a module configuration
         /// </summary>
         /// <returns>ID of module</returns>
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -139,7 +159,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
-        /// Upgrades module
+        /// Upgrades a module
         /// </summary>
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -155,7 +175,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         });
 
         /// <summary>
-        /// Downgrades module
+        /// Downgrades a module
         /// </summary>
         /// <returns>Nothing to return</returns>
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -169,5 +189,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         {
             await moduleService.DowngradeModuleConfiguration(operation, moduleId, model?.UserId);
         });
+
+        #endregion
     }
 }

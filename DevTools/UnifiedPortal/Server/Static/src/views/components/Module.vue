@@ -23,7 +23,7 @@
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip effect="dark" placement="top" v-if="module.status === 24">
+                    <el-tooltip effect="dark" placement="top" v-if="module.status === 23">
                         <div slot="content">
                             Run This Module
                         </div>
@@ -54,7 +54,7 @@
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="(module.status === 19 || module.status === 24) && module.nextConfigurationId !== null"
+                                v-if="(module.status === 19 || module.status === 23) && module.nextConfigurationId !== null"
                     >
                         <div slot="content">
                             Upgrade This Module To {{ getNextConfigurationVersion }}
@@ -66,7 +66,7 @@
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="(module.status === 19 || module.status === 24) && module.previousConfigurationId !== null"
+                                v-if="(module.status === 19 || module.status === 23) && module.previousConfigurationId !== null"
                     >
                         <div slot="content">
                             Downgrade This Module To {{ getPreviousConfigurationVersion }}
@@ -78,7 +78,7 @@
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="module.status === 19 || module.status === 24"
+                                v-if="module.status === 19 || module.status === 23"
                     >
                         <div slot="content">
                             Uninstall This Module
@@ -100,6 +100,13 @@
                             :dialog-status="updateDialog"
                             :closed="closeUpdateDialog"
                     />
+
+                    <ConfirmationDialog
+                            :dialog-status="uninstallDialog"
+                            confirmation-text="Are you sure that you want to uninstall this module?"
+                            :cancel-click-action="() => uninstallDialog.visible = false"
+                            :submit-click-action="uninstallModule"
+                            :closed="loadModule"/>
                 </template>
                 <template slot="profile-content">
                     <ProfileBlock icon="cubes" header="Module Info">
@@ -154,10 +161,11 @@
                     </ProfileBlock>
                     <ProfileBlock icon="cog" header="Configurations">
                         <template slot="profile-block-content">
-                            <el-tabs :stretch="true" v-if="module.configurations" v-model="module.version">
+                            <el-tabs :stretch="true" v-if="module.configurations" :active-name="module.version">
                                 <el-tab-pane v-for="item in module.configurations" :key="item.id"
                                              :label="`ver. ${item.version}`" :name="item.version">
-                                    <Row name="Author" style="padding-top: 10px">
+                                    <Row name="Module Name" :value="item.name" style="padding-top: 10px"/>
+                                    <Row name="Author">
                                         <template slot="description">
                                             <el-link :href="`mailto:${item.email}`" type="primary" :underline="false">
                                                 <strong style="font-size: 16px">
@@ -201,9 +209,14 @@
 <script>
     import { mapGetters } from "vuex";
     import { PORTAL_PERMISSION } from "@/constants/permissions";
-    import { GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
+    import { DELETE_HTTP_REQUEST, GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
-    import { GET_MODULE_PROFILE_ENDPOINT, RUN_MODULE_ENDPOINT, STOP_MODULE_ENDPOINT } from "@/constants/endpoints";
+    import {
+        GET_MODULE_PROFILE_ENDPOINT,
+        RUN_MODULE_ENDPOINT,
+        STOP_MODULE_ENDPOINT,
+        UNINSTALL_MODULE_ENDPOINT
+    } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import format from "string-format";
 
@@ -216,6 +229,7 @@
     import HostFullNameSimplified from "@/components/hosts/HostFullNameSimplified";
     import ModuleConfigurationUploadForm from "@/components/modules/ModuleConfigurationUploadForm";
     import ModuleUpdateForm from "@/components/modules/ModuleUpdateForm";
+    import ConfirmationDialog from "@/components/page/ConfirmationDialog";
 
     export default {
         name: "Module",
@@ -228,7 +242,8 @@
             UserAvatarAndFullNameWithLink,
             HostFullNameSimplified,
             ModuleConfigurationUploadForm,
-            ModuleUpdateForm
+            ModuleUpdateForm,
+            ConfirmationDialog
         },
         data() {
             return {
@@ -382,6 +397,33 @@
             closeUpdateDialog() {
                 this.updateDialog.process = null;
                 this.loadModule();
+            },
+            uninstallModule(button) {
+                button.loading = true;
+                this.$store.dispatch(DELETE_HTTP_REQUEST, {
+                    server: LOCALHOST,
+                    endpoint: format(UNINSTALL_MODULE_ENDPOINT, {
+                        id: this.module.id
+                    }),
+                    config: getConfiguration()
+                }).then(() => {
+                    button.loading = false;
+                    this.uninstallDialog.visible = false;
+
+                    this.$notify.success({
+                        title: "This module was updated",
+                        message: "The status of module was triggered for uninstalling"
+                    });
+                }).catch(error => {
+                    button.loading = false;
+                    this.uninstallDialog.visible = false;
+
+                    this.$notify.error({
+                        title: "Failed to uninstall module",
+                        duration: 10000,
+                        message: renderErrorNotificationMessage(this.$createElement, error.response)
+                    });
+                });
             }
         },
         mounted() {

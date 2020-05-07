@@ -12,15 +12,25 @@ namespace VXDesign.Store.DevTools.Common.Services
 {
     public interface IModuleService
     {
+        #region Modules
+
         Task<ModulePagingResponse> GetItems(IOperation operation, ModulePagingRequest request);
         Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
         Task UpdateModule(IOperation operation, int moduleId, int userId);
         Task LaunchModule(IOperation operation, int moduleId);
         Task StopModule(IOperation operation, int moduleId);
+        Task UninstallModule(IOperation operation, int moduleId);
+
+        #endregion
+
+        #region Module Configurations
+
         Task<ModuleConfigurationFileUploadResult> ReadConfiguration(IOperation operation, UploadedFile file);
         Task<int> SubmitConfiguration(IOperation operation, ModuleConfigurationSubmitEntity entity);
         Task UpgradeModuleConfiguration(IOperation operation, int moduleId, int? userId);
         Task DowngradeModuleConfiguration(IOperation operation, int moduleId, int? userId);
+
+        #endregion
     }
 
     public class ModuleService : IModuleService
@@ -37,6 +47,8 @@ namespace VXDesign.Store.DevTools.Common.Services
             this.portalSettingsStore = portalSettingsStore;
             this.userDataStore = userDataStore;
         }
+
+        #region Modules
 
         public async Task<ModulePagingResponse> GetItems(IOperation operation, ModulePagingRequest request)
         {
@@ -115,6 +127,26 @@ namespace VXDesign.Store.DevTools.Common.Services
             await moduleStore.ChangeStatus(operation, moduleId, ModuleStatus.UpdatedToStop);
             // TODO: Camunda trigger
         }
+
+        public async Task UninstallModule(IOperation operation, int moduleId)
+        {
+            if (!await moduleStore.IsModuleExists(operation, moduleId))
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
+            if (!await moduleStore.HasStatus(operation, moduleId, ModuleStatus.Run, ModuleStatus.Stopped))
+            {
+                throw CommonExceptions.FailedToUninstallModule(operation);
+            }
+
+            await moduleStore.ChangeStatus(operation, moduleId, ModuleStatus.UpdatedToUninstall);
+            // TODO: Camunda trigger
+        }
+
+        #endregion
+
+        #region Module Configurations
 
         public async Task<ModuleConfigurationFileUploadResult> ReadConfiguration(IOperation operation, UploadedFile file)
         {
@@ -361,5 +393,7 @@ namespace VXDesign.Store.DevTools.Common.Services
             await moduleStore.DowngradeModule(operation, module.Id, userId ?? module.UserId, module.PreviousConfiguration.Id);
             // TODO: Camunda trigger
         }
+
+        #endregion
     }
 }

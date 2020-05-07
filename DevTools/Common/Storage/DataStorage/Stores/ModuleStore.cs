@@ -14,7 +14,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
         Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
         Task<bool> IsModuleExists(IOperation operation, int moduleId);
-        Task<bool> HasStatus(IOperation operation, int moduleId, ModuleStatus status);
+        Task<bool> HasStatus(IOperation operation, int moduleId, params ModuleStatus[] statuses);
         Task ChangeStatus(IOperation operation, int moduleId, ModuleStatus status);
         Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias);
         Task<int> CreateModule(IOperation operation, int userId, int hostId, int fileId, ModuleConfigurationFile configuration);
@@ -160,16 +160,16 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ");
         }
 
-        public async Task<bool> HasStatus(IOperation operation, int moduleId, ModuleStatus status)
+        public async Task<bool> HasStatus(IOperation operation, int moduleId, params ModuleStatus[] statuses)
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new
             {
                 Id = moduleId,
-                Status = status
+                StatusIds = statuses
             }, @"
-                SELECT TOP 1 IIF([StatusId] = @Status, 1, 0)
+                SELECT TOP 1 1
                 FROM [portal].[Module]
-                WHERE [Id] = @Id;
+                WHERE [Id] = @Id AND [StatusId] IN @StatusIds;
             ");
         }
 

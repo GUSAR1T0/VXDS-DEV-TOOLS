@@ -222,6 +222,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static BadRequestException FailedToStopModule(IOperation operation) => new BadRequestException(operation, "Failed to stop module because it's not ready for that");
 
+        public static BadRequestException FailedToUninstallModule(IOperation operation) => new BadRequestException(operation, "Failed to uninstall module because it's not ready for that");
+
         public static BadRequestException FailedToUpgradeModuleConfigurationDueToModuleStatus(IOperation operation)
         {
             return new BadRequestException(operation, "Failed to upgrade module configuration because module is not ready for that");
