@@ -222,6 +222,40 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static BadRequestException FailedToStopModule(IOperation operation) => new BadRequestException(operation, "Failed to stop module because it's not ready for that");
 
+        public static BadRequestException FailedToUpgradeModuleConfigurationDueToModuleStatus(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to upgrade module configuration because module is not ready for that");
+        }
+
+        public static BadRequestException FailedToDowngradeModuleConfigurationDueToModuleStatus(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to downgrade module configuration because module is not ready for that");
+        }
+
+        public static NotFoundException NoModuleConfigurationForUpgrade(IOperation operation) => new NotFoundException(operation, "No module configuration is found for upgrade of module");
+
+        public static BadRequestException NoModuleConfigurationForDowngrade(IOperation operation) => new BadRequestException(operation, "No module configuration is found for downgrade of module");
+
+        public static BadRequestException FailedToUpgradeModuleConfigurationDueToVerdict(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to upgrade module configuration because it can't be confirmed by module verdict");
+        }
+
+        public static BadRequestException FailedToDowngradeModuleConfigurationDueToVerdict(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to downgrade module configuration because it can't be confirmed by module verdict");
+        }
+
+        public static BadRequestException FailedToUpgradeModuleConfigurationDueToOperatingSystemConflict(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to upgrade module configuration because it can't be confirmed by host operating system");
+        }
+
+        public static BadRequestException FailedToDowngradeModuleConfigurationDueToOperatingSystemConflict(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to downgrade module configuration because it can't be confirmed by host operating system");
+        }
+
         #endregion
     }
 }

@@ -30,9 +30,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
                 Version = item.Version,
                 Author = item.Author,
                 Email = item.Email,
+                OperatingSystems = item.OperatingSystems,
                 FileId = item.FileId,
                 File = item.File.ToModel()
-            })
+            }),
+            PreviousConfigurationId = entity.PreviousConfiguration?.Id,
+            NextConfigurationId = entity.NextConfiguration?.Id
         };
 
         internal static ModuleConfigurationFileUploadResultModel ToModel(this ModuleConfigurationFileUploadResult entity) => new ModuleConfigurationFileUploadResultModel

@@ -13,6 +13,16 @@
                         </el-button>
                     </el-tooltip>
 
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
+                            Upload Module Configuration
+                        </div>
+                        <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
+                                   class="rounded-button" @click="uploadDialog.visible = true">
+                            <span><fa icon="upload"/></span>
+                        </el-button>
+                    </el-tooltip>
+
                     <el-tooltip effect="dark" placement="top" v-if="module.status === 24">
                         <div slot="content">
                             Run This Module
@@ -35,23 +45,35 @@
 
                     <el-tooltip effect="dark" placement="top">
                         <div slot="content">
-                            Upload Module Configuration
+                            Update This Module
                         </div>
                         <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
-                                   class="rounded-button" @click="uploadDialog.visible = true">
-                            <span><fa icon="upload"/></span>
+                                   class="rounded-button" @click="openUpdateDialog(1)">
+                            <span><fa icon="cogs"/></span>
                         </el-button>
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="module.status === 19 || module.status === 24"
+                                v-if="(module.status === 19 || module.status === 24) && module.nextConfigurationId !== null"
                     >
                         <div slot="content">
-                            Downgrade This Module
+                            Upgrade This Module To {{ getNextConfigurationVersion }}
+                        </div>
+                        <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
+                                   class="rounded-button" @click="openUpdateDialog(2)">
+                            <span><fa icon="arrow-up"/></span>
+                        </el-button>
+                    </el-tooltip>
+
+                    <el-tooltip effect="dark" placement="top"
+                                v-if="(module.status === 19 || module.status === 24) && module.previousConfigurationId !== null"
+                    >
+                        <div slot="content">
+                            Downgrade This Module To {{ getPreviousConfigurationVersion }}
                         </div>
                         <el-button type="danger" plain circle v-if="hasPermissionToManageModules"
-                                   class="rounded-button" @click="downgradeDialog.visible = true">
-                            <span><fa icon="backspace"/></span>
+                                   class="rounded-button" @click="openUpdateDialog(3)">
+                            <span><fa icon="arrow-down"/></span>
                         </el-button>
                     </el-tooltip>
 
@@ -71,6 +93,12 @@
                             :dialog-status="uploadDialog"
                             :success="successUpload"
                             :closed="loadModule"
+                    />
+
+                    <ModuleUpdateForm
+                            :module="module"
+                            :dialog-status="updateDialog"
+                            :closed="closeUpdateDialog"
                     />
                 </template>
                 <template slot="profile-content">
@@ -187,6 +215,7 @@
     import UserAvatarAndFullNameWithLink from "@/components/user/UserAvatarAndFullNameWithLink";
     import HostFullNameSimplified from "@/components/hosts/HostFullNameSimplified";
     import ModuleConfigurationUploadForm from "@/components/modules/ModuleConfigurationUploadForm";
+    import ModuleUpdateForm from "@/components/modules/ModuleUpdateForm";
 
     export default {
         name: "Module",
@@ -198,7 +227,8 @@
             ProfileBlock,
             UserAvatarAndFullNameWithLink,
             HostFullNameSimplified,
-            ModuleConfigurationUploadForm
+            ModuleConfigurationUploadForm,
+            ModuleUpdateForm
         },
         data() {
             return {
@@ -208,8 +238,9 @@
                 uploadDialog: {
                     visible: false
                 },
-                downgradeDialog: {
-                    visible: false
+                updateDialog: {
+                    visible: false,
+                    process: null
                 },
                 uninstallDialog: {
                     visible: false
@@ -226,6 +257,14 @@
             },
             hasPermissionToManageModules() {
                 return this.hasPortalPermission(PORTAL_PERMISSION.MANAGE_MODULES);
+            },
+            getNextConfigurationVersion() {
+                let configurations = this.module.configurations.filter(item => item.id === this.module.nextConfigurationId);
+                return configurations && configurations.length > 0 ? configurations[0].version : "—";
+            },
+            getPreviousConfigurationVersion() {
+                let configurations = this.module.configurations.filter(item => item.id === this.module.previousConfigurationId);
+                return configurations && configurations.length > 0 ? configurations[0].version : "—";
             }
         },
         methods: {
@@ -335,6 +374,14 @@
                         message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });
                 });
+            },
+            openUpdateDialog(process) {
+                this.updateDialog.visible = true;
+                this.updateDialog.process = process;
+            },
+            closeUpdateDialog() {
+                this.updateDialog.process = null;
+                this.loadModule();
             }
         },
         mounted() {

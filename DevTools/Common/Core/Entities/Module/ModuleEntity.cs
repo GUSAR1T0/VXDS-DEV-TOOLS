@@ -22,6 +22,38 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
 
         public ModuleStatus Status { get; set; }
 
-        public IEnumerable<ModuleConfigurationEntity> Configurations { get; set; }
+        public List<ModuleConfigurationEntity> Configurations { get; set; }
+
+        public ModuleConfigurationEntity PreviousConfiguration
+        {
+            get
+            {
+                for (var i = 1; i < Configurations.Count; i++)
+                {
+                    if (Configurations[i].Version == Version)
+                    {
+                        return Configurations[i - 1];
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        public ModuleConfigurationEntity NextConfiguration
+        {
+            get
+            {
+                for (var i = 0; i < Configurations.Count - 1; i++)
+                {
+                    if (Configurations[i].Version == Version)
+                    {
+                        return Configurations[i + 1];
+                    }
+                }
+
+                return null;
+            }
+        }
     }
 }

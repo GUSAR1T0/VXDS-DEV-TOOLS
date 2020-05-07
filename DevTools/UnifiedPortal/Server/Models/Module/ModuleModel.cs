@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Entities.Module;
 using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 
@@ -24,5 +25,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module
         public ModuleStatus Status { get; set; }
 
         public IEnumerable<ModuleConfigurationModel> Configurations { get; set; }
+        public int? PreviousConfigurationId { get; set; }
+        public int? NextConfigurationId { get; set; }
     }
 }

@@ -67,8 +67,21 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [PortalAuthentication(PortalPermission.ManageModules)]
+        [HttpPut("{moduleId}")]
+        public async Task<ActionResult> UpdateModule(int moduleId, [FromBody] ModuleUpdateModel model) => await Execute(async operation => await moduleService.UpdateModule(operation, moduleId, model.UserId));
+
+        /// <summary>
+        /// Launches a module
+        /// </summary>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.ManageModules)]
         [HttpPut("{moduleId}/launch")]
-        public async Task<ActionResult<ModuleModel>> LaunchModule(int moduleId) => await Execute(async operation => await moduleService.LaunchModule(operation, moduleId));
+        public async Task<ActionResult> LaunchModule(int moduleId) => await Execute(async operation => await moduleService.LaunchModule(operation, moduleId));
 
         /// <summary>
         /// Stops a module
@@ -81,7 +94,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [PortalAuthentication(PortalPermission.ManageModules)]
         [HttpPut("{moduleId}/stop")]
-        public async Task<ActionResult<ModuleModel>> StopModule(int moduleId) => await Execute(async operation => await moduleService.StopModule(operation, moduleId));
+        public async Task<ActionResult> StopModule(int moduleId) => await Execute(async operation => await moduleService.StopModule(operation, moduleId));
 
         /// <summary>
         /// Uploads module configuration
@@ -123,6 +136,38 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         {
             var moduleId = await moduleService.SubmitConfiguration(operation, model.ToEntity());
             return moduleId;
+        });
+
+        /// <summary>
+        /// Upgrades module
+        /// </summary>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.ManageModules)]
+        [HttpPut("{moduleId}/configuration/upgrade")]
+        public async Task<ActionResult> UpgradeModuleConfiguration(int moduleId, [FromBody] ModuleUpdateModel model = null) => await Execute(async operation =>
+        {
+            await moduleService.UpgradeModuleConfiguration(operation, moduleId, model?.UserId);
+        });
+
+        /// <summary>
+        /// Downgrades module
+        /// </summary>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.ManageModules)]
+        [HttpPut("{moduleId}/configuration/downgrade")]
+        public async Task<ActionResult> DowngradeModuleConfiguration(int moduleId, [FromBody] ModuleUpdateModel model = null) => await Execute(async operation =>
+        {
+            await moduleService.DowngradeModuleConfiguration(operation, moduleId, model?.UserId);
         });
     }
 }

@@ -18,7 +18,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task ChangeStatus(IOperation operation, int moduleId, ModuleStatus status);
         Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias);
         Task<int> CreateModule(IOperation operation, int userId, int hostId, int fileId, ModuleConfigurationFile configuration);
+        Task UpdateModule(IOperation operation, int moduleId, int userId);
         Task UpgradeModule(IOperation operation, int moduleId, int userId, int fileId, ModuleConfigurationFile configuration);
+        Task UpgradeModule(IOperation operation, int moduleId, int userId, int configurationId);
+        Task DowngradeModule(IOperation operation, int moduleId, int userId, int configurationId);
     }
 
     public class ModuleStore : IModuleStore
@@ -144,7 +147,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 WHERE [ModuleId] = @Id;
             ");
             var entity = await reader.ReadFirstOrDefaultAsync<ModuleEntity>();
-            entity.Configurations = await reader.ReadAsync<ModuleConfigurationEntity>();
+            entity.Configurations = (await reader.ReadAsync<ModuleConfigurationEntity>()).ToList();
             return entity;
         }
 
@@ -246,6 +249,19 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ");
         }
 
+        public async Task UpdateModule(IOperation operation, int moduleId, int userId)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                Id = moduleId,
+                UserId = userId
+            }, @"
+                UPDATE [portal].[Module]
+                SET [UserId] = @UserId
+                WHERE [Id] = @Id;
+            ");
+        }
+
         public async Task UpgradeModule(IOperation operation, int moduleId, int userId, int fileId, ModuleConfigurationFile configuration)
         {
             await operation.Connection.ExecuteAsync(new
@@ -272,6 +288,46 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
 
                 DECLARE @ConfigurationId INT;
                 SELECT @ConfigurationId = [Id] FROM @ConfigurationIds;
+
+                UPDATE [portal].[ActiveModuleConfiguration]
+                SET [ModuleConfigurationId] = @ConfigurationId
+                WHERE [ModuleId] = @Id;
+            ");
+        }
+
+        public async Task UpgradeModule(IOperation operation, int moduleId, int userId, int configurationId)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                Id = moduleId,
+                UserId = userId,
+                ConfigurationId = configurationId
+            }, @"
+                UPDATE [portal].[Module]
+                SET
+                    [UserId] = @UserId,
+                    [StatusId] = 5 -- Status is 'Updated To Upgrade'
+                WHERE [Id] = @Id;
+
+                UPDATE [portal].[ActiveModuleConfiguration]
+                SET [ModuleConfigurationId] = @ConfigurationId
+                WHERE [ModuleId] = @Id;
+            ");
+        }
+
+        public async Task DowngradeModule(IOperation operation, int moduleId, int userId, int configurationId)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                Id = moduleId,
+                UserId = userId,
+                ConfigurationId = configurationId
+            }, @"
+                UPDATE [portal].[Module]
+                SET
+                    [UserId] = @UserId,
+                    [StatusId] = 9 -- Status is 'Updated To Downgrade'
+                WHERE [Id] = @Id;
 
                 UPDATE [portal].[ActiveModuleConfiguration]
                 SET [ModuleConfigurationId] = @ConfigurationId

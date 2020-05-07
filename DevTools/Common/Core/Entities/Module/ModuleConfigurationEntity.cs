@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
+
 namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
 {
     public class ModuleConfigurationEntity
@@ -8,6 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
         public string Version { get; set; }
         public string Author { get; set; }
         public string Email { get; set; }
+        public IEnumerable<HostOperatingSystem> OperatingSystems { get; set; }
         public int FileId { get; set; }
         public File.File File { get; set; }
     }

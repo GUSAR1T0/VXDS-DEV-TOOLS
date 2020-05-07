@@ -14,10 +14,13 @@ namespace VXDesign.Store.DevTools.Common.Services
     {
         Task<ModulePagingResponse> GetItems(IOperation operation, ModulePagingRequest request);
         Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
+        Task UpdateModule(IOperation operation, int moduleId, int userId);
         Task LaunchModule(IOperation operation, int moduleId);
         Task StopModule(IOperation operation, int moduleId);
         Task<ModuleConfigurationFileUploadResult> ReadConfiguration(IOperation operation, UploadedFile file);
         Task<int> SubmitConfiguration(IOperation operation, ModuleConfigurationSubmitEntity entity);
+        Task UpgradeModuleConfiguration(IOperation operation, int moduleId, int? userId);
+        Task DowngradeModuleConfiguration(IOperation operation, int moduleId, int? userId);
     }
 
     public class ModuleService : IModuleService
@@ -58,9 +61,27 @@ namespace VXDesign.Store.DevTools.Common.Services
             foreach (var configuration in module.Configurations)
             {
                 configuration.File = files.FirstOrDefault(file => file.Id == configuration.FileId);
+
+                var fileConfiguration = ModuleConfigurationUtils.Parse(operation, configuration.File);
+                if (!fileConfiguration.IsValid())
+                {
+                    throw CommonExceptions.ModuleConfigurationIsInvalid(operation);
+                }
+
+                configuration.OperatingSystems = fileConfiguration.Instructions.Where(item => item.OperatingSystem.HasValue).Select(item => item.OperatingSystem.Value);
             }
 
             return module;
+        }
+
+        public async Task UpdateModule(IOperation operation, int moduleId, int userId)
+        {
+            if (!await moduleStore.IsModuleExists(operation, moduleId))
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
+            await moduleStore.UpdateModule(operation, moduleId, userId);
         }
 
         public async Task LaunchModule(IOperation operation, int moduleId)
@@ -247,6 +268,98 @@ namespace VXDesign.Store.DevTools.Common.Services
                 ModuleConfigurationVerdict.NewModule => throw new ArgumentOutOfRangeException(),
                 _ => throw new ArgumentOutOfRangeException()
             };
+        }
+
+        public async Task UpgradeModuleConfiguration(IOperation operation, int moduleId, int? userId)
+        {
+            var module = await moduleStore.GetModule(operation, moduleId);
+            if (module == null)
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
+            if (module.Status != ModuleStatus.Run && module.Status != ModuleStatus.Stopped)
+            {
+                throw CommonExceptions.FailedToUpgradeModuleConfigurationDueToModuleStatus(operation);
+            }
+
+            if (module.NextConfiguration == null)
+            {
+                throw CommonExceptions.NoModuleConfigurationForUpgrade(operation);
+            }
+
+            var file = await fileStore.Download(operation, module.NextConfiguration.FileId);
+            if (file == null)
+            {
+                throw CommonExceptions.FileWasNotFound(operation, module.NextConfiguration.FileId);
+            }
+
+            var configuration = ModuleConfigurationUtils.Parse(operation, file);
+            if (!configuration.IsValid())
+            {
+                throw CommonExceptions.ModuleConfigurationIsInvalid(operation);
+            }
+
+            var operatingSystems = configuration.Instructions.Where(item => item.OperatingSystem.HasValue).Select(item => item.OperatingSystem.Value);
+            if (!operatingSystems.Contains(module.HostOperatingSystem))
+            {
+                // Configuration doesn't have instructions for OS which used on current host
+                throw CommonExceptions.FailedToUpgradeModuleConfigurationDueToOperatingSystemConflict(operation);
+            }
+
+            if (GetVerdict(operation, module.Version, module.NextConfiguration.Version) != ModuleConfigurationVerdict.Upgrade)
+            {
+                throw CommonExceptions.FailedToUpgradeModuleConfigurationDueToVerdict(operation);
+            }
+
+            await moduleStore.UpgradeModule(operation, module.Id, userId ?? module.UserId, module.NextConfiguration.Id);
+            // TODO: Camunda trigger
+        }
+
+        public async Task DowngradeModuleConfiguration(IOperation operation, int moduleId, int? userId)
+        {
+            var module = await moduleStore.GetModule(operation, moduleId);
+            if (module == null)
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
+            if (module.Status != ModuleStatus.Run && module.Status != ModuleStatus.Stopped)
+            {
+                throw CommonExceptions.FailedToDowngradeModuleConfigurationDueToModuleStatus(operation);
+            }
+
+            if (module.PreviousConfiguration == null)
+            {
+                throw CommonExceptions.NoModuleConfigurationForDowngrade(operation);
+            }
+
+            var file = await fileStore.Download(operation, module.PreviousConfiguration.FileId);
+            if (file == null)
+            {
+                throw CommonExceptions.FileWasNotFound(operation, module.PreviousConfiguration.FileId);
+            }
+
+            var configuration = ModuleConfigurationUtils.Parse(operation, file);
+            if (!configuration.IsValid())
+            {
+                throw CommonExceptions.ModuleConfigurationIsInvalid(operation);
+            }
+
+            var operatingSystems = configuration.Instructions.Where(item => item.OperatingSystem.HasValue).Select(item => item.OperatingSystem.Value);
+            if (!operatingSystems.Contains(module.HostOperatingSystem))
+            {
+                // Configuration doesn't have instructions for OS which used on current host
+                throw CommonExceptions.FailedToDowngradeModuleConfigurationDueToOperatingSystemConflict(operation);
+            }
+
+            if (GetVerdict(operation, module.Version, module.PreviousConfiguration.Version) != ModuleConfigurationVerdict.Downgrade)
+            {
+                throw CommonExceptions.FailedToDowngradeModuleConfigurationDueToVerdict(operation);
+            }
+
+            await moduleStore.DowngradeModule(operation, module.Id, userId ?? module.UserId, module.PreviousConfiguration.Id);
+            // TODO: Camunda trigger
         }
     }
 }
