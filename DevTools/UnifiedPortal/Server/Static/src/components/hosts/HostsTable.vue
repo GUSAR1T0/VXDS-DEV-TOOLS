@@ -53,9 +53,9 @@
                 <template slot-scope="scope">
                     <el-tooltip effect="dark" placement="top" v-if="scope.row.credentials.length > 0">
                         <div slot="content">
-                            Check Connection{{ getCredentialsCount(scope.row) ? "s" : "" }} To This Host
+                            Check Connection{{ hasManyCredentials(scope.row) ? "s" : "" }} To This Host
                         </div>
-                        <el-button type="info" plain circle class="rounded-button">
+                        <el-button type="info" plain circle class="rounded-button" @click="checkConnections(scope.row)">
                             <span><fa icon="plug"/></span>
                         </el-button>
                     </el-tooltip>
@@ -102,6 +102,8 @@
 
         <HostEditForm :page-status="hostEditDialog" :closed="reload"/>
 
+        <CheckConnectionsDialog :page-status="checkConnectionsDialog" :closed="reload"/>
+
         <ConfirmationDialog
                 :dialog-status="hostDeleteDialog"
                 :confirmation-text="hostDeleteDialog.confirmationText"
@@ -125,6 +127,7 @@
 
     import HostEditForm from "@/components/hosts/HostEditForm";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
+    import CheckConnectionsDialog from "@/components/hosts/CheckConnectionsDialog";
 
     export default {
         name: "HostsTable",
@@ -134,7 +137,8 @@
         },
         components: {
             HostEditForm,
-            ConfirmationDialog
+            ConfirmationDialog,
+            CheckConnectionsDialog
         },
         data() {
             return {
@@ -148,6 +152,11 @@
                     confirmationText: null,
                     additionalText: null,
                     host: null
+                },
+                checkConnectionsDialog: {
+                    visible: false,
+                    hostId: null,
+                    hostName: null
                 }
             };
         },
@@ -180,7 +189,7 @@
                 let types = this.getLookupValues("hostConnectionTypes").filter(type => parseInt(type.value) === typeId);
                 return types && types.length > 0 ? types[0].name : "—";
             },
-            getCredentialsCount(row) {
+            hasManyCredentials(row) {
                 return row.credentials && row.credentials.length > 1;
             },
             openEditHostDialog(host) {
@@ -240,6 +249,11 @@
                         message: renderErrorNotificationMessage(this.$createElement, error.response)
                     });
                 });
+            },
+            checkConnections(host) {
+                this.checkConnectionsDialog.visible = true;
+                this.checkConnectionsDialog.hostId = host.id;
+                this.checkConnectionsDialog.hostName = host.name;
             }
         }
     };

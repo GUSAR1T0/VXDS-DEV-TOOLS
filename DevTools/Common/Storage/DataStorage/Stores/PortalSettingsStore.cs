@@ -15,8 +15,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         #region Hosts
 
         Task<(long total, IEnumerable<HostSettingsItemEntity> hosts)> GetHosts(IOperation operation, HostPagingRequest request);
-        Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern, IEnumerable<HostOperatingSystem> operatingSystems);
+        Task<IEnumerable<HostSettingsEntity>> SearchHostsByPattern(IOperation operation, string pattern, IEnumerable<HostOperatingSystem> operatingSystems);
         Task<bool> IsHostExist(IOperation operation, int hostId);
+        Task<bool> IsHostNameUnique(IOperation operation, int hostId, string hostName);
+        Task<HostSettingsItemEntity> GetHost(IOperation operation, int hostId);
         Task AddHost(IOperation operation, HostSettingsItemEntity host);
         Task UpdateHost(IOperation operation, HostSettingsItemEntity host);
         Task DeleteHost(IOperation operation, int hostId);
@@ -100,10 +102,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             return (@params, string.Join(" ", joins), filters.Any() ? $"WHERE {string.Join(" AND ", filters)}" : "");
         }
 
-        public async Task<IEnumerable<HostSettingsShortEntity>> SearchHostsByPattern(IOperation operation, string pattern, IEnumerable<HostOperatingSystem> operatingSystems)
+        public async Task<IEnumerable<HostSettingsEntity>> SearchHostsByPattern(IOperation operation, string pattern, IEnumerable<HostOperatingSystem> operatingSystems)
         {
             var operatingSystemList = operatingSystems.ToList();
-            return await operation.Connection.QueryAsync<HostSettingsShortEntity>(new
+            return await operation.Connection.QueryAsync<HostSettingsEntity>(new
             {
                 Pattern = $"%{pattern}%",
                 OperatingSystems = operatingSystemList.Select(item => (int) item).ToIntTable()
@@ -123,6 +125,33 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new { Id = hostId }, @"
                 SELECT TOP 1 1
+                FROM [portal].[Host]
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task<bool> IsHostNameUnique(IOperation operation, int hostId, string hostName)
+        {
+            return !await operation.Connection.QuerySingleOrDefaultAsync<bool>(new
+            {
+                Id = hostId,
+                Name = hostName
+            }, @"
+                SELECT TOP 1 1
+                FROM [portal].[Host]
+                WHERE (@Id = 0 OR [Id] <> @Id) AND [Name] = @Name;
+            ");
+        }
+
+        public async Task<HostSettingsItemEntity> GetHost(IOperation operation, int hostId)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<HostSettingsItemEntity>(new { Id = hostId }, @"
+                SELECT
+                    [Id],
+                    [Name],
+                    [Domain],
+                    [OperatingSystemId] [OperatingSystem],
+                    [Credentials]
                 FROM [portal].[Host]
                 WHERE [Id] = @Id;
             ");

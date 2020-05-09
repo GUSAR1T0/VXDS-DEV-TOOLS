@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using VXDesign.Store.DevTools.Common.Clients.RemoteHost.Entities;
 using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Settings;
 
@@ -22,7 +23,15 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             }) ?? new List<HostCredentialsItemEntity>()
         };
 
-        internal static HostSettingsShortModel ToModel(this HostSettingsShortEntity entity) => new HostSettingsShortModel
+        internal static HostCredentialsItemModel ToModel(this HostCredentialsItemEntity entity) => new HostCredentialsItemModel
+        {
+            Type = entity.Type,
+            Port = entity.Port,
+            Username = entity.Username,
+            Password = entity.Password
+        };
+
+        internal static HostSettingsShortModel ToModel(this HostSettingsEntity entity) => new HostSettingsShortModel
         {
             Id = entity.Id,
             Name = entity.Name,
@@ -36,13 +45,30 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             Name = entity.Name,
             Domain = entity.Domain,
             OperatingSystem = entity.OperatingSystem,
-            Credentials = entity.CredentialsList?.Select(item => new HostCredentialsItemModel
+            Credentials = entity.CredentialsList?.Select(item => item.ToModel()) ?? new List<HostCredentialsItemModel>()
+        };
+
+        internal static CheckConnectionsToHostResultModel ToModel(this (HostCredentialsItemEntity entity, CommandResult result) tuple) => new CheckConnectionsToHostResultModel
+        {
+            Item = tuple.entity.ToModel(),
+            Result = tuple.result
+        };
+
+        internal static IEnumerable<CheckConnectionsToHostResultModel> ToModels(this IDictionary<HostCredentialsItemEntity, CommandResult> result) => result
+            .Select(item => new CheckConnectionsToHostResultModel
             {
-                Type = item.Type,
-                Port = item.Port,
-                Username = item.Username,
-                Password = item.Password
-            }) ?? new List<HostCredentialsItemModel>()
+                Item = item.Key.ToModel(),
+                Result = item.Value
+            });
+
+        internal static CheckConnectionToHostEntity ToEntity(this CheckConnectionToHostModel model) => new CheckConnectionToHostEntity
+        {
+            OperatingSystem = model.OperatingSystem,
+            Host = model.Host,
+            Type = model.Type,
+            Port = model.Port > 0 ? model.Port : null,
+            Username = model.Username,
+            Password = model.Password
         };
 
         internal static CodeServicesSettingsModel ToModel(this CodeServiceSettingsEntity entity) => new CodeServicesSettingsModel

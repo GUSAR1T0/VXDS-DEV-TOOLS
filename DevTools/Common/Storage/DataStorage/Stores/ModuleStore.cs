@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
     {
         Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
         Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
+        Task<int> GetModuleCount(IOperation operation, int hostId);
         Task<bool> IsModuleExists(IOperation operation, int moduleId);
         Task<bool> HasStatus(IOperation operation, int moduleId, params ModuleStatus[] statuses);
         Task ChangeStatus(IOperation operation, int moduleId, ModuleStatus status);
@@ -149,6 +150,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var entity = await reader.ReadFirstOrDefaultAsync<ModuleEntity>();
             entity.Configurations = (await reader.ReadAsync<ModuleConfigurationEntity>()).ToList();
             return entity;
+        }
+
+        public async Task<int> GetModuleCount(IOperation operation, int hostId)
+        {
+            return await operation.Connection.QuerySingleOrDefaultAsync<int>(new { HostId = hostId }, @"
+                SELECT COUNT(*)
+                FROM [portal].[Module]
+                WHERE [HostId] = @HostId;
+            ");
         }
 
         public async Task<bool> IsModuleExists(IOperation operation, int moduleId)

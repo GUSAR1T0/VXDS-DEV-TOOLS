@@ -5,12 +5,16 @@ using VXDesign.Store.DevTools.Common.Core.Extensions;
 
 namespace VXDesign.Store.DevTools.Common.Core.Entities.Settings
 {
-    public class HostSettingsItemEntity : IDataEntity, IPagingResponseItemEntity
+    public class HostSettingsEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Domain { get; set; }
         public HostOperatingSystem OperatingSystem { get; set; }
+    }
+
+    public class HostSettingsItemEntity : HostSettingsEntity, IDataEntity, IPagingResponseItemEntity
+    {
         public IEnumerable<HostCredentialsItemEntity> CredentialsList { get; set; }
 
         public string Credentials
@@ -47,13 +51,5 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Settings
 
     public class HostPagingResponse : ServerSidePagingResponse<HostSettingsItemEntity>
     {
-    }
-
-    public class HostSettingsShortEntity
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Domain { get; set; }
-        public HostOperatingSystem OperatingSystem { get; set; }
     }
 }

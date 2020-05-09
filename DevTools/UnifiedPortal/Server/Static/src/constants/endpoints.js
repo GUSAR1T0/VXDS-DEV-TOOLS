@@ -50,6 +50,8 @@ export const ADD_HOST_ENDPOINT = "settings/host";
 export const UPDATE_HOST_ENDPOINT = "settings/host/{id}";
 export const DELETE_HOST_ENDPOINT = "settings/host/{id}";
 export const GET_AFFECTED_MODULES_COUNT_BY_HOST_ENDPOINT = "settings/host/{id}/affected/count";
+export const CHECK_CONNECTIONS_TO_HOST_ENDPOINT = "settings/host/{id}/check";
+export const CHECK_CONNECTION_TO_HOST_ENDPOINT = "settings/host/check";
 export const SEARCH_HOSTS_ENDPOINT = "settings/host/search?p={pattern}{operatingSystems}";
 export const LOAD_CODE_SERVICES_SETTINGS_ENDPOINT = "settings/codeService";
 export const SETUP_GITHUB_TOKEN_ENDPOINT = "settings/codeService/github/token?t={token}";

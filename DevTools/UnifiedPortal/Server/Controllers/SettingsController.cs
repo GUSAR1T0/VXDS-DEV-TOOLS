@@ -126,6 +126,39 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
             return count;
         });
 
+        /// <summary>
+        /// Checks all host connections
+        /// </summary>
+        /// <param name="id">ID of an host</param>
+        /// <returns>Dictionary of host credentials and command result of check</returns>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.ManageSettings)]
+        [HttpGet("host/{id}/check")]
+        public async Task<ActionResult<IEnumerable<CheckConnectionsToHostResultModel>>> CheckConnections(int id) => await Execute(async operation =>
+        {
+            var checks = await portalSettingsService.CheckConnections(operation, id);
+            return checks.ToModels();
+        });
+
+        /// <summary>
+        /// Check some host connection
+        /// </summary>
+        /// <returns>Host credentials and command result of check</returns>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [PortalAuthentication(PortalPermission.ManageSettings)]
+        [HttpPost("host/check")]
+        public ActionResult<CheckConnectionsToHostResultModel> CheckConnection([FromBody] CheckConnectionToHostModel model) => Execute(operation =>
+        {
+            var checks = portalSettingsService.CheckConnection(operation, model.ToEntity());
+            return checks.ToModel();
+        });
+
         #endregion
 
         #region Code Services

@@ -8,6 +8,5 @@ CREATE TABLE [portal].[Host]
     [IsActive]          BIT DEFAULT (1)     NOT NULL,
     CONSTRAINT [PK_Host_Id] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [UQ_Host_Name] UNIQUE ([Name] ASC),
-    CONSTRAINT [UQ_Host_Domain] UNIQUE ([Domain] ASC),
     CONSTRAINT [FK_IncidentHistory_OperatingSystemId] FOREIGN KEY ([OperatingSystemId]) REFERENCES [enum].[OperatingSystem] ([Id]) ON DELETE CASCADE
 );

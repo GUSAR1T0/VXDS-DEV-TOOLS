@@ -41,6 +41,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         #region Hosts
 
         public static NotFoundException HostWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Host with ID \"{id}\" was not found");
+        public static BadRequestException HostNameIsNotUnique(IOperation operation) => new BadRequestException(operation, "Host name is not unique");
 
         #endregion
 

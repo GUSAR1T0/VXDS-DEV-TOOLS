@@ -15,7 +15,7 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="domain" label="Host Domain">
-                        <el-input v-model="pageStatus.form.domain" clearable @change="changedDomain"/>
+                        <el-input v-model="pageStatus.form.domain" clearable/>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -23,7 +23,8 @@
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="operatingSystem" label="Operating System">
                         <el-select v-model="pageStatus.form.operatingSystem" filterable reserve-keyword
-                                   default-first-option style="width: 100%">
+                                   default-first-option :disabled="pageStatus.form && pageStatus.form.id > 0"
+                                   style="width: 100%">
                             <el-option v-for="item in getLookupValues('hostOperatingSystems')" :key="item.value"
                                        :label="item.name" :value="parseInt(item.value)">
                                 <div style="display: flex;">
@@ -57,7 +58,7 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row class="auth-field-element" type="flex" justify="center" v-if="credentials.type > 1">
+                <el-row class="auth-field-element" type="flex" justify="center">
                     <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                         <el-form-item label="Port" :prop="`credentials.${index}.port`">
                             <el-input-number v-model="credentials.port" :min="0" :max="65535" style="width: 100%;"/>
@@ -81,6 +82,15 @@
                 <el-row class="auth-field-element" type="flex" justify="center">
                     <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                         <el-form-item>
+                            <el-button type="info" plain style="width: 100%" @click="checkConnection(credentials)">
+                                <strong>Check these credentials</strong>
+                            </el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row class="auth-field-element" type="flex" justify="center">
+                    <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                        <el-form-item>
                             <el-button type="danger" plain style="width: 100%"
                                        @click="pageStatus.form.credentials.splice(parseInt(index), 1)">
                                 <strong>Remove these credentials</strong>
@@ -93,7 +103,7 @@
             <el-row class="auth-field-element" type="flex" justify="center">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item>
-                        <el-button type="info" plain
+                        <el-button type="primary" plain
                                    style="width: 100%" @click="pageStatus.form.credentials.push({})">
                             <strong>Add new credentials</strong>
                         </el-button>
@@ -121,6 +131,8 @@
                 </el-col>
             </el-row>
         </el-form>
+
+        <CheckConnectionsDialog :page-status="checkConnectionsDialog" :closed="reload"/>
     </el-dialog>
 </template>
 
@@ -150,11 +162,16 @@
         }
     }
 
+    import CheckConnectionsDialog from "@/components/hosts/CheckConnectionsDialog";
+
     export default {
         name: "HostEditForm",
         props: {
             pageStatus: Object,
             closed: Function
+        },
+        components: {
+            CheckConnectionsDialog
         },
         data() {
             return {
@@ -170,6 +187,13 @@
                     operatingSystem: [
                         {required: true, message: "Please, input host operating system", trigger: "change"}
                     ]
+                },
+                checkConnectionsDialog: {
+                    visible: false,
+                    hostName: null,
+                    hostDomain: null,
+                    hostOperatingSystem: null,
+                    hostCredentials: {}
                 }
             };
         },
@@ -203,18 +227,7 @@
                 return types && types.length > 0 ? types[0].name : "—";
             },
             getConnectionTypes() {
-                let types = this.getLookupValues("hostConnectionTypes");
-                if (this.pageStatus.form.domain.toLowerCase().trim() !== "localhost") {
-                    return types.filter(x => x.value !== "1");
-                }
-                return types;
-            },
-            changedDomain(value) {
-                for (let credentials of this.pageStatus.form.credentials) {
-                    if (value.toLowerCase().trim() !== "localhost" && credentials.type === 1) {
-                        credentials.type = null;
-                    }
-                }
+                return this.getLookupValues("hostConnectionTypes");
             },
             cancel() {
                 this.pageStatus.visible = false;
@@ -287,6 +300,13 @@
                         });
                     }
                 });
+            },
+            checkConnection(credentials) {
+                this.checkConnectionsDialog.visible = true;
+                this.checkConnectionsDialog.hostName = this.pageStatus.form.name;
+                this.checkConnectionsDialog.hostDomain = this.pageStatus.form.domain;
+                this.checkConnectionsDialog.hostOperatingSystem = this.pageStatus.form.operatingSystem;
+                this.checkConnectionsDialog.hostCredentials = credentials;
             }
         }
     };
