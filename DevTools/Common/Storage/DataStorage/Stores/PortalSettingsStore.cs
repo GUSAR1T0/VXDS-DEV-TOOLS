@@ -18,6 +18,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task<IEnumerable<HostSettingsEntity>> SearchHostsByPattern(IOperation operation, string pattern, IEnumerable<HostOperatingSystem> operatingSystems);
         Task<bool> IsHostExist(IOperation operation, int hostId);
         Task<bool> IsHostNameUnique(IOperation operation, int hostId, string hostName);
+        Task<IEnumerable<HostSettingsItemEntity>> GetHosts(IOperation operation);
         Task<HostSettingsItemEntity> GetHost(IOperation operation, int hostId);
         Task AddHost(IOperation operation, HostSettingsItemEntity host);
         Task UpdateHost(IOperation operation, HostSettingsItemEntity host);
@@ -140,6 +141,19 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 SELECT TOP 1 1
                 FROM [portal].[Host]
                 WHERE (@Id = 0 OR [Id] <> @Id) AND [Name] = @Name;
+            ");
+        }
+
+        public async Task<IEnumerable<HostSettingsItemEntity>> GetHosts(IOperation operation)
+        {
+            return await operation.Connection.QueryAsync<HostSettingsItemEntity>( @"
+                SELECT
+                    [Id],
+                    [Name],
+                    [Domain],
+                    [OperatingSystemId] [OperatingSystem],
+                    [Credentials]
+                FROM [portal].[Host];
             ");
         }
 

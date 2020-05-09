@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
@@ -25,15 +26,15 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         /// Obtains health checks data
         /// </summary>
         /// <returns>Model of health checks data</returns>
-        [ProducesResponseType(typeof(IAsyncEnumerable<HealthCheckModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<HealthCheckModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
         [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
         [HttpGet]
-        public ActionResult<IAsyncEnumerable<HealthCheckModel>> GetHealthChecksData() => Execute(operation =>
+        public async Task<ActionResult<IEnumerable<HealthCheckModel>>> GetHealthChecksData() => await Execute(async operation =>
         {
-            var entities = healthChecksService.GetHealthChecksData(operation);
+            var entities = await healthChecksService.GetHealthChecksData(operation);
             return entities.ToModel();
         });
     }

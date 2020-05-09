@@ -38,7 +38,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         public async Task<IncidentsDataEntity> GetIncidentsData(IOperation operation, int userId) => await dashboardStore.GetIncidentsData(operation, userId);
 
-        public async Task<bool> IsSystemHealthStatusOk(IOperation operation) => await healthChecksService.GetHealthChecksData(operation).AllAsync(check => check.IsOk);
+        public async Task<bool> IsSystemHealthStatusOk(IOperation operation) => (await healthChecksService.GetHealthChecksData(operation)).All(check => check.IsOk);
 
         public async Task<UsersDataEntity> GetUsersData(IOperation operation) => await dashboardStore.GetUsersData(operation);
 

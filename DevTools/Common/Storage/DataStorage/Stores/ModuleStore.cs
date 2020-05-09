@@ -13,6 +13,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
     {
         Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
         Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
+        Task<IEnumerable<ModuleShortEntity>> GetModules(IOperation operation);
         Task<int> GetModuleCount(IOperation operation, int hostId);
         Task<bool> IsModuleExists(IOperation operation, int moduleId);
         Task<bool> HasStatus(IOperation operation, int moduleId, params ModuleStatus[] statuses);
@@ -150,6 +151,21 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var entity = await reader.ReadFirstOrDefaultAsync<ModuleEntity>();
             entity.Configurations = (await reader.ReadAsync<ModuleConfigurationEntity>()).ToList();
             return entity;
+        }
+
+        public async Task<IEnumerable<ModuleShortEntity>> GetModules(IOperation operation)
+        {
+            return await operation.Connection.QueryAsync<ModuleShortEntity>($@"
+                SELECT
+                    pm.[Id],
+                    pm.[Alias],
+                    mc.[Name],
+                    mc.[Version],
+                    pm.[StatusId] AS [Status]
+                FROM [portal].[Module] pm
+                INNER JOIN [portal].[ActiveModuleConfiguration] amc ON amc.[ModuleId] = pm.[Id]
+                INNER JOIN [portal].[ModuleConfiguration] mc ON mc.[Id] = amc.[ModuleConfigurationId];
+            ");
         }
 
         public async Task<int> GetModuleCount(IOperation operation, int hostId)
