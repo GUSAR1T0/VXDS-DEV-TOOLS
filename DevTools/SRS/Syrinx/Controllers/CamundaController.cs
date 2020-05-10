@@ -4,10 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints;
 using VXDesign.Store.DevTools.Common.Core.Controllers;
 using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
+using VXDesign.Store.DevTools.Common.Core.Entities.File;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.SRS.Camunda;
 using VXDesign.Store.DevTools.SRS.Syrinx.Extensions;
@@ -30,10 +33,27 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         /// Obtains supported version of Camunda server
         /// </summary>
         /// <returns>String value of Camunda server version, e.g. "7.11"</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [AllowAnonymous]
         [HttpGet("version")]
-        public string GetSupportedVersion() => "7.12.0";
+        public async Task<ActionResult<string>> GetSupportedVersion() => await Execute(async operation =>
+        {
+            var response = await camundaServerService.Send(operation, new CamundaRequest
+            {
+                Endpoint = CamundaEndpoint.GetEndpoint(CamundaAction.Version),
+                Path = new Dictionary<string, string>(),
+                Query = new Dictionary<string, string>(),
+                Body = "{}",
+                Resources = new List<LocalFile>()
+            });
+
+            if (response.IsWithoutErrors())
+            {
+                return JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Output)["version"];
+            }
+
+            throw CommonExceptions.FailedToGetCamundaVersion(operation);
+        });
 
         /// <summary>
         /// Obtains all supported APIs of Camunda server
@@ -54,7 +74,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [HttpPost("request")]
-        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromBody] CamundaRequestModel model) => await Execute(async operation =>
+        public async Task<ActionResult<CamundaResponseModel>> SendRequest([FromForm] CamundaRequestModel model) => await Execute(async operation =>
         {
             var endpoint = CamundaEndpoint.GetEndpoint(model.Action) ?? throw CommonExceptions.CamundaEndpointIsNotFoundByActionCode(operation);
             return (await camundaServerService.Send(operation, model.ToEntity(endpoint))).ToModel();

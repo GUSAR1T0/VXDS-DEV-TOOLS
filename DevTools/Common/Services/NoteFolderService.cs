@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Core.Entities.NoteFolder;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
-using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
 

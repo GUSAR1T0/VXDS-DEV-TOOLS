@@ -8,7 +8,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
         public string Host { get; set; }
 
         [PropertyField]
-        public string Api { get; set; } = "rest/engine/default";
+        public string Api { get; set; } = "engine-rest";
 
         [PropertyField]
         public string Login { get; set; }

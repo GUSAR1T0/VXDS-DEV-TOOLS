@@ -14,6 +14,19 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
 
         #endregion
 
+        #region Deployment
+
+        [CamundaAction(CamundaCategory.Deployment, "Get List", HttpMethod.Get)]
+        DeploymentGetList = 9001,
+
+        [CamundaAction(CamundaCategory.Deployment, "Create Deployment", HttpMethod.PostFile, "create")]
+        DeploymentCreate = 9002,
+
+        [CamundaAction(CamundaCategory.Deployment, "Delete Deployment", HttpMethod.Delete, "{id}")]
+        DeploymentDelete = 9003,
+
+        #endregion
+
         #region External Task
 
         [CamundaAction(CamundaCategory.ExternalTask, "Fetch and Lock External Tasks", HttpMethod.Post, "fetchAndLock")]

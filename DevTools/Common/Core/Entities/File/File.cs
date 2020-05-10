@@ -59,4 +59,10 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.File
         }
     }
 
+    public class LocalFile
+    {
+        public string Name { get; set; }
+        public string FileName { get; set; }
+        public Stream Stream { get; set; }
+    }
 }

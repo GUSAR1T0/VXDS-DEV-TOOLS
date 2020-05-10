@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using VXDesign.Store.DevTools.Common.Core.Operations;
-using VXDesign.Store.DevTools.Common.Core.Properties;
+﻿using VXDesign.Store.DevTools.Common.Core.Properties;
 using VXDesign.Store.DevTools.Common.Core.Utils;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
+using VXDesign.Store.DevTools.Common.Migrations.Database;
 
 namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database
 {
@@ -15,15 +13,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database
             {
                 DataStoreConnectionString = configuration["Database:DataStoreConnectionString"],
                 LogStoreConnectionString = configuration["Database:LogStoreConnectionString"]
-            }, typeof(Program).Assembly, services =>
-            {
-                services.AddScoped<IOperationService>(factory =>
-                {
-                    var loggerStore = factory.GetService<ILoggerStore>();
-                    var dataStoreConnectionString = configuration["Database:DataStoreConnectionString"];
-                    return new OperationService(loggerStore, dataStoreConnectionString, "VXDS_DB");
-                });
-            }));
+            }, typeof(Program).Assembly));
         }
     }
 }

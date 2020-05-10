@@ -115,7 +115,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             return variables;
         }
 
-        public abstract void Execute(IOperationLogger logger);
+        public abstract void Execute(IOperation operation, IOperationLogger logger);
     }
 
     public class CamundaWorkers<TProperties> where TProperties : CamundaWorkersProperties, new()
@@ -210,7 +210,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                     AsyncResponseTimeout = Properties.FetchTimeout,
                     UsePriority = Properties.UsePriority,
                     MaxTasks = 1,
-                    WorkerId = $"w-{Properties.WorkerKeyword}-{DateTime.Today:yyyyMMddhhmmss}",
+                    WorkerId = $"w-{Properties.WorkerKeyword}-{DateTime.Today:yyyyMMdd}",
                     Topics = topics
                 }.SendRequest(operation, Service);
 
@@ -245,7 +245,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
 #pragma warning disable 4014
                     Task.Run(async () => await ExtendLock(operation, logger, item, token), token);
 #pragma warning restore 4014
-                    worker.Execute(logger);
+                    worker.Execute(operation, logger);
                     isSuccess = true;
                 }
                 catch (CamundaWorkerExecutionIsNotCompletedYet)
@@ -255,7 +255,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 }
                 catch (Exception e)
                 {
-                    await logger.Fatal("Failed to perform task");
+                    await logger.Error("Failed to perform task");
                     exception = e;
                     isSuccess = false;
                 }
@@ -268,9 +268,12 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             var retries = Properties.CountOfRetriesWhenFailuresAre;
             while (retries > 0)
             {
+                var retryAfter = TimeSpan.FromMilliseconds(Properties.RetryAfterFailureTimeout);
+
                 IntermediateCamundaResponse<EmptyResult> response;
                 if (isSuccess)
                 {
+                    await logger.Trace("Trying to complete task");
                     response = await new ExternalTask.CompleteRequest(item.Id)
                     {
                         WorkerId = item.WorkerId,
@@ -280,6 +283,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 else
                 {
                     var countOfRetries = (item.Retries ?? Properties.CountOfRetriesWhenFailuresAre) - 1;
+                    await logger.Trace($"Trying to handle failure, retry task execution after {retryAfter}... (remaining attempts: {countOfRetries})");
                     response = await new ExternalTask.HandleFailureRequest(item.Id)
                     {
                         WorkerId = item.WorkerId,
@@ -294,8 +298,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 {
                     retries--;
                     var resultType = isSuccess ? "complete task" : "handle failure";
-                    var retryAfter = TimeSpan.FromMilliseconds(Properties.RetryAfterFailureTimeout);
-                    await logger.Error($"Couldn't {resultType}, retry after {retryAfter}... (remaining attempts: {retries})");
+                    await logger.Error($"Couldn't {resultType}, retry task handling after {retryAfter}... (remaining attempts: {retries})");
                     await Task.Delay(retryAfter);
                 }
                 else
@@ -307,7 +310,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
 
             if (retries == 0)
             {
-                await logger.Error($"Couldn't {(isSuccess ? "complete task" : "handle failure")}, stop retrying");
+                await logger.Fatal($"Couldn't {(isSuccess ? "complete task" : "handle failure")}, stop retrying");
             }
         }
 
@@ -317,8 +320,6 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             {
                 try
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(Properties.LockDuration).Divide(2), token);
-
                     while (true)
                     {
                         await logger.Debug("Extending lock");
@@ -338,6 +339,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                         else
                         {
                             await logger.Debug("Extend lock process is successful");
+                            await Task.Delay(TimeSpan.FromMilliseconds(Properties.LockDuration).Divide(2), token);
                             break;
                         }
                     }

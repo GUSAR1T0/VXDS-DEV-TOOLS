@@ -1,5 +1,6 @@
 ﻿using VXDesign.Store.DevTools.Common.Core.Properties;
 using VXDesign.Store.DevTools.Common.Core.Utils;
+using VXDesign.Store.DevTools.Common.Migrations.Database;
 
 namespace VXDesign.Store.DevTools.UnifiedPortal.Database
 {

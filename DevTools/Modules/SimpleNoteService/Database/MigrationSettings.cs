@@ -1,5 +1,5 @@
 using FluentMigrator.Runner.VersionTableInfo;
-using VXDesign.Store.DevTools.Common.Core.Migrations;
+using VXDesign.Store.DevTools.Common.Migrations.Database;
 
 namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database
 {

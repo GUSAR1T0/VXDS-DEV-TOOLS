@@ -7,9 +7,9 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Utils
 {
     internal class CamundaRequestJsonResolver : DefaultContractResolver
     {
-        internal CamundaRequestJsonResolver()
+        internal CamundaRequestJsonResolver(bool isCamelCase)
         {
-            NamingStrategy = new CamelCaseNamingStrategy(true, true);
+            NamingStrategy = isCamelCase ? (NamingStrategy) new CamelCaseNamingStrategy(false, true) : new KebabCaseNamingStrategy(true, true);
         }
 
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
@@ -21,7 +21,11 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Utils
                 property.Ignored = true;
             }
 
-            if (member.MemberType == MemberTypes.Property && member.GetCustomAttribute(typeof(HttpQueryParameterAttribute)) is HttpQueryParameterAttribute)
+            if (member.MemberType == MemberTypes.Property && (
+                    member.GetCustomAttribute(typeof(HttpQueryParameterAttribute)) is HttpQueryParameterAttribute ||
+                    member.GetCustomAttribute(typeof(HttpFileParameterAttribute)) is HttpFileParameterAttribute
+                )
+            )
             {
                 property.Ignored = true;
             }

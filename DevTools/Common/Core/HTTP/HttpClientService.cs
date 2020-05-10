@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using VXDesign.Store.DevTools.Common.Core.Entities.File;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
@@ -38,6 +40,9 @@ namespace VXDesign.Store.DevTools.Common.Core.HTTP
                     break;
                 case HttpMethod.Post:
                     response = await HttpClient.PostAsync(fullRequestEndpoint, GetStringContentOfRequestBody(request.Body));
+                    break;
+                case HttpMethod.PostFile:
+                    response = await HttpClient.PostAsync(fullRequestEndpoint, GetFileContentOfRequestBody(request.Body, request.Resources));
                     break;
                 case HttpMethod.Put:
                     response = await HttpClient.PutAsync(fullRequestEndpoint, GetStringContentOfRequestBody(request.Body));
@@ -89,6 +94,24 @@ namespace VXDesign.Store.DevTools.Common.Core.HTTP
         {
             var content = new StringContent(body);
             content.Headers.ContentType = MediaTypeHeaderValue;
+            return content;
+        }
+
+        private static MultipartFormDataContent GetFileContentOfRequestBody(string body, IReadOnlyList<LocalFile> resources)
+        {
+            var content = new MultipartFormDataContent();
+            var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
+
+            foreach (var (key, value) in dictionary)
+            {
+                content.Add(new StringContent(value), key);
+            }
+
+            foreach (var resource in resources)
+            {
+                content.Add(new StreamContent(resource.Stream), resource.Name, resource.FileName);
+            }
+
             return content;
         }
     }

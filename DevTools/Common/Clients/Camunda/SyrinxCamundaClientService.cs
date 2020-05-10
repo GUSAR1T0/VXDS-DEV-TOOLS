@@ -61,7 +61,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda
 
         public override async Task<TResponseModel> Send(IOperation operation, TRequestModel request)
         {
-            return (await Send(operation, properties.Api, properties.CamundaRequestEndpoint, HttpMethod.Post, request)).PostHandle(operation);
+            return (await Send(operation, properties.Api, properties.CamundaRequestEndpoint, HttpMethod.PostFile, request)).PostHandle(operation);
         }
     }
 }

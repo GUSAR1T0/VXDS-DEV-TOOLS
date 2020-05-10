@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Common.Clients.GitHub.Endpoints;
 using VXDesign.Store.DevTools.Common.Clients.GitHub.Utils;
+using VXDesign.Store.DevTools.Common.Core.Entities.File;
 using VXDesign.Store.DevTools.Common.Core.HTTP;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
@@ -43,6 +44,9 @@ namespace VXDesign.Store.DevTools.Common.Clients.GitHub.Base
             ContractResolver = new GitHubRequestJsonResolver(),
             NullValueHandling = NullValueHandling.Ignore
         });
+
+        [JsonIgnore]
+        public IReadOnlyList<LocalFile> Resources => new List<LocalFile>();
 
         public async Task<TResponse> SendRequest(IOperation operation, IGitHubClientService service) => await service.Send<GitHubRequest<TResponse>, TResponse>(operation, this);
     }
