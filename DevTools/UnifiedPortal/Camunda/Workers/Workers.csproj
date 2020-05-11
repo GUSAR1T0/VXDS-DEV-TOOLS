@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AssemblyName>VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers</AssemblyName>
+        <RootNamespace>VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers</RootNamespace>
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\Clients\Camunda\Camunda.csproj" />
+      <ProjectReference Include="..\..\..\Common\Core\Core.csproj" />
+    </ItemGroup>
+
+</Project>

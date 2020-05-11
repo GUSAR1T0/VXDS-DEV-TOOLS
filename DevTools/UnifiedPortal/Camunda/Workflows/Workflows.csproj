@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AssemblyName>VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workflows</AssemblyName>
+        <RootNamespace>VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workflows</RootNamespace>
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Common\Migrations\Migrations.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="BPMNs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="BPMNs\module-installation-process.bpmn" />
+        <None Remove="BPMNs\module-upgrade-process.bpmn" />
+        <None Remove="BPMNs\module-rollback-process.bpmn" />
+        <None Remove="BPMNs\module-uninstallation-process.bpmn" />
+        <Content Include="BPMNs\module-installation-process.bpmn">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="BPMNs\module-upgrade-process.bpmn">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="BPMNs\module-rollback-process.bpmn">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="BPMNs\module-uninstallation-process.bpmn">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>

@@ -18,7 +18,13 @@ namespace VXDesign.Store.DevTools.Common.Migrations.Database
 
         public void Upgrade() => runner.UpgradeDatabase();
 
-        public void DowngradeToPrevious() => runner.Rollback(1);
+        public void DowngradeToPrevious()
+        {
+            if (runner.HasMigrationsToApplyRollback())
+            {
+                runner.Rollback(1);
+            }
+        }
 
         public void Downgrade() => runner.DowngradeDatabase();
     }

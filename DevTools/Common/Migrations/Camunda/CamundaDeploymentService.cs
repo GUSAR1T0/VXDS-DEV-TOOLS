@@ -34,7 +34,7 @@ namespace VXDesign.Store.DevTools.Common.Migrations.Camunda
 
         private List<LocalFile> GetFiles(IOperation operation)
         {
-            var location = Path.Combine(Path.GetDirectoryName(camundaDeploymentParameters.Assembly.Location), "Workflows");
+            var location = Path.Combine(Path.GetDirectoryName(camundaDeploymentParameters.Assembly.Location), "BPMNs");
             var files = Directory.GetFiles(location, "*.bpmn", SearchOption.AllDirectories);
 
             if (files?.Any() != true)

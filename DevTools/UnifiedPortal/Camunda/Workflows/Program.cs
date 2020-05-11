@@ -2,7 +2,7 @@
 using VXDesign.Store.DevTools.Common.Core.Utils;
 using VXDesign.Store.DevTools.Common.Migrations.Camunda;
 
-namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda
+namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workflows
 {
     public class Program
     {

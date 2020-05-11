@@ -6,6 +6,6 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
     [VersionTableMetaData]
     public class MigrationSettings : DatabaseMigrationSettings
     {
-        protected override string ProjectName => "UnifiedPortal";
+        public override string TableName => "UnifiedPortal";
     }
 }

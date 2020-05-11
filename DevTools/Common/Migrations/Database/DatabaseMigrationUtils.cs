@@ -32,7 +32,7 @@ namespace VXDesign.Store.DevTools.Common.Migrations.Database
                         case MigrationAction.Upgrade:
                             service.Upgrade();
                             break;
-                        case MigrationAction.Previous:
+                        case MigrationAction.Rollback:
                             service.DowngradeToPrevious();
                             break;
                         case MigrationAction.Downgrade:

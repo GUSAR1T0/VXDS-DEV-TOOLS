@@ -6,6 +6,6 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database
     [VersionTableMetaData]
     public class MigrationSettings : DatabaseMigrationSettings
     {
-        protected override string ProjectName => "SimpleNoteService";
+        public override string TableName => "SimpleNoteService";
     }
 }

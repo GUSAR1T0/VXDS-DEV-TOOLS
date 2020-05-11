@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using NLog.Config;
 using VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints;
@@ -125,6 +126,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             internal string LogScope { get; private set; }
             internal TProperties Properties { get; private set; }
             internal List<Func<CamundaWorkers<TProperties>, Task>> RunnableTasks { get; } = new List<Func<CamundaWorkers<TProperties>, Task>>();
+            internal IServiceCollection ServiceCollection { get; } = new ServiceCollection();
 
             internal CamundaWorkersBuilder()
             {
@@ -143,7 +145,13 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 return this;
             }
 
-            public CamundaWorkersBuilder SetWorker<TCamundaWorker>() where TCamundaWorker : CamundaWorker, new()
+            public CamundaWorkersBuilder Configure(Action<IServiceCollection> action)
+            {
+                action(ServiceCollection);
+                return this;
+            }
+
+            public CamundaWorkersBuilder AddWorker<TCamundaWorker>() where TCamundaWorker : CamundaWorker, new()
             {
                 var camundaWorkerType = typeof(TCamundaWorker);
                 var operationContext = OperationContext.Builder()
@@ -151,6 +159,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                     .SetUserId(null, true)
                     .Create();
                 RunnableTasks.Add(workers => workers.OperationService.Make(operationContext, workers.Fetch<TCamundaWorker>));
+                ServiceCollection.AddScoped<TCamundaWorker>();
                 return this;
             }
 
@@ -176,6 +185,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
         private IOperationService OperationService { get; }
         private ISyrinxCamundaClientService Service { get; }
         private List<Func<CamundaWorkers<TProperties>, Task>> RunnableTasks { get; }
+        internal IServiceCollection ServiceCollection { get; }
 
         internal CamundaWorkers(CamundaWorkersBuilder builder)
         {
@@ -184,6 +194,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             OperationService = new OperationService(loggerStore, Properties.DatabaseConnectionProperties.DataStoreConnectionString, builder.LogScope);
             Service = new SyrinxCamundaClientService(Properties.SyrinxProperties);
             RunnableTasks = builder.RunnableTasks;
+            ServiceCollection = builder.ServiceCollection;
         }
 
         private async Task Fetch<TCamundaWorker>(IOperation operation) where TCamundaWorker : CamundaWorker, new()
@@ -232,7 +243,8 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
 
         private async Task Run<TCamundaWorker>(IOperation operation, IOperationLogger logger, LockedExternalTaskListItem item) where TCamundaWorker : CamundaWorker, new()
         {
-            var worker = new TCamundaWorker();
+            using var scope = ServiceCollection.BuildServiceProvider(false).CreateScope();
+            var worker = scope.ServiceProvider.GetRequiredService<TCamundaWorker>();
             worker.InitializeVariables(item.Variables);
 
             bool isSuccess;
