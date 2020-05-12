@@ -94,35 +94,35 @@
     </bpmn:exclusiveGateway>
     <bpmn:boundaryEvent id="Event_1wn4gpk" attachedToRef="Activity_0upy1ru">
       <bpmn:outgoing>Flow_1m939y3</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1g82dvo" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1g82dvo" errorRef="Error_0h8exzg" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_1w15q0v" attachedToRef="Activity_05x2jo2">
       <bpmn:outgoing>Flow_08txjpg</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0ax2nfs" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0ax2nfs" errorRef="Error_0h8exzg" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_1i52of6" attachedToRef="Activity_0vu4si1">
       <bpmn:outgoing>Flow_0jdp3l1</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1di7afe" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1di7afe" errorRef="Error_0h8exzg" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_175x8o2" attachedToRef="Activity_1hv72c7">
       <bpmn:outgoing>Flow_1gf056k</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1lgpqi8" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1lgpqi8" errorRef="Error_0h8exzg" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_0vyp3zz" attachedToRef="Activity_0b2iwwv">
       <bpmn:outgoing>Flow_1xea9p8</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0b4v41j" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0b4v41j" errorRef="Error_0h8exzg" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_10windk" attachedToRef="Activity_13ucgue">
       <bpmn:outgoing>Flow_1h1zow0</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0nnnd9z" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0nnnd9z" errorRef="Error_0h8exzg" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_1r7ec0t" attachedToRef="Activity_1nii9fr">
       <bpmn:outgoing>Flow_17eo3x2</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0gpqdga" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0gpqdga" errorRef="Error_0h8exzg" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_1eotbjc" attachedToRef="Activity_0ownofw">
       <bpmn:outgoing>Flow_1ruyi5n</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0sa9hch" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0sa9hch" errorRef="Error_0h8exzg" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0wii4y9" sourceRef="Activity_13ucgue" targetRef="Gateway_0red60s" />
     <bpmn:sequenceFlow id="Flow_1ocf1l3" sourceRef="Activity_0upy1ru" targetRef="Activity_05x2jo2" />
@@ -141,7 +141,7 @@
     <bpmn:sequenceFlow id="Flow_1gf056k" sourceRef="Event_175x8o2" targetRef="Activity_0851ihb" />
     <bpmn:sequenceFlow id="Flow_1xea9p8" sourceRef="Event_0vyp3zz" targetRef="Activity_0851ihb" />
     <bpmn:sequenceFlow id="Flow_1nuznhz" name="Stop" sourceRef="Gateway_0red60s" targetRef="Activity_0ownofw">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${stopComponentsRequired == true}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${componentsStopRequired == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1mkrdtm" sourceRef="StartEvent_1" targetRef="Activity_13ucgue" />
     <bpmn:sequenceFlow id="Flow_118jr77" name="Skip" sourceRef="Gateway_0red60s" targetRef="Activity_0upy1ru" />
@@ -156,6 +156,7 @@
   <bpmn:category id="Category_1cpxfh2">
     <bpmn:categoryValue id="CategoryValue_1xag1s5" value="" />
   </bpmn:category>
+  <bpmn:error id="Error_0h8exzg" name="Module Processing Error" errorCode="module-processing-error" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ozhler">
       <bpmndi:BPMNShape id="Participant_1r5amz2_di" bpmnElement="Participant_1r5amz2" isHorizontal="true">

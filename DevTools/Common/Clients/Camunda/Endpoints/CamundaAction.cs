@@ -44,6 +44,9 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
         [CamundaAction(CamundaCategory.ExternalTask, "Unlock an External Task", HttpMethod.Post, "{id}/unlock")]
         ExternalTaskUnlock = 12005,
 
+        [CamundaAction(CamundaCategory.ExternalTask, "Handle External Task BPMN Error", HttpMethod.Post, "{id}/bpmnError")]
+        ExternalTaskHandleBpmnError = 12006,
+
         #endregion
 
         #region Process Definition

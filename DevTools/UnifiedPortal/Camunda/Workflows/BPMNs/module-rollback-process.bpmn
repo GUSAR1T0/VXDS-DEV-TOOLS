@@ -20,7 +20,6 @@
         <bpmn:flowNodeRef>Activity_1at69r8</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1wxp3sq</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_03w0hna</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_031wdx1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0h69w58</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0a9bg8y</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1kzxsoo</bpmn:flowNodeRef>
@@ -28,18 +27,19 @@
         <bpmn:flowNodeRef>Event_1qhunhs</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0qklfj4</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1ecc34e</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_031wdx1</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0y0fzkm" name="Unsuccessful way">
         <bpmn:flowNodeRef>Activity_0ysmceq</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_17nldr2</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:serviceTask id="Activity_02etxfn" name="Database migration: rollback" camunda:type="external" camunda:topic="UnifiedPortal.Database.Previous">
+    <bpmn:serviceTask id="Activity_02etxfn" name="Database migration: rollback" camunda:type="external" camunda:topic="UnifiedPortal.Database.Rollback">
       <bpmn:incoming>Flow_0eifqeg</bpmn:incoming>
       <bpmn:incoming>Flow_1r65ajt</bpmn:incoming>
       <bpmn:outgoing>Flow_1ukhzas</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1h1xxq3" name="Camunda: rollback deployment" camunda:type="external" camunda:topic="UnifiedPortal.Camunda.Previous">
+    <bpmn:serviceTask id="Activity_1h1xxq3" name="Camunda: rollback deployment" camunda:type="external" camunda:topic="UnifiedPortal.Camunda.Rollback">
       <bpmn:incoming>Flow_1ukhzas</bpmn:incoming>
       <bpmn:outgoing>Flow_1b6g4le</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -94,35 +94,31 @@
     </bpmn:exclusiveGateway>
     <bpmn:boundaryEvent id="Event_1ecc34e" attachedToRef="Activity_02etxfn">
       <bpmn:outgoing>Flow_0ett4ai</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_08u5e1h" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_08u5e1h" errorRef="Error_1o64k3p" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_0qklfj4" attachedToRef="Activity_1h1xxq3">
       <bpmn:outgoing>Flow_1fy620j</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1dn0e8m" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1dn0e8m" errorRef="Error_1o64k3p" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_1qhunhs" attachedToRef="Activity_1bj4l5i">
       <bpmn:outgoing>Flow_0gd9ovo</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_10izg4i" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_10izg4i" errorRef="Error_1o64k3p" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_1wfbmhw" attachedToRef="Activity_015gcf9">
       <bpmn:outgoing>Flow_1ts5423</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1xkgjou" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1xkgjou" errorRef="Error_1o64k3p" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_1kzxsoo" attachedToRef="Activity_1tqweiq">
       <bpmn:outgoing>Flow_0678q1n</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0yh6ngd" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0yh6ngd" errorRef="Error_1o64k3p" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_0a9bg8y" attachedToRef="Activity_1dlj5fc">
       <bpmn:outgoing>Flow_1xhljis</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0jblb93" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0jblb93" errorRef="Error_1o64k3p" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_0h69w58" attachedToRef="Activity_1at69r8">
       <bpmn:outgoing>Flow_0g667gr</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0fswu4n" />
-    </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="Event_031wdx1" attachedToRef="Activity_1wxp3sq">
-      <bpmn:outgoing>Flow_16kd863</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0u79zhw" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0fswu4n" errorRef="Error_1o64k3p" camunda:errorMessageVariable="errorMessage" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0h8hstf" sourceRef="Activity_1dlj5fc" targetRef="Gateway_03w0hna" />
     <bpmn:sequenceFlow id="Flow_1ukhzas" sourceRef="Activity_02etxfn" targetRef="Activity_1h1xxq3" />
@@ -141,11 +137,15 @@
     <bpmn:sequenceFlow id="Flow_1ts5423" sourceRef="Event_1wfbmhw" targetRef="Activity_0ysmceq" />
     <bpmn:sequenceFlow id="Flow_0678q1n" sourceRef="Event_1kzxsoo" targetRef="Activity_0ysmceq" />
     <bpmn:sequenceFlow id="Flow_1481ttt" name="Stop" sourceRef="Gateway_03w0hna" targetRef="Activity_1wxp3sq">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${stopComponentsRequired == true}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${componentsStopRequired == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_19be4u6" sourceRef="Event_1esahxd" targetRef="Activity_1dlj5fc" />
     <bpmn:sequenceFlow id="Flow_1r65ajt" name="Skip" sourceRef="Gateway_03w0hna" targetRef="Activity_02etxfn" />
     <bpmn:sequenceFlow id="Flow_1dvzvc5" sourceRef="Activity_1wxp3sq" targetRef="Activity_1at69r8" />
+    <bpmn:boundaryEvent id="Event_031wdx1" attachedToRef="Activity_1wxp3sq">
+      <bpmn:outgoing>Flow_16kd863</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0u79zhw" errorRef="Error_1o64k3p" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
   </bpmn:process>
   <bpmn:category id="Category_0iojzh0">
     <bpmn:categoryValue id="CategoryValue_130ezbh" value="" />
@@ -156,6 +156,7 @@
   <bpmn:category id="Category_18p92hl">
     <bpmn:categoryValue id="CategoryValue_18nks5y" value="" />
   </bpmn:category>
+  <bpmn:error id="Error_1o64k3p" name="Module Processing Error" errorCode="module-processing-error" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_05v3yh1">
       <bpmndi:BPMNShape id="Participant_0dj4f2v_di" bpmnElement="Participant_0dj4f2v" isHorizontal="true">
