@@ -22,6 +22,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task<HostSettingsItemEntity> GetHost(IOperation operation, int hostId);
         Task AddHost(IOperation operation, HostSettingsItemEntity host);
         Task UpdateHost(IOperation operation, HostSettingsItemEntity host);
+        Task MakeHostInactive(IOperation operation, int hostId);
         Task DeleteHost(IOperation operation, int hostId);
 
         #endregion
@@ -140,7 +141,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             }, @"
                 SELECT TOP 1 1
                 FROM [portal].[Host]
-                WHERE (@Id = 0 OR [Id] <> @Id) AND [Name] = @Name;
+                WHERE (@Id = 0 OR [Id] <> @Id) AND [Name] = @Name AND [IsActive] = 1;
             ");
         }
 
@@ -153,7 +154,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     [Domain],
                     [OperatingSystemId] [OperatingSystem],
                     [Credentials]
-                FROM [portal].[Host];
+                FROM [portal].[Host]
+                WHERE [IsActive] = 1;
             ");
         }
 
@@ -201,6 +203,15 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     [Domain] = @Domain,
                     [OperatingSystemId] = @OperatingSystem,
                     [Credentials] = @Credentials
+                WHERE [Id] = @Id;
+            ");
+        }
+
+        public async Task MakeHostInactive(IOperation operation, int hostId)
+        {
+            await operation.Connection.ExecuteAsync(new { Id = hostId }, @"
+                UPDATE [portal].[Host]
+                SET [IsActive] = 0
                 WHERE [Id] = @Id;
             ");
         }

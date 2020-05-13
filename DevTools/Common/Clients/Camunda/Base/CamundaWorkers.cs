@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -24,6 +25,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
         {
             internal string LogScope { get; private set; }
             internal TProperties Properties { get; private set; }
+            internal ISyrinxCamundaClientService CamundaClient { get; private set; }
             internal List<Func<CamundaWorkers<TProperties>, Task>> RunnableTasks { get; } = new List<Func<CamundaWorkers<TProperties>, Task>>();
             internal IServiceCollection ServiceCollection { get; } = new ServiceCollection();
 
@@ -34,6 +36,8 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             public CamundaWorkersBuilder SetProperties(Func<IConfiguration> configuration)
             {
                 Properties = PropertiesUtils.Create<TProperties>(configuration()) ?? throw CamundaWorkersBuilderException.PropertiesAreEmpty();
+                CamundaClient = new SyrinxCamundaClientService(Properties.SyrinxProperties);
+                ServiceCollection.AddScoped(factory => CamundaClient);
                 return this;
             }
 
@@ -54,8 +58,9 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             {
                 var camundaWorkerType = typeof(TCamundaWorker);
                 var operationContext = OperationContext.Builder()
-                    .SetName(camundaWorkerType.FullName, GetTopicName(camundaWorkerType))
+                    .SetName(camundaWorkerType.FullName, GetTopicName(camundaWorkerType), "Background")
                     .SetUserId(null, true)
+                    .SetIsolationLevel(IsolationLevel.Unspecified)
                     .Create();
                 RunnableTasks.Add(workers => workers.OperationService.Make(operationContext, workers.Fetch<TCamundaWorker>));
                 ServiceCollection.AddScoped<TCamundaWorker>();
@@ -91,7 +96,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             Properties = builder.Properties;
             var loggerStore = new LoggerStore(Properties.DatabaseConnectionProperties.LogStoreConnectionString, builder.LogScope);
             OperationService = new OperationService(loggerStore, Properties.DatabaseConnectionProperties.DataStoreConnectionString, builder.LogScope);
-            CamundaClient = new SyrinxCamundaClientService(Properties.SyrinxProperties);
+            CamundaClient = builder.CamundaClient;
             RunnableTasks = builder.RunnableTasks;
             ServiceCollection = builder.ServiceCollection;
         }
@@ -128,13 +133,27 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 {
                     retries--;
                     var retryAfter = TimeSpan.FromMilliseconds(Properties.RetryAfterFetchTimeout);
-                    await logger.Error($"Failed to fetch task, retry after {retryAfter}... (remaining attempts: {retries})");
-                    await Task.Delay(retryAfter);
+                    await logger.Error($"Failed to fetch task, retry after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
+                    if (retries != 0) await Task.Delay(retryAfter);
                 }
                 else if (response.Response.Count > 0)
                 {
                     await logger.Debug("Executing task");
-                    await Run<TCamundaWorker>(operation, logger, response.Response[0]);
+
+                    try
+                    {
+                        var camundaWorkerType = typeof(TCamundaWorker);
+                        var operationContext = OperationContext.Builder()
+                            .SetName(camundaWorkerType.FullName, GetTopicName(camundaWorkerType), "TaskRunner")
+                            .SetUserId(null, true)
+                            .Create();
+                        await OperationService.Make(operationContext, async innerOperation => await Run<TCamundaWorker>(innerOperation, logger, response.Response[0]));
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+
                     await Task.Delay(TimeSpan.FromSeconds(1));
                 }
             }
@@ -170,7 +189,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 }
                 catch (Exception e)
                 {
-                    await logger.Error("Failed to perform task");
+                    await logger.Error("Failed to perform task", e);
                     exception = e;
                 }
                 finally
@@ -212,8 +231,8 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 {
                     retries--;
                     var resultType = exception.IsEmpty() ? "complete task" : "handle failure";
-                    await logger.Error($"Couldn't {resultType}, retry task handling after {retryAfter}... (remaining attempts: {retries})");
-                    await Task.Delay(retryAfter);
+                    await logger.Error($"Couldn't {resultType}, retry task handling after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
+                    if (retries != 0) await Task.Delay(retryAfter);
                 }
                 else
                 {
@@ -225,6 +244,11 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             if (retries == 0)
             {
                 await logger.Fatal($"Couldn't {(exception.IsEmpty() ? "complete task" : "handle failure")}, stop retrying");
+            }
+
+            if (!exception.IsEmpty())
+            {
+                throw exception;
             }
         }
 
@@ -247,7 +271,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                         if (!response.IsWithoutErrors())
                         {
                             var retryAfter = TimeSpan.FromSeconds(5);
-                            await logger.Error($"Couldn't extend lock for task, retry after {retryAfter}");
+                            await logger.Error($"Couldn't extend lock for task, retry after {retryAfter}", response.ToLog());
                             await Task.Delay(retryAfter, token);
                         }
                         else
@@ -286,8 +310,8 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                     if (!response.IsWithoutErrors())
                     {
                         retries--;
-                        await logger.Error($"Couldn't send BPMN error for task, retry task handling after {retryAfter}... (remaining attempts: {retries})");
-                        await Task.Delay(retryAfter);
+                        await logger.Error($"Couldn't send BPMN error for task, retry task handling after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
+                        if (retries != 0) await Task.Delay(retryAfter);
                     }
                     else
                     {
@@ -304,7 +328,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             }
             catch (Exception e)
             {
-                await logger.Error("Failed to send BPMN error for task");
+                await logger.Error("Failed to send BPMN error for task", e);
                 return e;
             }
 

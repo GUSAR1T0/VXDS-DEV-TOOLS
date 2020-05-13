@@ -37,9 +37,14 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static BadRequestException FailedToGetCamundaVersion(IOperation operation) => new BadRequestException(operation, "Failed to get a Camunda version");
 
-        public static BadRequestException CamundaRequestCanNotBeSent(IOperation operation, int status, string reason)
+        public static BadRequestException CamundaRequestCanNotBeSent(IOperation operation, int status, string reason, string message)
         {
-            return new BadRequestException(operation, $"Failed to send request to Camunda through Syrinx: {status} \"{reason}\"");
+            return new BadRequestException(operation, $"Failed to send request to Camunda through Syrinx: {status} \"{reason}\":\n{message}");
+        }
+
+        public static BadRequestException CamundaRequestIsFailed(IOperation operation, int status, string reason, string message)
+        {
+            return new BadRequestException(operation, $"Failed to send request to Camunda: {status} \"{reason}\":\n{message}");
         }
 
         public static BadRequestException FailedToDeployCamundaDueToMissedSettings(IOperation operation)
@@ -72,6 +77,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         #region Hosts
 
         public static NotFoundException HostWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Host with ID \"{id}\" was not found");
+
         public static BadRequestException HostNameIsNotUnique(IOperation operation) => new BadRequestException(operation, "Host name is not unique");
 
         #endregion

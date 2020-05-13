@@ -30,13 +30,14 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
         }
 
         /// <summary>
-        /// Obtains supported version of Camunda server
+        /// Obtains supported and real version of Camunda server
         /// </summary>
-        /// <returns>String value of Camunda server version, e.g. "7.11"</returns>
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        /// <returns>String values of Camunda server versions, e.g. "7.11"</returns>
+        [ProducesResponseType(typeof(CamundaVersionsModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpGet("version")]
-        public async Task<ActionResult<string>> GetSupportedVersion() => await Execute(async operation =>
+        public async Task<ActionResult<CamundaVersionsModel>> GetSupportedVersion() => await Execute(async operation =>
         {
             var response = await camundaServerService.Send(operation, new CamundaRequest
             {
@@ -49,7 +50,11 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
 
             if (response.IsWithoutErrors())
             {
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Output)["version"];
+                return new CamundaVersionsModel
+                {
+                    ClientVersion = "7.13.0-alpha4",
+                    ServerVersion = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Output)["version"]
+                };
             }
 
             throw CommonExceptions.FailedToGetCamundaVersion(operation);

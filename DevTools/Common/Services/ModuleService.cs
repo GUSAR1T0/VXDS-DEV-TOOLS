@@ -1,6 +1,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using VXDesign.Store.DevTools.Common.Clients.Camunda;
+using VXDesign.Store.DevTools.Common.Clients.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Clients.Camunda.Models.ProcessDefinition;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.File;
 using VXDesign.Store.DevTools.Common.Core.Entities.Module;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
@@ -39,13 +43,15 @@ namespace VXDesign.Store.DevTools.Common.Services
         private readonly IFileStore fileStore;
         private readonly IPortalSettingsStore portalSettingsStore;
         private readonly IUserDataStore userDataStore;
+        private readonly ISyrinxCamundaClientService camundaClient;
 
-        public ModuleService(IModuleStore moduleStore, IFileStore fileStore, IPortalSettingsStore portalSettingsStore, IUserDataStore userDataStore)
+        public ModuleService(IModuleStore moduleStore, IFileStore fileStore, IPortalSettingsStore portalSettingsStore, IUserDataStore userDataStore, ISyrinxCamundaClientService camundaClient)
         {
             this.moduleStore = moduleStore;
             this.fileStore = fileStore;
             this.portalSettingsStore = portalSettingsStore;
             this.userDataStore = userDataStore;
+            this.camundaClient = camundaClient;
         }
 
         #region Modules
@@ -103,13 +109,17 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
             }
 
-            if (!await moduleStore.HasStatus(operation, moduleId, ModuleStatus.Stopped))
+            if (!(await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Stopped)).Any())
             {
                 throw CommonExceptions.FailedToRunModule(operation);
             }
 
             await moduleStore.ChangeStatus(operation, moduleId, ModuleStatus.UpdatedToRun);
-            // TODO: Camunda trigger
+            await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleLaunchProcess)
+            {
+                BusinessKey = moduleId.ToString(),
+                Variables = new CamundaVariables { { CamundaWorkerKey.ModuleId, moduleId } }
+            }.SendRequest(operation, camundaClient, true);
         }
 
         public async Task StopModule(IOperation operation, int moduleId)
@@ -119,13 +129,17 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
             }
 
-            if (!await moduleStore.HasStatus(operation, moduleId, ModuleStatus.Run))
+            if (!(await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Run)).Any())
             {
                 throw CommonExceptions.FailedToStopModule(operation);
             }
 
             await moduleStore.ChangeStatus(operation, moduleId, ModuleStatus.UpdatedToStop);
-            // TODO: Camunda trigger
+            await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleStopProcess)
+            {
+                BusinessKey = moduleId.ToString(),
+                Variables = new CamundaVariables { { CamundaWorkerKey.ModuleId, moduleId } }
+            }.SendRequest(operation, camundaClient, true);
         }
 
         public async Task UninstallModule(IOperation operation, int moduleId)
@@ -135,13 +149,22 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
             }
 
-            if (!await moduleStore.HasStatus(operation, moduleId, ModuleStatus.Run, ModuleStatus.Stopped))
+            var statuses = (await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Run, ModuleStatus.Stopped)).ToList();
+            if (!statuses.Any())
             {
                 throw CommonExceptions.FailedToUninstallModule(operation);
             }
 
             await moduleStore.ChangeStatus(operation, moduleId, ModuleStatus.UpdatedToUninstall);
-            // TODO: Camunda trigger
+            await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleUninstallationProcess)
+            {
+                BusinessKey = moduleId.ToString(),
+                Variables = new CamundaVariables
+                {
+                    { CamundaWorkerKey.ModuleId, moduleId },
+                    { CamundaWorkerKey.ComponentsStopRequired, statuses.Contains(ModuleStatus.Run) }
+                }
+            }.SendRequest(operation, camundaClient, true);
         }
 
         #endregion
@@ -237,7 +260,11 @@ namespace VXDesign.Store.DevTools.Common.Services
 
                 // Module is new for the system
                 var moduleIdForCreate = await moduleStore.CreateModule(operation, entity.UserId, entity.HostId, entity.FileId, configuration);
-                // TODO: Camunda trigger
+                await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleInstallationProcess)
+                {
+                    BusinessKey = moduleIdForCreate.ToString(),
+                    Variables = new CamundaVariables { { CamundaWorkerKey.ModuleId, moduleIdForCreate } }
+                }.SendRequest(operation, camundaClient, true);
                 return moduleIdForCreate;
             }
 
@@ -258,7 +285,15 @@ namespace VXDesign.Store.DevTools.Common.Services
                 // Module in stable mode: run or stopped
                 var moduleIdForUpgrade = ValidateToUpgradeModule(operation, entity.ModuleId, module, configuration);
                 await moduleStore.UpgradeModule(operation, moduleIdForUpgrade, entity.UserId, entity.FileId, configuration);
-                // TODO: Camunda trigger
+                await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleUpgradeProcess)
+                {
+                    BusinessKey = moduleIdForUpgrade.ToString(),
+                    Variables = new CamundaVariables
+                    {
+                        { CamundaWorkerKey.ModuleId, moduleIdForUpgrade },
+                        { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run }
+                    }
+                }.SendRequest(operation, camundaClient, true);
                 return moduleIdForUpgrade;
             }
 
@@ -345,7 +380,15 @@ namespace VXDesign.Store.DevTools.Common.Services
             }
 
             await moduleStore.UpgradeModule(operation, module.Id, userId ?? module.UserId, module.NextConfiguration.Id);
-            // TODO: Camunda trigger
+            await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleUpgradeProcess)
+            {
+                BusinessKey = moduleId.ToString(),
+                Variables = new CamundaVariables 
+                { 
+                    { CamundaWorkerKey.ModuleId, moduleId },
+                    { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run }
+                }
+            }.SendRequest(operation, camundaClient, true);
         }
 
         public async Task DowngradeModuleConfiguration(IOperation operation, int moduleId, int? userId)
@@ -391,7 +434,15 @@ namespace VXDesign.Store.DevTools.Common.Services
             }
 
             await moduleStore.DowngradeModule(operation, module.Id, userId ?? module.UserId, module.PreviousConfiguration.Id);
-            // TODO: Camunda trigger
+            await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleRollbackProcess)
+            {
+                BusinessKey = moduleId.ToString(),
+                Variables = new CamundaVariables
+                {
+                    { CamundaWorkerKey.ModuleId, moduleId },
+                    { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run }
+                }
+            }.SendRequest(operation, camundaClient, true);
         }
 
         #endregion

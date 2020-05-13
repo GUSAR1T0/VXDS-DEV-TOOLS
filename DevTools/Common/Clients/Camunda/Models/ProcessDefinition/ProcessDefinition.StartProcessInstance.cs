@@ -17,10 +17,11 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Models.ProcessDefinitio
         {
             public static void SetVariablesWithErrorField(out ICamundaVariables refToRequestVariables, ICamundaVariables newVariables)
             {
+                const string error = "error";
                 refToRequestVariables = newVariables;
-                if (!refToRequestVariables.ContainsKey("Error"))
+                if (!refToRequestVariables.ContainsKey(error))
                 {
-                    refToRequestVariables.Add("Error", "");
+                    refToRequestVariables.Add(error, (string) null);
                 }
             }
         }

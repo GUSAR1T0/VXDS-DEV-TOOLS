@@ -130,7 +130,7 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         private async Task<Version.GetVersionResponse> GetCamundaVersionFromCache(IOperation operation)
         {
-            return await memoryCacheService.Get(MemoryCacheKey.CamundaVersion, async () => await new Version.GetVersionRequest().SendRequest(operation, camundaService));
+            return await memoryCacheService.Get(MemoryCacheKey.CamundaVersion, async () => await new Version.GetVersionRequest().SendRequest(operation, camundaService, true));
         }
     }
 }

@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints;
 using VXDesign.Store.DevTools.Common.Clients.Camunda.Utils;
 using VXDesign.Store.DevTools.Common.Core.Entities.File;
+using VXDesign.Store.DevTools.Common.Core.Exceptions;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.HTTP;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
@@ -65,6 +67,16 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             .Select(property => property.GetValue(this) as IReadOnlyList<LocalFile>)
             .SelectMany(x => x).ToList();
 
-        public async Task<TResponse> SendRequest(IOperation operation, ISyrinxCamundaClientService service) => await service.Send<CamundaRequest<TResponse>, TResponse>(operation, this);
+        public async Task<TResponse> SendRequest(IOperation operation, ISyrinxCamundaClientService service, bool handleError = false)
+        {
+            var response = await service.Send<CamundaRequest<TResponse>, TResponse>(operation, this);
+
+            if (handleError && !response.IsWithoutErrors())
+            {
+                throw CommonExceptions.CamundaRequestIsFailed(operation, response.Status, response.Reason, response.Output);
+            }
+
+            return response;
+        }
     }
 }

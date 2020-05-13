@@ -14,9 +14,10 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task<(long total, IEnumerable<ModuleListItemEntity> modules)> GetModules(IOperation operation, ModulePagingRequest request);
         Task<ModuleEntity> GetModule(IOperation operation, int moduleId);
         Task<IEnumerable<ModuleShortEntity>> GetModules(IOperation operation);
-        Task<int> GetModuleCount(IOperation operation, int hostId);
+        Task<Dictionary<int, ModuleStatus>> GetHostModuleIds(IOperation operation, int hostId);
+        Task<int> GetHostModuleCount(IOperation operation, int hostId);
         Task<bool> IsModuleExists(IOperation operation, int moduleId);
-        Task<bool> HasStatus(IOperation operation, int moduleId, params ModuleStatus[] statuses);
+        Task<IEnumerable<ModuleStatus>> HasStatuses(IOperation operation, int moduleId, params ModuleStatus[] statuses);
         Task ChangeStatus(IOperation operation, int moduleId, ModuleStatus status);
         Task<ModuleInfoEntity> GetModuleByAlias(IOperation operation, string alias);
         Task<int> CreateModule(IOperation operation, int userId, int hostId, int fileId, ModuleConfigurationFile configuration);
@@ -168,12 +169,22 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ");
         }
 
-        public async Task<int> GetModuleCount(IOperation operation, int hostId)
+        public async Task<Dictionary<int, ModuleStatus>> GetHostModuleIds(IOperation operation, int hostId)
+        {
+            var results = await operation.Connection.QueryAsync<(int, ModuleStatus)>(new { HostId = hostId }, @"
+                SELECT [Id], [StatusId]
+                FROM [portal].[Module]
+                WHERE [HostId] = @HostId AND [StatusId] NOT IN (4, 8, 12, 13, 14, 15, 16);
+            ");
+            return results.ToDictionary(item => item.Item1, item => item.Item2);
+        }
+
+        public async Task<int> GetHostModuleCount(IOperation operation, int hostId)
         {
             return await operation.Connection.QuerySingleOrDefaultAsync<int>(new { HostId = hostId }, @"
                 SELECT COUNT(*)
                 FROM [portal].[Module]
-                WHERE [HostId] = @HostId;
+                WHERE [HostId] = @HostId AND [StatusId] NOT IN (4, 8, 12, 13, 14, 15, 16);
             ");
         }
 
@@ -186,14 +197,14 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             ");
         }
 
-        public async Task<bool> HasStatus(IOperation operation, int moduleId, params ModuleStatus[] statuses)
+        public async Task<IEnumerable<ModuleStatus>> HasStatuses(IOperation operation, int moduleId, params ModuleStatus[] statuses)
         {
-            return await operation.Connection.QuerySingleOrDefaultAsync<bool>(new
+            return await operation.Connection.QueryAsync<ModuleStatus>(new
             {
                 Id = moduleId,
                 StatusIds = statuses
             }, @"
-                SELECT TOP 1 1
+                SELECT [StatusId]
                 FROM [portal].[Module]
                 WHERE [Id] = @Id AND [StatusId] IN @StatusIds;
             ");

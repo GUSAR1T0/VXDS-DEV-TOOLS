@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VXDesign.Store.DevTools.Common.Clients.Camunda;
+using VXDesign.Store.DevTools.Common.Clients.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Clients.Camunda.Models.ProcessDefinition;
 using VXDesign.Store.DevTools.Common.Clients.GitHub;
 using VXDesign.Store.DevTools.Common.Clients.GitHub.Models.Users;
 using VXDesign.Store.DevTools.Common.Clients.RemoteHost;
@@ -44,11 +47,13 @@ namespace VXDesign.Store.DevTools.Common.Services
     {
         private readonly IPortalSettingsStore portalSettingsStore;
         private readonly IModuleStore moduleStore;
+        private readonly ISyrinxCamundaClientService camundaClient;
 
-        public PortalSettingsService(IPortalSettingsStore portalSettingsStore, IModuleStore moduleStore)
+        public PortalSettingsService(IPortalSettingsStore portalSettingsStore, IModuleStore moduleStore, ISyrinxCamundaClientService camundaClient)
         {
             this.portalSettingsStore = portalSettingsStore;
             this.moduleStore = moduleStore;
+            this.camundaClient = camundaClient;
         }
 
         #region Hosts
@@ -70,11 +75,6 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         public async Task AddHost(IOperation operation, HostSettingsItemEntity host)
         {
-            if (!await portalSettingsStore.IsHostExist(operation, host.Id))
-            {
-                throw CommonExceptions.HostWasNotFound(operation, host.Id);
-            }
-
             if (!await portalSettingsStore.IsHostNameUnique(operation, 0, host.Name))
             {
                 throw CommonExceptions.HostNameIsNotUnique(operation);
@@ -85,6 +85,11 @@ namespace VXDesign.Store.DevTools.Common.Services
 
         public async Task UpdateHost(IOperation operation, HostSettingsItemEntity host)
         {
+            if (!await portalSettingsStore.IsHostExist(operation, host.Id))
+            {
+                throw CommonExceptions.HostWasNotFound(operation, host.Id);
+            }
+
             if (!await portalSettingsStore.IsHostNameUnique(operation, host.Id, host.Name))
             {
                 throw CommonExceptions.HostNameIsNotUnique(operation);
@@ -100,11 +105,15 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.HostWasNotFound(operation, hostId);
             }
 
-            // TODO: Trigger to delete modules before
-            await portalSettingsStore.DeleteHost(operation, hostId);
+            await portalSettingsStore.MakeHostInactive(operation, hostId);
+            await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.HostDeletionProcess)
+            {
+                BusinessKey = hostId.ToString(),
+                Variables = new CamundaVariables { { CamundaWorkerKey.HostId, hostId } }
+            }.SendRequest(operation, camundaClient, true);
         }
 
-        public async Task<int> GetAffectedModulesCount(IOperation operation, int hostId) => await moduleStore.GetModuleCount(operation, hostId);
+        public async Task<int> GetAffectedModulesCount(IOperation operation, int hostId) => await moduleStore.GetHostModuleCount(operation, hostId);
 
         public async Task<IDictionary<HostCredentialsItemEntity, CommandResult>> CheckConnections(IOperation operation, int hostId)
         {

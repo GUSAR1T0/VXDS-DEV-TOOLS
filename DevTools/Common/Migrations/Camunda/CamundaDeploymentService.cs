@@ -23,7 +23,14 @@ namespace VXDesign.Store.DevTools.Common.Migrations.Camunda
     {
         private readonly CamundaDeploymentParameters camundaDeploymentParameters;
         private readonly IOperationService operationService;
-        private readonly ISyrinxCamundaClientService syrinxCamundaClientService;
+        private readonly ISyrinxCamundaClientService camundaClient;
+
+        public CamundaDeploymentService(CamundaDeploymentParameters camundaDeploymentParameters, IOperationService operationService, ISyrinxCamundaClientService camundaClient)
+        {
+            this.camundaDeploymentParameters = camundaDeploymentParameters;
+            this.operationService = operationService;
+            this.camundaClient = camundaClient;
+        }
 
         private CamundaDeploymentSettings GetSettings(IOperation operation) =>
         (
@@ -55,13 +62,6 @@ namespace VXDesign.Store.DevTools.Common.Migrations.Camunda
             }).ToList();
         }
 
-        public CamundaDeploymentService(CamundaDeploymentParameters camundaDeploymentParameters, IOperationService operationService, ISyrinxCamundaClientService syrinxCamundaClientService)
-        {
-            this.camundaDeploymentParameters = camundaDeploymentParameters;
-            this.operationService = operationService;
-            this.syrinxCamundaClientService = syrinxCamundaClientService;
-        }
-
         public void Upgrade()
         {
             var context = OperationContext.Builder()
@@ -89,7 +89,7 @@ namespace VXDesign.Store.DevTools.Common.Migrations.Camunda
                     EnableDuplicateFiltering = true,
                     DeployChangedOnly = true,
                     Files = files
-                }.SendRequest(operation, syrinxCamundaClientService);
+                }.SendRequest(operation, camundaClient);
 
                 if (response.IsWithoutErrors())
                 {
@@ -154,7 +154,7 @@ namespace VXDesign.Store.DevTools.Common.Migrations.Camunda
                 Source = settings.ProjectName,
                 SortBy = "deploymentTime",
                 SortOrder = "desc"
-            }.SendRequest(operation, syrinxCamundaClientService);
+            }.SendRequest(operation, camundaClient);
 
             if (response.IsWithoutErrors())
             {
@@ -171,7 +171,7 @@ namespace VXDesign.Store.DevTools.Common.Migrations.Camunda
             var response = await new Deployment.DeleteRequest(deployment.Id)
             {
                 Cascade = true
-            }.SendRequest(operation, syrinxCamundaClientService);
+            }.SendRequest(operation, camundaClient);
 
             if (response.IsWithoutErrors())
             {

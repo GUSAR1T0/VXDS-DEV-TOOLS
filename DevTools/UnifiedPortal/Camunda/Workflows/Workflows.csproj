@@ -23,10 +23,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Remove="BPMNs\module-launch-process.bpmn" />
+        <None Remove="BPMNs\module-stop-process.bpmn" />
         <None Remove="BPMNs\module-installation-process.bpmn" />
         <None Remove="BPMNs\module-upgrade-process.bpmn" />
         <None Remove="BPMNs\module-rollback-process.bpmn" />
         <None Remove="BPMNs\module-uninstallation-process.bpmn" />
+        <None Remove="BPMNs\host-deletion-process.bpmn" />
+        <Content Include="BPMNs\module-launch-process.bpmn">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="BPMNs\module-stop-process.bpmn">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
         <Content Include="BPMNs\module-installation-process.bpmn">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -37,6 +46,9 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="BPMNs\module-uninstallation-process.bpmn">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="BPMNs\host-deletion-process.bpmn">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>

@@ -17,6 +17,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\Common\Clients\Camunda\Camunda.csproj" />
       <ProjectReference Include="..\..\..\Common\Core\Core.csproj" />
+      <ProjectReference Include="..\..\..\Common\Storage\DataStorage\DataStorage.csproj" />
     </ItemGroup>
 
 </Project>

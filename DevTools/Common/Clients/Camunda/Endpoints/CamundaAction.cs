@@ -62,6 +62,16 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
 
         #endregion
 
+        #region Process Instance
+
+        [CamundaAction(CamundaCategory.ProcessInstance, "Delete Process Instance", HttpMethod.Delete, "{id}")]
+        ProcessInstanceDelete = 25001,
+
+        [CamundaAction(CamundaCategory.ProcessInstance, "Get Instances", HttpMethod.Get)]
+        ProcessInstanceGetList = 25002,
+
+        #endregion
+
         #region Version
 
         [CamundaAction(CamundaCategory.Version, "Get Version", HttpMethod.Get)]
