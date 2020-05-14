@@ -118,7 +118,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             var retries = Properties.CountOfRetriesWhenFetchIsUnsuccessful;
             while (retries > 0)
             {
-                await logger.Debug("Fetching task");
+                await logger.Trace("Fetching task");
 
                 var response = await new ExternalTask.FetchAndLockRequest
                 {
@@ -138,7 +138,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 }
                 else if (response.Response.Count > 0)
                 {
-                    await logger.Debug("Executing task");
+                    await logger.Trace("Executing task");
 
                     try
                     {

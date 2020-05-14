@@ -284,7 +284,18 @@ namespace VXDesign.Store.DevTools.Common.Services
 
                 // Module in stable mode: run or stopped
                 var moduleIdForUpgrade = ValidateToUpgradeModule(operation, entity.ModuleId, module, configuration);
-                await moduleStore.UpgradeModule(operation, moduleIdForUpgrade, entity.UserId, entity.FileId, configuration);
+
+                var fullModule = await moduleStore.GetModule(operation, module.Id);
+                var historicalConfiguration = fullModule.Configurations.FirstOrDefault(config => config.Version == configuration.Version);
+                if (historicalConfiguration != null)
+                {
+                    await moduleStore.UpgradeModule(operation, module.Id, entity.UserId, historicalConfiguration.Id);
+                }
+                else
+                {
+                    await moduleStore.UpgradeModule(operation, moduleIdForUpgrade, entity.UserId, entity.FileId, configuration);
+                }
+
                 await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleUpgradeProcess)
                 {
                     BusinessKey = moduleIdForUpgrade.ToString(),

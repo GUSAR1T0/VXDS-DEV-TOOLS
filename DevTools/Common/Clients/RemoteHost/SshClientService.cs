@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Renci.SshNet;
 using VXDesign.Store.DevTools.Common.Clients.RemoteHost.Entities;
 using VXDesign.Store.DevTools.Common.Clients.RemoteHost.Extensions;
@@ -29,10 +29,6 @@ namespace VXDesign.Store.DevTools.Common.Clients.RemoteHost
 
         public CommandResult Send(string command, params string[] arguments) => client.RunCommand($"{command} {string.Join(' ', arguments)}").ToResult();
 
-        public void Dispose()
-        {
-            client?.Disconnect();
-            client?.Dispose();
-        }
+        public void Dispose() => Task.Run(() => client?.Dispose());
     }
 }

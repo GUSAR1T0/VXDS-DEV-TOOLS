@@ -148,7 +148,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     [Email],
                     [FileId]
                 FROM [portal].[ModuleConfiguration]
-                WHERE [ModuleId] = @Id;
+                WHERE [ModuleId] = @Id
+                ORDER BY [Version];
             ");
             var entity = await reader.ReadFirstOrDefaultAsync<ModuleEntity>();
             entity.Configurations = (await reader.ReadAsync<ModuleConfigurationEntity>()).ToList();

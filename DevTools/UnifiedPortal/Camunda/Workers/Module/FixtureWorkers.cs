@@ -60,11 +60,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
                     throw CommonExceptions.ModuleWasNotFound(operation, ModuleId);
                 }
 
-                logger.Debug($"Module update didn't complete successfully, setting status to ${ModuleStatus:G}").Wait();
+                logger.Debug($"[{ModuleId}] Module update didn't complete successfully, setting status to ${ModuleStatus:G}").Wait();
 
                 moduleStore.ChangeStatus(operation, ModuleId, ModuleStatus).Wait();
 
-                logger.Debug("Module status was updated").Wait();
+                logger.Debug($"[{ModuleId}] Module status was updated").Wait();
             }
         }
 
@@ -74,7 +74,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
             [CamundaWorkerVariable(Name = CamundaWorkerKey.ModuleId, Direction = CamundaVariableDirection.Input)]
             public int ModuleId { get; set; }
 
-            [CamundaWorkerVariable(Name = CamundaWorkerKey.ModuleStatus, Direction = CamundaVariableDirection.Both)]
+            [CamundaWorkerVariable(Name = CamundaWorkerKey.ModuleStatus, Direction = CamundaVariableDirection.Input)]
             public ModuleStatus ModuleStatus { get; set; }
 
             private readonly IModuleStore moduleStore;
@@ -91,11 +91,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
                     throw CommonExceptions.ModuleWasNotFound(operation, ModuleId);
                 }
 
-                logger.Debug($"Setting module status to {ModuleStatus:G}").Wait();
+                logger.Debug($"[{ModuleId}] Setting module status to \"{ModuleStatus:G}\"").Wait();
 
                 moduleStore.ChangeStatus(operation, ModuleId, ModuleStatus).Wait();
 
-                logger.Debug("Module status was updated").Wait();
+                logger.Debug($"[{ModuleId}] Module status was updated").Wait();
             }
         }
 
@@ -119,11 +119,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
                     throw CommonExceptions.ModuleWasNotFound(operation, ModuleId);
                 }
 
-                logger.Debug("Removing module").Wait();
+                logger.Debug($"[{ModuleId}] Removing module").Wait();
 
                 moduleStore.DeleteModule(operation, ModuleId).Wait();
 
-                logger.Debug("Module status was updated").Wait();
+                logger.Debug($"[{ModuleId}] Module status was updated").Wait();
             }
         }
     }
