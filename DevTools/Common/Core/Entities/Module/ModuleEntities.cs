@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 
 namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
@@ -42,6 +43,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
                 return null;
             }
         }
+
+        public ModuleConfigurationEntity CurrentConfiguration => Configurations.FirstOrDefault(configuration => configuration.Version == Version);
 
         public ModuleConfigurationEntity NextConfiguration
         {

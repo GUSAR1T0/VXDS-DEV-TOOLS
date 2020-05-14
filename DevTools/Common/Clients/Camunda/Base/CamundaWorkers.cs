@@ -189,7 +189,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 }
                 catch (Exception e)
                 {
-                    await logger.Error("Failed to perform task", e);
+                    await logger.Error("Failed to perform task", e.ToLog());
                     exception = e;
                 }
                 finally
@@ -248,7 +248,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
 
             if (!exception.IsEmpty())
             {
-                throw exception;
+                throw exception!;
             }
         }
 
@@ -328,7 +328,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             }
             catch (Exception e)
             {
-                await logger.Error("Failed to send BPMN error for task", e);
+                await logger.Error("Failed to send BPMN error for task", e.ToLog());
                 return e;
             }
 

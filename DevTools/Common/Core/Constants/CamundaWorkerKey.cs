@@ -24,6 +24,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Constants
 
         public const string ModuleId = "moduleId";
         public const string ComponentsStopRequired = "componentsStopRequired";
+        public const string ModuleStatus = "moduleStatus";
         public const string ModuleIdsAndStatuses = "moduleIdsAndStatuses";
         public const string HostId = "hostId";
         public const string ModuleProcessInstanceIds = "moduleProcessInstanceIds";

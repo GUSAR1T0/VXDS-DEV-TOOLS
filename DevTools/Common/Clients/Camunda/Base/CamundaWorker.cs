@@ -22,7 +22,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             .Select(property => new VariableProperty
             {
                 Property = property,
-                Attribute = CustomAttributeExtensions.GetCustomAttributes<CamundaWorkerVariableAttribute>((MemberInfo) property, false).FirstOrDefault()
+                Attribute = property.GetCustomAttributes<CamundaWorkerVariableAttribute>(false).FirstOrDefault()
             })
             .Where(arg => arg.Attribute != null && arg.Attribute.Direction.HasFlag(direction))
             .ToList();
@@ -37,9 +37,30 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 if (variables.ContainsKey(property.GetVariableName))
                 {
                     var variable = variables[property.GetVariableName];
-                    property.Property.SetPropertyValue(this, variable?.To(property.Property.PropertyType));
+                    var type = GetTypeOfVariable(property.Property.PropertyType, variable);
+                    property.Property.SetPropertyValue(this, variable?.To(type));
                 }
             }
+        }
+
+        private static Type GetTypeOfVariable(Type propertyType, ICamundaVariable variable)
+        {
+            if (!propertyType.IsEnum)
+            {
+                var underlyingType = Nullable.GetUnderlyingType(propertyType);
+                if (underlyingType == null || !underlyingType.IsEnum)
+                {
+                    return propertyType;
+                }
+            }
+
+            return variable switch
+            {
+                ShortVariable _ => typeof(short?),
+                IntegerVariable _ => typeof(int?),
+                LongVariable _ => typeof(long?),
+                _ => propertyType
+            };
         }
 
         internal ICamundaVariables CollectVariables()
@@ -60,17 +81,41 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 {
                     variables.Add(variableName, (byte[]) variableValue);
                 }
-                else if (propertyInfo.PropertyType == typeof(short) || propertyInfo.PropertyType == typeof(short?))
+                else if (propertyInfo.PropertyType == typeof(short) || propertyInfo.PropertyType == typeof(short?) ||
+                         GetFromPossibleEnumType(propertyInfo.PropertyType) == typeof(short))
                 {
-                    variables.Add(variableName, (short?) variableValue);
+                    if (variableValue == null)
+                    {
+                        variables.Add(variableName, (short?) null);
+                    }
+                    else
+                    {
+                        variables.Add(variableName, (short) variableValue);
+                    }
                 }
-                else if (propertyInfo.PropertyType == typeof(int) || propertyInfo.PropertyType == typeof(int?))
+                else if (propertyInfo.PropertyType == typeof(int) || propertyInfo.PropertyType == typeof(int?) ||
+                         GetFromPossibleEnumType(propertyInfo.PropertyType) == typeof(int))
                 {
-                    variables.Add(variableName, (int?) variableValue);
+                    if (variableValue == null)
+                    {
+                        variables.Add(variableName, (int?) null);
+                    }
+                    else
+                    {
+                        variables.Add(variableName, (int) variableValue);
+                    }
                 }
-                else if (propertyInfo.PropertyType == typeof(long) || propertyInfo.PropertyType == typeof(long?))
+                else if (propertyInfo.PropertyType == typeof(long) || propertyInfo.PropertyType == typeof(long?) ||
+                         GetFromPossibleEnumType(propertyInfo.PropertyType) == typeof(long))
                 {
-                    variables.Add(variableName, (long?) variableValue);
+                    if (variableValue == null)
+                    {
+                        variables.Add(variableName, (long?) null);
+                    }
+                    else
+                    {
+                        variables.Add(variableName, (long) variableValue);
+                    }
                 }
                 else if (propertyInfo.PropertyType == typeof(double) || propertyInfo.PropertyType == typeof(double?))
                 {
@@ -103,6 +148,17 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             }
 
             return variables;
+        }
+
+        private static Type GetFromPossibleEnumType(Type propertyType)
+        {
+            if (propertyType.IsEnum)
+            {
+                return Enum.GetUnderlyingType(propertyType);
+            }
+
+            var underlyingType = Nullable.GetUnderlyingType(propertyType);
+            return underlyingType != null && underlyingType.IsEnum ? Enum.GetUnderlyingType(underlyingType) : null;
         }
 
         public abstract void Execute(IOperation operation, IOperationLogger logger);

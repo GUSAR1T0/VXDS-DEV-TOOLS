@@ -25,6 +25,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task UpgradeModule(IOperation operation, int moduleId, int userId, int fileId, ModuleConfigurationFile configuration);
         Task UpgradeModule(IOperation operation, int moduleId, int userId, int configurationId);
         Task DowngradeModule(IOperation operation, int moduleId, int userId, int configurationId);
+        Task DeleteModule(IOperation operation, int moduleId);
     }
 
     public class ModuleStore : IModuleStore
@@ -369,6 +370,14 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 UPDATE [portal].[ActiveModuleConfiguration]
                 SET [ModuleConfigurationId] = @ConfigurationId
                 WHERE [ModuleId] = @Id;
+            ");
+        }
+
+        public async Task DeleteModule(IOperation operation, int moduleId)
+        {
+            await operation.Connection.ExecuteAsync(new { Id = moduleId }, @"
+                DELETE FROM [portal].[Module]
+                WHERE [Id] = @Id;
             ");
         }
     }

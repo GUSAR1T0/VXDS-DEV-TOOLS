@@ -15,25 +15,28 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers
             .SetLogger(ConfigurationUtils.GetLoggerConfiguration, "VXDS_CAM_WORK")
             .Configure(collection =>
             {
+                collection.AddScoped<IFileStore, FileStore>();
                 collection.AddScoped<IModuleStore, ModuleStore>();
                 collection.AddScoped<IPortalSettingsStore, PortalSettingsStore>();
             })
 
             #region Module
 
-            // .AddWorker<Fixture.AfterWorker>()
-            // .AddWorker<Fixture.BeforeWorker>()
-            // .AddWorker<Fixture.ErrorWorker>()
-            // .AddWorker<DatabaseMigration.UpgradeWorker>()
-            // .AddWorker<DatabaseMigration.RollbackWorker>()
-            // .AddWorker<DatabaseMigration.DowngradeWorker>()
-            // .AddWorker<CamundaDeployment.UpgradeWorker>()
-            // .AddWorker<CamundaDeployment.RollbackWorker>()
-            // .AddWorker<CamundaDeployment.DowngradeWorker>()
-            // .AddWorker<CamundaDeployment.LaunchWorker>()
-            // .AddWorker<CamundaDeployment.StopWorker>()
-            // .AddWorker<Application.LaunchWorker>()
-            // .AddWorker<Application.StopWorker>()
+            .AddWorker<Fixture.AfterWorker>()
+            .AddWorker<Fixture.BeforeWorker>()
+            .AddWorker<Fixture.ErrorWorker>()
+            .AddWorker<Fixture.StatusWorker>()
+            .AddWorker<Fixture.RemoveWorker>()
+            .AddWorker<DatabaseMigration.UpgradeWorker>()
+            .AddWorker<DatabaseMigration.RollbackWorker>()
+            .AddWorker<DatabaseMigration.DowngradeWorker>()
+            .AddWorker<CamundaDeployment.UpgradeWorker>()
+            .AddWorker<CamundaDeployment.RollbackWorker>()
+            .AddWorker<CamundaDeployment.DowngradeWorker>()
+            .AddWorker<CamundaDeployment.LaunchWorker>()
+            .AddWorker<CamundaDeployment.StopWorker>()
+            .AddWorker<Application.LaunchWorker>()
+            .AddWorker<Application.StopWorker>()
 
             #endregion
 

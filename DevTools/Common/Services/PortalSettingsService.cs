@@ -9,6 +9,7 @@ using VXDesign.Store.DevTools.Common.Clients.GitHub;
 using VXDesign.Store.DevTools.Common.Clients.GitHub.Models.Users;
 using VXDesign.Store.DevTools.Common.Clients.RemoteHost;
 using VXDesign.Store.DevTools.Common.Clients.RemoteHost.Entities;
+using VXDesign.Store.DevTools.Common.Clients.RemoteHost.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.GitHub;
 using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
@@ -124,13 +125,14 @@ namespace VXDesign.Store.DevTools.Common.Services
 
             var host = await portalSettingsStore.GetHost(operation, hostId);
             return host.CredentialsList
-                .Select(credentials => new
+                .Select(credentials =>
                 {
-                    credentials,
-                    check = CheckConnection(host.OperatingSystem, host.Domain, credentials)
+                    var result = credentials.CheckConnection(host.OperatingSystem, host.Domain, out var client);
+                    client.Dispose();
+                    return new { credentials, result };
                 })
-                .Where(item => item.check != null)
-                .ToDictionary(item => item.credentials, item => item.check);
+                .Where(item => item.result != null)
+                .ToDictionary(item => item.credentials, item => item.result);
         }
 
         public (HostCredentialsItemEntity entity, CommandResult result) CheckConnection(IOperation operation, CheckConnectionToHostEntity entity)
@@ -142,54 +144,9 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Username = entity.Username,
                 Password = entity.Password
             };
-            return (credentials, CheckConnection(entity.OperatingSystem, entity.Host, credentials));
-        }
-
-        private static CommandResult CheckConnection(HostOperatingSystem operatingSystem, string host, HostCredentialsItemEntity credentials)
-        {
-            string command;
-            var arguments = new List<string>();
-            switch (operatingSystem)
-            {
-                case HostOperatingSystem.MacOS:
-                case HostOperatingSystem.Linux:
-                    command = "uname";
-                    arguments.Add("-a");
-                    break;
-                case HostOperatingSystem.WindowsOS:
-                    command = "ver";
-                    break;
-                default:
-                    command = "";
-                    break;
-            }
-
-            if (credentials.Type == HostConnectionType.SSH)
-            {
-                try
-                {
-                    using var sshClient = SshClientService.Create(new SshConnectionByPasswordCredentials
-                    {
-                        Host = host,
-                        Port = credentials.Port,
-                        Username = credentials.Username,
-                        Password = credentials.Password
-                    });
-                    return sshClient.Send(command, arguments.ToArray());
-                }
-                catch (Exception e)
-                {
-                    return new CommandResult
-                    {
-                        Command = $"{command} {string.Join(' ', arguments)}",
-                        Output = null,
-                        Error = e.Message,
-                        ExitStatus = -1
-                    };
-                }
-            }
-
-            return null;
+            var result = credentials.CheckConnection(entity.OperatingSystem, entity.Host, out var client);
+            client.Dispose();
+            return (credentials, result);
         }
 
         #endregion

@@ -80,6 +80,11 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static BadRequestException HostNameIsNotUnique(IOperation operation) => new BadRequestException(operation, "Host name is not unique");
 
+        public static BadRequestException FailedToSendCommandToRemoteHost(IOperation operation, string command, int exitStatus, string error)
+        {
+            return new BadRequestException(operation, $"Failed to send command \"{command}\" to remote host, exit status \"{exitStatus}\":\n{error}");
+        }
+
         #endregion
 
         #region Projects

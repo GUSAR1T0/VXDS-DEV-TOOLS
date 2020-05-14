@@ -6,38 +6,34 @@ using VXDesign.Store.DevTools.Common.Core.Extensions;
 
 namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
 {
+    #region Common
+
     public class ConfigurationCommand
     {
         public string Run { get; set; }
     }
 
-    public class DatabaseConfigurationFlow
+    public interface IConfigurationFlow
     {
-        public IEnumerable<ConfigurationCommand> Install { get; set; }
-        public IEnumerable<ConfigurationCommand> Upgrade { get; set; }
-        public IEnumerable<ConfigurationCommand> Downgrade { get; set; }
-        public IEnumerable<ConfigurationCommand> Uninstall { get; set; }
-
-        public bool IsValid() => Install.AreValid() &&
-                                 Upgrade.AreValid() &&
-                                 Downgrade.AreValid() &&
-                                 Uninstall.AreValid();
+        bool IsValid();
     }
 
-    public class CamundaConfigurationFlow
-    {
-        public IEnumerable<ConfigurationCommand> Install { get; set; }
-        public IEnumerable<ConfigurationCommand> Upgrade { get; set; }
-        public IEnumerable<ConfigurationCommand> Downgrade { get; set; }
-        public IEnumerable<ConfigurationCommand> Uninstall { get; set; }
+    #endregion
 
-        public bool IsValid() => Install.AreValid() &&
-                                 Upgrade.AreValid() &&
-                                 Downgrade.AreValid() &&
-                                 Uninstall.AreValid();
+    #region Configurations
+
+    public abstract class MigrationConfiguration : IConfigurationFlow
+    {
+        public IEnumerable<ConfigurationCommand> Upgrade { get; set; }
+        public IEnumerable<ConfigurationCommand> Rollback { get; set; }
+        public IEnumerable<ConfigurationCommand> Downgrade { get; set; }
+
+        public bool IsValid() => Upgrade.AreValid() &&
+                                 Rollback.AreValid() &&
+                                 Downgrade.AreValid();
     }
 
-    public class ApplicationConfigurationFlow
+    public abstract class ApplicationFlow : IConfigurationFlow
     {
         public IEnumerable<ConfigurationCommand> Launch { get; set; }
         public IEnumerable<ConfigurationCommand> Stop { get; set; }
@@ -45,6 +41,33 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
         public bool IsValid() => Launch.AreValid(false) &&
                                  Stop.AreValid(false);
     }
+
+    public class DatabaseConfiguration : MigrationConfiguration
+    {
+    }
+
+    public class CamundaWorkflowsConfiguration : MigrationConfiguration
+    {
+    }
+
+    public class CamundaWorkersConfiguration : ApplicationFlow
+    {
+    }
+
+    public class CamundaConfiguration : IConfigurationFlow
+    {
+        public CamundaWorkflowsConfiguration Workflows { get; set; }
+        public CamundaWorkersConfiguration Workers { get; set; }
+
+        public bool IsValid() => (Workflows == null || Workflows.IsValid()) &&
+                                 (Workers == null || Workers.IsValid());
+    }
+
+    public class ApplicationConfiguration : ApplicationFlow
+    {
+    }
+
+    #endregion
 
     public class OperatingSystemInstructions
     {
@@ -65,14 +88,14 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
             }
         }
 
-        public IEnumerable<ConfigurationCommand> BeforeAll { get; set; }
-        public DatabaseConfigurationFlow Database { get; set; }
-        public CamundaConfigurationFlow Camunda { get; set; }
-        public ApplicationConfigurationFlow Application { get; set; }
-        public IEnumerable<ConfigurationCommand> AfterAll { get; set; }
+        public IEnumerable<ConfigurationCommand> BeforeStep { get; set; }
+        public DatabaseConfiguration Database { get; set; }
+        public CamundaConfiguration Camunda { get; set; }
+        public ApplicationConfiguration Application { get; set; }
+        public IEnumerable<ConfigurationCommand> AfterStep { get; set; }
 
         public bool IsValid() => OperatingSystem != null &&
-                                 BeforeAll.AreValid() && (
+                                 BeforeStep.AreValid() && (
                                      Database == null ||
                                      Database.IsValid()
                                  ) && (
@@ -81,7 +104,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Entities.Module
                                  ) &&
                                  Application != null &&
                                  Application.IsValid() &&
-                                 AfterAll.AreValid();
+                                 AfterStep.AreValid();
     }
 
     public class ModuleConfigurationFile

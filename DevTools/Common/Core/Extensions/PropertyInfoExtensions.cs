@@ -23,6 +23,17 @@ namespace VXDesign.Store.DevTools.Common.Core.Extensions
                         return enumerable;
                     }
 
+                    if (objectType.IsEnum)
+                    {
+                        return Enum.Parse(objectType, possible.ToString()!);
+                    }
+
+                    var underlyingType = Nullable.GetUnderlyingType(objectType);
+                    if (underlyingType != null && underlyingType.IsEnum)
+                    {
+                        return Enum.Parse(objectType, possible.ToString()!);
+                    }
+
                     return Convert.ChangeType(possible, objectType, CultureInfo.InvariantCulture);
                 }
                 catch

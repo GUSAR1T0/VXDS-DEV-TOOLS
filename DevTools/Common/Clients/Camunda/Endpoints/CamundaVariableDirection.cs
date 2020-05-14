@@ -6,6 +6,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
     public enum CamundaVariableDirection
     {
         Input = 1,
-        Output = 2
+        Output = 2,
+        Both = Input | Output
     }
 }

@@ -18,6 +18,6 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
     public class CamundaWorkerVariableAttribute : Attribute
     {
         public string Name { get; set; }
-        public CamundaVariableDirection Direction { get; set; } = CamundaVariableDirection.Input | CamundaVariableDirection.Output;
+        public CamundaVariableDirection Direction { get; set; } = CamundaVariableDirection.Both;
     }
 }

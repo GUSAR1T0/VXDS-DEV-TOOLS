@@ -5,7 +5,7 @@ using VXDesign.Store.DevTools.Common.Clients.RemoteHost.Extensions;
 
 namespace VXDesign.Store.DevTools.Common.Clients.RemoteHost
 {
-    public interface ISshClientService : IRemoteHostClientService, IDisposable
+    public interface ISshClientService : IRemoteHostClientService
     {
     }
 

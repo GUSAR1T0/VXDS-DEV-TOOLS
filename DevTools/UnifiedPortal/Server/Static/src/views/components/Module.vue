@@ -15,6 +15,16 @@
 
                     <el-tooltip effect="dark" placement="top">
                         <div slot="content">
+                            To User Roles Page
+                        </div>
+                        <el-button type="info" plain circle @click="$router.push('/users/roles')"
+                                   class="rounded-button">
+                            <span><fa icon="users-cog"/></span>
+                        </el-button>
+                    </el-tooltip>
+
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
                             Upload Module Configuration
                         </div>
                         <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
