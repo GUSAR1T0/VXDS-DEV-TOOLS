@@ -40,7 +40,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
                 {
                     Syrinx = new SyrinxHostModel
                     {
-                        Host = syrinxProperties.Host,
+                        Host = syrinxProperties.Host.GetExternalAddress(),
                         Api = syrinxProperties.Api
                     }
                 },

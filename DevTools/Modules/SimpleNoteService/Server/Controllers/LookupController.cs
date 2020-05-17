@@ -35,7 +35,7 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Controllers
                 {
                     Syrinx = new SyrinxHostModel
                     {
-                        Host = portalProperties.SyrinxProperties.Host,
+                        Host = portalProperties.SyrinxProperties.Host.GetExternalAddress(),
                         Api = portalProperties.SyrinxProperties.Api
                     },
                     UnifiedPortal = new UnifiedPortalHostModel

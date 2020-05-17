@@ -159,6 +159,10 @@
       <bpmndi:BPMNShape id="Lane_1otbvnh_di" bpmnElement="Lane_1otbvnh" isHorizontal="true">
         <dc:Bounds x="190" y="300" width="1660" height="190" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_00iyxfd_di" bpmnElement="Flow_00iyxfd">
+        <di:waypoint x="1700" y="207" />
+        <di:waypoint x="1762" y="207" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1duj6u5_di" bpmnElement="Flow_1duj6u5">
         <di:waypoint x="1540" y="207" />
         <di:waypoint x="1600" y="207" />
@@ -231,10 +235,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="388" y="158" width="22" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_00iyxfd_di" bpmnElement="Flow_00iyxfd">
-        <di:waypoint x="1700" y="207" />
-        <di:waypoint x="1762" y="207" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1us6s0n_di" bpmnElement="Activity_1us6s0n">
         <dc:Bounds x="960" y="167" width="100" height="80" />

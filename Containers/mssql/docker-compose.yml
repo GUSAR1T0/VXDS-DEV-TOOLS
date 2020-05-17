@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   sql-server:
+    # Available: mcr.microsoft.com/mssql/server:2019-latest
     image: microsoft/mssql-server-linux
     container_name: sql-server
     hostname: sql-server
@@ -11,8 +12,14 @@ services:
       - ACCEPT_EULA=Y
     ports:
       - "9501:1433"
+    networks:
+      - vxds-dev-tools
     volumes:
       - sql-server-data:/var/opt/mssql
+
+networks:
+  vxds-dev-tools:
+    external: true
 
 volumes:
   sql-server-data:

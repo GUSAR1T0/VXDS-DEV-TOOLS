@@ -1,0 +1,236 @@
+version: "3.7"
+
+services:
+  # Notice: create external network before usage:
+  # -> docker network create vxds-dev-tools
+  vxds-dev-tools:
+    image: vxds-dev-tools
+    build:
+      context: ../../DevTools
+      dockerfile: ../Containers/vxds-dev-tools/Dockerfile
+    container_name: vxds-dev-tools
+
+  sql-server:
+    image: microsoft/mssql-server-linux
+    container_name: sql-server
+    hostname: sql-server
+    restart: always
+    environment:
+      - SA_PASSWORD=<2019!Pass>
+      - ACCEPT_EULA=Y
+    ports:
+      - "9501:1433"
+    networks:
+      - vxds-dev-tools
+    volumes:
+      - sql-server-data:/var/opt/mssql
+  
+  mongodb:
+    image: mongo
+    build:
+      context: ../mongodb/mongo
+      dockerfile: Dockerfile
+    container_name: mongodb
+    hostname: mongodb
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=master
+      - MONGO_USERNAME=user
+      - MONGO_PASSWORD=user
+      - MONGO_DATA_DIR=/data/db
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "9511:27017"
+    command: mongod --logpath=/dev/null
+    networks:
+      - mongodb
+      - vxds-dev-tools
+
+  mongo-express:
+    image: mongo-express
+    build:
+      context: ../mongodb/mongo-express
+      dockerfile: Dockerfile
+    container_name: mongo-express
+    hostname: mongo-express
+    restart: always
+    ports:
+      - "9611:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+    entrypoint: ./dockerize -wait http://mongodb:27017 -timeout 120s
+    command: node /node_modules/mongo-express/app.js
+    networks:
+      - mongodb
+      - vxds-dev-tools
+    depends_on:
+      - mongodb
+
+  # Notice: generate local certificates before usage:
+  # See: https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1
+  syrinx:
+    image: vxds-dev-tools
+    restart: always
+    ports:
+      - "9300:9300"
+      - "9301:9301"
+    command: dotnet run --project SRS/Syrinx/Syrinx.csproj --launch-profile "Docker Deployment"
+    environment:
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=vxdesign
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - default
+      - vxds-dev-tools
+    depends_on:
+      - vxds-dev-tools
+      - sql-server
+      - mongodb
+
+  unified-portal.database:
+    image: vxds-dev-tools
+    entrypoint: /scripts/dockerize -wait tcp://sql-server:1433 -timeout 60s
+    command: dotnet run --project UnifiedPortal/Database/Database.csproj --launch-profile "Docker Deployment" upgrade
+    networks:
+      - default
+      - vxds-dev-tools
+    depends_on:
+      - vxds-dev-tools
+      - sql-server
+      - mongodb
+      - syrinx
+
+  postgres-camunda:
+    image: postgres
+    container_name: postgres-camunda
+    hostname: postgres-camunda
+    restart: always
+    environment:
+      - POSTGRES_USER=sa
+      - POSTGRES_PASSWORD=<2019!Pass>
+      - POSTGRES_DB=master
+    ports:
+      - "9521:5432"
+    networks:
+      - camunda-server
+      - vxds-dev-tools
+    volumes:
+      - postgres-camunda-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    hostname: pgadmin
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=xromash@vxdesign.store
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "9601:80"
+    networks:
+      - camunda-server
+      - vxds-dev-tools
+    volumes:
+      - pgadmin-data:/root/.pgadmin
+    depends_on:
+      - postgres-camunda
+
+  camunda-server:
+    image: camunda-server
+    build:
+      context: ../../ExtTools/CamundaServer
+      dockerfile: ../../Containers/camunda-server/Dockerfile
+    container_name: camunda-server
+    hostname: camunda-server
+    restart: always
+    ports:
+      - "9221:9221"
+    networks:
+      - camunda-server
+      - vxds-dev-tools
+    depends_on:
+      - postgres-camunda
+    command: java -jar -Dspring.datasource.url=jdbc:postgresql://postgres-camunda:5432/master CamundaServer.jar
+
+  unified-portal.camunda.workflows:
+    image: vxds-dev-tools
+    entrypoint: /scripts/dockerize -wait http://camunda-server:9221 -timeout 60s
+    command: dotnet run --project UnifiedPortal/Camunda/Workflows/Workflows.csproj --launch-profile "Docker Deployment" upgrade
+    networks:
+      - default
+      - vxds-dev-tools
+    depends_on:
+      - vxds-dev-tools
+      - sql-server
+      - mongodb
+      - syrinx
+      - unified-portal.database
+      - camunda-server
+
+  unified-portal.camunda.workers:
+    image: vxds-dev-tools
+    restart: always
+    entrypoint: /scripts/dockerize -wait http://camunda-server:9221 -timeout 60s
+    command: dotnet run --project UnifiedPortal/Camunda/Workers/Workers.csproj --launch-profile "Docker Deployment"
+    networks:
+      - default
+      - vxds-dev-tools
+    depends_on:
+      - vxds-dev-tools
+      - sql-server
+      - mongodb
+      - syrinx
+      - unified-portal.database
+      - camunda-server
+      - unified-portal.camunda.workflows
+
+  # Notice: generate local certificates before usage:
+  # See: https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1
+  unified-portal:
+    image: vxds-dev-tools
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: dotnet run --project UnifiedPortal/Server/Server.csproj --launch-profile "Docker Deployment"
+    environment:
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=vxdesign
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - default
+      - vxds-dev-tools
+    depends_on:
+      - vxds-dev-tools
+      - sql-server
+      - mongodb
+      - syrinx
+      - unified-portal.database
+      - camunda-server
+      - unified-portal.camunda.workflows
+      - unified-portal.camunda.workers
+
+networks:
+  default:
+    driver: bridge
+  mongodb:
+    driver: bridge
+  camunda-server:
+    driver: bridge
+  vxds-dev-tools:
+    external: true
+
+volumes:
+  sql-server-data:
+  mongo-data:
+  postgres-camunda-data:
+  pgadmin-data:

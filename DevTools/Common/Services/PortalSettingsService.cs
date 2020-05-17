@@ -128,7 +128,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 .Select(credentials =>
                 {
                     var result = credentials.CheckConnection(host.OperatingSystem, host.Domain, out var client);
-                    client.Dispose();
+                    client?.Dispose();
                     return new { credentials, result };
                 })
                 .Where(item => item.result != null)
@@ -145,7 +145,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Password = entity.Password
             };
             var result = credentials.CheckConnection(entity.OperatingSystem, entity.Host, out var client);
-            client.Dispose();
+            client?.Dispose();
             return (credentials, result);
         }
 

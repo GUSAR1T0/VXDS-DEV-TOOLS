@@ -17,10 +17,12 @@ namespace VXDesign.Store.DevTools.Common.Clients.Syrinx
     public class SyrinxAuthenticationClientService : HttpClientService<VerifyAuthenticationRequest, VerifyAuthenticationResponse>, ISyrinxAuthenticationClientService
     {
         private readonly SyrinxProperties properties;
+        private readonly bool skipCertificateValidation;
 
-        public SyrinxAuthenticationClientService(SyrinxProperties properties)
+        public SyrinxAuthenticationClientService(SyrinxProperties properties, bool skipCertificateValidation = false)
         {
             this.properties = properties;
+            this.skipCertificateValidation = skipCertificateValidation;
         }
 
         private void SetupHeaders(VerifyAuthenticationRequest request)
@@ -31,7 +33,20 @@ namespace VXDesign.Store.DevTools.Common.Clients.Syrinx
 
         protected override HttpClient Initialize()
         {
-            var httpClient = new HttpClient { BaseAddress = new Uri(properties.Host) };
+            HttpClient httpClient;
+            if (skipCertificateValidation)
+            {
+                var httpClientHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                httpClient = new HttpClient(httpClientHandler) { BaseAddress = new Uri(properties.Host.Internal) };
+            }
+            else
+            {
+                httpClient = new HttpClient { BaseAddress = new Uri(properties.Host.Internal) };
+            }
+
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             httpClient.DefaultRequestHeaders.Clear();

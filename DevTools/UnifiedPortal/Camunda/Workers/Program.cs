@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using VXDesign.Store.DevTools.Common.Clients.Camunda.Base;
 using VXDesign.Store.DevTools.Common.Core.Utils;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
@@ -10,45 +11,48 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers
 {
     class Program
     {
-        static void Main(string[] args) => CamundaWorkers<WorkersProperties>.Builder()
-            .SetProperties(ConfigurationUtils.GetEnvironmentConfiguration)
-            .SetLogger(ConfigurationUtils.GetLoggerConfiguration, "VXDS_CAM_WORK")
-            .Configure(collection =>
-            {
-                collection.AddScoped<IFileStore, FileStore>();
-                collection.AddScoped<IModuleStore, ModuleStore>();
-                collection.AddScoped<IPortalSettingsStore, PortalSettingsStore>();
-            })
+        static void Main(string[] args) {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            CamundaWorkers<WorkersProperties>.Builder()
+                .SetProperties(() => ConfigurationUtils.GetEnvironmentConfiguration(environment))
+                .SetLogger(ConfigurationUtils.GetLoggerConfiguration, "VXDS_CAM_WORK")
+                .Configure(collection =>
+                {
+                    collection.AddScoped<IFileStore, FileStore>();
+                    collection.AddScoped<IModuleStore, ModuleStore>();
+                    collection.AddScoped<IPortalSettingsStore, PortalSettingsStore>();
+                })
 
-            #region Module
+                #region Module
 
-            .AddWorker<Fixture.AfterWorker>()
-            .AddWorker<Fixture.BeforeWorker>()
-            .AddWorker<Fixture.ErrorWorker>()
-            .AddWorker<Fixture.StatusWorker>()
-            .AddWorker<Fixture.RemoveWorker>()
-            .AddWorker<DatabaseMigration.UpgradeWorker>()
-            .AddWorker<DatabaseMigration.RollbackWorker>()
-            .AddWorker<DatabaseMigration.DowngradeWorker>()
-            .AddWorker<CamundaDeployment.UpgradeWorker>()
-            .AddWorker<CamundaDeployment.RollbackWorker>()
-            .AddWorker<CamundaDeployment.DowngradeWorker>()
-            .AddWorker<CamundaDeployment.LaunchWorker>()
-            .AddWorker<CamundaDeployment.StopWorker>()
-            .AddWorker<Application.LaunchWorker>()
-            .AddWorker<Application.StopWorker>()
+                .AddWorker<Fixture.AfterWorker>()
+                .AddWorker<Fixture.BeforeWorker>()
+                .AddWorker<Fixture.ErrorWorker>()
+                .AddWorker<Fixture.StatusWorker>()
+                .AddWorker<Fixture.RemoveWorker>()
+                .AddWorker<DatabaseMigration.UpgradeWorker>()
+                .AddWorker<DatabaseMigration.RollbackWorker>()
+                .AddWorker<DatabaseMigration.DowngradeWorker>()
+                .AddWorker<CamundaDeployment.UpgradeWorker>()
+                .AddWorker<CamundaDeployment.RollbackWorker>()
+                .AddWorker<CamundaDeployment.DowngradeWorker>()
+                .AddWorker<CamundaDeployment.LaunchWorker>()
+                .AddWorker<CamundaDeployment.StopWorker>()
+                .AddWorker<Application.LaunchWorker>()
+                .AddWorker<Application.StopWorker>()
 
-            #endregion
+                #endregion
 
-            #region Host
+                #region Host
 
-            .AddWorker<HostModule.SearchWorker>()
-            .AddWorker<HostModule.StopWorker>()
-            .AddWorker<HostModule.CalculateWorker>()
-            .AddWorker<Host.Host.DeleteWorker>()
+                .AddWorker<HostModule.SearchWorker>()
+                .AddWorker<HostModule.StopWorker>()
+                .AddWorker<HostModule.CalculateWorker>()
+                .AddWorker<Host.Host.DeleteWorker>()
 
-            #endregion
+                #endregion
 
-            .Launch();
+                .Launch();
+        }
     }
 }

@@ -52,7 +52,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx.Controllers
             {
                 return new CamundaVersionsModel
                 {
-                    ClientVersion = "7.13.0-alpha4",
+                    ClientVersion = "7.13.0-alpha5",
                     ServerVersion = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Output)["version"]
                 };
             }

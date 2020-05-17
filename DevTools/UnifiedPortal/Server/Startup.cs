@@ -19,12 +19,14 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -60,7 +62,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
                 return new OperationService(loggerStore, dataStoreConnectionString, scope);
             });
             services.AddScoped<ISyrinxCamundaClientService>(factory => new SyrinxCamundaClientService(factory.GetService<PortalProperties>().SyrinxProperties));
-            services.AddScoped<ISyrinxAuthenticationClientService>(factory => new SyrinxAuthenticationClientService(factory.GetService<PortalProperties>().SyrinxProperties));
+            services.AddScoped<ISyrinxAuthenticationClientService>(factory =>
+            {
+                var skipCertificateValidation = Environment.IsEnvironment("Docker");
+                return new SyrinxAuthenticationClientService(factory.GetService<PortalProperties>().SyrinxProperties, skipCertificateValidation);
+            });
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IDashboardService, DashboardService>();
@@ -87,9 +93,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (Environment.IsDevelopment() || Environment.IsEnvironment("Docker"))
             {
                 app.UseDeveloperExceptionPage();
 
@@ -115,7 +121,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server
             app.Run(async context =>
             {
                 context.Response.ContentType = "text/html";
-                await context.Response.SendFileAsync(Path.Combine(env.WebRootPath, "index.html"));
+                await context.Response.SendFileAsync(Path.Combine(Environment.WebRootPath, "index.html"));
             });
         }
     }
