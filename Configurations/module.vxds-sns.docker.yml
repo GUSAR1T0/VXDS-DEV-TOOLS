@@ -1,0 +1,39 @@
+name: Simple Note Service
+alias: vxds-sns
+version: "1.0.0"
+author: Roman Mashenkin
+email: xromash@vxdesign.store
+
+instructions:
+  - os-name: macOS
+    before-step:
+      - run: "[ -d ~/Documents/Sources ] || mkdir ~/Documents/Sources"
+      - run: "[ ! -d ~/Documents/Sources/VXDS-DEV-TOOLS ] || rm -rf ~/Documents/Sources/VXDS-DEV-TOOLS/"
+      - run: git clone https://github.com/GUSAR1T0/VXDS-DEV-TOOLS.git ~/Documents/Sources/VXDS-DEV-TOOLS 2>&1 && cd ~/Documents/Sources/VXDS-DEV-TOOLS && git checkout feature/63 2>&1
+    database:
+      upgrade:
+        - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.database.docker.yml up -d simple-note-service.database.upgrade 2>&1'
+      rollback:
+        - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.database.docker.yml up -d simple-note-service.database.rollback 2>&1'
+      downgrade:
+        - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.database.docker.yml up -d simple-note-service.database.downgrade 2>&1'
+    camunda:
+      workflows:
+        upgrade:
+          - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.deployments.docker.yml up -d simple-note-service.deployments.upgrade 2>&1'
+        rollback:
+          - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.deployments.docker.yml up -d simple-note-service.deployments.rollback 2>&1'
+        downgrade:
+          - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.deployments.docker.yml up -d simple-note-service.deployments.downgrade 2>&1'
+      workers:
+        launch:
+          - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.workers.docker.yml up -d 2>&1'
+        stop:
+          - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.workers.docker.yml down 2>&1'
+    application:
+      launch:
+        - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.server.docker.yml up -d 2>&1'
+      stop:
+        - run: zsh --login -c 'docker-compose -f ~/Documents/Sources/VXDS-DEV-TOOLS/Containers/simple-note-service/docker-compose.server.docker.yml down 2>&1'
+    after-step:
+      - run: rm -rf ~/Documents/Sources/VXDS-DEV-TOOLS/

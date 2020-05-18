@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  simple-note-service.database.upgrade:
+    image: vxds-dev-tools
+    entrypoint: /scripts/dockerize -wait tcp://sql-server:1433 -timeout 60s
+    command: dotnet run --project Modules/SimpleNoteService/Database/Database.csproj --launch-profile "Docker + Local" upgrade
+    networks:
+      - vxds-dev-tools
+
+  simple-note-service.database.rollback:
+    image: vxds-dev-tools
+    entrypoint: /scripts/dockerize -wait tcp://sql-server:1433 -timeout 60s
+    command: dotnet run --project Modules/SimpleNoteService/Database/Database.csproj --launch-profile "Docker + Local" rollback
+    networks:
+      - vxds-dev-tools
+
+  simple-note-service.database.downgrade:
+    image: vxds-dev-tools
+    entrypoint: /scripts/dockerize -wait tcp://sql-server:1433 -timeout 60s
+    command: dotnet run --project Modules/SimpleNoteService/Database/Database.csproj --launch-profile "Docker + Local" downgrade
+    networks:
+      - vxds-dev-tools
+
+networks:
+  vxds-dev-tools:
+    external: true

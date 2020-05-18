@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace VXDesign.Store.DevTools.Common.Core.Extensions
 {
-    public static class PropertyInfoExtensions
+    public static class ReflectionExtensions
     {
         public static void SetPropertyValue<T>(this PropertyInfo property, T target, object value)
         {
@@ -48,6 +48,17 @@ namespace VXDesign.Store.DevTools.Common.Core.Extensions
             {
                 property.SetValue(target, safeValue, null);
             }
+        }
+
+        public static Type GetUnderlyingTypeFromPossibleEnumType(this Type type)
+        {
+            if (type.IsEnum)
+            {
+                return Enum.GetUnderlyingType(type);
+            }
+
+            var underlyingType = Nullable.GetUnderlyingType(type);
+            return underlyingType != null && underlyingType.IsEnum ? Enum.GetUnderlyingType(underlyingType) : null;
         }
     }
 }

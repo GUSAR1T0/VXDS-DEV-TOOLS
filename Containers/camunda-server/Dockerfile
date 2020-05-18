@@ -2,7 +2,7 @@
 FROM maven:3-jdk-14 as builder
 WORKDIR /repo
 COPY . .
-RUN mvn clean install test
+RUN mvn clean install
 
 # Prepare application to start
 FROM openjdk:14-alpine

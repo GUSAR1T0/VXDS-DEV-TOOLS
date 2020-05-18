@@ -118,6 +118,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
             if (operation.OperationId != -1)
             {
                 parameters.Add("@OperationId", operation.OperationId);
+                parameters.Add("@ComplexOperationId", operation.ComplexOperationId);
             }
 
             return await function(command, parameters, transaction, commandTimeout, commandType);

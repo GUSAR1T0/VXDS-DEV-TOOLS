@@ -9,6 +9,7 @@
       <bpmn:lane id="Lane_08uvb65" name="Unsuccessful way">
         <bpmn:flowNodeRef>Activity_00ng4gg</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0ji6jc9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1csgk02</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1ug8ppd" name="Successful way">
         <bpmn:flowNodeRef>Activity_1byfp3m</bpmn:flowNodeRef>
@@ -48,6 +49,7 @@
       <bpmn:extensionElements>
         <camunda:in businessKey="${moduleId.toString()}" />
         <camunda:in sourceExpression="${moduleId}" target="moduleId" />
+        <camunda:in sourceExpression="${action}" target="action" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1nlbmql</bpmn:incoming>
       <bpmn:outgoing>Flow_0eme6du</bpmn:outgoing>
@@ -114,10 +116,15 @@
       <bpmn:incoming>Flow_04ee5ms</bpmn:incoming>
       <bpmn:outgoing>Flow_1jhi06l</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1jhi06l" sourceRef="Activity_00ng4gg" targetRef="Activity_1csgk02" />
     <bpmn:endEvent id="Event_0ji6jc9" name="The end of the process (unsuccessful result)">
-      <bpmn:incoming>Flow_1jhi06l</bpmn:incoming>
+      <bpmn:incoming>Flow_0kmoig9</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1jhi06l" sourceRef="Activity_00ng4gg" targetRef="Event_0ji6jc9" />
+    <bpmn:serviceTask id="Activity_1csgk02" name="Audit" camunda:type="external" camunda:topic="UnifiedPortal.Module.Audit">
+      <bpmn:incoming>Flow_1jhi06l</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kmoig9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0kmoig9" sourceRef="Activity_1csgk02" targetRef="Event_0ji6jc9" />
   </bpmn:process>
   <bpmn:category id="Category_0y2mf8t">
     <bpmn:categoryValue id="CategoryValue_0dh9q17" value="" />
@@ -136,7 +143,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1jhi06l_di" bpmnElement="Flow_1jhi06l">
         <di:waypoint x="1270" y="360" />
-        <di:waypoint x="1332" y="360" />
+        <di:waypoint x="1330" y="360" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gmk76q_di" bpmnElement="Flow_0gmk76q">
         <di:waypoint x="1110" y="180" />
@@ -190,6 +197,10 @@
         <di:waypoint x="900" y="360" />
         <di:waypoint x="1170" y="360" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kmoig9_di" bpmnElement="Flow_0kmoig9">
+        <di:waypoint x="1430" y="360" />
+        <di:waypoint x="1492" y="360" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1byfp3m_di" bpmnElement="Activity_1byfp3m">
         <dc:Bounds x="690" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -227,10 +238,13 @@
         <dc:Bounds x="1170" y="320" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ji6jc9_di" bpmnElement="Event_0ji6jc9">
-        <dc:Bounds x="1332" y="342" width="36" height="36" />
+        <dc:Bounds x="1492" y="342" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1315" y="385" width="71" height="53" />
+          <dc:Bounds x="1475" y="385" width="71" height="53" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1csgk02_di" bpmnElement="Activity_1csgk02">
+        <dc:Bounds x="1330" y="320" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0d2w4p7_di" bpmnElement="Event_0d2w4p7">
         <dc:Bounds x="1042" y="202" width="36" height="36" />

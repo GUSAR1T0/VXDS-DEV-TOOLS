@@ -67,7 +67,9 @@
     import { GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import {
-        DOWNGRADE_MODULE_CONFIGURATION_ENDPOINT, SEARCH_HOSTS_ENDPOINT, SEARCH_USERS_ENDPOINT,
+        DOWNGRADE_MODULE_CONFIGURATION_ENDPOINT,
+        SEARCH_HOSTS_ENDPOINT,
+        SEARCH_USERS_ENDPOINT,
         UPDATE_MODULE_ENDPOINT,
         UPGRADE_MODULE_CONFIGURATION_ENDPOINT
     } from "@/constants/endpoints";

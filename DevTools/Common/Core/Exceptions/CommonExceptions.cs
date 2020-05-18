@@ -243,6 +243,11 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
             return new BadRequestException(operation, "Uploaded and stored module configurations have different length");
         }
 
+        public static NotFoundException ModuleConfigurationWasNotFound(IOperation operation)
+        {
+            return new NotFoundException(operation, "Module configuration wasn't found");
+        }
+
         public static NotFoundException FailedToDefineModuleForSubmission(IOperation operation)
         {
             return new NotFoundException(operation, "Failed to define module to submit configuration by file");
@@ -266,6 +271,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         public static BadRequestException FailedToStopModule(IOperation operation) => new BadRequestException(operation, "Failed to stop module because it's not ready for that");
 
         public static BadRequestException FailedToUninstallModule(IOperation operation) => new BadRequestException(operation, "Failed to uninstall module because it's not ready for that");
+
+        public static BadRequestException FailedToReinstallModule(IOperation operation) => new BadRequestException(operation, "Failed to reinstall module because it's not ready for that");
 
         public static BadRequestException FailedToUpgradeModuleConfigurationDueToModuleStatus(IOperation operation)
         {

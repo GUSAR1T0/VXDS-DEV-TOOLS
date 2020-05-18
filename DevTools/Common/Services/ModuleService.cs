@@ -25,6 +25,7 @@ namespace VXDesign.Store.DevTools.Common.Services
         Task LaunchModule(IOperation operation, int moduleId);
         Task StopModule(IOperation operation, int moduleId);
         Task UninstallModule(IOperation operation, int moduleId);
+        Task ReinstallModule(IOperation operation, int moduleId);
         Task<IEnumerable<ModuleHistoryEntity>> GetModuleHistory(IOperation operation, int moduleId);
 
         #endregion
@@ -111,7 +112,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
             }
 
-            if (!(await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Stopped)).Any())
+            if (!(await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Stopped, ModuleStatus.FailedToRun)).Any())
             {
                 throw CommonExceptions.FailedToRunModule(operation);
             }
@@ -120,7 +121,11 @@ namespace VXDesign.Store.DevTools.Common.Services
             await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleLaunchProcess)
             {
                 BusinessKey = moduleId.ToString(),
-                Variables = new CamundaVariables { { CamundaWorkerKey.ModuleId, moduleId } }
+                Variables = new CamundaVariables
+                {
+                    { CamundaWorkerKey.ModuleId, moduleId },
+                    { CamundaWorkerKey.Action, ActionType.NoChanges }
+                }
             }.SendRequest(operation, camundaClient, true);
         }
 
@@ -131,7 +136,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
             }
 
-            if (!(await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Run)).Any())
+            if (!(await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Run, ModuleStatus.FailedToStop)).Any())
             {
                 throw CommonExceptions.FailedToStopModule(operation);
             }
@@ -140,7 +145,11 @@ namespace VXDesign.Store.DevTools.Common.Services
             await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleStopProcess)
             {
                 BusinessKey = moduleId.ToString(),
-                Variables = new CamundaVariables { { CamundaWorkerKey.ModuleId, moduleId } }
+                Variables = new CamundaVariables
+                {
+                    { CamundaWorkerKey.ModuleId, moduleId },
+                    { CamundaWorkerKey.Action, ActionType.NoChanges }
+                }
             }.SendRequest(operation, camundaClient, true);
         }
 
@@ -151,7 +160,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
             }
 
-            var statuses = (await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Run, ModuleStatus.Stopped)).ToList();
+            var statuses = (await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.Run, ModuleStatus.Stopped, ModuleStatus.FailedToRun, ModuleStatus.FailedToStop)).ToList();
             if (!statuses.Any())
             {
                 throw CommonExceptions.FailedToUninstallModule(operation);
@@ -164,7 +173,33 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Variables = new CamundaVariables
                 {
                     { CamundaWorkerKey.ModuleId, moduleId },
-                    { CamundaWorkerKey.ComponentsStopRequired, statuses.Contains(ModuleStatus.Run) }
+                    { CamundaWorkerKey.ComponentsStopRequired, statuses.Contains(ModuleStatus.Run) },
+                    { CamundaWorkerKey.Action, ActionType.NoChanges }
+                }
+            }.SendRequest(operation, camundaClient, true);
+        }
+
+        public async Task ReinstallModule(IOperation operation, int moduleId)
+        {
+            if (!await moduleStore.IsModuleExists(operation, moduleId))
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
+            var statuses = (await moduleStore.HasStatuses(operation, moduleId, ModuleStatus.FailedToInstall)).ToList();
+            if (!statuses.Any())
+            {
+                throw CommonExceptions.FailedToReinstallModule(operation);
+            }
+
+            await moduleStore.ChangeStatus(operation, moduleId, ModuleStatus.Created);
+            await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleInstallationProcess)
+            {
+                BusinessKey = moduleId.ToString(),
+                Variables = new CamundaVariables
+                {
+                    { CamundaWorkerKey.ModuleId, moduleId },
+                    { CamundaWorkerKey.Action, ActionType.NoChanges }
                 }
             }.SendRequest(operation, camundaClient, true);
         }
@@ -227,7 +262,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 return result;
             }
 
-            if (module.Status == ModuleStatus.Run || module.Status == ModuleStatus.Stopped)
+            if (module.Status == ModuleStatus.Run || module.Status == ModuleStatus.Stopped || module.Status == ModuleStatus.FailedToRun || module.Status == ModuleStatus.FailedToStop)
             {
                 // Module in stable mode: run or stopped
                 result.Verdict = GetVerdict(operation, module.Version, configuration.Version);
@@ -275,7 +310,11 @@ namespace VXDesign.Store.DevTools.Common.Services
                 await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleInstallationProcess)
                 {
                     BusinessKey = moduleIdForCreate.ToString(),
-                    Variables = new CamundaVariables { { CamundaWorkerKey.ModuleId, moduleIdForCreate } }
+                    Variables = new CamundaVariables
+                    {
+                        { CamundaWorkerKey.ModuleId, moduleIdForCreate },
+                        { CamundaWorkerKey.Action, ActionType.NoChanges }
+                    }
                 }.SendRequest(operation, camundaClient, true);
                 return moduleIdForCreate;
             }
@@ -287,7 +326,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.FailedToSubmitModuleConfiguration(operation, ModuleConfigurationVerdict.BrokenChanges);
             }
 
-            if (module.Status == ModuleStatus.Run || module.Status == ModuleStatus.Stopped)
+            if (module.Status == ModuleStatus.Run || module.Status == ModuleStatus.Stopped || module.Status == ModuleStatus.FailedToRun || module.Status == ModuleStatus.FailedToStop)
             {
                 if (!await userDataStore.IsUserExist(operation, entity.UserId))
                 {
@@ -314,7 +353,8 @@ namespace VXDesign.Store.DevTools.Common.Services
                     Variables = new CamundaVariables
                     {
                         { CamundaWorkerKey.ModuleId, moduleIdForUpgrade },
-                        { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run }
+                        { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run },
+                        { CamundaWorkerKey.Action, ActionType.Upgrade }
                     }
                 }.SendRequest(operation, camundaClient, true);
                 return moduleIdForUpgrade;
@@ -368,7 +408,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
             }
 
-            if (module.Status != ModuleStatus.Run && module.Status != ModuleStatus.Stopped)
+            if (module.Status != ModuleStatus.Run && module.Status != ModuleStatus.Stopped && module.Status != ModuleStatus.FailedToRun && module.Status != ModuleStatus.FailedToStop)
             {
                 throw CommonExceptions.FailedToUpgradeModuleConfigurationDueToModuleStatus(operation);
             }
@@ -409,7 +449,8 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Variables = new CamundaVariables
                 {
                     { CamundaWorkerKey.ModuleId, moduleId },
-                    { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run }
+                    { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run },
+                    { CamundaWorkerKey.Action, ActionType.Upgrade }
                 }
             }.SendRequest(operation, camundaClient, true);
         }
@@ -422,7 +463,7 @@ namespace VXDesign.Store.DevTools.Common.Services
                 throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
             }
 
-            if (module.Status != ModuleStatus.Run && module.Status != ModuleStatus.Stopped)
+            if (module.Status != ModuleStatus.Run && module.Status != ModuleStatus.Stopped && module.Status != ModuleStatus.FailedToRun && module.Status != ModuleStatus.FailedToStop)
             {
                 throw CommonExceptions.FailedToDowngradeModuleConfigurationDueToModuleStatus(operation);
             }
@@ -463,7 +504,8 @@ namespace VXDesign.Store.DevTools.Common.Services
                 Variables = new CamundaVariables
                 {
                     { CamundaWorkerKey.ModuleId, moduleId },
-                    { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run }
+                    { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run },
+                    { CamundaWorkerKey.Action, ActionType.Downgrade }
                 }
             }.SendRequest(operation, camundaClient, true);
         }

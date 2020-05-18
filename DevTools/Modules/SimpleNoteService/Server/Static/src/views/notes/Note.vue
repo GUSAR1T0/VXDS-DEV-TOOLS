@@ -12,6 +12,7 @@
                             <span><fa icon="sticky-note"/></span>
                         </el-button>
                     </el-tooltip>
+
                     <el-tooltip effect="dark" placement="top" v-if="noteId">
                         <div slot="content">
                             To Note Info
@@ -21,6 +22,7 @@
                             <span><fa icon="info-circle"/></span>
                         </el-button>
                     </el-tooltip>
+
                     <el-tooltip effect="dark" placement="top" v-if="noteId">
                         <div slot="content">
                             Move To Another Folder
@@ -30,6 +32,17 @@
                             <span><fa icon="exchange-alt"/></span>
                         </el-button>
                     </el-tooltip>
+
+                    <el-tooltip effect="dark" placement="top" v-if="noteId">
+                        <div slot="content">
+                            Notify Users About This Note
+                        </div>
+                        <el-button type="primary" plain circle class="rounded-button"
+                                   @click="notificationDialog.visible = true">
+                            <span><fa icon="bell"/></span>
+                        </el-button>
+                    </el-tooltip>
+
                     <el-tooltip effect="dark" placement="top" v-if="noteId">
                         <div slot="content">
                             Delete This Note
@@ -199,6 +212,13 @@
                 </template>
             </Profile>
 
+            <NoteNotificationDialog
+                    :dialog-status="notificationDialog"
+                    :folder-id="folderId"
+                    :note-id="noteId"
+                    :closed="loadNote"
+            />
+
             <NoteInfoDialog
                     :dialog-status="dialogNoteInfoStatus"
                     :note="note"
@@ -269,17 +289,18 @@
     import { DELETE_HTTP_REQUEST, GET_HTTP_REQUEST, POST_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
     import {
         CHANGE_NOTE_FOLDER_ENDPOINT,
+        CREATE_NOTE_ENDPOINT,
         DELETE_NOTE_ENDPOINT,
         GET_FOLDER_LIST_ENDPOINT,
         GET_FOLDER_NAME_ENDPOINT,
         GET_NOTE_ENDPOINT,
-        CREATE_NOTE_ENDPOINT,
-        UPDATE_NOTE_ENDPOINT,
-        SEARCH_PROJECTS_ENDPOINT
+        SEARCH_PROJECTS_ENDPOINT,
+        UPDATE_NOTE_ENDPOINT
     } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
 
     import LoadingContainer from "@/components/page/LoadingContainer";
+    import NoteNotificationDialog from "@/components/notes/NoteNotificationDialog";
     import NoteInfoDialog from "@/components/notes/NoteInfoDialog";
     import ChangeFolderDialog from "@/components/notes/ChangeFolderDialog";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
@@ -321,6 +342,7 @@
             EditorMenuBar,
             LoadingContainer,
             NoteInfoDialog,
+            NoteNotificationDialog,
             ChangeFolderDialog,
             ConfirmationDialog,
             Profile,
@@ -372,6 +394,9 @@
                 },
                 folderName: null,
                 content: "<h1 id='title'></h1><p></p>",
+                notificationDialog: {
+                    visible: false
+                },
                 dialogNoteInfoStatus: {
                     visible: false
                 },

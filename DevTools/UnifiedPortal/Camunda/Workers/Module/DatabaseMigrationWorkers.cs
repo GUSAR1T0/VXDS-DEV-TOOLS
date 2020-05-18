@@ -24,6 +24,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
         [CamundaWorkerTopic("UnifiedPortal.Module.Database.Rollback")]
         public class RollbackWorker : ModuleProcessingWorker
         {
+            protected override bool Regression => true;
+
             public RollbackWorker(IFileStore fileStore, IModuleStore moduleStore, IPortalSettingsStore portalSettingsStore) : base(fileStore, moduleStore, portalSettingsStore)
             {
             }
@@ -37,6 +39,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
         [CamundaWorkerTopic("UnifiedPortal.Module.Database.Downgrade")]
         public class DowngradeWorker : ModuleProcessingWorker
         {
+            protected override bool Regression => true;
+
             public DowngradeWorker(IFileStore fileStore, IModuleStore moduleStore, IPortalSettingsStore portalSettingsStore) : base(fileStore, moduleStore, portalSettingsStore)
             {
             }

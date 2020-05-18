@@ -22,6 +22,22 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Docker Deployment": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "https://0.0.0.0:9010;http://0.0.0.0:9011",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Docker"
+      }
+    },
+    "Docker + Local": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "https://0.0.0.0:9010;http://0.0.0.0:9011",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local"
+      }
     }
   }
 }

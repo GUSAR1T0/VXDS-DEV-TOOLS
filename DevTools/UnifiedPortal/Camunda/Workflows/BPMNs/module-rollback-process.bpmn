@@ -13,6 +13,7 @@
       <bpmn:lane id="Lane_1otbvnh" name="Unsuccessful way">
         <bpmn:flowNodeRef>Activity_1rkyyq1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0wxj8ax</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1gk7oe4</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0cv5p53" name="Successful way">
         <bpmn:flowNodeRef>Activity_1us6s0n</bpmn:flowNodeRef>
@@ -62,6 +63,7 @@
       <bpmn:extensionElements>
         <camunda:in businessKey="${moduleId.toString()}" />
         <camunda:in sourceExpression="${moduleId}" target="moduleId" />
+        <camunda:in sourceExpression="${action}" target="action" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1rh4cqx</bpmn:incoming>
       <bpmn:outgoing>Flow_0estrvo</bpmn:outgoing>
@@ -87,9 +89,6 @@
       <bpmn:incoming>Flow_0o9cql0</bpmn:incoming>
       <bpmn:outgoing>Flow_0d3srsl</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_0wxj8ax" name="The end of the process (unsuccessful result)">
-      <bpmn:incoming>Flow_0d3srsl</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:endEvent id="Event_17oa8m6" name="The end of the process (successful result)">
       <bpmn:incoming>Flow_00iyxfd</bpmn:incoming>
     </bpmn:endEvent>
@@ -97,6 +96,7 @@
       <bpmn:extensionElements>
         <camunda:in businessKey="${moduleId.toString()}" />
         <camunda:in sourceExpression="${moduleId}" target="moduleId" />
+        <camunda:in sourceExpression="${action}" target="action" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1duj6u5</bpmn:incoming>
       <bpmn:outgoing>Flow_00iyxfd</bpmn:outgoing>
@@ -135,7 +135,7 @@
     <bpmn:sequenceFlow id="Flow_19svfs2" sourceRef="Activity_1vot70i" targetRef="Activity_1us6s0n" />
     <bpmn:sequenceFlow id="Flow_0ifisyo" sourceRef="Activity_1n5th3k" targetRef="Activity_0i29ybj" />
     <bpmn:sequenceFlow id="Flow_0o9cql0" sourceRef="Event_0v0q8vi" targetRef="Activity_1rkyyq1" />
-    <bpmn:sequenceFlow id="Flow_0d3srsl" sourceRef="Activity_1rkyyq1" targetRef="Event_0wxj8ax" />
+    <bpmn:sequenceFlow id="Flow_0d3srsl" sourceRef="Activity_1rkyyq1" targetRef="Activity_1gk7oe4" />
     <bpmn:sequenceFlow id="Flow_1rh4cqx" name="Stop" sourceRef="Gateway_0xi5oq2" targetRef="Activity_05xx58z">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${componentsStopRequired == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -143,6 +143,14 @@
     <bpmn:sequenceFlow id="Flow_19u0eod" sourceRef="Event_06htlb9" targetRef="Gateway_0xi5oq2" />
     <bpmn:sequenceFlow id="Flow_1duj6u5" sourceRef="Activity_0i29ybj" targetRef="Activity_1igcfvt" />
     <bpmn:sequenceFlow id="Flow_00iyxfd" sourceRef="Activity_1igcfvt" targetRef="Event_17oa8m6" />
+    <bpmn:endEvent id="Event_0wxj8ax" name="The end of the process (unsuccessful result)">
+      <bpmn:incoming>Flow_0og8cng</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1gk7oe4" name="Audit" camunda:type="external" camunda:topic="UnifiedPortal.Module.Audit">
+      <bpmn:incoming>Flow_0d3srsl</bpmn:incoming>
+      <bpmn:outgoing>Flow_0og8cng</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0og8cng" sourceRef="Activity_1gk7oe4" targetRef="Event_0wxj8ax" />
   </bpmn:process>
   <bpmn:error id="Error_0ck0joi" name="Module Processing Error" errorCode="module-processing-error" />
   <bpmn:error id="Error_05t6nx1" name="Module Processing Error" errorCode="module-processing-error" />
@@ -184,7 +192,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0d3srsl_di" bpmnElement="Flow_0d3srsl">
         <di:waypoint x="1540" y="387" />
-        <di:waypoint x="1602" y="387" />
+        <di:waypoint x="1600" y="387" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o9cql0_di" bpmnElement="Flow_0o9cql0">
         <di:waypoint x="1330" y="265" />
@@ -236,6 +244,10 @@
           <dc:Bounds x="388" y="158" width="22" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0og8cng_di" bpmnElement="Flow_0og8cng">
+        <di:waypoint x="1700" y="387" />
+        <di:waypoint x="1762" y="387" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1us6s0n_di" bpmnElement="Activity_1us6s0n">
         <dc:Bounds x="960" y="167" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -260,12 +272,6 @@
       <bpmndi:BPMNShape id="Activity_1rkyyq1_di" bpmnElement="Activity_1rkyyq1">
         <dc:Bounds x="1440" y="347" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0wxj8ax_di" bpmnElement="Event_0wxj8ax">
-        <dc:Bounds x="1602" y="369" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1585" y="412" width="71" height="53" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_17oa8m6_di" bpmnElement="Event_17oa8m6">
         <dc:Bounds x="1762" y="189" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -283,6 +289,15 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0xi5oq2_di" bpmnElement="Gateway_0xi5oq2" isMarkerVisible="true">
         <dc:Bounds x="351" y="182" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wxj8ax_di" bpmnElement="Event_0wxj8ax">
+        <dc:Bounds x="1762" y="369" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1745" y="412" width="71" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gk7oe4_di" bpmnElement="Activity_1gk7oe4">
+        <dc:Bounds x="1600" y="347" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0v0q8vi_di" bpmnElement="Event_0v0q8vi">
         <dc:Bounds x="1312" y="229" width="36" height="36" />

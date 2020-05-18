@@ -11,6 +11,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Constants
         public const string ModuleRollbackProcess = "module-rollback-process";
         public const string ModuleUninstallationProcess = "module-uninstallation-process";
         public const string HostDeletionProcess = "host-deletion-process";
+        public const string NoteNotificationProcess = "note-notification-process";
 
         #endregion
 
@@ -29,6 +30,10 @@ namespace VXDesign.Store.DevTools.Common.Core.Constants
         public const string HostId = "hostId";
         public const string ModuleProcessInstanceIds = "moduleProcessInstanceIds";
         public const string Index = "index";
+        public const string NoteId = "noteId";
+        public const string UserIds = "userIds";
+        public const string ErrorMessage = "errorMessage";
+        public const string Action = "action";
 
         #endregion
     }

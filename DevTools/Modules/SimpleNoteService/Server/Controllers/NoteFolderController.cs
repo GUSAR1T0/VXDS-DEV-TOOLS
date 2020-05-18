@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -246,6 +247,25 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Server.Controllers
         [PortalAuthentication(PortalPermission.AccessToModule)]
         [HttpDelete("{folderId}/note/{noteId}")]
         public async Task<ActionResult> DeleteNote(int folderId, int noteId) => await Execute(async operation => await noteFolderService.DeleteNoteById(operation, folderId, noteId));
+
+        /// <summary>
+        /// Sends notifications about an existed note
+        /// </summary>
+        /// <param name="folderId">ID of a note folder</param>
+        /// <param name="noteId">ID of a note</param>
+        /// <param name="userIds">List of user IDs</param>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.AccessToModule)]
+        [HttpPut("{folderId}/note/{noteId}/notify")]
+        public async Task<ActionResult> SendNotificationsAboutNote(int folderId, int noteId, [FromQuery(Name = "u")] IEnumerable<int> userIds) => await Execute(async operation =>
+        {
+            await noteFolderService.SendNotificationsAboutNote(operation, folderId, noteId, userIds);
+        });
 
         #endregion
     }

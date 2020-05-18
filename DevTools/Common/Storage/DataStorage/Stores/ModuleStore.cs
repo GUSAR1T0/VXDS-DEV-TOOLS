@@ -27,6 +27,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task DowngradeModule(IOperation operation, int moduleId, int userId, int configurationId);
         Task DeleteModule(IOperation operation, int moduleId);
         Task<IEnumerable<ModuleHistoryEntity>> GetModuleHistory(IOperation operation, int moduleId);
+        Task AddModuleHistoryRecord(IOperation operation, int moduleId, string errorMessage);
     }
 
     public class ModuleStore : IModuleStore
@@ -219,14 +220,14 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             {
                 Id = moduleId,
                 Status = status,
-                StatusName = status.ToString("G")
+                StatusName = status.GetDescription()
             }, @"
                 UPDATE [portal].[Module]
                 SET [StatusId] = @Status
                 WHERE [Id] = @Id;
 
                 INSERT INTO [portal].[ModuleHistory] ([ModuleId], [Change])
-                VALUES (@Id, 'Module status was changed to ""' + @StatusName + '""');
+                VALUES (@Id, '[Operation: ' + @ComplexOperationId + '] Module status was changed to ""' + @StatusName + '""');
             ");
         }
 
@@ -290,7 +291,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 VALUES (@Id, @ConfigurationId);
 
                 INSERT INTO [portal].[ModuleHistory] ([ModuleId], [Change])
-                VALUES (@Id, 'Module was created');
+                VALUES (@Id, '[Operation: ' + @ComplexOperationId + '] Module was created');
 
                 SELECT @Id;
             ");
@@ -308,7 +309,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 WHERE [Id] = @Id;
 
                 INSERT INTO [portal].[ModuleHistory] ([ModuleId], [Change])
-                VALUES (@Id, 'Module was updated');
+                VALUES (@Id, '[Operation: ' + @ComplexOperationId + '] Module was updated');
             ");
         }
 
@@ -344,7 +345,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 WHERE [ModuleId] = @Id;
 
                 INSERT INTO [portal].[ModuleHistory] ([ModuleId], [Change])
-                VALUES (@Id, 'Module was prepared to upgrade');
+                VALUES (@Id, '[Operation: ' + @ComplexOperationId + '] Module was prepared to upgrade');
             ");
         }
 
@@ -367,7 +368,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 WHERE [ModuleId] = @Id;
 
                 INSERT INTO [portal].[ModuleHistory] ([ModuleId], [Change])
-                VALUES (@Id, 'Module was prepared to upgrade');
+                VALUES (@Id, '[Operation: ' + @ComplexOperationId + '] Module was prepared to upgrade');
             ");
         }
 
@@ -390,7 +391,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 WHERE [ModuleId] = @Id;
 
                 INSERT INTO [portal].[ModuleHistory] ([ModuleId], [Change])
-                VALUES (@Id, 'Module was prepared to downgrade');
+                VALUES (@Id, '[Operation: ' + @ComplexOperationId + '] Module was prepared to downgrade');
             ");
         }
 
@@ -408,6 +409,18 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 SELECT [Time], [Change]
                 FROM [portal].[ModuleHistory]
                 WHERE [ModuleId] = @Id;
+            ");
+        }
+
+        public async Task AddModuleHistoryRecord(IOperation operation, int moduleId, string errorMessage)
+        {
+            await operation.Connection.ExecuteAsync(new
+            {
+                Id = moduleId,
+                Error = errorMessage
+            }, @"
+                INSERT INTO [portal].[ModuleHistory] ([ModuleId], [Change])
+                VALUES (@Id, '[Operation: ' + @ComplexOperationId + '] ' + @Error);
             ");
         }
     }

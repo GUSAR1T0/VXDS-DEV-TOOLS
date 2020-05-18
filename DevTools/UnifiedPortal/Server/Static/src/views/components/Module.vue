@@ -43,7 +43,7 @@
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip effect="dark" placement="top" v-if="module.status === 23">
+                    <el-tooltip effect="dark" placement="top" v-if="module.status === 23 || module.status === 20">
                         <div slot="content">
                             Run This Module
                         </div>
@@ -53,13 +53,23 @@
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip effect="dark" placement="top" v-if="module.status === 19">
+                    <el-tooltip effect="dark" placement="top" v-if="module.status === 19 || module.status === 24">
                         <div slot="content">
                             Stop This Module
                         </div>
                         <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
                                    class="rounded-button" @click="stopModule">
                             <span><fa icon="pause"/></span>
+                        </el-button>
+                    </el-tooltip>
+
+                    <el-tooltip effect="dark" placement="top" v-if="module.status === 16">
+                        <div slot="content">
+                            Reinstall This Module
+                        </div>
+                        <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
+                                   class="rounded-button" @click="reinstallModule">
+                            <span><fa icon="redo-alt"/></span>
                         </el-button>
                     </el-tooltip>
 
@@ -74,7 +84,7 @@
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="(module.status === 19 || module.status === 23) && module.nextConfigurationId !== null"
+                                v-if="(module.status === 19 || module.status === 20 || module.status === 23 || module.status === 24) && module.nextConfigurationId !== null"
                     >
                         <div slot="content">
                             Upgrade This Module To {{ getNextConfigurationVersion }}
@@ -86,7 +96,7 @@
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="(module.status === 19 || module.status === 23) && module.previousConfigurationId !== null"
+                                v-if="(module.status === 19 || module.status === 20 || module.status === 23 || module.status === 24) && module.previousConfigurationId !== null"
                     >
                         <div slot="content">
                             Downgrade This Module To {{ getPreviousConfigurationVersion }}
@@ -98,7 +108,7 @@
                     </el-tooltip>
 
                     <el-tooltip effect="dark" placement="top"
-                                v-if="module.status === 19 || module.status === 23"
+                                v-if="module.status === 19 || module.status === 20 || module.status === 23 || module.status === 24"
                     >
                         <div slot="content">
                             Uninstall This Module
@@ -238,7 +248,7 @@
     import { DELETE_HTTP_REQUEST, GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST } from "@/constants/servers";
     import {
-        GET_MODULE_PROFILE_ENDPOINT,
+        GET_MODULE_PROFILE_ENDPOINT, REINSTALL_MODULE_ENDPOINT,
         RUN_MODULE_ENDPOINT,
         STOP_MODULE_ENDPOINT,
         UNINSTALL_MODULE_ENDPOINT
@@ -376,6 +386,7 @@
                 }
             },
             runModule() {
+                this.loadingIsActive = true;
                 this.$store.dispatch(PUT_HTTP_REQUEST, {
                     server: LOCALHOST,
                     endpoint: format(RUN_MODULE_ENDPOINT, {
@@ -399,6 +410,7 @@
                 });
             },
             stopModule() {
+                this.loadingIsActive = true;
                 this.$store.dispatch(PUT_HTTP_REQUEST, {
                     server: LOCALHOST,
                     endpoint: format(STOP_MODULE_ENDPOINT, {
@@ -410,6 +422,30 @@
                     this.$notify.success({
                         title: "This module was updated",
                         message: "The status of module was triggered for stopping"
+                    });
+                    this.loadModule();
+                }).catch(error => {
+                    this.loadingIsActive = false;
+                    this.$notify.error({
+                        title: "Failed to stop module",
+                        duration: 10000,
+                        message: renderErrorNotificationMessage(this.$createElement, error.response)
+                    });
+                });
+            },
+            reinstallModule() {
+                this.loadingIsActive = true;
+                this.$store.dispatch(PUT_HTTP_REQUEST, {
+                    server: LOCALHOST,
+                    endpoint: format(REINSTALL_MODULE_ENDPOINT, {
+                        id: this.moduleId
+                    }),
+                    config: getConfiguration()
+                }).then(() => {
+                    this.loadingIsActive = false;
+                    this.$notify.success({
+                        title: "This module was updated",
+                        message: "The status of module was triggered for reinstalling"
                     });
                     this.loadModule();
                 }).catch(error => {

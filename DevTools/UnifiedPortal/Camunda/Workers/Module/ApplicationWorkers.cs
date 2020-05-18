@@ -24,6 +24,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
         [CamundaWorkerTopic("UnifiedPortal.Module.Application.Stop")]
         public class StopWorker : ModuleProcessingWorker
         {
+            protected override bool Regression => true;
+
             public StopWorker(IFileStore fileStore, IModuleStore moduleStore, IPortalSettingsStore portalSettingsStore) : base(fileStore, moduleStore, portalSettingsStore)
             {
             }

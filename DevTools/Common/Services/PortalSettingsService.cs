@@ -12,6 +12,7 @@ using VXDesign.Store.DevTools.Common.Clients.RemoteHost.Entities;
 using VXDesign.Store.DevTools.Common.Clients.RemoteHost.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.GitHub;
+using VXDesign.Store.DevTools.Common.Core.Entities.Module;
 using VXDesign.Store.DevTools.Common.Core.Entities.Settings;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
@@ -110,7 +111,11 @@ namespace VXDesign.Store.DevTools.Common.Services
             await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.HostDeletionProcess)
             {
                 BusinessKey = hostId.ToString(),
-                Variables = new CamundaVariables { { CamundaWorkerKey.HostId, hostId } }
+                Variables = new CamundaVariables
+                {
+                    { CamundaWorkerKey.HostId, hostId },
+                    { CamundaWorkerKey.Action, ActionType.NoChanges }
+                }
             }.SendRequest(operation, camundaClient, true);
         }
 

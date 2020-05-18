@@ -4,6 +4,7 @@ using VXDesign.Store.DevTools.Common.Clients.RemoteHost;
 using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Module;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
 
@@ -46,6 +47,9 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
             [CamundaWorkerVariable(Name = CamundaWorkerKey.ModuleStatus, Direction = CamundaVariableDirection.Input)]
             public ModuleStatus ModuleStatus { get; set; }
 
+            [CamundaWorkerVariable(Name = CamundaWorkerKey.ErrorMessage, Direction = CamundaVariableDirection.Input)]
+            public string ErrorMessage { get; set; }
+
             private readonly IModuleStore moduleStore;
 
             public ErrorWorker(IModuleStore moduleStore)
@@ -60,11 +64,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
                     throw CommonExceptions.ModuleWasNotFound(operation, ModuleId);
                 }
 
-                logger.Debug($"[{ModuleId}] Module update didn't complete successfully, setting status to ${ModuleStatus:G}").Wait();
+                logger.Debug($"[Operation: {operation.ComplexOperationId}, module: {ModuleId}] Module update didn't complete successfully, setting status to \"{ModuleStatus.GetDescription()}\"").Wait();
 
                 moduleStore.ChangeStatus(operation, ModuleId, ModuleStatus).Wait();
+                moduleStore.AddModuleHistoryRecord(operation, ModuleId, ErrorMessage).Wait();
 
-                logger.Debug($"[{ModuleId}] Module status was updated").Wait();
+                logger.Debug($"[Operation: {operation.ComplexOperationId}, module: {ModuleId}] Module status was updated").Wait();
             }
         }
 
@@ -91,11 +96,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
                     throw CommonExceptions.ModuleWasNotFound(operation, ModuleId);
                 }
 
-                logger.Debug($"[{ModuleId}] Setting module status to \"{ModuleStatus:G}\"").Wait();
+                logger.Debug($"[Operation: {operation.ComplexOperationId}, module: {ModuleId}] Setting module status to \"{ModuleStatus.GetDescription()}\"").Wait();
 
                 moduleStore.ChangeStatus(operation, ModuleId, ModuleStatus).Wait();
 
-                logger.Debug($"[{ModuleId}] Module status was updated").Wait();
+                logger.Debug($"[Operation: {operation.ComplexOperationId}, module: {ModuleId}] Module status was updated").Wait();
             }
         }
 
@@ -119,11 +124,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
                     throw CommonExceptions.ModuleWasNotFound(operation, ModuleId);
                 }
 
-                logger.Debug($"[{ModuleId}] Removing module").Wait();
+                logger.Debug($"[Operation: {operation.ComplexOperationId}, module: {ModuleId}] Removing module").Wait();
 
                 moduleStore.DeleteModule(operation, ModuleId).Wait();
 
-                logger.Debug($"[{ModuleId}] Module status was updated").Wait();
+                logger.Debug($"[Operation: {operation.ComplexOperationId}, module: {ModuleId}] Module status was updated").Wait();
             }
         }
     }

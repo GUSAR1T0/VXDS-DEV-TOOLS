@@ -82,7 +82,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                     variables.Add(variableName, (byte[]) variableValue);
                 }
                 else if (propertyInfo.PropertyType == typeof(short) || propertyInfo.PropertyType == typeof(short?) ||
-                         GetFromPossibleEnumType(propertyInfo.PropertyType) == typeof(short))
+                         propertyInfo.PropertyType.GetUnderlyingTypeFromPossibleEnumType() == typeof(short))
                 {
                     if (variableValue == null)
                     {
@@ -94,7 +94,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                     }
                 }
                 else if (propertyInfo.PropertyType == typeof(int) || propertyInfo.PropertyType == typeof(int?) ||
-                         GetFromPossibleEnumType(propertyInfo.PropertyType) == typeof(int))
+                         propertyInfo.PropertyType.GetUnderlyingTypeFromPossibleEnumType() == typeof(int))
                 {
                     if (variableValue == null)
                     {
@@ -106,7 +106,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                     }
                 }
                 else if (propertyInfo.PropertyType == typeof(long) || propertyInfo.PropertyType == typeof(long?) ||
-                         GetFromPossibleEnumType(propertyInfo.PropertyType) == typeof(long))
+                         propertyInfo.PropertyType.GetUnderlyingTypeFromPossibleEnumType() == typeof(long))
                 {
                     if (variableValue == null)
                     {
@@ -148,17 +148,6 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             }
 
             return variables;
-        }
-
-        private static Type GetFromPossibleEnumType(Type propertyType)
-        {
-            if (propertyType.IsEnum)
-            {
-                return Enum.GetUnderlyingType(propertyType);
-            }
-
-            var underlyingType = Nullable.GetUnderlyingType(propertyType);
-            return underlyingType != null && underlyingType.IsEnum ? Enum.GetUnderlyingType(underlyingType) : null;
         }
 
         public abstract void Execute(IOperation operation, IOperationLogger logger);

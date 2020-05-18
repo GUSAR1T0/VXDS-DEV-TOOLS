@@ -9,8 +9,8 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <version.springboot>2.3.0.RELEASE</version.springboot>
-        <version.camunda.bom>7.13.0-alpha5</version.camunda.bom>
+        <version.springboot>2.2.7.RELEASE</version.springboot>
+        <version.camunda.bom>7.13.0-alpha4</version.camunda.bom>
     </properties>
 
     <dependencyManagement>
@@ -83,6 +83,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${version.springboot}</version>
                 <configuration>
                     <layout>ZIP</layout>
                 </configuration>
@@ -99,9 +100,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <release>14</release>
-                    <source>14</source>
-                    <target>14</target>
+                    <release>13</release>
+                    <source>13</source>
+                    <target>13</target>
                 </configuration>
             </plugin>
         </plugins>

@@ -114,6 +114,19 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         public async Task<ActionResult> UninstallModule(int moduleId) => await Execute(async operation => await moduleService.UninstallModule(operation, moduleId));
 
         /// <summary>
+        /// Reinstalls a module
+        /// </summary>
+        /// <returns>Nothing to return</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.ManageModules)]
+        [HttpPut("{moduleId}/reinstall")]
+        public async Task<ActionResult> ReinstallModule(int moduleId) => await Execute(async operation => await moduleService.ReinstallModule(operation, moduleId));
+
+        /// <summary>
         /// Obtains history changes of a module
         /// </summary>
         /// <returns>Model of module history data</returns>

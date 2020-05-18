@@ -118,7 +118,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
             var retries = Properties.CountOfRetriesWhenFetchIsUnsuccessful;
             while (retries > 0)
             {
-                await logger.Trace("Fetching task");
+                await logger.Trace($"[Operation: {operation.ComplexOperationId}] Fetching task");
 
                 var response = await new ExternalTask.FetchAndLockRequest
                 {
@@ -133,12 +133,12 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 {
                     retries--;
                     var retryAfter = TimeSpan.FromMilliseconds(Properties.RetryAfterFetchTimeout);
-                    await logger.Error($"Failed to fetch task, retry after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
+                    await logger.Error($"[Operation: {operation.ComplexOperationId}] Failed to fetch task, retry after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
                     if (retries != 0) await Task.Delay(retryAfter);
                 }
                 else if (response.Response.Count > 0)
                 {
-                    await logger.Trace("Executing task");
+                    await logger.Trace($"[Operation: {operation.ComplexOperationId}] Executing task");
 
                     try
                     {
@@ -146,6 +146,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                         var operationContext = OperationContext.Builder()
                             .SetName(camundaWorkerType.FullName, GetTopicName(camundaWorkerType), "TaskRunner")
                             .SetUserId(null, true)
+                            .SetParentOperation(operation)
                             .Create();
                         await OperationService.Make(operationContext, async innerOperation => await Run<TCamundaWorker>(innerOperation, logger, response.Response[0]));
                     }
@@ -178,18 +179,18 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 }
                 catch (CamundaWorkerExecutionIsNotCompletedYet)
                 {
-                    await logger.Debug("Skipping task");
+                    await logger.Debug($"[Operation: {operation.ComplexOperationId}] Skipping task");
                     return;
                 }
                 catch (CamundaWorkerBpmnError error)
                 {
-                    await logger.Debug("BPMN error is thrown");
+                    await logger.Debug($"[Operation: {operation.ComplexOperationId}] BPMN error is thrown", error.ToLog());
                     exception = await ThrowBpmnError(operation, logger, item, worker, error);
                     if (exception.IsEmpty()) return;
                 }
                 catch (Exception e)
                 {
-                    await logger.Error("Failed to perform task", e.ToLog());
+                    await logger.Error($"[Operation: {operation.ComplexOperationId}] Failed to perform task", e.ToLog());
                     exception = e;
                 }
                 finally
@@ -206,7 +207,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 IntermediateCamundaResponse<EmptyResult> response;
                 if (exception.IsEmpty())
                 {
-                    await logger.Trace("Trying to complete task");
+                    await logger.Trace($"[Operation: {operation.ComplexOperationId}] Trying to complete task");
                     response = await new ExternalTask.CompleteRequest(item.Id)
                     {
                         WorkerId = item.WorkerId,
@@ -216,7 +217,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 else
                 {
                     var countOfRetries = (item.Retries ?? Properties.CountOfRetriesWhenFailuresAre) - 1;
-                    await logger.Trace($"Trying to handle failure, retry task execution after {retryAfter}... (remaining attempts: {countOfRetries})");
+                    await logger.Trace($"[Operation: {operation.ComplexOperationId}] Trying to handle failure, retry task execution after {retryAfter}... (remaining attempts: {countOfRetries})");
                     response = await new ExternalTask.HandleFailureRequest(item.Id)
                     {
                         WorkerId = item.WorkerId,
@@ -231,19 +232,19 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 {
                     retries--;
                     var resultType = exception.IsEmpty() ? "complete task" : "handle failure";
-                    await logger.Error($"Couldn't {resultType}, retry task handling after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
+                    await logger.Error($"[Operation: {operation.ComplexOperationId}] Couldn't {resultType}, retry task handling after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
                     if (retries != 0) await Task.Delay(retryAfter);
                 }
                 else
                 {
-                    await logger.Debug($"{(exception.IsEmpty() ? "Complete task" : "Handle failure")} process is successful");
+                    await logger.Debug($"[Operation: {operation.ComplexOperationId}] {(exception.IsEmpty() ? "Complete task" : "Handle failure")} process is successful");
                     break;
                 }
             }
 
             if (retries == 0)
             {
-                await logger.Fatal($"Couldn't {(exception.IsEmpty() ? "complete task" : "handle failure")}, stop retrying");
+                await logger.Fatal($"[Operation: {operation.ComplexOperationId}] Couldn't {(exception.IsEmpty() ? "complete task" : "handle failure")}, stop retrying");
             }
 
             if (!exception.IsEmpty())
@@ -260,7 +261,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                 {
                     while (true)
                     {
-                        await logger.Debug("Extending lock");
+                        await logger.Debug($"[Operation: {operation.ComplexOperationId}] Extending lock");
 
                         var response = await new ExternalTask.ExtendLockRequest(item.Id)
                         {
@@ -271,12 +272,12 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                         if (!response.IsWithoutErrors())
                         {
                             var retryAfter = TimeSpan.FromSeconds(5);
-                            await logger.Error($"Couldn't extend lock for task, retry after {retryAfter}", response.ToLog());
+                            await logger.Error($"[Operation: {operation.ComplexOperationId}] Couldn't extend lock for task, retry after {retryAfter}", response.ToLog());
                             await Task.Delay(retryAfter, token);
                         }
                         else
                         {
-                            await logger.Debug("Extend lock process is successful");
+                            await logger.Debug($"[Operation: {operation.ComplexOperationId}] Extend lock process is successful");
                             await Task.Delay(TimeSpan.FromMilliseconds(Properties.LockDuration).Divide(2), token);
                             break;
                         }
@@ -310,25 +311,25 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
                     if (!response.IsWithoutErrors())
                     {
                         retries--;
-                        await logger.Error($"Couldn't send BPMN error for task, retry task handling after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
+                        await logger.Error($"[Operation: {operation.ComplexOperationId}] Couldn't send BPMN error for task, retry task handling after {retryAfter}... (remaining attempts: {retries})", response.ToLog());
                         if (retries != 0) await Task.Delay(retryAfter);
                     }
                     else
                     {
-                        await logger.Debug("Send BPMN error is successful");
+                        await logger.Debug($"[Operation: {operation.ComplexOperationId}] Send BPMN error is successful");
                         break;
                     }
                 }
 
                 if (retries == 0)
                 {
-                    await logger.Fatal("Couldn't send BPMN error for task, stop retrying");
+                    await logger.Fatal($"[Operation: {operation.ComplexOperationId}] Couldn't send BPMN error for task, stop retrying");
                     return new Exception(response?.Output);
                 }
             }
             catch (Exception e)
             {
-                await logger.Error("Failed to send BPMN error for task", e.ToLog());
+                await logger.Error($"[Operation: {operation.ComplexOperationId}] Failed to send BPMN error for task", e.ToLog());
                 return e;
             }
 

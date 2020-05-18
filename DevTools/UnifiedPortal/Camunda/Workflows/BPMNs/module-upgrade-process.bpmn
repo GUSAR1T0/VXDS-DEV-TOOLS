@@ -26,6 +26,7 @@
       <bpmn:lane id="Lane_1ld7i80" name="Unsuccessful way">
         <bpmn:flowNodeRef>Activity_0851ihb</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1x5t7xe</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0seltzd</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:serviceTask id="Activity_0upy1ru" name="Database migration: upgrade" camunda:type="external" camunda:topic="UnifiedPortal.Module.Database.Upgrade">
@@ -70,7 +71,7 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1rpje4m" sourceRef="Activity_0b2iwwv" targetRef="Activity_19tmk9y" />
     <bpmn:sequenceFlow id="Flow_1xea9p8" sourceRef="Event_0vyp3zz" targetRef="Activity_0851ihb" />
-    <bpmn:sequenceFlow id="Flow_0yqv7rf" sourceRef="Activity_0851ihb" targetRef="Event_1x5t7xe" />
+    <bpmn:sequenceFlow id="Flow_0yqv7rf" sourceRef="Activity_0851ihb" targetRef="Activity_0seltzd" />
     <bpmn:sequenceFlow id="Flow_1nuznhz" name="Stop" sourceRef="Gateway_0red60s" targetRef="Activity_1ccmgpu">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${componentsStopRequired == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -89,6 +90,7 @@
       <bpmn:extensionElements>
         <camunda:in businessKey="${moduleId.toString()}" />
         <camunda:in sourceExpression="${moduleId}" target="moduleId" />
+        <camunda:in sourceExpression="${action}" target="action" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1nuznhz</bpmn:incoming>
       <bpmn:outgoing>Flow_0gzemjb</bpmn:outgoing>
@@ -116,9 +118,6 @@
       <bpmn:incoming>Flow_1xea9p8</bpmn:incoming>
       <bpmn:outgoing>Flow_0yqv7rf</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_1x5t7xe" name="The end of the process (unsuccessful result)">
-      <bpmn:incoming>Flow_0yqv7rf</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:endEvent id="Event_18e7qs5" name="The end of the process (successful result)">
       <bpmn:incoming>Flow_1ba7lgc</bpmn:incoming>
     </bpmn:endEvent>
@@ -126,6 +125,7 @@
       <bpmn:extensionElements>
         <camunda:in businessKey="${moduleId.toString()}" />
         <camunda:in sourceExpression="${moduleId}" target="moduleId" />
+        <camunda:in sourceExpression="${action}" target="action" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_16qgnlz</bpmn:incoming>
       <bpmn:outgoing>Flow_1ba7lgc</bpmn:outgoing>
@@ -139,6 +139,14 @@
       <bpmn:outgoing>Flow_118jr77</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1ba7lgc" sourceRef="Activity_0vzbdgd" targetRef="Event_18e7qs5" />
+    <bpmn:endEvent id="Event_1x5t7xe" name="The end of the process (unsuccessful result)">
+      <bpmn:incoming>Flow_09d1ya2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_09d1ya2" sourceRef="Activity_0seltzd" targetRef="Event_1x5t7xe" />
+    <bpmn:serviceTask id="Activity_0seltzd" name="Audit" camunda:type="external" camunda:topic="UnifiedPortal.Module.Audit">
+      <bpmn:incoming>Flow_0yqv7rf</bpmn:incoming>
+      <bpmn:outgoing>Flow_09d1ya2</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:category id="Category_1yq0g07">
     <bpmn:categoryValue id="CategoryValue_1plbxff" value="" />
@@ -155,6 +163,10 @@
       <bpmndi:BPMNShape id="Lane_1h30daf_di" bpmnElement="Lane_1h30daf" isHorizontal="true">
         <dc:Bounds x="190" y="50" width="1660" height="220" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ba7lgc_di" bpmnElement="Flow_1ba7lgc">
+        <di:waypoint x="1700" y="177" />
+        <di:waypoint x="1762" y="177" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_16qgnlz_di" bpmnElement="Flow_16qgnlz">
         <di:waypoint x="1540" y="177" />
         <di:waypoint x="1600" y="177" />
@@ -176,7 +188,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yqv7rf_di" bpmnElement="Flow_0yqv7rf">
         <di:waypoint x="1540" y="357" />
-        <di:waypoint x="1602" y="357" />
+        <di:waypoint x="1600" y="357" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xea9p8_di" bpmnElement="Flow_1xea9p8">
         <di:waypoint x="1330" y="235" />
@@ -228,9 +240,9 @@
         <di:waypoint x="1060" y="177" />
         <di:waypoint x="1120" y="177" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ba7lgc_di" bpmnElement="Flow_1ba7lgc">
-        <di:waypoint x="1700" y="177" />
-        <di:waypoint x="1762" y="177" />
+      <bpmndi:BPMNEdge id="Flow_09d1ya2_di" bpmnElement="Flow_09d1ya2">
+        <di:waypoint x="1700" y="357" />
+        <di:waypoint x="1762" y="357" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0upy1ru_di" bpmnElement="Activity_0upy1ru">
         <dc:Bounds x="960" y="137" width="100" height="80" />
@@ -256,12 +268,6 @@
       <bpmndi:BPMNShape id="Activity_0851ihb_di" bpmnElement="Activity_0851ihb">
         <dc:Bounds x="1440" y="317" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1x5t7xe_di" bpmnElement="Event_1x5t7xe">
-        <dc:Bounds x="1602" y="339" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1585" y="382" width="71" height="53" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_18e7qs5_di" bpmnElement="Event_18e7qs5">
         <dc:Bounds x="1762" y="159" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -279,6 +285,15 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0red60s_di" bpmnElement="Gateway_0red60s" isMarkerVisible="true">
         <dc:Bounds x="351" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ezz98t_di" bpmnElement="Event_1x5t7xe">
+        <dc:Bounds x="1762" y="339" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1745" y="382" width="71" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qunch5_di" bpmnElement="Activity_0seltzd">
+        <dc:Bounds x="1600" y="317" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0vyp3zz_di" bpmnElement="Event_0vyp3zz">
         <dc:Bounds x="1312" y="199" width="36" height="36" />

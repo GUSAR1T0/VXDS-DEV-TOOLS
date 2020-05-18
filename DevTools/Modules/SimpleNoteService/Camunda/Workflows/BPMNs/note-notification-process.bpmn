@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1ntxrux" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.3">
+  <bpmn:process id="note-notification-process" name="Note Notification Process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="The entry point to the process">
+      <bpmn:outgoing>Flow_0oqu5bv</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0oqu5bv" sourceRef="StartEvent_1" targetRef="Activity_03vbysu" />
+    <bpmn:serviceTask id="Activity_03vbysu" name="Note: send notifcations" camunda:type="external" camunda:topic="SimpleNoteService.Note.Notification">
+      <bpmn:incoming>Flow_0oqu5bv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1afunng</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_1oklzmo" name="The end of the process">
+      <bpmn:incoming>Flow_1afunng</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1afunng" sourceRef="Activity_03vbysu" targetRef="Event_1oklzmo" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="note-notification-process">
+      <bpmndi:BPMNEdge id="Flow_1afunng_di" bpmnElement="Flow_1afunng">
+        <di:waypoint x="380" y="117" />
+        <di:waypoint x="442" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oqu5bv_di" bpmnElement="Flow_0oqu5bv">
+        <di:waypoint x="218" y="117" />
+        <di:waypoint x="280" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="142" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16mjeka_di" bpmnElement="Activity_03vbysu">
+        <dc:Bounds x="280" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1oklzmo_di" bpmnElement="Event_1oklzmo">
+        <dc:Bounds x="442" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="425" y="142" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
