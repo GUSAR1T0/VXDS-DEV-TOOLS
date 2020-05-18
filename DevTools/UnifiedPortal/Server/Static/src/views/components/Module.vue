@@ -25,6 +25,16 @@
 
                     <el-tooltip effect="dark" placement="top">
                         <div slot="content">
+                            To Module History
+                        </div>
+                        <el-button type="info" plain circle class="rounded-button"
+                                   @click="historyDialog.visible = true">
+                            <span><fa icon="history"/></span>
+                        </el-button>
+                    </el-tooltip>
+
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
                             Upload Module Configuration
                         </div>
                         <el-button type="primary" plain circle v-if="hasPermissionToManageModules"
@@ -98,6 +108,12 @@
                             <span><fa icon="trash-alt"/></span>
                         </el-button>
                     </el-tooltip>
+
+                    <ModuleHistory
+                            :dialog-status="historyDialog"
+                            :module-id="moduleId"
+                            :closed="loadModule"
+                    />
 
                     <ModuleConfigurationUploadForm
                             :dialog-status="uploadDialog"
@@ -240,10 +256,12 @@
     import ModuleConfigurationUploadForm from "@/components/modules/ModuleConfigurationUploadForm";
     import ModuleUpdateForm from "@/components/modules/ModuleUpdateForm";
     import ConfirmationDialog from "@/components/page/ConfirmationDialog";
+    import ModuleHistory from "@/components/modules/ModuleHistory";
 
     export default {
         name: "Module",
         components: {
+            ModuleHistory,
             LoadingContainer,
             Row,
             DoubleRow,
@@ -260,6 +278,9 @@
                 loadingIsActive: true,
                 moduleId: null,
                 module: {},
+                historyDialog: {
+                    visible: false
+                },
                 uploadDialog: {
                     visible: false
                 },

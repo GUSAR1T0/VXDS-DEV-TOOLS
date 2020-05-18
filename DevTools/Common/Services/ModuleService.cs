@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VXDesign.Store.DevTools.Common.Clients.Camunda;
@@ -24,6 +25,7 @@ namespace VXDesign.Store.DevTools.Common.Services
         Task LaunchModule(IOperation operation, int moduleId);
         Task StopModule(IOperation operation, int moduleId);
         Task UninstallModule(IOperation operation, int moduleId);
+        Task<IEnumerable<ModuleHistoryEntity>> GetModuleHistory(IOperation operation, int moduleId);
 
         #endregion
 
@@ -165,6 +167,16 @@ namespace VXDesign.Store.DevTools.Common.Services
                     { CamundaWorkerKey.ComponentsStopRequired, statuses.Contains(ModuleStatus.Run) }
                 }
             }.SendRequest(operation, camundaClient, true);
+        }
+
+        public async Task<IEnumerable<ModuleHistoryEntity>> GetModuleHistory(IOperation operation, int moduleId)
+        {
+            if (!await moduleStore.IsModuleExists(operation, moduleId))
+            {
+                throw CommonExceptions.ModuleWasNotFound(operation, moduleId);
+            }
+
+            return await moduleStore.GetModuleHistory(operation, moduleId);
         }
 
         #endregion
@@ -394,8 +406,8 @@ namespace VXDesign.Store.DevTools.Common.Services
             await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.ModuleUpgradeProcess)
             {
                 BusinessKey = moduleId.ToString(),
-                Variables = new CamundaVariables 
-                { 
+                Variables = new CamundaVariables
+                {
                     { CamundaWorkerKey.ModuleId, moduleId },
                     { CamundaWorkerKey.ComponentsStopRequired, module.Status == ModuleStatus.Run }
                 }

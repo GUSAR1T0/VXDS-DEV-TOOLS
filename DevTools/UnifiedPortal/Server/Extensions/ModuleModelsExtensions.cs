@@ -1,4 +1,5 @@
 using System.Linq;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Module;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.UnifiedPortal.Server.Models.Module;
@@ -64,6 +65,12 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
             FileId = model.FileId,
             UserId = model.UserId,
             HostId = model.HostId
+        };
+
+        internal static ModuleHistoryModule ToModel(this ModuleHistoryEntity entity) => new ModuleHistoryModule
+        {
+            Time = entity.Time.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek),
+            Change = entity.Change
         };
     }
 }

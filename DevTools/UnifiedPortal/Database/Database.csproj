@@ -61,6 +61,7 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\IncidentHistoryTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\IncidentTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\ModuleConfigurationTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\ModuleHistoryTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\ModuleTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\NotificationTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Create\Schema.sql" />
@@ -71,6 +72,7 @@
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\IncidentHistoryTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\IncidentTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\ModuleConfigurationTable.sql" />
+      <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\ModuleHistoryTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\ModuleTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\NotificationTable.sql" />
       <EmbeddedResource Include="Scripts\InitialLoading\Portal\Drop\Schema.sql" />

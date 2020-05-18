@@ -83,3 +83,4 @@ export const UPLOAD_MODULE_CONFIGURATIONS_ENDPOINT = "module/configuration/uploa
 export const SUBMIT_MODULE_CONFIGURATION_ENDPOINT = "module/configuration";
 export const UPGRADE_MODULE_CONFIGURATION_ENDPOINT = "module/{id}/configuration/upgrade";
 export const DOWNGRADE_MODULE_CONFIGURATION_ENDPOINT = "module/{id}/configuration/downgrade";
+export const GET_MODULE_HISTORY_RECORDS = "module/{id}/history";

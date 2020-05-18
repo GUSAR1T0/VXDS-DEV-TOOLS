@@ -30,6 +30,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string ModuleConfiguration = "ModuleConfiguration";
         internal const string ActiveModuleConfiguration = "ActiveModuleConfiguration";
         internal const string ModuleStatus = "ModuleStatus";
+        internal const string ModuleHistory = "ModuleHistory";
         internal const string FileExtension = "FileExtension";
         internal const string File = "File";
     }

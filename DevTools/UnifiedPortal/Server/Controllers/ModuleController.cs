@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -111,6 +112,23 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Controllers
         [PortalAuthentication(PortalPermission.ManageModules)]
         [HttpDelete("{moduleId}")]
         public async Task<ActionResult> UninstallModule(int moduleId) => await Execute(async operation => await moduleService.UninstallModule(operation, moduleId));
+
+        /// <summary>
+        /// Obtains history changes of a module
+        /// </summary>
+        /// <returns>Model of module history data</returns>
+        [ProducesResponseType(typeof(IEnumerable<ModuleHistoryModule>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ResponseResult), StatusCodes.Status404NotFound)]
+        [PortalAuthentication(PortalPermission.AccessToAdminPanel)]
+        [HttpGet("{moduleId}/history")]
+        public async Task<ActionResult<IEnumerable<ModuleHistoryModule>>> GetModuleHistory(int moduleId) => await Execute(async operation =>
+        {
+            var moduleHistory = await moduleService.GetModuleHistory(operation, moduleId);
+            return moduleHistory.Select(item => item.ToModel());
+        });
 
         #endregion
 
