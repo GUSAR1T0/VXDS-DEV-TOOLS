@@ -308,6 +308,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
             return new BadRequestException(operation, "Failed to downgrade module configuration because it can't be confirmed by host operating system");
         }
 
+        public static BadRequestException HostIsUnavailable(IOperation operation) => new BadRequestException(operation, "Host is unavailable");
+
         #endregion
     }
 }

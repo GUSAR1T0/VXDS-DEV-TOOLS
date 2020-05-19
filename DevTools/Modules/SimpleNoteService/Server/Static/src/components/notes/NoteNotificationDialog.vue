@@ -8,7 +8,7 @@
                     <el-form-item prop="userIds" label="Users">
                         <el-select v-model="notificationSendForm.userIds" filterable remote reserve-keyword
                                    :remote-method="filterByUserIds" :loading="userIdsSearchLoading"
-                                   style="width: 100%" clearable>
+                                   style="width: 100%" clearable multiple>
                             <el-option v-for="item in userIdOptions" :key="item.id"
                                        :label="item.fullName" :value="item.id"/>
                         </el-select>
@@ -42,7 +42,7 @@
 </style>
 
 <script>
-    import { GET_HTTP_REQUEST, POST_HTTP_REQUEST } from "@/constants/actions";
+    import { GET_HTTP_REQUEST, PUT_HTTP_REQUEST } from "@/constants/actions";
     import { LOCALHOST, UNIFIED_PORTAL } from "@/constants/servers";
     import { SEARCH_USERS_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
@@ -111,7 +111,7 @@
                         return false;
                     }
 
-                    this.$store.dispatch(POST_HTTP_REQUEST, {
+                    this.$store.dispatch(PUT_HTTP_REQUEST, {
                         server: LOCALHOST,
                         endpoint: format(SEND_NOTIFICATION_ABOUT_NOTE_ENDPOINT, {
                             folderId: this.folderId,

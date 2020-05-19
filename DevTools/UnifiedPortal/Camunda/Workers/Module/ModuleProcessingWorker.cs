@@ -89,6 +89,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Camunda.Workers.Module
             }
 
             logger.Error($"[Operation: {operation.ComplexOperationId}, module: {ModuleId}] Failed to find credentials for connection to host").Wait();
+            throw CommonExceptions.HostIsUnavailable(operation);
         }
 
         protected void SendCommands(IOperation operation, IOperationLogger logger, IRemoteHostClientService client, IEnumerable<ConfigurationCommand> commands)
