@@ -43,7 +43,7 @@
 
 <script>
     import { GET_HTTP_REQUEST, POST_HTTP_REQUEST } from "@/constants/actions";
-    import { LOCALHOST } from "@/constants/servers";
+    import { LOCALHOST, UNIFIED_PORTAL } from "@/constants/servers";
     import { SEARCH_USERS_ENDPOINT } from "@/constants/endpoints";
     import { getConfiguration, renderErrorNotificationMessage } from "@/extensions/utils";
     import { SEND_NOTIFICATION_ABOUT_NOTE_ENDPOINT } from "../../constants/endpoints";
@@ -80,7 +80,7 @@
                 if (query !== "") {
                     this.userIdsSearchLoading = true;
                     this.$store.dispatch(GET_HTTP_REQUEST, {
-                        server: LOCALHOST,
+                        server: UNIFIED_PORTAL,
                         endpoint: format(SEARCH_USERS_ENDPOINT, {
                             pattern: query
                         }),

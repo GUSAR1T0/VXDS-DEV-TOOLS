@@ -1,5 +1,16 @@
 <template>
     <Profile header="Settings" style="padding: 20px">
+        <template slot="profile-buttons">
+            <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                    Reload This Page
+                </div>
+                <el-button type="info" plain circle @click="$router.go(0)"
+                           class="rounded-button">
+                    <span><fa icon="sync-alt"/></span>
+                </el-button>
+            </el-tooltip>
+        </template>
         <template slot="profile-content">
             <el-tabs :stretch="true" v-model="active" style="margin-top: -20px">
                 <el-tab-pane name="environment">
@@ -14,6 +25,9 @@
         </template>
     </Profile>
 </template>
+
+<style scoped src="@/styles/button.css">
+</style>
 
 <script>
     import { mapGetters } from "vuex";

@@ -105,7 +105,7 @@
                                         <strong>Apply</strong>
                                     </el-button>
                                     <el-button type="primary" slot="reference"
-                                               :disabled="!incidentForm.authorId || !incidentForm.assigneeId || !incidentForm.status"
+                                               :disabled="!incidentForm.authorId || !incidentForm.status"
                                                style="width: 100%">
                                         <strong>Submit</strong>
                                     </el-button>

@@ -7,6 +7,17 @@
                     :reload="loadUsers"
                     :settings="settings"
             >
+                <template slot="buttons">
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
+                            Reload This Page
+                        </div>
+                        <el-button type="info" plain circle @click="$router.go(0)"
+                                   class="rounded-button">
+                            <span><fa icon="sync-alt"/></span>
+                        </el-button>
+                    </el-tooltip>
+                </template>
                 <template slot="filters">
                     <UsersTableFilters :filter="filter"/>
                 </template>
@@ -17,6 +28,9 @@
         </template>
     </LoadingContainer>
 </template>
+
+<style scoped src="@/styles/button.css">
+</style>
 
 <script>
     import { getConfiguration, renderErrorNotificationMessage, getOnlyNumbers } from "@/extensions/utils";
