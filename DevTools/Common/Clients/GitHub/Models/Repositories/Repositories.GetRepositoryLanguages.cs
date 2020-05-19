@@ -3,7 +3,7 @@ using VXDesign.Store.DevTools.Common.Clients.GitHub.Endpoints;
 
 namespace VXDesign.Store.DevTools.Common.Clients.GitHub.Models.Repositories
 {
-    public partial class Repositories
+    public static partial class Repositories
     {
         public class GetRepositoryLanguagesRequest : GitHubRequest<GetRepositoryLanguagesResponse>
         {

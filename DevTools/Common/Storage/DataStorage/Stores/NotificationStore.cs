@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using VXDesign.Store.DevTools.Common.Core.Entities.Notification;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
 namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
@@ -56,13 +57,13 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var @params = new DynamicParameters();
             var filters = new List<string>();
 
-            if (filter.Ids?.Any() == true)
+            if (!filter.Ids.IsNullOrEmpty())
             {
                 @params.Add("Ids", filter.Ids);
                 filters.Add("pn.[Id] IN @Ids");
             }
 
-            if (filter.Levels?.Any() == true)
+            if (!filter.Levels.IsNullOrEmpty())
             {
                 @params.Add("Levels", filter.Levels.Select(level => (byte) level));
                 filters.Add("pn.[LevelId] IN @Levels");
@@ -88,7 +89,7 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                 filters.Add($"@Now {(filter.IsActive == false ? "NOT " : "")}BETWEEN pn.[StartTime] AND pn.[StopTime]");
             }
 
-            if (filter.UserIds?.Any() == true)
+            if (!filter.UserIds.IsNullOrEmpty())
             {
                 @params.Add("UserIds", filter.UserIds);
                 filters.Add("pn.[UserId] IN @UserIds");

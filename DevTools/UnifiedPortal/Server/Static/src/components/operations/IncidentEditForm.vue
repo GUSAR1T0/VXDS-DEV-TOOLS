@@ -54,7 +54,8 @@
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="authorId" label="Incident Author">
                         <el-select v-model="incidentForm.authorId" filterable remote reserve-keyword disabled
-                                   :remote-method="filterByAuthorIds" style="width: 100%">
+                                   :remote-method="filterByAuthorIds" :loading="incidentAuthorIdsSearchLoading"
+                                   clearable style="width: 100%">
                             <el-option v-for="item in incidentAuthorIdOptions" :key="item.id"
                                        :label="item.fullName" :value="item.id"/>
                         </el-select>
@@ -65,7 +66,8 @@
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="assigneeId" label="Incident Assignee">
                         <el-select v-model="incidentForm.assigneeId" filterable remote reserve-keyword
-                                   :remote-method="filterByAssigneeIds" style="width: 100%">
+                                   :remote-method="filterByAssigneeIds" :loading="incidentAssigneeIdsSearchLoading"
+                                   clearable style="width: 100%">
                             <el-option v-for="item in incidentAssigneeIdOptions" :key="item.id"
                                        :label="item.fullName" :value="item.id"/>
                         </el-select>
@@ -76,7 +78,7 @@
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item prop="status" label="Incident Status">
                         <el-select v-model="incidentForm.status" filterable reserve-keyword
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in getLookupValues('incidentStatuses')" :key="item.value"
                                        :label="item.name" :value="item.value"/>
                         </el-select>
@@ -103,6 +105,7 @@
                                         <strong>Apply</strong>
                                     </el-button>
                                     <el-button type="primary" slot="reference"
+                                               :disabled="!incidentForm.authorId || !incidentForm.status"
                                                style="width: 100%">
                                         <strong>Submit</strong>
                                     </el-button>

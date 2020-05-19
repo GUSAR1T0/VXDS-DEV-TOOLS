@@ -14,6 +14,8 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
         Task<UsersDataEntity> GetUsersData(IOperation operation);
         Task<(IEnumerable<UserRoleDataEntity> userRoles, int total)> GetUserRolesData(IOperation operation);
         Task<ProjectsDataEntity> GetProjectsData(IOperation operation);
+        Task<ModulesDataEntity> GetModulesData(IOperation operation);
+        Task<(IEnumerable<HostOperatingSystemDataEntity> operatingSystems, int total)> GetHostOperatingSystemsData(IOperation operation);
         Task<(IEnumerable<SystemStatisticsDataByDateEntity> operations, long total)> GetOperationsData(IOperation operation, DateTime sevenDaysAgo, DateTime today);
     }
 
@@ -79,6 +81,31 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
                     COUNT(IIF([IsActive] = 0, 1, NULL)) AS [InactiveCount]
                 FROM [portal].[Project];
             ");
+        }
+
+        public async Task<ModulesDataEntity> GetModulesData(IOperation operation)
+        {
+            return await operation.Connection.QueryFirstAsync<ModulesDataEntity>(@"
+                SELECT
+                    COUNT(IIF([StatusId] = 19, 1, NULL)) AS [ActiveCount],
+                    COUNT(IIF([StatusId] <> 19, 1, NULL)) AS [InactiveCount]
+                FROM [portal].[Module];
+            ");
+        }
+
+        public async Task<(IEnumerable<HostOperatingSystemDataEntity> operatingSystems, int total)> GetHostOperatingSystemsData(IOperation operation)
+        {
+            var reader = await operation.Connection.QueryMultipleAsync(@"
+                SELECT TOP 3 [OperatingSystemId] AS [OperatingSystem], COUNT([Id]) AS [Count]
+                FROM [portal].[Host]
+                GROUP BY [OperatingSystemId]
+                ORDER BY COUNT([Id]) DESC, [OperatingSystemId];
+
+                SELECT COUNT(*) FROM [enum].[OperatingSystem];
+            ");
+            var operatingSystems = await reader.ReadAsync<HostOperatingSystemDataEntity>();
+            var total = await reader.ReadSingleOrDefaultAsync<int>();
+            return (operatingSystems, total);
         }
 
         public async Task<(IEnumerable<SystemStatisticsDataByDateEntity> operations, long total)> GetOperationsData(IOperation operation, DateTime sevenDaysAgo, DateTime today)

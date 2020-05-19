@@ -15,5 +15,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Extensions
 
             return list;
         }
+
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable) => enumerable == null || !enumerable.Any();
     }
 }

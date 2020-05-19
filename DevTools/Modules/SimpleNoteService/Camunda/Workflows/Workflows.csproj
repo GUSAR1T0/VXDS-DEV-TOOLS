@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AssemblyName>VXDesign.Store.DevTools.Modules.SimpleNoteService.Camunda.Workflows</AssemblyName>
+        <RootNamespace>VXDesign.Store.DevTools.Modules.SimpleNoteService.Camunda.Workflows</RootNamespace>
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="Properties\launchSettings.json">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <None Remove="BPMNs\note-notification-process.bpmn" />
+        <Content Include="BPMNs\note-notification-process.bpmn">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Update="appsettings.Local.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="appsettings.Docker.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\Common\Migrations\Migrations.csproj" />
+    </ItemGroup>
+
+</Project>

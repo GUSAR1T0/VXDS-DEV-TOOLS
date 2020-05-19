@@ -11,4 +11,6 @@ SELECT 16, 1, N'Manage Projects'
 UNION ALL
 SELECT 32, 1, N'Manage Incident Comments'
 UNION ALL
-SELECT 64, 1, N'Manage Notifications';
+SELECT 64, 1, N'Manage Notifications'
+UNION ALL
+SELECT 128, 1, N'Manage Modules';

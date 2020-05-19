@@ -13,6 +13,16 @@
                 <template slot="profile-buttons">
                     <el-tooltip effect="dark" placement="top">
                         <div slot="content">
+                            Reload This Page
+                        </div>
+                        <el-button type="info" plain circle @click="$router.go(0)"
+                                   class="rounded-button">
+                            <span><fa icon="sync-alt"/></span>
+                        </el-button>
+                    </el-tooltip>
+
+                    <el-tooltip effect="dark" placement="top">
+                        <div slot="content">
                             To Users Page
                         </div>
                         <el-button type="info" plain circle @click="$router.push('/users')"

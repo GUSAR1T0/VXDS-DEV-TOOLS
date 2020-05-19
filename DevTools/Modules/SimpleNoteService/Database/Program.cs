@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using VXDesign.Store.DevTools.Common.Core.Operations;
-using VXDesign.Store.DevTools.Common.Core.Properties;
+﻿using System;
 using VXDesign.Store.DevTools.Common.Core.Utils;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
+using VXDesign.Store.DevTools.Common.Migrations.Database;
+using VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Properties;
 
 namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database
 {
@@ -10,20 +9,10 @@ namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database
     {
         static void Main(string[] args)
         {
-            var configuration = ConfigurationUtils.GetEnvironmentConfiguration();
-            ConsoleApplicationUtils.Launch(() => MigrationUtils.Perform(args, new DatabaseConnectionProperties
-            {
-                DataStoreConnectionString = configuration["Database:DataStoreConnectionString"],
-                LogStoreConnectionString = configuration["Database:LogStoreConnectionString"]
-            }, typeof(Program).Assembly, services =>
-            {
-                services.AddScoped<IOperationService>(factory =>
-                {
-                    var loggerStore = factory.GetService<ILoggerStore>();
-                    var dataStoreConnectionString = configuration["Database:DataStoreConnectionString"];
-                    return new OperationService(loggerStore, dataStoreConnectionString, "VXDS_DB");
-                });
-            }));
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var configuration = ConfigurationUtils.GetEnvironmentConfiguration(environment);
+            var properties = PropertiesUtils.Create<ProjectProperties>(configuration);
+            ConsoleApplicationUtils.Launch(() => DatabaseMigrationUtils.Perform(args, properties.DatabaseConnectionProperties, typeof(Program).Assembly));
         }
     }
 }

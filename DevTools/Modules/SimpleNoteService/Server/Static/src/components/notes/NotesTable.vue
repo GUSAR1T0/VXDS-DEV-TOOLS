@@ -28,7 +28,7 @@
                     </el-tooltip>
                 </template>
             </el-table-column>
-            <el-table-column label="Title" min-width="500" align="center">
+            <el-table-column label="Title / Text" min-width="500" align="center">
                 <template slot-scope="scope">
                     <el-link
                             type="primary" :underline="false"

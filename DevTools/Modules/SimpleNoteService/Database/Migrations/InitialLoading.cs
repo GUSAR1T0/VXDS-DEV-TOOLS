@@ -1,7 +1,6 @@
 using FluentMigrator;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
-using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 
 namespace VXDesign.Store.DevTools.Modules.SimpleNoteService.Database.Migrations
 {

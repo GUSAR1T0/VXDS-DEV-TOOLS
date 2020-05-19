@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dapper;
 using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.User;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Extensions;
 
@@ -264,25 +265,25 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var joins = new List<string>();
             var filters = new List<string>();
 
-            if (filter.Ids?.Any() == true)
+            if (!filter.Ids.IsNullOrEmpty())
             {
                 @params.Add("Ids", filter.Ids);
                 filters.Add("au.[Id] IN @Ids");
             }
 
-            if (filter.UserNames?.Any() == true)
+            if (!filter.UserNames.IsNullOrEmpty())
             {
                 @params.Add("UserNames", filter.UserNames.Select(item => $"%{item}%").ToStringTable());
                 joins.Add("INNER JOIN @UserNames un ON (au.[FirstName] + ' ' + au.[LastName]) LIKE un.[Value]");
             }
 
-            if (filter.Emails?.Any() == true)
+            if (!filter.Emails.IsNullOrEmpty())
             {
                 @params.Add("Emails", filter.Emails.Select(item => $"%{item}%").ToStringTable());
                 joins.Add("INNER JOIN @Emails e ON au.[Email] LIKE e.[Value]");
             }
 
-            if (filter.UserRoleIds?.Any() == true)
+            if (!filter.UserRoleIds.IsNullOrEmpty())
             {
                 @params.Add("UserRoleIds", filter.UserRoleIds);
                 filters.Add("au.[UserRoleId] IN @UserRoleIds");

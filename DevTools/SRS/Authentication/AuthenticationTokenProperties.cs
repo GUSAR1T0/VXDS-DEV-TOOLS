@@ -17,7 +17,7 @@ namespace VXDesign.Store.DevTools.SRS.Authentication
         public string SecretKey { get; set; }
 
         [PropertyField(Key = "ExpireTime")]
-        public double ExpireTimeInSeconds { get; set; } = TimeSpan.FromMinutes(10).TotalSeconds;
+        public double ExpireTimeInSeconds { get; set; } = TimeSpan.FromHours(1).TotalSeconds;
 
         public SymmetricSecurityKey SymmetricSecurityKey => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
 

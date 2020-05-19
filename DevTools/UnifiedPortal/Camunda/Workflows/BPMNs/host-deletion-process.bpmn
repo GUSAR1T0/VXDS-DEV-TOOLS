@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1ntxrux" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.3">
+  <bpmn:process id="host-deletion-process" name="Host Deletion Process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="The entry point to the process">
+      <bpmn:outgoing>Flow_0oqu5bv</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0oqu5bv" sourceRef="StartEvent_1" targetRef="Activity_03vbysu" />
+    <bpmn:serviceTask id="Activity_03vbysu" name="Search host modules" camunda:type="external" camunda:topic="UnifiedPortal.Host.Module.Search">
+      <bpmn:incoming>Flow_0oqu5bv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zn5z2d</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zn5z2d" sourceRef="Activity_03vbysu" targetRef="Activity_03dxcu5" />
+    <bpmn:endEvent id="Event_1oklzmo" name="The end of the process">
+      <bpmn:incoming>Flow_0ohww70</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ohww70" sourceRef="Activity_15g44yj" targetRef="Event_1oklzmo" />
+    <bpmn:serviceTask id="Activity_15g44yj" name="Delete host" camunda:type="external" camunda:topic="UnifiedPortal.Host.Delete">
+      <bpmn:incoming>Flow_11cobpx</bpmn:incoming>
+      <bpmn:incoming>Flow_1fk3gge</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ohww70</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0isv34s" default="Flow_1fk3gge">
+      <bpmn:incoming>Flow_05rfx0j</bpmn:incoming>
+      <bpmn:incoming>Flow_06z9dck</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j13udf</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1fk3gge</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0j13udf" name="One more module" sourceRef="Gateway_0isv34s" targetRef="Activity_1t5pxj6">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${moduleId != null &amp;&amp; moduleId != 0}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_11cobpx" sourceRef="Activity_1t5pxj6" targetRef="Activity_15g44yj" />
+    <bpmn:callActivity id="Activity_1t5pxj6" name="Uninstall module" calledElement="module-uninstallation-process">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="${moduleId.toString()}" />
+        <camunda:in sourceExpression="${moduleId}" target="moduleId" />
+        <camunda:in sourceExpression="${componentsStopRequired}" target="componentsStopRequired" />
+        <camunda:in sourceExpression="${action}" target="action" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0j13udf</bpmn:incoming>
+      <bpmn:outgoing>Flow_11cobpx</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1o2nkzi</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="Activity_03dxcu5" name="Stop update processes for found modules" camunda:type="external" camunda:topic="UnifiedPortal.Host.Module.Stop">
+      <bpmn:incoming>Flow_0zn5z2d</bpmn:incoming>
+      <bpmn:outgoing>Flow_06z9dck</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_06z9dck" sourceRef="Activity_03dxcu5" targetRef="Gateway_0isv34s" />
+    <bpmn:sequenceFlow id="Flow_1fk3gge" name="No modules" sourceRef="Gateway_0isv34s" targetRef="Activity_15g44yj" />
+    <bpmn:sequenceFlow id="Flow_05rfx0j" sourceRef="Activity_1buqhjz" targetRef="Gateway_0isv34s" />
+    <bpmn:sequenceFlow id="Flow_1o2nkzi" name="Recalculate index of next module" sourceRef="Activity_1t5pxj6" targetRef="Activity_1buqhjz" />
+    <bpmn:serviceTask id="Activity_1buqhjz" name="Calculate index of next module" camunda:type="external" camunda:topic="UnifiedPortal.Host.Module.Calculate">
+      <bpmn:incoming>Flow_1o2nkzi</bpmn:incoming>
+      <bpmn:outgoing>Flow_05rfx0j</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="host-deletion-process">
+      <bpmndi:BPMNEdge id="Flow_1o2nkzi_di" bpmnElement="Flow_1o2nkzi">
+        <di:waypoint x="823" y="217" />
+        <di:waypoint x="823" y="280" />
+        <di:waypoint x="680" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="710" y="246" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05rfx0j_di" bpmnElement="Flow_05rfx0j">
+        <di:waypoint x="630" y="240" />
+        <di:waypoint x="630" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fk3gge_di" bpmnElement="Flow_1fk3gge">
+        <di:waypoint x="630" y="152" />
+        <di:waypoint x="630" y="70" />
+        <di:waypoint x="1000" y="70" />
+        <di:waypoint x="1000" y="137" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="786" y="52" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06z9dck_di" bpmnElement="Flow_06z9dck">
+        <di:waypoint x="540" y="177" />
+        <di:waypoint x="605" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11cobpx_di" bpmnElement="Flow_11cobpx">
+        <di:waypoint x="873" y="177" />
+        <di:waypoint x="950" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j13udf_di" bpmnElement="Flow_0j13udf">
+        <di:waypoint x="655" y="177" />
+        <di:waypoint x="773" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="663" y="191" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ohww70_di" bpmnElement="Flow_0ohww70">
+        <di:waypoint x="1050" y="177" />
+        <di:waypoint x="1112" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zn5z2d_di" bpmnElement="Flow_0zn5z2d">
+        <di:waypoint x="380" y="177" />
+        <di:waypoint x="440" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oqu5bv_di" bpmnElement="Flow_0oqu5bv">
+        <di:waypoint x="218" y="177" />
+        <di:waypoint x="280" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="202" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16mjeka_di" bpmnElement="Activity_03vbysu">
+        <dc:Bounds x="280" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1oklzmo_di" bpmnElement="Event_1oklzmo">
+        <dc:Bounds x="1112" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1095" y="202" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_043fo5q_di" bpmnElement="Activity_15g44yj">
+        <dc:Bounds x="950" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0isv34s_di" bpmnElement="Gateway_0isv34s" isMarkerVisible="true">
+        <dc:Bounds x="605" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ko6myt_di" bpmnElement="Activity_1t5pxj6">
+        <dc:Bounds x="773" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03dxcu5_di" bpmnElement="Activity_03dxcu5">
+        <dc:Bounds x="440" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01edyrl_di" bpmnElement="Activity_1buqhjz">
+        <dc:Bounds x="580" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

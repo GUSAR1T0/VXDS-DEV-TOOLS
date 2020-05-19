@@ -20,9 +20,10 @@ services:
       - mongo-data:/data/db
     ports:
       - "9511:27017"
-    command: mongod --smallfiles --logpath=/dev/null
+    command: mongod --logpath=/dev/null
     networks:
       - default
+      - vxds-dev-tools
 
   mongo-express:
     image: mongo-express
@@ -44,8 +45,15 @@ services:
     command: node /node_modules/mongo-express/app.js
     networks:
       - default
+      - vxds-dev-tools
     depends_on:
       - mongodb
+
+networks:
+  default:
+    driver: bridge
+  vxds-dev-tools:
+    external: true
 
 volumes:
   mongo-data:

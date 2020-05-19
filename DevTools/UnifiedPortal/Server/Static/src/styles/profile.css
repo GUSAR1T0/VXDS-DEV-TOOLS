@@ -20,6 +20,10 @@
     margin-bottom: 10px;
 }
 
+.profile-block-buttons {
+    display: inline-flex;
+}
+
 .profile-block-divider {
     margin: 10px 0 25px 0;
 }

@@ -13,7 +13,8 @@ services:
     ports:
       - "9521:5432"
     networks:
-      - postgres-network
+      - default
+      - vxds-dev-tools
     volumes:
       - postgres-camunda-data:/var/lib/postgresql/data
 
@@ -28,7 +29,8 @@ services:
     ports:
       - "9601:80"
     networks:
-      - postgres-network
+      - default
+      - vxds-dev-tools
     volumes:
       - pgadmin-data:/root/.pgadmin
     depends_on:
@@ -45,14 +47,17 @@ services:
     ports:
       - "9221:9221"
     networks:
-      - postgres-network
+      - default
+      - vxds-dev-tools
     depends_on:
       - postgres-camunda
     command: java -jar -Dspring.datasource.url=jdbc:postgresql://postgres-camunda:5432/master CamundaServer.jar
 
 networks:
-  postgres-network:
+  default:
     driver: bridge
+  vxds-dev-tools:
+    external: true
 
 volumes:
   postgres-camunda-data:

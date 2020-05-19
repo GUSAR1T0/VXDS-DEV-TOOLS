@@ -21,14 +21,16 @@ import {
     faExchangeAlt,
     faCode,
     faLock,
-    faLockOpen
+    faLockOpen,
+    faBell,
+    faSyncAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(
     faUserCircle, faUserAlt, faEllipsisH, faSignOutAlt, faSignInAlt, faUserPlus, faServer, faAddressCard, faTrashAlt,
     faPlusCircle, faFilter, faTable, faStickyNote, faEdit, faCheckCircle, faTimesCircle, faInfoCircle, faExchangeAlt,
-    faCode, faLock, faLockOpen
+    faCode, faLock, faLockOpen, faBell, faSyncAlt
 );
 
 Vue.component("fa", FontAwesomeIcon);

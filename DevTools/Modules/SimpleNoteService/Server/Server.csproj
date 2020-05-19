@@ -25,6 +25,19 @@
       <ProjectReference Include="..\..\..\Common\Storage\DataStorage\DataStorage.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="appsettings.Docker.json">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="appsettings.Local.json">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
         <Exec Command="npm run build -C Static" />
     </Target>

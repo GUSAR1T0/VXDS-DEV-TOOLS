@@ -10,6 +10,9 @@ namespace VXDesign.Store.DevTools.Common.Core.HTTP
         [Description("POST")]
         Post,
 
+        [Description("POST")]
+        PostFile,
+
         [Description("PUT")]
         Put,
 

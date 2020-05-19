@@ -71,7 +71,7 @@
                                         </el-table-column>
                                         <el-table-column label="Additional Info" min-width="1000">
                                             <template slot-scope="logScope">
-                                                <div style="font-size: 16px">{{ logScope.row.value }}</div>
+                                                <div style="font-size: 14px; white-space: pre-wrap; font-family: monospace">{{ logScope.row.value }}</div>
                                             </template>
                                         </el-table-column>
                                     </el-table>

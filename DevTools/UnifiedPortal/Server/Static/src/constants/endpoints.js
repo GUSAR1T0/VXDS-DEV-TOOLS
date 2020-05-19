@@ -11,8 +11,6 @@ export const GET_LOOKUP_VALUES_ENDPOINT = "lookup/values";
 // User endpoints
 export const GET_USERS_ENDPOINT = "user/list";
 export const GET_PROFILE_ENDPOINT = "user/{id}";
-export const ACTIVATE_USER_ENDPOINT = "user/{id}/activate";
-export const DEACTIVATE_USER_ENDPOINT = "user/{id}/deactivate";
 export const UPDATE_USER_PROFILE_ENDPOINT = "user/{id}";
 export const SEARCH_USERS_ENDPOINT = "user/search?p={pattern}&z={zeroUserName}";
 
@@ -34,6 +32,8 @@ export const GET_SYSTEM_HEALTH_CHECK_FOR_DASHBOARD_ENDPOINT = "dashboard/systemH
 export const GET_USERS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/users";
 export const GET_USER_ROLES_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/userRoles";
 export const GET_PROJECTS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/projects";
+export const GET_MODULES_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/modules";
+export const GET_HOST_OPERATING_SYSTEMS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/hostOperatingSystems";
 export const GET_SYSTEM_STATISTICS_DATA_FOR_DASHBOARD_ENDPOINT = "dashboard/system";
 
 // Operations endpoints
@@ -45,8 +45,16 @@ export const DELETE_COMMENT_FOR_INCIDENT_ENDPOINT = "operation/{id}/incident/com
 export const UPDATE_INCIDENT_PROFILE_ENDPOINT = "operation/{id}/incident";
 
 // Settings endpoints
-export const LOAD_SETTINGS_ENDPOINT = "settings";
-export const SETUP_GITHUB_TOKEN_ENDPOINT = "settings/codeService/github?t={token}";
+export const LOAD_HOST_SETTINGS_ENDPOINT = "settings/host/list";
+export const ADD_HOST_ENDPOINT = "settings/host";
+export const UPDATE_HOST_ENDPOINT = "settings/host/{id}";
+export const DELETE_HOST_ENDPOINT = "settings/host/{id}";
+export const GET_AFFECTED_MODULES_COUNT_BY_HOST_ENDPOINT = "settings/host/{id}/affected/count";
+export const CHECK_CONNECTIONS_TO_HOST_ENDPOINT = "settings/host/{id}/check";
+export const CHECK_CONNECTION_TO_HOST_ENDPOINT = "settings/host/check";
+export const SEARCH_HOSTS_ENDPOINT = "settings/host/search?p={pattern}{operatingSystems}";
+export const LOAD_CODE_SERVICES_SETTINGS_ENDPOINT = "settings/codeService";
+export const SETUP_GITHUB_TOKEN_ENDPOINT = "settings/codeService/github/token?t={token}";
 
 // Projects endpoints
 export const GET_PROJECTS_ENDPOINT = "project/list";
@@ -63,3 +71,17 @@ export const DELETE_NOTIFICATION_ENDPOINT = "notification/{id}";
 
 // Health checks endpoints
 export const LOAD_HEALTH_CHECKS_ENDPOINT = "healthChecks";
+
+// Modules endpoints
+export const GET_MODULES_ENDPOINT = "module/list";
+export const GET_MODULE_PROFILE_ENDPOINT = "module/{id}";
+export const UPDATE_MODULE_ENDPOINT = "module/{id}";
+export const RUN_MODULE_ENDPOINT = "module/{id}/launch";
+export const STOP_MODULE_ENDPOINT = "module/{id}/stop";
+export const UNINSTALL_MODULE_ENDPOINT = "module/{id}";
+export const REINSTALL_MODULE_ENDPOINT = "module/{id}/reinstall";
+export const UPLOAD_MODULE_CONFIGURATIONS_ENDPOINT = "module/configuration/upload";
+export const SUBMIT_MODULE_CONFIGURATION_ENDPOINT = "module/configuration";
+export const UPGRADE_MODULE_CONFIGURATION_ENDPOINT = "module/{id}/configuration/upgrade";
+export const DOWNGRADE_MODULE_CONFIGURATION_ENDPOINT = "module/{id}/configuration/downgrade";
+export const GET_MODULE_HISTORY_RECORDS = "module/{id}/history";

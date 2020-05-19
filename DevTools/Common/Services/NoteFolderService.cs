@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VXDesign.Store.DevTools.Common.Clients.Camunda;
+using VXDesign.Store.DevTools.Common.Clients.Camunda.Base;
+using VXDesign.Store.DevTools.Common.Clients.Camunda.Models.ProcessDefinition;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.NoteFolder;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
-using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores;
 
@@ -31,6 +34,7 @@ namespace VXDesign.Store.DevTools.Common.Services
         Task<int> CreateNote(IOperation operation, int folderId, int userId, NoteUpdateEntity entity);
         Task UpdateNote(IOperation operation, int folderId, int noteId, NoteUpdateEntity entity);
         Task DeleteNoteById(IOperation operation, int folderId, int noteId);
+        Task SendNotificationsAboutNote(IOperation operation, int folderId, int noteId, IEnumerable<int> userIds);
 
         #endregion
     }
@@ -38,10 +42,12 @@ namespace VXDesign.Store.DevTools.Common.Services
     public class NoteFolderService : INoteFolderService
     {
         private readonly INoteFolderStore noteFolderStore;
+        private readonly ISyrinxCamundaClientService camundaClient;
 
-        public NoteFolderService(INoteFolderStore noteFolderStore)
+        public NoteFolderService(INoteFolderStore noteFolderStore, ISyrinxCamundaClientService camundaClient)
         {
             this.noteFolderStore = noteFolderStore;
+            this.camundaClient = camundaClient;
         }
 
         #region Folders
@@ -257,6 +263,24 @@ namespace VXDesign.Store.DevTools.Common.Services
             }
 
             await noteFolderStore.DeleteNoteById(operation, noteId);
+        }
+
+        public async Task SendNotificationsAboutNote(IOperation operation, int folderId, int noteId, IEnumerable<int> userIds)
+        {
+            if (!await noteFolderStore.IsNoteExist(operation, folderId, noteId))
+            {
+                throw CommonExceptions.NoteWasNotFound(operation, noteId);
+            }
+
+            await new ProcessDefinition.StartProcessInstanceByKeyRequest(CamundaWorkerKey.NoteNotificationProcess)
+            {
+                BusinessKey = noteId.ToString(),
+                Variables = new CamundaVariables
+                {
+                    { CamundaWorkerKey.NoteId, noteId },
+                    { CamundaWorkerKey.UserIds, userIds }
+                }
+            }.SendRequest(operation, camundaClient, true);
         }
 
         #endregion

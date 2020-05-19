@@ -1,4 +1,3 @@
-using System.IO;
 using Microsoft.Extensions.Configuration;
 using NLog.Config;
 using NLog.Targets;
@@ -20,10 +19,18 @@ namespace VXDesign.Store.DevTools.Common.Core.Utils
             return config;
         }
 
-        public static IConfiguration GetEnvironmentConfiguration() => new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", true, true)
-            .AddEnvironmentVariables()
-            .Build();
+        public static IConfiguration GetEnvironmentConfiguration(string environment = null)
+        {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", true, true);
+
+            if (!string.IsNullOrWhiteSpace(environment))
+            {
+                builder.AddJsonFile($"appsettings.{environment}.json", true, true);
+            }
+
+            builder.AddEnvironmentVariables();
+            return builder.Build();
+        }
     }
 }

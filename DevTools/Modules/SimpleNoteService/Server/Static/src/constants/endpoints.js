@@ -30,3 +30,4 @@ export const CHANGE_NOTE_FOLDER_ENDPOINT = "folder/{folderId}/note/{noteId}/repl
 export const CREATE_NOTE_ENDPOINT = "folder/{folderId}/note";
 export const UPDATE_NOTE_ENDPOINT = "folder/{folderId}/note/{noteId}";
 export const DELETE_NOTE_ENDPOINT = "folder/{folderId}/note/{noteId}";
+export const SEND_NOTIFICATION_ABOUT_NOTE_ENDPOINT = "folder/{folderId}/note/{noteId}/notify?{userIds}";

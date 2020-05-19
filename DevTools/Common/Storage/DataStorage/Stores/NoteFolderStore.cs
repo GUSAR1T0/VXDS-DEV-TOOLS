@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using VXDesign.Store.DevTools.Common.Core.Entities.NoteFolder;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Extensions;
 
@@ -182,25 +183,25 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             @params.Add("FolderId", filter.FolderId);
             filters.Add("sns.[FolderId] = @FolderId");
 
-            if (filter.Ids?.Any() == true)
+            if (!filter.Ids.IsNullOrEmpty())
             {
                 @params.Add("Ids", filter.Ids);
                 filters.Add("sns.[Id] IN @Ids");
             }
 
-            if (filter.Titles?.Any() == true)
+            if (!filter.Titles.IsNullOrEmpty())
             {
                 @params.Add("Titles", filter.Titles.Select(item => $"%{item}%").ToStringTable());
                 joins.Add("INNER JOIN @Titles t ON sns.[Title] LIKE t.[Value]");
             }
 
-            if (filter.UserIds?.Any() == true)
+            if (!filter.UserIds.IsNullOrEmpty())
             {
                 @params.Add("UserIds", filter.UserIds);
                 filters.Add("sns.[UserId] IN @UserIds");
             }
 
-            if (filter.ProjectIds?.Any() == true)
+            if (!filter.ProjectIds.IsNullOrEmpty())
             {
                 @params.Add("ProjectIds", filter.ProjectIds);
                 joins.Add(@"

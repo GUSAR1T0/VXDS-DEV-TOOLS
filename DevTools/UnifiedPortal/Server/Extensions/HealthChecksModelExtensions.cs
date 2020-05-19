@@ -7,7 +7,7 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Server.Extensions
 {
     internal static class HealthChecksModelExtensions
     {
-        internal static IAsyncEnumerable<HealthCheckModel> ToModel(this IAsyncEnumerable<HealthCheckEntity> entities) => entities.Select(entity => new HealthCheckModel
+        internal static IEnumerable<HealthCheckModel> ToModel(this IEnumerable<HealthCheckEntity> entities) => entities.Select(entity => new HealthCheckModel
         {
             Type = entity.Type,
             IsOk = entity.IsOk

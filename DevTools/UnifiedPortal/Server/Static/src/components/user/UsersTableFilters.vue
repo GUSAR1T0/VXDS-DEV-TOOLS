@@ -5,7 +5,7 @@
                 <TableFilterItem name="User IDs">
                     <template slot="field">
                         <el-select v-model="filter.ids" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -16,7 +16,7 @@
                 <TableFilterItem name="User Names">
                     <template slot="field">
                         <el-select v-model="filter.userNames" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -27,7 +27,7 @@
                 <TableFilterItem name="Emails">
                     <template slot="field">
                         <el-select v-model="filter.emails" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -40,7 +40,8 @@
                 <TableFilterItem name="User Roles">
                     <template slot="field">
                         <el-select v-model="filter.userRoleIds" multiple filterable remote reserve-keyword
-                                   :remote-method="filterByUserRoleIds" style="width: 100%">
+                                   :remote-method="filterByUserRoleIds" :loading="filter.userRoleIdsSearchLoading"
+                                   clearable style="width: 100%">
                             <el-option v-for="item in filter.userRoleIdOptions" :key="item.id" :label="item.name"
                                        :value="item.id"/>
                         </el-select>

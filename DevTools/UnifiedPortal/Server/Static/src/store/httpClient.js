@@ -3,7 +3,8 @@ import {
     GET_HTTP_REQUEST,
     POST_HTTP_REQUEST,
     PUT_HTTP_REQUEST,
-    STORE_ENVIRONMENT_VARIABLES_FOR_HTTP_CLIENT
+    STORE_ENVIRONMENT_VARIABLES_FOR_HTTP_CLIENT,
+    UPLOAD_FILE_HTTP_REQUEST
 } from "@/constants/actions";
 import axios from "axios";
 import { LOCALHOST, SYRINX } from "@/constants/servers";
@@ -42,6 +43,10 @@ let getHostAndApi = (state, server) => {
     return {host, api};
 };
 
+function getLink(host, api, endpoint) {
+    return `${host}/${api}/${endpoint}`;
+}
+
 let sendRequest = (state, payload, request) => {
     let client = axios.create();
     client.interceptors.response.use(undefined, error => {
@@ -67,16 +72,25 @@ export default {
     },
     actions: {
         [GET_HTTP_REQUEST]: ({state}, payload = {}) => {
-            return sendRequest(state, payload, (client, host, api) => client.get(`${host}/${api}/${payload.endpoint}`, payload.config));
+            return sendRequest(state, payload, (client, host, api) => client.get(getLink(host, api, payload.endpoint), payload.config));
         },
         [POST_HTTP_REQUEST]: ({state}, payload = {}) => {
-            return sendRequest(state, payload, (client, host, api) => client.post(`${host}/${api}/${payload.endpoint}`, payload.data, payload.config));
+            return sendRequest(state, payload, (client, host, api) => client.post(getLink(host, api, payload.endpoint), payload.data, payload.config));
+        },
+        [UPLOAD_FILE_HTTP_REQUEST]: ({state}, payload = {}) => {
+            return sendRequest(state, payload, (client, host, api) => {
+                let config = {
+                    ...payload.config
+                };
+                config.headers["Content-Type"] = "multipart/form-data";
+                return client.post(getLink(host, api, payload.endpoint), payload.data, config);
+            });
         },
         [PUT_HTTP_REQUEST]: ({state}, payload = {}) => {
-            return sendRequest(state, payload, (client, host, api) => client.put(`${host}/${api}/${payload.endpoint}`, payload.data, payload.config));
+            return sendRequest(state, payload, (client, host, api) => client.put(getLink(host, api, payload.endpoint), payload.data, payload.config));
         },
         [DELETE_HTTP_REQUEST]: ({state}, payload = {}) => {
-            return sendRequest(state, payload, (client, host, api) => client.delete(`${host}/${api}/${payload.endpoint}`, payload.config));
+            return sendRequest(state, payload, (client, host, api) => client.delete(getLink(host, api, payload.endpoint), payload.config));
         }
     }
 };

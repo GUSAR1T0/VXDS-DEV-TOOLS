@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Exceptions;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Storage.LogStorage.Stores;
 
 namespace VXDesign.Store.DevTools.Common.Core.Operations
@@ -14,10 +16,6 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
 
     public class OperationService : IOperationService
     {
-        private const string OperationErrorMessage = "Failed to perform action correctly";
-        private const string TransactionRollbackErrorMessage = "Failed to rollback transaction";
-        private const string SuccessMessage = "Action was performed correctly";
-
         private readonly ILoggerStore loggerStore;
         private readonly string dataStoreConnectionString;
         private readonly string scope;
@@ -28,15 +26,6 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
             this.dataStoreConnectionString = dataStoreConnectionString;
             this.scope = scope;
         }
-
-        private static dynamic GetExceptionContent(Exception exception) => new
-        {
-            Type = exception.GetType().FullName,
-            exception.Source,
-            Data = JsonConvert.SerializeObject(exception.Data),
-            exception.Message,
-            exception.StackTrace
-        };
 
         public async Task Make(OperationContext context, Func<IOperation, Task> action) => await Make(context, async operation =>
         {
@@ -52,12 +41,12 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
             var logger = operation.Logger<OperationService>();
             try
             {
-                await using var transaction = ((OperationConnection) operation.Connection).BeginTransaction();
+                await using var transaction = ((OperationConnection) operation.Connection).BeginTransaction(context.IsolationLevel);
                 try
                 {
                     var result = await action(operation);
                     transaction.Commit();
-                    await logger.Debug(SuccessMessage);
+                    await logger.Debug(OperationLogMessage.SuccessMessage);
                     return result;
                 }
                 catch (Exception actionException)
@@ -75,17 +64,17 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
                         catch (Exception rollbackException)
                         {
                             retries--;
-                            await logger.Error($"{TransactionRollbackErrorMessage}, remaining attempts: {retries}", GetExceptionContent(rollbackException));
-                            await Task.Delay(TimeSpan.FromSeconds(1));
+                            await logger.Error($"{OperationLogMessage.TransactionRollbackErrorMessage}, remaining attempts: {retries}", rollbackException.ToLog());
+                            if (retries != 0) await Task.Delay(TimeSpan.FromSeconds(1));
                         }
                     }
 
                     if (retries == 0)
                     {
-                        await logger.Error($"{TransactionRollbackErrorMessage}, operation couldn't be aborted");
+                        await logger.Error($"{OperationLogMessage.TransactionRollbackErrorMessage}, operation couldn't be aborted");
                     }
 
-                    await logger.Error(OperationErrorMessage, GetExceptionContent(actionException));
+                    await logger.Error(OperationLogMessage.OperationErrorMessage, actionException.ToLog());
 
                     switch (actionException)
                     {
@@ -95,7 +84,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
                         case OperationException _:
                             throw;
                         default:
-                            throw new OperationException(operation, OperationErrorMessage, actionException);
+                            throw new OperationException(operation, OperationLogMessage.OperationErrorMessage, actionException);
                     }
                 }
             }

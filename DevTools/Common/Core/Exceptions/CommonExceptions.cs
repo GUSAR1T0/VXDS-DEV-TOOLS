@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
+using VXDesign.Store.DevTools.Common.Core.Entities.File;
+using VXDesign.Store.DevTools.Common.Core.Entities.Module;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 
 namespace VXDesign.Store.DevTools.Common.Core.Exceptions
@@ -10,6 +14,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         #region System
 
         public static ArgumentException DatabaseCouldNotBeMigrated() => new ArgumentException("Database couldn't be migrated due to failed program arguments");
+
+        public static ArgumentException CamundaCouldNotBeDeployed() => new ArgumentException("Camunda couldn't be deployed due to failed program arguments");
 
         public static OperationException TransactionHasAlreadyBegun(IOperation operation) => new OperationException(operation, "Transaction has already begun");
 
@@ -29,8 +35,55 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
 
         public static NotFoundException CamundaEndpointIsNotFoundByActionCode(IOperation operation) => new NotFoundException(operation, "Failed to find a Camunda endpoint by action code");
 
-        public static BadRequestException CamundaRequestCanNotBeSent(IOperation operation, int status, string reason) =>
-            new BadRequestException(operation, $"Failed to send request to Camunda through Syrinx: {status} \"{reason}\"");
+        public static BadRequestException FailedToGetCamundaVersion(IOperation operation) => new BadRequestException(operation, "Failed to get a Camunda version");
+
+        public static BadRequestException CamundaRequestCanNotBeSent(IOperation operation, int status, string reason, string message)
+        {
+            return new BadRequestException(operation, $"Failed to send request to Camunda through Syrinx: {status} \"{reason}\":\n{message}");
+        }
+
+        public static BadRequestException CamundaRequestIsFailed(IOperation operation, int status, string reason, string message)
+        {
+            return new BadRequestException(operation, $"Failed to send request to Camunda: {status} \"{reason}\":\n{message}");
+        }
+
+        public static BadRequestException FailedToDeployCamundaDueToMissedSettings(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to deploy Camunda workflows due to missed settings");
+        }
+
+        public static BadRequestException FailedToDeployCamundaDueToUndefinedFileList(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to deploy Camunda workflows due to undefined file list");
+        }
+
+        public static BadRequestException FailedToDeployCamundaWorkflows(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to deploy Camunda workflows");
+        }
+
+        public static BadRequestException FailedToGetListOfCamundaDeployments(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to get list of Camunda deployments");
+        }
+
+        public static BadRequestException FailedToDeleteCamundaDeployment(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to delete Camunda deployment");
+        }
+
+        #endregion
+
+        #region Hosts
+
+        public static NotFoundException HostWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Host with ID \"{id}\" was not found");
+
+        public static BadRequestException HostNameIsNotUnique(IOperation operation) => new BadRequestException(operation, "Host name is not unique");
+
+        public static BadRequestException FailedToSendCommandToRemoteHost(IOperation operation, string command, int exitStatus, string error)
+        {
+            return new BadRequestException(operation, $"Failed to send command \"{command}\" to remote host, exit status \"{exitStatus}\":\n{error}");
+        }
 
         #endregion
 
@@ -161,6 +214,101 @@ namespace VXDesign.Store.DevTools.Common.Core.Exceptions
         public static NotFoundException NoteWasNotFound(IOperation operation, int id) => new NotFoundException(operation, $"Note with ID \"{id}\" was not found");
 
         public static BadRequestException NoteTitleIsEmpty(IOperation operation) => new BadRequestException(operation, "Note title can't be empty");
+
+        #endregion
+
+        #region Files
+
+        public static BadRequestException UnexpectedExtensionOfUploadedFile(IOperation operation, string fileExtension, params FileExtension[] expectedExtensions)
+        {
+            var message = $"Unexpected uploaded file extension \"{fileExtension}\" is, use [{string.Join(", ", expectedExtensions.Select(x => x.GetDescription()))}] instead";
+            return new BadRequestException(operation, message);
+        }
+
+        public static BadRequestException UploadedFileExtensionIsUndefined(IOperation operation, params FileExtension[] expectedExtensions)
+        {
+            return new BadRequestException(operation, $"Uploaded file extension is undefined, use [{string.Join(", ", expectedExtensions.Select(x => x.GetDescription()))}]");
+        }
+
+        public static NotFoundException FileWasNotFound(IOperation operation, int fileId) => new NotFoundException(operation, $"File with ID \"{fileId}\" was not found");
+
+        #endregion
+
+        #region Modules
+
+        public static BadRequestException ModuleConfigurationIsInvalid(IOperation operation) => new BadRequestException(operation, "Uploaded module configuration is invalid");
+
+        public static BadRequestException ModuleConfigurationsHaveDifferentLength(IOperation operation)
+        {
+            return new BadRequestException(operation, "Uploaded and stored module configurations have different length");
+        }
+
+        public static NotFoundException ModuleConfigurationWasNotFound(IOperation operation)
+        {
+            return new NotFoundException(operation, "Module configuration wasn't found");
+        }
+
+        public static NotFoundException FailedToDefineModuleForSubmission(IOperation operation)
+        {
+            return new NotFoundException(operation, "Failed to define module to submit configuration by file");
+        }
+
+        public static NotFoundException FailedToDefineModuleForUpgrade(IOperation operation)
+        {
+            return new NotFoundException(operation, "Failed to define module to upgrade configuration by file");
+        }
+
+        public static BadRequestException FailedToSubmitModuleConfiguration(IOperation operation, ModuleConfigurationVerdict verdict)
+        {
+            var message = $"Failed to submit module configuration due to conflicts between module and new configuration versions, module verdict: {verdict.GetDescription()}";
+            return new BadRequestException(operation, message);
+        }
+
+        public static NotFoundException ModuleWasNotFound(IOperation operation, int moduleId) => new NotFoundException(operation, $"Module with ID \"{moduleId}\" was not found");
+
+        public static BadRequestException FailedToRunModule(IOperation operation) => new BadRequestException(operation, "Failed to run module because it's not ready for that");
+
+        public static BadRequestException FailedToStopModule(IOperation operation) => new BadRequestException(operation, "Failed to stop module because it's not ready for that");
+
+        public static BadRequestException FailedToUninstallModule(IOperation operation) => new BadRequestException(operation, "Failed to uninstall module because it's not ready for that");
+
+        public static BadRequestException FailedToReinstallModule(IOperation operation) => new BadRequestException(operation, "Failed to reinstall module because it's not ready for that");
+
+        public static BadRequestException FailedToUpgradeModuleConfigurationDueToModuleStatus(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to upgrade module configuration because module is not ready for that");
+        }
+
+        public static BadRequestException FailedToDowngradeModuleConfigurationDueToModuleStatus(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to downgrade module configuration because module is not ready for that");
+        }
+
+        public static NotFoundException NoModuleConfigurationForUpgrade(IOperation operation) => new NotFoundException(operation, "No module configuration is found for upgrade of module");
+
+        public static BadRequestException NoModuleConfigurationForDowngrade(IOperation operation) => new BadRequestException(operation, "No module configuration is found for downgrade of module");
+
+        public static BadRequestException FailedToUpgradeModuleConfigurationDueToVerdict(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to upgrade module configuration because it can't be confirmed by module verdict");
+        }
+
+        public static BadRequestException FailedToDowngradeModuleConfigurationDueToVerdict(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to downgrade module configuration because it can't be confirmed by module verdict");
+        }
+
+        public static BadRequestException FailedToUpgradeModuleConfigurationDueToOperatingSystemConflict(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to upgrade module configuration because it can't be confirmed by host operating system");
+        }
+
+        public static BadRequestException FailedToDowngradeModuleConfigurationDueToOperatingSystemConflict(IOperation operation)
+        {
+            return new BadRequestException(operation, "Failed to downgrade module configuration because it can't be confirmed by host operating system");
+        }
+
+        public static BadRequestException HostIsUnavailable(IOperation operation) => new BadRequestException(operation, "Host is unavailable");
 
         #endregion
     }

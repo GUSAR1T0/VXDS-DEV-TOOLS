@@ -16,6 +16,8 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string UserRefreshToken = "UserRefreshToken";
         internal const string Operation = "Operation";
         internal const string PortalSettings = "Settings";
+        internal const string Host = "Host";
+        internal const string OperatingSystem = "OperatingSystem";
         internal const string Project = "Project";
         internal const string PermissionGroup = "PermissionGroup";
         internal const string Permission = "Permission";
@@ -25,5 +27,11 @@ namespace VXDesign.Store.DevTools.UnifiedPortal.Database
         internal const string Notification = "Notification";
         internal const string NotificationLevel = "NotificationLevel";
         internal const string Module = "Module";
+        internal const string ModuleConfiguration = "ModuleConfiguration";
+        internal const string ActiveModuleConfiguration = "ActiveModuleConfiguration";
+        internal const string ModuleStatus = "ModuleStatus";
+        internal const string ModuleHistory = "ModuleHistory";
+        internal const string FileExtension = "FileExtension";
+        internal const string File = "File";
     }
 }

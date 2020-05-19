@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VXDesign.Store.DevTools.Common.Clients.Camunda.Extensions;
 using VXDesign.Store.DevTools.Common.Clients.Camunda.Utils;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 
 namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
 {
@@ -287,7 +288,48 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Base
 
         public void Add(string key, string value) => this[key] = value.Convert();
 
-        public void Add(string key, object value) => this[key] = value.Convert();
+        public void Add(string key, object value)
+        {
+            var type = value?.GetType();
+            var underlyingType = type.GetUnderlyingTypeFromPossibleEnumType();
+            if (underlyingType == typeof(short))
+            {
+                if (value == null)
+                {
+                    this[key] = ((short?) null).Convert();
+                }
+                else
+                {
+                    this[key] = CamundaVariableExtensions.Convert((short) value);
+                }
+            }
+            else if (underlyingType == typeof(int))
+            {
+                if (value == null)
+                {
+                    this[key] = ((int?) null).Convert();
+                }
+                else
+                {
+                    this[key] = CamundaVariableExtensions.Convert((int) value);
+                }
+            }
+            else if (underlyingType == typeof(long))
+            {
+                if (value == null)
+                {
+                    this[key] = ((long?) null).Convert();
+                }
+                else
+                {
+                    this[key] = CamundaVariableExtensions.Convert((long) value);
+                }
+            }
+            else
+            {
+                this[key] = value.Convert();
+            }
+        }
 
         public void Add(string key, CamundaFile value) => this[key] = value.Convert();
     }

@@ -15,7 +15,7 @@
                 </template>
             </Blocks>
         </el-collapse-item>
-        <el-collapse-item title="Users & Components" name="2">
+        <el-collapse-item title="Users, Components & System Settings" name="2">
             <el-carousel trigger="click" indicator-position="outside" height="400px"
                          :type="windowWidth >= 1200 ? 'card' : ''">
                 <el-carousel-item>
@@ -29,6 +29,9 @@
                 </el-carousel-item>
                 <el-carousel-item>
                     <ModulesCard/>
+                </el-carousel-item>
+                <el-carousel-item>
+                    <HostOperatingSystemsCard/>
                 </el-carousel-item>
             </el-carousel>
         </el-collapse-item>
@@ -62,6 +65,7 @@
     import IncidentsCard from "@/components/dashboard/IncidentsCard";
     import ServerTimeCard from "@/components/dashboard/ServerTimeCard";
     import HealthCheckCard from "@/components/dashboard/HealthCheckCard";
+    import HostOperatingSystemsCard from "@/components/dashboard/HostOperatingSystemsCard";
 
     export default {
         name: "Home",
@@ -76,7 +80,8 @@
             NotificationsCard,
             IncidentsCard,
             ServerTimeCard,
-            HealthCheckCard
+            HealthCheckCard,
+            HostOperatingSystemsCard
         },
         data() {
             return {

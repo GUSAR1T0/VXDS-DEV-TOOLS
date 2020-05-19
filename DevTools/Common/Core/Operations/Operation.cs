@@ -8,6 +8,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
     {
         OperationContext OperationContext { get; }
         long OperationId { get; }
+        string ComplexOperationId { get; }
         bool? IsSuccessful { get; }
 
         IOperationConnection Connection { get; }
@@ -22,6 +23,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
 
         public OperationContext OperationContext { get; }
         public long OperationId => operationId ?? -1; // -1: when operation is ready to be started but the record isn't stored into DB
+        public string ComplexOperationId => $"{(OperationContext.ParentOperation != null ? $"{OperationContext.ParentOperation.OperationId} -> " : "")}{OperationId}";
         public bool? IsSuccessful { get; private set; }
 
         public IOperationConnection Connection { get; }

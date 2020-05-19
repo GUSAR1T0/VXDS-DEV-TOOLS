@@ -86,7 +86,7 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsEnvironment("Docker"))
             {
                 app.UseDeveloperExceptionPage();
 
@@ -101,7 +101,12 @@ namespace VXDesign.Store.DevTools.SRS.Syrinx
 
             app.UseRouting();
             app.UseCors();
-            app.UseHttpsRedirection();
+
+            if (!env.IsEnvironment("Docker"))
+            {
+                app.UseHttpsRedirection();
+            }
+
             app.UseAuthentication();
             app.UseAuthorization();
 

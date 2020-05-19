@@ -14,6 +14,19 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
 
         #endregion
 
+        #region Deployment
+
+        [CamundaAction(CamundaCategory.Deployment, "Get List", HttpMethod.Get)]
+        DeploymentGetList = 9001,
+
+        [CamundaAction(CamundaCategory.Deployment, "Create Deployment", HttpMethod.PostFile, "create")]
+        DeploymentCreate = 9002,
+
+        [CamundaAction(CamundaCategory.Deployment, "Delete Deployment", HttpMethod.Delete, "{id}")]
+        DeploymentDelete = 9003,
+
+        #endregion
+
         #region External Task
 
         [CamundaAction(CamundaCategory.ExternalTask, "Fetch and Lock External Tasks", HttpMethod.Post, "fetchAndLock")]
@@ -31,6 +44,9 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
         [CamundaAction(CamundaCategory.ExternalTask, "Unlock an External Task", HttpMethod.Post, "{id}/unlock")]
         ExternalTaskUnlock = 12005,
 
+        [CamundaAction(CamundaCategory.ExternalTask, "Handle External Task BPMN Error", HttpMethod.Post, "{id}/bpmnError")]
+        ExternalTaskHandleBpmnError = 12006,
+
         #endregion
 
         #region Process Definition
@@ -43,6 +59,16 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda.Endpoints
 
         [CamundaAction(CamundaCategory.ProcessDefinition, "Start Process Instance (by key and tenant id)", HttpMethod.Post, "key/{key}/tenant-id/{tenant-id}/start")]
         ProcessDefinitionStartProcessInstanceByKeyAndTenantId = 24003,
+
+        #endregion
+
+        #region Process Instance
+
+        [CamundaAction(CamundaCategory.ProcessInstance, "Delete Process Instance", HttpMethod.Delete, "{id}")]
+        ProcessInstanceDelete = 25001,
+
+        [CamundaAction(CamundaCategory.ProcessInstance, "Get Instances", HttpMethod.Get)]
+        ProcessInstanceGetList = 25002,
 
         #endregion
 

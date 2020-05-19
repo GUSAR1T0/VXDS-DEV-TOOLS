@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  simple-note-service:
+    image: vxds-dev-tools
+    ports:
+      - "9010:9010"
+      - "9011:9011"
+    entrypoint: /scripts/dockerize -wait tcp://sql-server:1433 -timeout 60s
+    command: dotnet run --project Modules/SimpleNoteService/Server/Server.csproj --launch-profile "Docker + Local"
+    environment:
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=vxdesign
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - vxds-dev-tools
+
+networks:
+  vxds-dev-tools:
+    external: true

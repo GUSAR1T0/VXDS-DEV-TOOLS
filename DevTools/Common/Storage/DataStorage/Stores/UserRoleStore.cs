@@ -5,6 +5,7 @@ using Dapper;
 using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Entities.Permission;
 using VXDesign.Store.DevTools.Common.Core.Entities.User;
+using VXDesign.Store.DevTools.Common.Core.Extensions;
 using VXDesign.Store.DevTools.Common.Core.Operations;
 using VXDesign.Store.DevTools.Common.Storage.DataStorage.Extensions;
 
@@ -116,13 +117,13 @@ namespace VXDesign.Store.DevTools.Common.Storage.DataStorage.Stores
             var joins = new List<string>();
             var filters = new List<string>();
 
-            if (filter.Ids?.Any() == true)
+            if (!filter.Ids.IsNullOrEmpty())
             {
                 @params.Add("Ids", filter.Ids);
                 filters.Add("aur.[Id] IN @Ids");
             }
 
-            if (filter.UserRoleNames?.Any() == true)
+            if (!filter.UserRoleNames.IsNullOrEmpty())
             {
                 @params.Add("UserRoleNames", filter.UserRoleNames.Select(item => $"%{item}%").ToStringTable());
                 joins.Add("INNER JOIN @UserRoleNames urn ON aur.[Name] LIKE urn.[Value]");

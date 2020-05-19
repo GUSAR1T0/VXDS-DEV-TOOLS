@@ -1,6 +1,9 @@
 using System;
+using Microsoft.AspNetCore.Http;
+using VXDesign.Store.DevTools.Common.Core.Constants;
 using VXDesign.Store.DevTools.Common.Core.Controllers.Models.Common;
 using VXDesign.Store.DevTools.Common.Core.Entities;
+using VXDesign.Store.DevTools.Common.Core.Entities.File;
 
 namespace VXDesign.Store.DevTools.Common.Core.Extensions
 {
@@ -21,5 +24,15 @@ namespace VXDesign.Store.DevTools.Common.Core.Extensions
             Min = model.Min,
             Max = model.Max
         } : null;
+
+        public static UploadedFile ToEntity(this IFormFile file) => UploadedFile.Transform(file);
+
+        public static FileModel ToModel(this File file) => new FileModel
+        {
+            Name = file.Name,
+            Extension = file.Extension,
+            Content = file.Content,
+            Time = file.Time.FormatDateTime(FormatPattern.FullDateTimeWithDayOfWeek),
+        };
     }
 }

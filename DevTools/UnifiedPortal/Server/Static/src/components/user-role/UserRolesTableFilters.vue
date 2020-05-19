@@ -5,7 +5,7 @@
                 <TableFilterItem name="User Role IDs">
                     <template slot="field">
                         <el-select v-model="filter.ids" multiple filterable reserve-keyword allow-create
-                                   default-first-option style="width: 100%">
+                                   default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>
@@ -16,7 +16,7 @@
                 <TableFilterItem name="User Role Names">
                     <template slot="field">
                         <el-select v-model="filter.userRoleNames" multiple filterable reserve-keyword
-                                   allow-create default-first-option style="width: 100%">
+                                   allow-create default-first-option clearable style="width: 100%">
                             <el-option v-for="item in []" :key="item.id" :label="item.query"
                                        :value="item.query"/>
                         </el-select>

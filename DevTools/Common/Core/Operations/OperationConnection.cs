@@ -87,14 +87,14 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
             connection.Open();
         }
 
-        internal SqlTransaction BeginTransaction()
+        internal SqlTransaction BeginTransaction(IsolationLevel level)
         {
             if (transaction != null)
             {
                 throw CommonExceptions.TransactionHasAlreadyBegun(operation);
             }
 
-            return transaction = connection.BeginTransaction(IsolationLevel.Snapshot);
+            return transaction = connection.BeginTransaction(level);
         }
 
         internal void EndTransaction()
@@ -118,6 +118,7 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
             if (operation.OperationId != -1)
             {
                 parameters.Add("@OperationId", operation.OperationId);
+                parameters.Add("@ComplexOperationId", operation.ComplexOperationId);
             }
 
             return await function(command, parameters, transaction, commandTimeout, commandType);

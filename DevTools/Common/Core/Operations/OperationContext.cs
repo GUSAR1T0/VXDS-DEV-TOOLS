@@ -1,3 +1,4 @@
+using System.Data;
 using VXDesign.Store.DevTools.Common.Core.Extensions;
 
 namespace VXDesign.Store.DevTools.Common.Core.Operations
@@ -26,6 +27,18 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
                 return this;
             }
 
+            public OperationContextBuilder SetIsolationLevel(IsolationLevel level)
+            {
+                operationContext.IsolationLevel = level;
+                return this;
+            }
+
+            public OperationContextBuilder SetParentOperation(IOperation parentOperation)
+            {
+                operationContext.ParentOperation = parentOperation;
+                return this;
+            }
+
             public OperationContext Create() => operationContext;
         }
 
@@ -37,6 +50,8 @@ namespace VXDesign.Store.DevTools.Common.Core.Operations
         public int? UserId { get; private set; }
         public bool IsSystemAction { get; private set; }
         internal string Scope { get; set; }
+        public IsolationLevel IsolationLevel { get; private set; } = IsolationLevel.Snapshot;
+        public IOperation ParentOperation { get; private set; }
 
         public static OperationContextBuilder Builder() => new OperationContextBuilder();
     }

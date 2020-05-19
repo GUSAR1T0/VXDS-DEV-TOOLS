@@ -27,7 +27,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda
 
         private HttpClient GetHttpClient()
         {
-            var httpClient = new HttpClient { BaseAddress = new Uri(properties.Host) };
+            var httpClient = new HttpClient { BaseAddress = new Uri(properties.Host.Internal) };
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return httpClient;
@@ -61,7 +61,7 @@ namespace VXDesign.Store.DevTools.Common.Clients.Camunda
 
         public override async Task<TResponseModel> Send(IOperation operation, TRequestModel request)
         {
-            return (await Send(operation, properties.Api, properties.CamundaRequestEndpoint, HttpMethod.Post, request)).PostHandle(operation);
+            return (await Send(operation, properties.Api, properties.CamundaRequestEndpoint, HttpMethod.PostFile, request)).PostHandle(operation);
         }
     }
 }
